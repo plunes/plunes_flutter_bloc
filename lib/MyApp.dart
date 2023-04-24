@@ -1,14 +1,19 @@
-
+import 'package:facebook_app_events/facebook_app_events.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
+import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/ui/afterLogin/AccountSettings.dart';
 import 'package:plunes/ui/afterLogin/AchievementsScreen.dart';
 import 'package:plunes/ui/afterLogin/EditProfileScreen.dart';
 import 'package:plunes/ui/afterLogin/GalleryScreen.dart';
-
 import 'package:plunes/ui/afterLogin/HealthSoulutionNear.dart';
 import 'package:plunes/ui/afterLogin/HelpScreen.dart';
 import 'package:plunes/ui/afterLogin/SettingsScreen.dart';
+import 'package:plunes/ui/afterLogin/fill_coupon.dart';
+import 'package:plunes/ui/afterLogin/payment/manage_payment.dart';
 import 'package:plunes/ui/beforeLogin/EnterPhoneScreen.dart';
 import 'package:plunes/ui/beforeLogin/GuidedTour.dart';
 import 'package:plunes/ui/beforeLogin/Registration.dart';
@@ -22,6 +27,7 @@ import 'ui/afterLogin/HomeScreen.dart';
 import 'ui/afterLogin/PlockrMainScreen.dart';
 import 'ui/afterLogin/ReferScreen.dart';
 import 'ui/afterLogin/SecuritySettings.dart';
+import 'ui/afterLogin/appointment_screens/appointment_main_screen.dart';
 import 'ui/beforeLogin/ChangePassword.dart';
 import 'ui/beforeLogin/CheckOTP.dart';
 import 'ui/beforeLogin/ForgotPassword.dart';
@@ -35,34 +41,41 @@ import 'ui/beforeLogin/SplashScreen.dart';
  */
 
 class MyApp extends StatefulWidget {
-
   @override
   _MyAppState createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<NavigatorState> _navKey = new GlobalKey<NavigatorState>();
+  static final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+  static final facebookAppEvents = FacebookAppEvents();
+  final FirebaseAnalyticsObserver observer =
+      FirebaseAnalyticsObserver(analytics: analytics);
 
   @override
   void initState() {
     super.initState();
-    FirebaseNotification().setUpFireBase(context, _scaffoldKey);
+    // FirebaseNotification().init(context, _scaffoldKey, _navKey, facebookAppEvents, analytics);
   }
 
   ///Below method having all the routes of the application.
   @override
   Widget build(BuildContext context) {
     CommonMethods.globalContext = context;
-
+    AppConfig.setNavKey(_navKey);
     return MaterialApp(
       key: _scaffoldKey,
+      navigatorKey: _navKey,
+      navigatorObservers: <NavigatorObserver>[observer],
       theme: ThemeData(
         fontFamily: fontFile.appDefaultFont,
         accentColor: Color(hexColorCode.defaultGreen),
-        highlightColor: Color(CommonMethods.getColorHexFromStr(colorsFile.lightGreen)),
+        highlightColor:
+            Color(CommonMethods.getColorHexFromStr(colorsFile.lightGreen)),
         indicatorColor: Color(hexColorCode.defaultGreen),
         primaryColor: Color(hexColorCode.defaultGreen),
-        cursorColor: Color(hexColorCode.defaultGreen),
+        // cursorColor: Color(hexColorCode.defaultGreen),
         appBarTheme: AppBarTheme(
           brightness: Brightness.dark,
           actionsIconTheme: IconThemeData(
@@ -93,10 +106,13 @@ class _MyAppState extends State<MyApp> {
         HomeScreen.tag: (context) => HomeScreen(),
         HelpScreen.tag: (context) => HelpScreen(),
         ReferScreen.tag: (context) => ReferScreen(),
-        Coupons.tag: (context) => Coupons(),
+        Coupons.tag: (context) => FillCoupon(),
         CheckOTP.tag: (context) => CheckOTP(),
         AboutUs.tag: (context) => AboutUs(),
         Login.tag: (context) => Login(),
+        AppointmentMainScreen.tag: (context) => AppointmentMainScreen(),
+        ManagePayments.tag: (context) => ManagePayments()
+        //AppointmentScreen.tag:(context) => AppointmentScreen(),
       },
       initialRoute: SplashScreen.tag,
     );

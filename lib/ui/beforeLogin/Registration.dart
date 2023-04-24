@@ -1,19 +1,29 @@
-
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:geocoder/geocoder.dart';
+import 'package:geocoding/geocoding.dart';
+// import 'package:geocoder_location/geocoder.dart';
+// import 'package:geocoder/geocoder.dart';
 import 'package:location/location.dart' as loc;
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/Preferences.dart';
+import 'package:plunes/Utils/analytics.dart';
+import 'package:plunes/Utils/app_config.dart';
+import 'package:plunes/Utils/custom_widgets.dart';
+import 'package:plunes/Utils/location_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/bloc.dart';
+import 'package:plunes/blocs/user_bloc.dart';
+import 'package:plunes/models/Models.dart';
+import 'package:plunes/repositories/user_repo.dart';
+import 'package:plunes/requester/request_states.dart';
+import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
-import 'package:plunes/ui/afterLogin/HomeScreen.dart';
+import 'package:plunes/ui/beforeLogin/Login.dart';
 import 'package:plunes/ui/commonView/LocationFetch.dart';
 import 'package:plunes/ui/commonView/SelectSpecialization.dart';
 
@@ -23,12 +33,12 @@ import 'package:plunes/ui/commonView/SelectSpecialization.dart';
  * Description - Registration class is for sign up into the application for all User Type: General User, Doctor and Hospital.
  */
 
-
 typedef PasswordCallback = void Function(bool flag);
 
+// ignore: must_be_immutable
 class Registration extends BaseActivity {
   static const tag = "/registration";
-  final String phone;
+  final String? phone;
 
   Registration({this.phone});
 
@@ -36,7 +46,9 @@ class Registration extends BaseActivity {
   _RegistrationState createState() => _RegistrationState();
 }
 
-class _RegistrationState extends State<Registration>  implements DialogCallBack {
+class _RegistrationState extends State<Registration>
+    with SingleTickerProviderStateMixin
+    implements DialogCallBack {
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   final specializationController = TextEditingController();
@@ -46,6 +58,7 @@ class _RegistrationState extends State<Registration>  implements DialogCallBack 
   final locationController = TextEditingController();
   final referralController = TextEditingController();
   final phoneController = TextEditingController();
+  final alternatePhoneController = TextEditingController();
   final emailController = TextEditingController();
   final nameController = TextEditingController();
   final dobController = TextEditingController();
@@ -59,107 +72,227 @@ class _RegistrationState extends State<Registration>  implements DialogCallBack 
   final doc_availability_to = new TextEditingController();
   final docNameController = new TextEditingController();
   final aboutController = new TextEditingController();
+  final fullAddressController = new TextEditingController();
 
-  List<DropdownMenuItem<String>> _dropDownMenuItems;
-  List<dynamic> _selectedItemId = List(), _doctorsList = List(), _selectedSpecializationData = List();
-  String _userType, _latitude, _longitude, gender = stringsFile.male;
-  bool _isHospital = false, _isAddManualOpen = false,isExperienceValid = true,isDoctor = false, _passwordVisible = true,progress = false,
-      isNameValid = true,isEmailValid = true, isPasswordValid = true, isProfessionValid = true, isLocationValid = true,isSpecificationValid = true;
-  var location = new loc.Location(), globalHeight, globalWidth,errorMessage = '';
-  FocusNode nameFocusNode = new FocusNode(), phoneFocusNode = new FocusNode(), emailFocusNode = new FocusNode(), passwordFocusNode = new FocusNode(),
-      referralFocusNode = new FocusNode(),profRegNoFocusNode = new FocusNode(),expFocusNode = new FocusNode();
+  List<DropdownMenuItem<String>>? _dropDownMenuItems;
+  List<dynamic>? _selectedItemId = [],
+      _doctorsList = [],
+      _selectedSpecializationData = [];
+  String? _userType, _latitude, _longitude, gender = plunesStrings.male;
+  bool isExperienceValid = true,
+      _passwordVisible = true,
+      progress = false,
+      isNameValid = true,
+      isEmailValid = true,
+      isPasswordValid = true,
+      isProfessionValid = true,
+      isLocationValid = true,
+      isSpecificationValid = true;
+  var location = new loc.Location(),
+      globalHeight,
+      globalWidth,
+      errorMessage = '';
+  FocusNode nameFocusNode = new FocusNode(),
+      phoneFocusNode = new FocusNode(),
+      emailFocusNode = new FocusNode(),
+      passwordFocusNode = new FocusNode(),
+      referralFocusNode = new FocusNode(),
+      profRegNoFocusNode = new FocusNode(),
+      expFocusNode = new FocusNode();
   int data = 1, male = 0, female = 1;
   var image;
-
-  Preferences preferences;
+  UserBloc? _userBloc;
+  String? _failureCause;
+  late bool _isProcessing;
+  late Preferences _preferenceObj;
+  BuildContext? _context;
+  TabController? _tabController;
+  int? _previousTabIndex;
 
   @override
   void initState() {
+    _previousTabIndex = 0;
+    _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
+    _userBloc = UserBloc();
+    _isProcessing = false;
     super.initState();
     initialize();
   }
 
   @override
   void dispose() {
+    _tabController?.dispose();
+    _userBloc?.dispose();
     disposeControllers();
     super.dispose();
   }
 
   void initialize() {
     _dropDownMenuItems = widget.getDropDownMenuItems();
-    _userType = _dropDownMenuItems[0].value;
+    _userType = Constants.generalUser.toString();
     doc_availability_from.text = "00:00 AM";
     doc_availability_to.text = "00:00 PM";
-    getLocation();
+    if (CommonMethods.catalogueLists == null ||
+        CommonMethods.catalogueLists!.isEmpty) {
+      _isProcessing = true;
+      _getSpecialities();
+    }
+    _getLocation();
   }
 
-  void getLocation() async {
-    preferences = new Preferences();
-
-    if(_latitude==null && _longitude ==null ){
-      _latitude =  preferences.getPreferenceString(Constants.LATITUDE);
-      _longitude =  preferences.getPreferenceString(Constants.LONGITUDE);
-    }else {
-      var getLocation = await location.getLocation();
-      _latitude = getLocation.latitude.toString();
-      _longitude = getLocation.longitude.toString();
+  void _getLocation() async {
+    _preferenceObj = new Preferences();
+    _latitude = _preferenceObj.getPreferenceString(Constants.LATITUDE);
+    _longitude = _preferenceObj.getPreferenceString(Constants.LONGITUDE);
+    if (_latitude == null ||
+        _longitude == null ||
+        _latitude!.isEmpty ||
+        _longitude!.isEmpty ||
+        _latitude == "0.0" ||
+        _longitude == "0.0") {
+      await Future.delayed(Duration(milliseconds: 400));
+      var latLong = await LocationUtil().getCurrentLatLong(_context);
+      if (latLong != null) {
+        _latitude = latLong.latitude.toString();
+        _longitude = latLong.longitude.toString();
+      }
     }
-    if(_latitude!=null && _longitude!=null){
-      preferences.setPreferencesString(Constants.LATITUDE, _latitude);
-      preferences.setPreferencesString(Constants.LONGITUDE, _longitude);
-      final coordinates = new Coordinates(double.parse(_latitude), double.parse(_longitude));
-      var addressControlleres = await Geocoder.local.findAddressesFromCoordinates(coordinates);
-      var addr = addressControlleres.first;
-      String full_addressController = addr.addressLine;
-      locationController.text = full_addressController;
-    }
-    setState(() {});
+    _setLocationData();
   }
-
 
   @override
   Widget build(BuildContext context) {
     CommonMethods.globalContext = context;
     globalHeight = MediaQuery.of(context).size.height;
     globalWidth = MediaQuery.of(context).size.width;
-
-    return Scaffold(
-        key: _scaffoldKey,
-        appBar: widget.getAppBar(context, stringsFile.signUp, true),
-        backgroundColor: Colors.white,
-        body: GestureDetector(onTap: () => CommonMethods.hideSoftKeyboard(), child: bodyView()));
+    return Material(
+        child: GestureDetector(
+            onTap: () => CommonMethods.hideSoftKeyboard(),
+            child: _isProcessing
+                ? CustomWidgets().getProgressIndicator()
+                : _failureCause == null
+                    ? Scaffold(
+                        key: _scaffoldKey,
+                        appBar: AppBar(
+                          automaticallyImplyLeading: true,
+                          backgroundColor: Colors.white,
+                          brightness: Brightness.light,
+                          iconTheme: IconThemeData(color: Colors.black),
+                          centerTitle: true,
+                          leading: IconButton(
+                            icon: Icon(Icons.arrow_back_ios),
+                            onPressed: () {
+                              Navigator.pop(context, false);
+                              return;
+                            },
+                          ),
+                          title: Text(plunesStrings.signUp,
+                              textAlign: TextAlign.center,
+                              overflow: TextOverflow.clip,
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  decoration: TextDecoration.none,
+                                  color: Color(CommonMethods.getColorHexFromStr(
+                                      colorsFile.black)),
+                                  fontWeight: FontWeight.w500)),
+                          bottom: TabBar(
+                            controller: _tabController,
+                            onTap: (int selectedIndex) {
+                              if (selectedIndex == _previousTabIndex) {
+                                return;
+                              } else if (selectedIndex == 0) {
+                                _userType = Constants.generalUser.toString();
+                              } else if (selectedIndex == 1) {
+                                _userType = Constants.hospital.toString();
+                              }
+                              _previousTabIndex = selectedIndex;
+                              Future.delayed(Duration(milliseconds: 500))
+                                  .then((value) {
+                                _onTabChange();
+                              });
+                            },
+                            indicatorColor:
+                                CommonMethods.getColorForSpecifiedCode(
+                                    "#107C6F"),
+                            tabs: [
+                              Tab(
+                                child: Text(
+                                  "Personal",
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: PlunesColors.BLACKCOLOR),
+                                ),
+                              ),
+                              Tab(
+                                child: Text(
+                                  "Medical",
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: PlunesColors.BLACKCOLOR),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        backgroundColor: Colors.white,
+                        body: Builder(builder: (context) {
+                          _context = context;
+                          return bodyView();
+                        }))
+                    : CustomWidgets().errorWidget(_failureCause,
+                        onTap: () => _getSpecialities())));
   }
 
   Widget bodyView() {
     return Container(
       margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
-      child: Column(
-        children: <Widget>[
-          userTypeDropDown(),
-          _isHospital ? getHospitalView() : getUserOrDoctorView(),
+      child: TabBarView(
+        controller: _tabController,
+        physics: NeverScrollableScrollPhysics(),
+        children: [
+          _getUserView(),
+          Column(
+            children: [
+              _professionalTypeSelectionWidget(),
+              Expanded(
+                  child: (_userType == Constants.hospital.toString())
+                      ? _getHospitalView()
+                      : (_userType == Constants.doctor.toString())
+                          ? _getDoctorView()
+                          : _getLabView()),
+            ],
+          )
         ],
       ),
     );
   }
 
-  Widget userTypeDropDown() {
-    return Container(
-      margin: EdgeInsets.only(bottom: 20, left: 20, right: 20),
-      child: DropdownButtonFormField(
-        value: _userType,
-        items: _dropDownMenuItems,
-        onChanged: changedDropDownItem,
-        decoration: widget.myInputBoxDecoration(colorsFile.lightGrey1, colorsFile.lightGrey1, null, null, true, null),
-      ),
-    );
-  }
+  // Widget userTypeDropDown() {
+  //   return Container(
+  //     margin: EdgeInsets.only(bottom: 20, left: 20, right: 20),
+  //     child: DropdownButtonFormField(
+  //       value: _userType,
+  //       items: _dropDownMenuItems,
+  //       icon: Image.asset(
+  //         "assets/images/arrow-down-Icon.png",
+  //         color: PlunesColors.GREYCOLOR,
+  //         width: 20,
+  //         height: 20,
+  //       ),
+  //       onChanged: changedDropDownItem,
+  //       decoration: widget.myInputBoxDecoration(colorsFile.lightGrey1,
+  //           colorsFile.lightGrey1, null, null, true, null),
+  //     ),
+  //   );
+  // }
 
   getHospitalSpecializationData() {
     showDialog(
         context: context,
         builder: (
           BuildContext context,
-        ) => SelectSpecialization(
+        ) =>
+            SelectSpecialization(
                 spec: CommonMethods.catalogueLists,
                 from: Constants.hospital,
                 selectedItemId: _selectedItemId,
@@ -167,126 +300,15 @@ class _RegistrationState extends State<Registration>  implements DialogCallBack 
       if (val != '' && val != null) {
         _selectedItemId = [];
         _selectedSpecializationData = [];
-        _selectedItemId.addAll(val['SelectedId']);
-        _selectedSpecializationData.addAll(val['SelectedData']);
-        setState(() {});
+        _selectedItemId!.addAll(val['SelectedId']);
+        _selectedSpecializationData!.addAll(val['SelectedData']);
+        _setState();
       }
     });
   }
 
-  Widget getAddDoctorsView() {
+  Widget _getHospitalView() {
     return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-    /*      widget.getSpacer(0.0, 20.0),
-          widget.createTextViews(stringsFile.profileImage, 18, colorsFile.black0, TextAlign.left, FontWeight.normal),
-          widget.getSpacer(0.0, 20.0),
-          Row(
-            children: <Widget>[
-              InkWell(
-                onTap: () {
-
-                },
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: <Widget>[
-                    Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(40)),
-                          color: Color(0x90ffBDBDBD)),
-                      height: 80,
-                      width: 80,
-                    ),
-                    Align(
-                      child: Icon(
-                        Icons.camera_enhance,
-                        color: Colors.white,
-                      ),
-                    ),
-                    Align(
-                        child: image != null
-                            ? CircleAvatar(
-                                radius: 40,
-                                backgroundImage: FileImage(image),
-                              )
-                            : Container()),
-                  ],
-                ),
-              ),
-              SizedBox(
-                width: 20,
-              ),
-              widget.getDefaultButton(
-                  stringsFile.upload, 100, _pickImage),
-            ],
-          ),*/
-          widget.getSpacer(0.0, 30.0),
-          createTextField(docNameController, stringsFile.fullName, TextInputType.text, TextCapitalization.words, true, ''),
-          widget.getSpacer(0.0, 20.0),
-          createTextField(docEducationController, stringsFile.educationQualification, TextInputType.text, TextCapitalization.characters, true, ''),
-          widget.getSpacer(0.0, 20.0),
-          createTextField(docDesignationController, stringsFile.designation, TextInputType.text, TextCapitalization.characters, true, ''),
-          widget.getSpacer(0.0, 20.0),
-          createTextField(docDepartmentController, stringsFile.department, TextInputType.text, TextCapitalization.words, true, ''),
-          widget.getSpacer(0.0, 20.0),
-          createTextField(specializationController, stringsFile.speciality, TextInputType.text, TextCapitalization.words, isSpecificationValid, stringsFile.errorMsgEnterSpecialization),
-          widget.getSpacer(0.0, 20.0),
-          createTextField(experienceController, stringsFile.experienceInNo, TextInputType.numberWithOptions(decimal: true), TextCapitalization.none, isExperienceValid, stringsFile.errorMsgEnterExp),
-          widget.getSpacer(0.0, 20.0),
-     /*     widget.createTextViews(stringsFile.availability, 18, colorsFile.black0, TextAlign.left, FontWeight.normal),
-          widget.getSpacer(0.0, 10.0),
-          Row(
-            children: <Widget>[
-              Expanded(child: getSlotsRow(doc_availability_from, "00:00 AM")),
-              SizedBox(
-                width: 10,
-              ),
-              Expanded(child: getSlotsRow(doc_availability_to, "00:00 PM")),
-            ],
-          ),*/
-          widget.getSpacer(0.0, 20.0),
-          widget.getDefaultButton(stringsFile.add, globalWidth - 40,42, addDoctorsInRow),
-          widget.getSpacer(0.0, 10.0),
-        ],
-      ),
-    );
-  }
-
-  Widget getSlotsRow(TextEditingController controller, String hint) {
-    return Container(
-      height: 45,
-      alignment: Alignment.centerLeft,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-          border: Border.all(
-              width: 1,
-              color: Color(
-                  CommonMethods.getColorHexFromStr(colorsFile.lightGrey1)))),
-      child: InkWell(
-        onTap: () {
-          CommonMethods.selectTime(context, controller.text).then((value) {
-            if (controller == doc_availability_from)
-              doc_availability_from.text = value;
-            else
-              doc_availability_to.text = value;
-          });
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: TextField(
-            enabled: false,
-            controller: controller,
-            decoration: InputDecoration.collapsed(hintText: hint),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget getHospitalView() {
-    return Expanded(
-        child: Container(
       child: ListView(
         shrinkWrap: true,
         children: <Widget>[
@@ -294,198 +316,301 @@ class _RegistrationState extends State<Registration>  implements DialogCallBack 
             margin: EdgeInsets.only(left: 20, right: 20),
             child: Column(
               children: <Widget>[
-                widget.getSpacer(0.0, 20.0),
-                widget.createTextViews(stringsFile.profileInformation, 18, colorsFile.black0, TextAlign.center, FontWeight.bold),
-                widget.getSpacer(0.0, 20.0),
-                createTextField(nameController, stringsFile.hospitalName, TextInputType.text, TextCapitalization.words, true, ''),
-                widget.getSpacer(0.0, 20.0),
-                createTextField(locationController, stringsFile.location, TextInputType.text, TextCapitalization.none, false, ''),
-                createTextField(phoneController, stringsFile.phoneNo, TextInputType.number, TextCapitalization.none, false, ''),
-                createTextField(aboutController, stringsFile.aboutHospital, TextInputType.text, TextCapitalization.none, true, ''),
-                widget.getSpacer(0.0, 20.0),
-                createTextField(professionRegController, stringsFile.registrationNo, TextInputType.text, TextCapitalization.characters, true, ''),
-                widget.getSpacer(0.0, 40.0),
-                widget.getDividerRow(context, 0.0, 0.0, 0.0),
-                widget.getSpacer(0.0, 30.0),
-                widget.createTextViews(stringsFile.addSpecialization, 18, colorsFile.black0, TextAlign.center, FontWeight.bold),
-                widget.getSpacer(0.0, 5.0),
-                widget.createTextViews(stringsFile.addSpecializationServices, 16, colorsFile.lightGrey2, TextAlign.center, FontWeight.w100),
-                widget.getSpacer(0.0, 20.0),
-                widget.getDefaultButton(stringsFile.add, globalWidth - 40,42, getHospitalSpecializationData),
-                getSpecializationRow(),
-                widget.getSpacer(0.0, 40.0),
-                widget.getDividerRow(context, 0.0, 0.0, 0.0),
-                widget.getSpacer(0.0, 40.0),
-                widget.createTextViews(stringsFile.addDoctors, 18, colorsFile.black0, TextAlign.center, FontWeight.bold),
-                getAddManualButton(),
-                _isAddManualOpen ? getAddDoctorsView() : Container(),
+                _getProfileInformationTextWidget(),
+                _getSpacer(),
+                createTextField(nameController, plunesStrings.hospitalName,
+                    TextInputType.text, TextCapitalization.words, true, ''),
+                _getSpacer(),
+                createTextField(locationController, plunesStrings.location,
+                    TextInputType.text, TextCapitalization.none, false, ''),
+                _getSpacer(),
+                createTextField(
+                    fullAddressController,
+                    plunesStrings.fullAddress,
+                    TextInputType.text,
+                    TextCapitalization.none,
+                    true,
+                    ''),
+                _getSpacer(),
+                createTextField(phoneController, plunesStrings.phoneNo,
+                    TextInputType.number, TextCapitalization.none, false, ''),
+                _getSpacer(),
+                createTextField(
+                    alternatePhoneController,
+                    plunesStrings.alternatePhoneNo,
+                    TextInputType.number,
+                    TextCapitalization.none,
+                    true,
+                    ''),
+                _getSpacer(),
+                createTextField(aboutController, plunesStrings.aboutHospital,
+                    TextInputType.text, TextCapitalization.none, true, ''),
+                _getSpacer(),
+                createTextField(
+                    professionRegController,
+                    plunesStrings.registrationNo,
+                    TextInputType.text,
+                    TextCapitalization.characters,
+                    true,
+                    ''),
+                _getSpacer(),
+                _getProfileInformationTextWidget(
+                    text: plunesStrings.addSpecialization),
+                _getSpacer(),
                 widget.getSpacer(0.0, 10.0),
+                Container(
+                  width: double.infinity,
+                  margin: EdgeInsets.only(left: 8),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: AppConfig.horizontalBlockSize * 5,
+                      vertical: AppConfig.verticalBlockSize * 2),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                      border: Border.all(
+                          color:
+                              CommonMethods.getColorForSpecifiedCode("#707070"),
+                          width: 0.4)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      widget.createTextViews(
+                          plunesStrings.addSpecializationServices,
+                          16,
+                          colorsFile.lightGrey2,
+                          TextAlign.center,
+                          FontWeight.w100),
+                      widget.getSpacer(0.0, 8.0),
+                      Container(
+                        margin: EdgeInsets.only(
+                            right: AppConfig.horizontalBlockSize * 58),
+                        child: InkWell(
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                          highlightColor: Colors.transparent,
+                          focusColor: Colors.transparent,
+                          splashColor: Colors.transparent,
+                          onTap: getHospitalSpecializationData,
+                          child: CustomWidgets().getRoundedButton(
+                              plunesStrings.add,
+                              5,
+                              CommonMethods.getColorForSpecifiedCode("#BCDAD7"),
+                              AppConfig.horizontalBlockSize * 0,
+                              AppConfig.verticalBlockSize * 1.2,
+                              CommonMethods.getColorForSpecifiedCode("#107C6F"),
+                              hasBorder: true,
+                              borderWidth: 0.4,
+                              borderColor:
+                                  CommonMethods.getColorForSpecifiedCode(
+                                      "#107C6F")),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                widget.getSpacer(0.0, 5.0),
+                Container(
+                  child: getSpecializationRow(),
+                  margin: EdgeInsets.only(left: 8),
+                ),
               ],
             ),
           ),
-          _doctorsList.length == 0
-              ? Container()
-              : Container(
-                  margin: EdgeInsets.only(top: 10, bottom: 10),
-                  height: 150,
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    itemCount: _doctorsList.length,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        padding: EdgeInsets.only(left: 10),
-                        margin: EdgeInsets.only(bottom: 10),
-                        child: Card(
-                          elevation: 3,
-                          semanticContainer: true,
-                          child: Container(
-                            padding: EdgeInsets.only(left: 10, right: 10),
-                            width: MediaQuery.of(context).size.width - 80,
-                            margin: EdgeInsets.only(top: 10, bottom: 5),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Container(
-                                  height: 50,
-                                  width: 50,
-                                  decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(25)),
-                                    gradient: new LinearGradient(
-                                        colors: [Color(0xffababab), Color(0xff686868)],
-                                        begin: FractionalOffset.topCenter,
-                                        end: FractionalOffset.bottomCenter,
-                                        stops: [0.0, 1.0],
-                                        tileMode: TileMode.clamp
-                                    ),
-
-                                  ),
-                                  alignment: Alignment.center,
-                                  child: Text(CommonMethods.getInitialName(_doctorsList[index]['name'].toString().toUpperCase()), style:
-                                  TextStyle(color: Colors.white, fontSize: 14),),
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Expanded(
-                                    child: Container(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Text(_doctorsList[index]['name'], maxLines: 1, style: TextStyle(fontSize: 18, fontWeight: FontWeight.normal, color: Color(CommonMethods.getColorHexFromStr(colorsFile.black0))),),
-                                      Text(_doctorsList[index]['education'], maxLines: 1, style: TextStyle(fontWeight: FontWeight.w100, color: Color(CommonMethods.getColorHexFromStr(colorsFile.lightGrey1)), fontSize: 16)),
-                                      Text(_doctorsList[index]['designation'], maxLines: 1, style: TextStyle(fontWeight: FontWeight.w100, color: Color(CommonMethods.getColorHexFromStr(colorsFile.lightGrey1)), fontSize: 16)),
-                                      Text(_doctorsList[index]['department'], maxLines: 1, style: TextStyle(fontWeight: FontWeight.w100, color: Color(CommonMethods.getColorHexFromStr(colorsFile.lightGrey1)), fontSize: 16),),
-                                      Text(_doctorsList[index]['experience'] + ' years of Experience', maxLines: 1, style: TextStyle(fontWeight: FontWeight.w100, color: Color(CommonMethods.getColorHexFromStr(colorsFile.lightGrey1)), fontSize: 16),),
-                                    ],
-                                  ),
-                                )),
-                                InkWell(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 8.0, bottom: 8, right: 8),
-                                    child: Icon(Icons.close, size: 18,),
-                                  ),
-                                  onTap: () {
-                                    setState(() {
-                                      _doctorsList.removeAt(index);
-                                    });
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-          widget.getSpacer(0.0, 20.0),
-          widget.getDividerRow(context, 0.0, 30.0, 0.0),
-          widget.getSpacer(0.0, 0.0),
-          widget.createTextViews(stringsFile.manageAccount, 18, colorsFile.black0, TextAlign.center, FontWeight.bold),
-          widget.getSpacer(0.0, 5.0),
-          widget.createTextViews(stringsFile.addUsers, 16, colorsFile.lightGrey2, TextAlign.center, FontWeight.w100),
-          widget.getSpacer(0.0, 20.0),
           Container(
             margin: EdgeInsets.only(left: 20, right: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                widget.createTextViews(stringsFile.admin, 18, colorsFile.black0, TextAlign.left, FontWeight.bold),
+                _getSpacer(),
+                widget.getDividerRow(context, 0.0, 1.0, 0.0),
+                _getProfileInformationTextWidget(
+                    text: plunesStrings.addUsers.toString().substring(
+                        0, plunesStrings.addUsers.toString().length - 1)),
+                _getSpacer(),
+                Container(
+                  margin: EdgeInsets.only(left: 8),
+                  child: widget.createTextViews(plunesStrings.admin, 18,
+                      "#000000", TextAlign.left, FontWeight.w500),
+                ),
                 widget.getSpacer(0.0, 10.0),
-                widget.createTextViews(stringsFile.addUsers.toString().substring(0, stringsFile.addUsers.toString().length - 1), 18, colorsFile.black0, TextAlign.left, FontWeight.normal),
+                createTextField(
+                    emailController,
+                    plunesStrings.userEmail,
+                    TextInputType.emailAddress,
+                    TextCapitalization.none,
+                    isEmailValid,
+                    plunesStrings.errorValidEmailMsg),
                 widget.getSpacer(0.0, 20.0),
-                createTextField(emailController, stringsFile.userEmail, TextInputType.emailAddress, TextCapitalization.none, isEmailValid, stringsFile.errorValidEmailMsg),
-                widget.getSpacer(0.0, 20.0),
-                getPasswordRow(stringsFile.userPassword),
-                widget.getSpacer(0.0, 20.0),
-                widget.createTextViews(stringsFile.errorMsgPassword, 16, colorsFile.black0, TextAlign.center, FontWeight.normal),
-                widget.getSpacer(0.0, 20.0),
-                progress ? SpinKitThreeBounce(color: Color(hexColorCode.defaultGreen), size: 30.0) : widget.getDefaultButton(stringsFile.submit, globalWidth - 40, 42,submitRegistrationRequest),
-                widget.getSpacer(0.0, 30.0),
+                getPasswordRow(plunesStrings.userPassword),
+                _getSubmitButtonView()
               ],
             ),
           )
         ],
       ),
-    ));
+    );
   }
 
-  Widget getUserOrDoctorView() {
-    return Expanded(
-        child: Container(
+  Widget _getUserView() {
+    return Container(
+      margin: EdgeInsets.only(left: 20, right: 20),
+      child: ListView(
+        padding: EdgeInsets.zero,
+        shrinkWrap: true,
+        children: <Widget>[
+          _getGenderRow(),
+          _getSpacer(),
+          createTextField(
+              nameController,
+              plunesStrings.name,
+              TextInputType.text,
+              TextCapitalization.words,
+              isNameValid,
+              plunesStrings.errorMsgEnterFullName),
+          _getSpacer(),
+          createTextField(phoneController, plunesStrings.phoneNo,
+              TextInputType.number, TextCapitalization.none, false, ''),
+          _getSpacer(),
+          createTextField(
+              emailController,
+              plunesStrings.emailId,
+              TextInputType.emailAddress,
+              TextCapitalization.none,
+              isEmailValid,
+              plunesStrings.errorValidEmailMsg),
+          _getSpacer(),
+          createTextField(dobController, plunesStrings.dateOfBirth,
+              TextInputType.datetime, TextCapitalization.none, false, ''),
+          _getSpacer(),
+          getPasswordRow(plunesStrings.password),
+          _getSpacer(),
+          createTextField(referralController, plunesStrings.referralCode,
+              TextInputType.text, TextCapitalization.none, true, ''),
+          _getSpacer(),
+          _getSubmitButtonView()
+        ],
+      ),
+    );
+  }
+
+  Widget _getSpacer() {
+    return widget.getSpacer(0.0, 20.0);
+  }
+
+  Widget _getDoctorView() {
+    return Container(
       margin: EdgeInsets.only(left: 20, right: 20),
       child: ListView(
         shrinkWrap: true,
         children: <Widget>[
-          getGenderRow(),
-          widget.getSpacer(0.0, 10.0),
-          createTextField(nameController, stringsFile.name, TextInputType.text, TextCapitalization.words, isNameValid, stringsFile.errorMsgEnterFullName),
-          widget.getSpacer(0.0, 20.0),
-          createTextField(phoneController, stringsFile.phoneNo, TextInputType.number, TextCapitalization.none, false, ''),
-          createTextField(emailController, stringsFile.emailId, TextInputType.emailAddress, TextCapitalization.none, isEmailValid, stringsFile.errorValidEmailMsg),
-          widget.getSpacer(0.0, 20.0),
-          createTextField(dobController, stringsFile.dateOfBirth, TextInputType.datetime, TextCapitalization.none, false, ''),
-          getPasswordRow(stringsFile.password),
-          widget.getSpacer(0.0, 20.0),
-          createTextField(locationController, stringsFile.location, TextInputType.text, TextCapitalization.none, false, ''),
-          Visibility(
-              visible: isDoctor,
-              child: Column(children: <Widget>[
-                createTextField(professionRegController, stringsFile.professionalRegNo, TextInputType.text, TextCapitalization.words, isProfessionValid, stringsFile.errorMsgEnterProfRegNo),
-                widget.getSpacer(0.0, 20.0),
-                createTextField(specializationController, '${stringsFile.specialization}*', TextInputType.text, TextCapitalization.words, isSpecificationValid, stringsFile.errorMsgEnterSpecialization),
-                widget.getSpacer(0.0, 20.0),
-                createTextField(experienceController, stringsFile.experienceInNo, TextInputType.numberWithOptions(signed: true,decimal: true), TextCapitalization.none, isExperienceValid, stringsFile.errorMsgEnterExp),
-                widget.getSpacer(0.0, 20.0)])),
-          createTextField(referralController, stringsFile.referralCode, TextInputType.text, TextCapitalization.none, true, ''),
-          widget.getSpacer(0.0, 20.0),
-          progress ? SpinKitThreeBounce(color: Color(hexColorCode.defaultGreen), size: 30.0) : widget.getDefaultButton(stringsFile.signUpBtn, globalWidth - 40, 42,submitRegistrationRequest),
-          widget.getSpacer(0.0, 15.0),
-          widget.getTermsOfUseRow(),
-          widget.getSpacer(0.0, 30.0),
+          _getProfileInformationTextWidget(),
+          _getSpacer(),
+          _getGenderRow(),
+          _getSpacer(),
+          createTextField(
+              nameController,
+              plunesStrings.name,
+              TextInputType.text,
+              TextCapitalization.words,
+              isNameValid,
+              plunesStrings.errorMsgEnterFullName),
+          _getSpacer(),
+          createTextField(phoneController, plunesStrings.phoneNo,
+              TextInputType.number, TextCapitalization.none, false, ''),
+          _getSpacer(),
+          createTextField(
+              alternatePhoneController,
+              plunesStrings.alternatePhoneNo,
+              TextInputType.number,
+              TextCapitalization.none,
+              true,
+              ''),
+          _getSpacer(),
+          createTextField(
+              emailController,
+              plunesStrings.emailId,
+              TextInputType.emailAddress,
+              TextCapitalization.none,
+              isEmailValid,
+              plunesStrings.errorValidEmailMsg,
+              hasOutlinedBorder: true),
+          _getSpacer(),
+          createTextField(dobController, plunesStrings.dateOfBirth,
+              TextInputType.datetime, TextCapitalization.none, false, '',
+              hasOutlinedBorder: true),
+          _getSpacer(),
+          createTextField(locationController, plunesStrings.location,
+              TextInputType.text, TextCapitalization.none, false, '',
+              hasOutlinedBorder: true),
+          _getSpacer(),
+          createTextField(fullAddressController, plunesStrings.fullAddress,
+              TextInputType.text, TextCapitalization.none, true, '',
+              hasOutlinedBorder: true),
+          _getSpacer(),
+          Column(children: <Widget>[
+            createTextField(
+                professionRegController,
+                plunesStrings.professionalRegNo,
+                TextInputType.text,
+                TextCapitalization.words,
+                isProfessionValid,
+                plunesStrings.errorMsgEnterProfRegNo,
+                hasOutlinedBorder: true),
+            _getSpacer(),
+            createTextField(
+                specializationController,
+                '${plunesStrings.specialization}*',
+                TextInputType.text,
+                TextCapitalization.words,
+                isSpecificationValid,
+                plunesStrings.errorMsgEnterSpecialization,
+                hasOutlinedBorder: true),
+            _getSpacer(),
+            createTextField(
+                experienceController,
+                plunesStrings.experienceInNo,
+                TextInputType.numberWithOptions(signed: true, decimal: true),
+                TextCapitalization.none,
+                isExperienceValid,
+                plunesStrings.errorMsgEnterExp,
+                hasOutlinedBorder: true),
+            _getSpacer(),
+            getPasswordRow(plunesStrings.password),
+          ]),
+          _getSubmitButtonView()
         ],
       ),
-    ));
+    );
   }
 
   Widget getPasswordRow(title) {
     return Stack(
       children: <Widget>[
-        createTextField(passwordController, title, TextInputType.text, TextCapitalization.none, isPasswordValid, stringsFile.errorMsgPassword),
+        createTextField(
+            passwordController,
+            title,
+            TextInputType.text,
+            TextCapitalization.none,
+            isPasswordValid,
+            plunesStrings.errorMsgPassword),
         Container(
           margin: EdgeInsets.only(right: 10, top: 10),
           child: Align(
               alignment: FractionalOffset.centerRight,
               child: InkWell(
+                highlightColor: Colors.transparent,
+                focusColor: Colors.transparent,
+                splashColor: Colors.transparent,
                 onTap: () {
                   setState(() {
                     _passwordVisible = !_passwordVisible;
                   });
                 },
-                child: _passwordVisible ? Icon(Icons.visibility_off) : Icon(Icons.visibility),
+                child: _passwordVisible
+                    ? Image.asset(
+                        "assets/images/eye-with-a-diagonal-line3x.png",
+                        width: 24,
+                        height: 24,
+                      )
+                    : Icon(Icons.visibility),
               )),
         ),
       ],
@@ -493,26 +618,44 @@ class _RegistrationState extends State<Registration>  implements DialogCallBack 
   }
 
   fetchLocation() {
-    Navigator.of(context).push(PageRouteBuilder(opaque: false, pageBuilder: (BuildContext context, _, __) => LocationFetch())).then((val) {
-      if (!isDoctor)
-        locationController.text = val;
-      else {
-        var addressControllerList = new List();
-        addressControllerList = val.toString().split(":");
-        locationController.text = addressControllerList[0] + ' ' + addressControllerList[1] + ' ' + addressControllerList[2];
-        _latitude = addressControllerList[3];
-        _longitude = addressControllerList[4];
+    Navigator.of(context)
+        .push(PageRouteBuilder(
+            opaque: false,
+            pageBuilder: (BuildContext context, _, __) => LocationFetch()))
+        .then((val) {
+      if (val == null) {
+        return;
       }
+      var addressControllerList = [];
+      addressControllerList = val.toString().split(":");
+      locationController.text = addressControllerList[0] +
+          ' ' +
+          addressControllerList[1] +
+          ' ' +
+          addressControllerList[2];
+      _latitude = addressControllerList[3];
+      _longitude = addressControllerList[4];
+      _setState();
     });
   }
 
   getSpecializationData() {
-    showDialog(context: context, builder: (BuildContext context,
+    showDialog(
+        context: context,
+        builder: (
+          BuildContext context,
         ) =>
-            SelectSpecialization(spec: CommonMethods.catalogueLists, from: Constants.doctor, selectedItemId: _selectedItemId, selectedItemData: _selectedSpecializationData)).then((val) {
+            SelectSpecialization(
+                spec: CommonMethods.catalogueLists,
+                from: Constants.doctor,
+                selectedItemId: _selectedItemId,
+                selectedItemData: _selectedSpecializationData)).then((val) {
       if (val != '' && val != null) {
         _selectedItemId = val['SelectedId'];
-        specializationController.text = val['SelectedData'].toString().replaceAll('[', '').replaceAll(']', '');
+        specializationController.text = val['SelectedData']
+            .toString()
+            .replaceAll('[', '')
+            .replaceAll(']', '');
       }
     });
   }
@@ -527,8 +670,17 @@ class _RegistrationState extends State<Registration>  implements DialogCallBack 
             Row(
               children: <Widget>[
                 Expanded(
-                  child: widget.createTextViews(_selectedSpecializationData[index], 18, colorsFile.black0, TextAlign.start, FontWeight.normal),),
+                  child: widget.createTextViews(
+                      _selectedSpecializationData![index],
+                      18,
+                      colorsFile.black0,
+                      TextAlign.start,
+                      FontWeight.normal),
+                ),
                 InkWell(
+                  highlightColor: Colors.transparent,
+                  focusColor: Colors.transparent,
+                  splashColor: Colors.transparent,
                   child: Container(
                     child: Padding(
                       padding: const EdgeInsets.all(3.0),
@@ -541,8 +693,8 @@ class _RegistrationState extends State<Registration>  implements DialogCallBack 
                   ),
                   onTap: () {
                     setState(() {
-                      _selectedSpecializationData.removeAt(index);
-                      _selectedItemId.removeAt(index);
+                      _selectedSpecializationData!.removeAt(index);
+                      _selectedItemId!.removeAt(index);
                     });
                   },
                 ),
@@ -556,297 +708,574 @@ class _RegistrationState extends State<Registration>  implements DialogCallBack 
           ],
         );
       },
-      itemCount: _selectedSpecializationData.length,
+      itemCount: _selectedSpecializationData!.length,
       shrinkWrap: true,
       physics: ClampingScrollPhysics(),
     );
   }
 
-  Widget getAddManualButton() {
-    return InkWell(
-      onTap: () {
-        setState(() {
-          _isAddManualOpen = !_isAddManualOpen;
-        });
-      },
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          widget.createTextViews(stringsFile.addManually, 16, colorsFile.lightGrey2, TextAlign.center, FontWeight.w100),
-          Container(
-              margin: EdgeInsets.only(top: 5),
-              child: _isAddManualOpen
-                  ? Icon(Icons.keyboard_arrow_up, color: Colors.grey, size: 30)
-                  : Icon(Icons.keyboard_arrow_down,
-                      color: Colors.grey, size: 30))
-        ],
-      ),
-    );
+  _showProfessionalRegistrationSuccessPopup(LoginPost data) async {
+    showDialog(
+        context: _context!,
+        builder: (context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(9))),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(
+                        top: AppConfig.verticalBlockSize * 1.5,
+                        left: AppConfig.horizontalBlockSize * 2.5,
+                        right: AppConfig.horizontalBlockSize * 2.5),
+                    child: Image.asset(
+                      PlunesImages.profVerificationImage,
+                      height: 74,
+                      width: 122,
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(
+                        top: AppConfig.verticalBlockSize * 1.5,
+                        left: AppConfig.horizontalBlockSize * 2.5,
+                        right: AppConfig.horizontalBlockSize * 2.5),
+                    child: Text(
+                      "Thank You for Submitting your details.",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.symmetric(
+                        vertical: AppConfig.verticalBlockSize * 1.5,
+                        horizontal: AppConfig.horizontalBlockSize * 2.5),
+                    child: Text(
+                      "Our Team will get in touch with you soon regarding the Verification of your Profile",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.black, fontSize: 16),
+                    ),
+                  ),
+                  Container(
+                    child: CustomWidgets().getSingleButtonForPopup(
+                        onTap: () {
+                          Navigator.maybePop(context);
+                        },
+                        roundedValue: 9,
+                        buttonBackground: Colors.white,
+                        buttonText: "OK",
+                        textColor: PlunesColors.GREENCOLOR),
+                  )
+                ],
+              ),
+            ),
+          );
+        }).then((value) async {
+      await bloc.saveDataInPreferences(
+          data, context, plunesStrings.registration);
+    });
   }
 
-  addDoctorsInRow() {
-    if (validationAddDoctors()) {
-      setState(() {
-        var doctors = {};
-        doctors['name'] = docNameController.text;
-        doctors['education'] = docEducationController.text;
-        doctors['designation'] = docDesignationController.text;
-        doctors['department'] = docDepartmentController.text;
-        doctors['experience'] = experienceController.text;
-        doctors['specialities'] = _selectedItemId;
-        _doctorsList.add(doctors);
-        docNameController.text = '';
-        docEducationController.text = '';
-        docDesignationController.text = '';
-        docDepartmentController.text = '';
-        experienceController.text = '';
-        specializationController.text ='';
-        _selectedItemId =[];
-
-      });
-    }else {
-      widget.showInSnackBar((errorMessage), Colors.red, _scaffoldKey);
-    }
-  }
-
-  submitRegistrationRequest() {
+  _submitRegistrationRequest() async {
     if (validation()) {
-      List specialistId = new List();
-      for (var item in _selectedItemId) specialistId.add({'specialityId': item});
-      var body = {};
+      List specialistId = [];
+      for (var item in _selectedItemId!)
+        specialistId.add({'specialityId': item});
+      Map<String, dynamic> body = {};
       body['name'] = nameController.text;
       body['gender'] = gender == 'Male' ? 'M' : 'F';
       body['mobileNumber'] = phoneController.text;
+      body['alternateNumber'] = alternatePhoneController.text;
       body['email'] = emailController.text.trim();
       body['verifiedUser'] = 'true';
       body['password'] = passwordController.text;
-      body['geoLocation'] = {'latitude': _latitude, 'longitude': _longitude};
-      body['userType'] = _userType == Constants.generalUser ? 'User' : _userType;
-      body['address'] = locationController.text;
-      body['deviceIds'] = Constants.DEVICE_TOKEN;
-      if (_userType != Constants.hospital) {
+      if (this._latitude != null &&
+          this._longitude != null &&
+          this._latitude!.isNotEmpty &&
+          this._longitude!.isNotEmpty &&
+          _userType != Constants.generalUser) {
+
+        // body['location'] = Location('Point', coordinates: [
+        //   double.parse(this._longitude!),
+        //   double.parse(this._latitude!)
+        // ]).toJson();
+      }
+      body['userType'] =
+          _userType == Constants.generalUser ? 'User' : _userType;
+      if (_userType != Constants.generalUser) {
+        body['address'] = fullAddressController.text.trim();
+        body['googleAddress'] = locationController.text.trim();
+      }
+      body['deviceId'] = Constants.DEVICE_TOKEN;
+      if (_userType != Constants.hospital &&
+          _userType != Constants.labDiagnosticCenter) {
         body['birthDate'] = dobController.text;
         body['referralCode'] = referralController.text;
       }
-      if (_userType == Constants.doctor || _userType == Constants.hospital) {
+      if (_userType == Constants.doctor ||
+          _userType == Constants.hospital ||
+          _userType == Constants.labDiagnosticCenter) {
         body['registrationNumber'] = professionRegController.text;
         body["specialities"] = specialistId;
-
-        if (_userType == Constants.doctor){
+        if (_userType == Constants.doctor) {
           body['experience'] = experienceController.text;
         }
-        if (_userType == Constants.hospital) {
+        if (_userType == Constants.hospital ||
+            _userType == Constants.labDiagnosticCenter) {
           body['biography'] = aboutController.text;
           body['doctors'] = _doctorsList;
         }
       }
-
-    progress = true;
-      bloc.registrationRequest(context, this, body);
-      bloc.registrationResult.listen((data) async {
+      progress = true;
+      _setState();
+      await Future.delayed(Duration(milliseconds: 50));
+      var result = await _userBloc!.signUp(body);
       progress = false;
-        if (data.success) {
-          await bloc.saveDataInPreferences(data, context, stringsFile.registration);
-          widget.showInSnackBar(stringsFile.success, Colors.green, _scaffoldKey);
-          Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen(screen: Constants.BIDS)));
+      _setState();
+      await Future.delayed(Duration(milliseconds: 50));
+      if (result is RequestSuccess) {
+        LoginPost data = result.response;
+        if (data.success!) {
+          _setShowCaseStatus();
+          AnalyticsProvider().registerEvent(AnalyticsKeys.signUpKey);
+          if (_userType != Constants.generalUser) {
+            _showProfessionalRegistrationSuccessPopup(data);
+          } else {
+            await bloc.saveDataInPreferences(
+                data, context, plunesStrings.registration);
+          }
         } else {
-          widget.showInSnackBar(data.message, Colors.red, _scaffoldKey);
+          widget.showInSnackBar(
+              data.message, PlunesColors.BLACKCOLOR, _scaffoldKey);
         }
-      });
+      } else if (result is RequestFailed) {
+        widget.showInSnackBar(
+            result.failureCause, PlunesColors.BLACKCOLOR, _scaffoldKey);
+      } else {
+        widget.showInSnackBar(plunesStrings.somethingWentWrong,
+            PlunesColors.BLACKCOLOR, _scaffoldKey);
+      }
     } else {
-      widget.showInSnackBar((errorMessage), Colors.red,_scaffoldKey);
+      widget.showInSnackBar(
+          errorMessage, PlunesColors.BLACKCOLOR, _scaffoldKey);
     }
+  }
 
+  bool _isDoctorType() {
+    return _userType != null && _userType == Constants.doctor.toString();
+  }
+
+  bool _isUserType() {
+    return _userType != null && _userType == Constants.generalUser.toString();
+  }
+
+  bool _isHospitalType() {
+    return _userType != null && _userType == Constants.hospital.toString();
+  }
+
+  bool _isLabType() {
+    return _userType != null &&
+        _userType == Constants.labDiagnosticCenter.toString();
   }
 
   bool validation() {
-    if (nameController.text.trim().isEmpty || (isDoctor && nameController.text.toString().length==4)) {
-      errorMessage = _userType == Constants.hospital? stringsFile.errorMsgEnterHosName: stringsFile.errorMsgEnterFullName;
+    if (nameController.text.trim().isEmpty ||
+        (_isDoctorType() && nameController.text.toString().length < 6) ||
+        (nameController.text.toString().length < 2)) {
+      errorMessage = _isDoctorType()
+          ? plunesStrings.errorMsgEnterDoctorName
+          : PlunesStrings.nameMustBeGreaterThanTwoChar;
       return false;
-    } else if (_userType == Constants.hospital && professionRegController.text.isEmpty) {
-      errorMessage = stringsFile.errorMsgEnterRegNo;
+    } else if ((_isHospitalType() || _isLabType()) &&
+        professionRegController.text.isEmpty) {
+      errorMessage = plunesStrings.errorMsgEnterRegNo;
       return false;
-    } else if( emailController.text.trim().isEmpty){
-      errorMessage = stringsFile.errorEmptyEmailMsg;
+    } else if (emailController.text.trim().isEmpty) {
+      errorMessage = plunesStrings.errorEmptyEmailMsg;
       return false;
     } else if (!CommonMethods.validateEmail(emailController.text.trim())) {
-      errorMessage = stringsFile.errorValidEmailMsg;
+      errorMessage = plunesStrings.errorValidEmailMsg;
       return false;
     } else if (passwordController.text.isEmpty) {
-      errorMessage = stringsFile.emptyPasswordError;
+      errorMessage = plunesStrings.emptyPasswordError;
       return false;
     } else if (passwordController.text.length < 8) {
-      errorMessage = stringsFile.errorMsgPassword;
+      errorMessage = plunesStrings.errorMsgPassword;
       return false;
-    }  else if(isDoctor && professionRegController.text.trim().isEmpty){
-      errorMessage = stringsFile.errorMsgEnterProfRegNo;
+    } else if (_isUserType() &&
+        (locationController.text.isEmpty ||
+            _latitude == null ||
+            _latitude!.isEmpty ||
+            _latitude == "0.0" ||
+            _longitude == null ||
+            _longitude!.isEmpty ||
+            _longitude == "0.0")) {
+      errorMessage = PlunesStrings.pleaseSelectALocation;
       return false;
-    } else if(isDoctor && specializationController.text.trim().isEmpty){
-      errorMessage = stringsFile.errorMsgEnterSpecialization;
+    } else if (_userType != Constants.generalUser &&
+        (fullAddressController.text.trim().isEmpty)) {
+      errorMessage = plunesStrings.errorFullAddressRequired;
       return false;
-    }  else if(isDoctor && experienceController.text.trim().isEmpty){
-      errorMessage = stringsFile.errorMsgEnterExp;
+    } else if (_isDoctorType() && professionRegController.text.trim().isEmpty) {
+      errorMessage = plunesStrings.errorMsgEnterProfRegNo;
       return false;
-    } else if(_userType == Constants.hospital && _doctorsList.length==0) {
-      errorMessage = stringsFile.errorMsgAddDoctor;
+    } else if (_isDoctorType() &&
+        specializationController.text.trim().isEmpty) {
+      errorMessage = plunesStrings.errorMsgEnterSpecialization;
       return false;
-    }else {
-      return true;
-    }
-  }
-
-  bool validationAddDoctors() {
-    if (docNameController.text.trim().isEmpty ) {
-      errorMessage = stringsFile.errorMsgEnterDocName;
+    } else if ((_isLabType() || _isHospitalType()) &&
+        (_selectedItemId == null || _selectedItemId!.isEmpty)) {
+      errorMessage = plunesStrings.errorMsgEnterSpecialization;
       return false;
-    } else if (docEducationController.text.trim().isEmpty) {
-      errorMessage = stringsFile.errorMsgEnterEducation;
+    } else if (_isDoctorType() && experienceController.text.trim().isEmpty) {
+      errorMessage = plunesStrings.errorMsgEnterExp;
       return false;
-    }  else if( docDepartmentController.text.trim().isEmpty){
-      errorMessage = stringsFile.errorMsgEnterDocDep;
+    } else if (_userType != Constants.user &&
+        alternatePhoneController.text.trim().isNotEmpty &&
+        alternatePhoneController.text.trim().length != 10) {
+      errorMessage = plunesStrings.invalidPhoneNumber;
       return false;
-    } else if(specializationController.text.trim().isEmpty){
-      errorMessage = stringsFile.errorMsgEnterSpecialization;
-      return false;
-    }  else if(experienceController.text.trim().isEmpty){
-      errorMessage = stringsFile.errorMsgEnterExp;
-      return false;
-    }  else {
+    } else {
       return true;
     }
   }
 
   @override
-  dialogCallBackFunction(String action) {
+  dialogCallBackFunction(String action) {}
 
-  }
-
-  resetFormData() {
+  _resetFormData() {
     _selectedItemId = [];
     experienceController.text = '';
     specializationController.text = '';
     professionRegController.text = '';
     passwordController.text = '';
-    emailController.text ='';
+    emailController.text = '';
+    alternatePhoneController.text = '';
+    aboutController.clear();
     _selectedSpecializationData = [];
-  }
-  
-  changedDropDownItem(String selectedCity) {
-    setState(() {
-      _userType = selectedCity;
-      if (_userType == 'Doctor') {
-        isDoctor = true;
-        nameController.text = "Dr. ";
-        _isHospital = false;
-      } else if (_userType == 'Hospital') {
-        _isHospital = true;
-        isDoctor = false;
-        nameController.text = '';
-        dobController.text ='';
-      } else {
-        nameController.text = '';
-        isDoctor = false;
-        _isHospital = false;
-      }
-      resetFormData();
-
-    });
+    gender = plunesStrings.male.toString();
   }
 
-  Widget getGenderRow() {
+  _onTabChange() {
+    if (mounted)
+      setState(() {
+        if (_userType == 'Doctor') {
+          nameController.text = "Dr. ";
+        } else if (_userType == 'Hospital') {
+          nameController.text = '';
+          dobController.text = '';
+        } else if (_userType == Constants.labDiagnosticCenter) {
+          nameController.text = '';
+          dobController.text = '';
+        } else {
+          nameController.text = '';
+        }
+        _resetFormData();
+      });
+  }
+
+  Widget _getGenderRow() {
     return Container(
-      child: _userType == Constants.hospital
-          ? Container()
-          : Row(
+      child: Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          Radio(
-            value: female,
-            activeColor: Color(hexColorCode.defaultGreen),
-            groupValue: data,
-            onChanged: (val) {
-              setState(() {
-                male = 0;
-                female = 1;
-                gender = stringsFile.male;
-              });
-            },
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(5)),
+                border: Border.all(
+                    width: 0.4,
+                    color: CommonMethods.getColorForSpecifiedCode("#707070")),
+                color: gender == plunesStrings.male
+                    ? CommonMethods.getColorForSpecifiedCode("#107C6F")
+                    : Colors.white),
+            child: InkWell(
+              highlightColor: Colors.transparent,
+              focusColor: Colors.transparent,
+              splashColor: Colors.transparent,
+              onDoubleTap: () {},
+              onTap: () {
+                gender = plunesStrings.male;
+                _setState();
+              },
+              child: Text(
+                "${plunesStrings.male}",
+                style: TextStyle(
+                    fontSize: 16,
+                    color: gender == plunesStrings.male
+                        ? PlunesColors.WHITECOLOR
+                        : PlunesColors.BLACKCOLOR),
+              ),
+            ),
           ),
           Container(
-              margin: EdgeInsets.only(right: 50),
-              child: widget.createTextViews(stringsFile.male, 18,
-                  colorsFile.black0, TextAlign.left, FontWeight.normal)),
-          Radio(
-            value: male,
-            activeColor: Color(hexColorCode.defaultGreen),
-            groupValue: data,
-            onChanged: (val) {
-              setState(() {
-                male = 1;
-                female = 0;
-                gender = stringsFile.female;
-              });
-            },
+            margin: EdgeInsets.only(left: 15),
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(5)),
+                border: Border.all(
+                    width: 0.4,
+                    color: CommonMethods.getColorForSpecifiedCode("#707070")),
+                color: gender == plunesStrings.female
+                    ? CommonMethods.getColorForSpecifiedCode("#107C6F")
+                    : Colors.white),
+            child: InkWell(
+              highlightColor: Colors.transparent,
+              focusColor: Colors.transparent,
+              splashColor: Colors.transparent,
+              onDoubleTap: () {},
+              onTap: () {
+                gender = plunesStrings.female;
+                _setState();
+              },
+              child: Text(
+                "${plunesStrings.female}",
+                style: TextStyle(
+                    fontSize: 16,
+                    color: gender == plunesStrings.female
+                        ? PlunesColors.WHITECOLOR
+                        : PlunesColors.BLACKCOLOR),
+              ),
+            ),
           ),
-          widget.createTextViews(stringsFile.female, 18,
-              colorsFile.black0, TextAlign.left, FontWeight.normal)
         ],
       ),
     );
   }
-  
-  Widget createTextField(TextEditingController controller, String placeHolder, TextInputType inputType, TextCapitalization textCapitalization, bool fieldFlag, String errorMsg) {
-    if (controller == phoneController) controller.text = widget.phone;
+
+  Widget _professionalTypeSelectionWidget() {
+    return Container(
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(5)),
+                border: Border.all(
+                    width: 0.4,
+                    color: CommonMethods.getColorForSpecifiedCode("#707070")),
+                color: _userType == Constants.hospital.toString()
+                    ? CommonMethods.getColorForSpecifiedCode("#107C6F")
+                    : Colors.white),
+            child: InkWell(
+              highlightColor: Colors.transparent,
+              focusColor: Colors.transparent,
+              splashColor: Colors.transparent,
+              onDoubleTap: () {},
+              onTap: () {
+                if (_userType == Constants.hospital.toString()) {
+                  return;
+                }
+                _userType = Constants.hospital.toString();
+                _onTabChange();
+              },
+              child: Text(
+                "${Constants.hospital.toString()}",
+                style: TextStyle(
+                    fontSize: 16,
+                    color: _userType == Constants.hospital.toString()
+                        ? PlunesColors.WHITECOLOR
+                        : PlunesColors.BLACKCOLOR),
+              ),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(left: 15),
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(5)),
+                border: Border.all(
+                    width: 0.4,
+                    color: CommonMethods.getColorForSpecifiedCode("#707070")),
+                color: _userType == Constants.doctor.toString()
+                    ? CommonMethods.getColorForSpecifiedCode("#107C6F")
+                    : Colors.white),
+            child: InkWell(
+              highlightColor: Colors.transparent,
+              focusColor: Colors.transparent,
+              splashColor: Colors.transparent,
+              onDoubleTap: () {},
+              onTap: () {
+                if (_userType == Constants.doctor.toString()) {
+                  return;
+                }
+                _userType = Constants.doctor.toString();
+                _onTabChange();
+              },
+              child: Text(
+                "${Constants.doctor.toString()}",
+                style: TextStyle(
+                    fontSize: 16,
+                    color: _userType == Constants.doctor.toString()
+                        ? PlunesColors.WHITECOLOR
+                        : PlunesColors.BLACKCOLOR),
+              ),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(left: 15),
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(5)),
+                border: Border.all(
+                    width: 0.4,
+                    color: CommonMethods.getColorForSpecifiedCode("#707070")),
+                color: _userType == Constants.labDiagnosticCenter.toString()
+                    ? CommonMethods.getColorForSpecifiedCode("#107C6F")
+                    : Colors.white),
+            child: InkWell(
+              highlightColor: Colors.transparent,
+              focusColor: Colors.transparent,
+              splashColor: Colors.transparent,
+              onDoubleTap: () {},
+              onTap: () {
+                if (_userType == Constants.labDiagnosticCenter.toString()) {
+                  return;
+                }
+                _userType = Constants.labDiagnosticCenter.toString();
+                _onTabChange();
+              },
+              child: Text(
+                "${Constants.labDiagnosticCenter.toString()}",
+                style: TextStyle(
+                    fontSize: 16,
+                    color: _userType == Constants.labDiagnosticCenter.toString()
+                        ? PlunesColors.WHITECOLOR
+                        : PlunesColors.BLACKCOLOR),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget createTextField(
+      TextEditingController controller,
+      String placeHolder,
+      TextInputType inputType,
+      TextCapitalization textCapitalization,
+      bool fieldFlag,
+      String errorMsg,
+      {bool hasOutlinedBorder = false}) {
+    if (controller == phoneController) controller.text = widget.phone!;
     return InkWell(
+      highlightColor: Colors.transparent,
+      focusColor: Colors.transparent,
+      splashColor: Colors.transparent,
       onTap: () {
         if (controller == dobController)
-          CommonMethods.selectDate(context).then((value) {
-            dobController.text = value;
+          CommonMethods.selectHoloTypeDate(context, isDoc: _isDoctorType())
+              .then((value) {
+            if (value != null && value.isNotEmpty) {
+              dobController.text = value;
+            }
           });
         else if (controller == locationController)
           fetchLocation();
         else if (controller == specializationController)
           getSpecializationData();
       },
-      child: Container(
-          padding: EdgeInsets.zero,
-          width: MediaQuery.of(context).size.width,
-          child: TextField(
-              maxLines: (controller == locationController || controller == aboutController) ? 2 : 1,
-              maxLength: (controller == aboutController) ? 250 : null,
+      child: IgnorePointer(
+        ignoring: (_userType != null &&
+            _userType == Constants.doctor.toString() &&
+            hasOutlinedBorder),
+        child: Container(
+            padding: EdgeInsets.zero,
+            width: MediaQuery.of(context).size.width,
+            child: TextField(
+              maxLines: (controller == locationController ||
+                      controller == aboutController)
+                  ? 2
+                  : 1,
+              maxLength: (controller == aboutController)
+                  ? 250
+                  : (controller != null &&
+                          controller == alternatePhoneController)
+                      ? 10
+                      : null,
               textCapitalization: textCapitalization,
-              obscureText: (controller == passwordController ? _passwordVisible : false),
+              obscureText:
+                  (controller == passwordController ? _passwordVisible : false),
               keyboardType: inputType,
-              textInputAction: controller == referralController ? TextInputAction.done : TextInputAction.next,
+              inputFormatters: (controller != null &&
+                      controller == alternatePhoneController)
+                  ? <TextInputFormatter>[
+                    FilteringTextInputFormatter.digitsOnly
+                      // WhitelistingTextInputFormatter.digitsOnly
+                    ]
+                  : (controller != null &&
+                          controller == nameController &&
+                          _userType == Constants.generalUser)
+                      ? [
+                FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ]")),
+              ]
+                      : null,
+              textInputAction: controller == referralController
+                  ? TextInputAction.done
+                  : TextInputAction.next,
               onSubmitted: (String value) {
-                setFocus(controller).unfocus();
+                setFocus(controller)!.unfocus();
                 FocusScope.of(context).requestFocus(setTargetFocus(controller));
               },
               onChanged: (text) {
                 setState(() {
                   if (controller == emailController) {
-                    isEmailValid = text.length > 0 ? CommonMethods.validateEmail(text) : true;
+                    isEmailValid = text.length > 0
+                        ? CommonMethods.validateEmail(text)
+                        : true;
                   } else if (controller == passwordController) {
                     isPasswordValid = text.length > 7 ? true : false;
                   }
                 });
               },
               controller: controller,
-              cursorColor: Color(CommonMethods.getColorHexFromStr(colorsFile.defaultGreen)),
+              cursorColor: Color(
+                  CommonMethods.getColorHexFromStr(colorsFile.defaultGreen)),
               focusNode: setFocus(controller),
-              enabled: (controller == phoneController || controller == dobController || controller == locationController || controller == specializationController)
-                  ? false
+              enabled: (controller == phoneController ||
+                      controller == dobController ||
+                      controller == locationController ||
+                      (controller == specializationController))
+                  ? (_isDoctorType() && hasOutlinedBorder)
+                      ? true
+                      : false
                   : true,
               style: TextStyle(
                 fontSize: 15.0,
               ),
-              decoration: widget.myInputBoxDecoration(colorsFile.defaultGreen, colorsFile.lightGrey1, placeHolder, errorMsg, fieldFlag, controller, passwordController))),
+              decoration: hasOutlinedBorder
+                  ? widget.myInputBoxDecorationWithOutlinedBorder(
+                      colorsFile.defaultGreen,
+                      colorsFile.lightGrey1,
+                      placeHolder,
+                      errorMsg,
+                      fieldFlag,
+                      controller,
+                      passwordController)
+                  : widget.myInputBoxDecoration(
+                      colorsFile.defaultGreen,
+                      colorsFile.lightGrey1,
+                      placeHolder,
+                      errorMsg,
+                      fieldFlag,
+                      controller,
+                      passwordController),
+            )),
+      ),
     );
   }
 
-  FocusNode setFocus(TextEditingController controller) {
-    FocusNode focusNode;
+  FocusNode? setFocus(TextEditingController controller) {
+    FocusNode? focusNode;
     if (controller == nameController) {
       focusNode = nameFocusNode;
     } else if (controller == phoneController) {
@@ -855,25 +1284,25 @@ class _RegistrationState extends State<Registration>  implements DialogCallBack 
       focusNode = emailFocusNode;
     } else if (controller == passwordController) {
       focusNode = passwordFocusNode;
-    } else if (isDoctor && controller == professionRegController) {
+    } else if (_isDoctorType() && controller == professionRegController) {
       focusNode = profRegNoFocusNode;
-    }  else if (isDoctor && controller == experienceController) {
+    } else if (_isDoctorType() && controller == experienceController) {
       focusNode = expFocusNode;
-    }else if (controller == referralController) {
+    } else if (controller == referralController) {
       focusNode = referralFocusNode;
     }
     return focusNode;
   }
 
-  FocusNode setTargetFocus(TextEditingController controller) {
-    FocusNode focusNode;
+  FocusNode? setTargetFocus(TextEditingController controller) {
+    FocusNode? focusNode;
     if (controller == nameController) {
       focusNode = emailFocusNode;
     } else if (controller == emailController) {
       focusNode = passwordFocusNode;
-    } else if (controller == passwordController && !isDoctor) {
+    } else if (controller == passwordController && !_isDoctorType()) {
       focusNode = referralFocusNode;
-    }else if (controller == passwordController && isDoctor) {
+    } else if (controller == passwordController && _isDoctorType()) {
       focusNode = profRegNoFocusNode;
     } else if (controller == professionRegController) {
       focusNode = expFocusNode;
@@ -883,7 +1312,7 @@ class _RegistrationState extends State<Registration>  implements DialogCallBack 
     return focusNode;
   }
 
-   disposeControllers() {
+  disposeControllers() {
     specializationController.dispose();
     professionRegController.dispose();
     experienceController.dispose();
@@ -894,6 +1323,7 @@ class _RegistrationState extends State<Registration>  implements DialogCallBack 
     passwordFocusNode.dispose();
     referralFocusNode.dispose();
     phoneController.dispose();
+    alternatePhoneController.dispose();
     emailController.dispose();
     nameController.dispose();
     phoneFocusNode.dispose();
@@ -901,5 +1331,287 @@ class _RegistrationState extends State<Registration>  implements DialogCallBack 
     dobController.dispose();
     nameFocusNode.dispose();
     expFocusNode.dispose();
+    fullAddressController.dispose();
+  }
+
+  Widget _getLabView() {
+    return Container(
+      child: ListView(
+        shrinkWrap: true,
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.only(left: 20, right: 20),
+            child: Column(
+              children: <Widget>[
+                _getProfileInformationTextWidget(),
+                _getSpacer(),
+                createTextField(nameController, plunesStrings.labName,
+                    TextInputType.text, TextCapitalization.words, true, ''),
+                _getSpacer(),
+                createTextField(locationController, plunesStrings.location,
+                    TextInputType.text, TextCapitalization.none, false, ''),
+                _getSpacer(),
+                createTextField(
+                    fullAddressController,
+                    plunesStrings.fullAddress,
+                    TextInputType.text,
+                    TextCapitalization.none,
+                    true,
+                    ''),
+                _getSpacer(),
+                createTextField(phoneController, plunesStrings.phoneNo,
+                    TextInputType.number, TextCapitalization.none, false, ''),
+                _getSpacer(),
+                createTextField(
+                    alternatePhoneController,
+                    plunesStrings.alternatePhoneNo,
+                    TextInputType.number,
+                    TextCapitalization.none,
+                    true,
+                    ''),
+                _getSpacer(),
+                createTextField(aboutController, plunesStrings.aboutHospital,
+                    TextInputType.text, TextCapitalization.none, true, ''),
+                _getSpacer(),
+                createTextField(
+                    professionRegController,
+                    plunesStrings.registrationNo,
+                    TextInputType.text,
+                    TextCapitalization.characters,
+                    true,
+                    ''),
+                _getSpacer(),
+                _getProfileInformationTextWidget(
+                    text: plunesStrings.addSpecialization),
+                _getSpacer(),
+                widget.getSpacer(0.0, 10.0),
+                Container(
+                  width: double.infinity,
+                  margin: EdgeInsets.only(left: 8),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: AppConfig.horizontalBlockSize * 5,
+                      vertical: AppConfig.verticalBlockSize * 2),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                      border: Border.all(
+                          color:
+                              CommonMethods.getColorForSpecifiedCode("#707070"),
+                          width: 0.4)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      widget.createTextViews(
+                          plunesStrings.addSpecializationServices,
+                          16,
+                          colorsFile.lightGrey2,
+                          TextAlign.center,
+                          FontWeight.w100),
+                      widget.getSpacer(0.0, 8.0),
+                      Container(
+                        margin: EdgeInsets.only(
+                            right: AppConfig.horizontalBlockSize * 58),
+                        child: InkWell(
+                          highlightColor: Colors.transparent,
+                          focusColor: Colors.transparent,
+                          splashColor: Colors.transparent,
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                          onTap: getHospitalSpecializationData,
+                          child: CustomWidgets().getRoundedButton(
+                              plunesStrings.add,
+                              5,
+                              CommonMethods.getColorForSpecifiedCode("#BCDAD7"),
+                              AppConfig.horizontalBlockSize * 0,
+                              AppConfig.verticalBlockSize * 1.2,
+                              CommonMethods.getColorForSpecifiedCode("#107C6F"),
+                              hasBorder: true,
+                              borderWidth: 0.4,
+                              borderColor:
+                                  CommonMethods.getColorForSpecifiedCode(
+                                      "#107C6F")),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                widget.getSpacer(0.0, 5.0),
+                Container(
+                  child: getSpecializationRow(),
+                  margin: EdgeInsets.only(left: 8),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(left: 20, right: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                _getSpacer(),
+                widget.getDividerRow(context, 0.0, 1.0, 0.0),
+                _getProfileInformationTextWidget(
+                    text: plunesStrings.addUsers.toString().substring(
+                        0, plunesStrings.addUsers.toString().length - 1)),
+                _getSpacer(),
+                Container(
+                  margin: EdgeInsets.only(left: 8),
+                  child: widget.createTextViews(plunesStrings.admin, 18,
+                      "#000000", TextAlign.left, FontWeight.w500),
+                ),
+                widget.getSpacer(0.0, 10.0),
+                createTextField(
+                    emailController,
+                    plunesStrings.userEmail,
+                    TextInputType.emailAddress,
+                    TextCapitalization.none,
+                    isEmailValid,
+                    plunesStrings.errorValidEmailMsg),
+                widget.getSpacer(0.0, 20.0),
+                getPasswordRow(plunesStrings.userPassword),
+                _getSubmitButtonView()
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  void _getSpecialities() async {
+    if (!_isProcessing) {
+      _isProcessing = true;
+      _setState();
+    }
+    var result = await _userBloc!.getSpeciality();
+    if (result is RequestSuccess) {
+      if (CommonMethods.catalogueLists == null ||
+          CommonMethods.catalogueLists!.isEmpty) {
+        _failureCause = "No Data Available";
+      }
+    } else if (result is RequestFailed) {
+      _failureCause = result.failureCause;
+    }
+    _isProcessing = false;
+    _setState();
+  }
+
+  _setState() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  Future _setLocationData() async {
+    if (_latitude != null &&
+        _longitude != null &&
+        _latitude!.isNotEmpty &&
+        _longitude!.isNotEmpty &&
+        _latitude != "0.0" &&
+        _longitude != "0.0") {
+      // final coordinates = new Coordinates(double.parse(_latitude!), double.parse(_longitude!));
+      // var addressController = await Geocoder.local.findAddressesFromCoordinates(coordinates);
+      var addressController = await GeocodingPlatform.instance.placemarkFromCoordinates(double.parse(_latitude!), double.parse(_longitude!));
+      // var addressController = await Geocoder.local.findAddressesFromCoordinates(coordinates);
+      var addr = addressController.first;
+      String? fullAddressController = addr.locality;
+      // String? fullAddressController = addr.addressLine;
+      if (mounted) locationController.text = fullAddressController!;
+    }
+    _setState();
+  }
+
+  void _setShowCaseStatus() {
+    UserManager()
+        .setWidgetShownStatus(Constants.BIDDING_MAIN_SCREEN, status: false);
+    UserManager()
+        .setWidgetShownStatus(Constants.SOLUTION_SCREEN, status: false);
+    UserManager()
+        .setWidgetShownStatus(Constants.INSIGHT_MAIN_SCREEN, status: false);
+    UserManager()
+        .setWidgetShownStatus(Constants.VIDEO_STATUS_FOR_USER, status: false);
+    UserManager()
+        .setWidgetShownStatus(Constants.VIDEO_STATUS_FOR_PROF, status: false);
+  }
+
+  Widget _getSubmitButtonView() {
+    return Container(
+      child: Column(
+        children: [
+          widget.getSpacer(0.0, 20.0),
+          progress
+              ? SpinKitThreeBounce(
+                  color: Color(hexColorCode.defaultGreen), size: 30.0)
+              : Container(
+                  child: InkWell(
+                    highlightColor: Colors.transparent,
+                    focusColor: Colors.transparent,
+                    splashColor: Colors.transparent,
+                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                    onTap: _submitRegistrationRequest,
+                    child: CustomWidgets().getRoundedButton(
+                        plunesStrings.signUpBtn.toString().toUpperCase(),
+                        5,
+                        CommonMethods.getColorForSpecifiedCode("#107C6F"),
+                        AppConfig.horizontalBlockSize * 0,
+                        AppConfig.verticalBlockSize * 1.5,
+                        PlunesColors.WHITECOLOR),
+                  ),
+                ),
+          widget.getSpacer(0.0, 10.0),
+          InkWell(
+            onTap: () {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => Login()),
+                  (_) => false);
+            },
+            onDoubleTap: () {},
+            highlightColor: Colors.transparent,
+            focusColor: Colors.transparent,
+            splashColor: Colors.transparent,
+            child: Container(
+              alignment: Alignment.center,
+              width: double.infinity,
+              padding: EdgeInsets.all(5),
+              child: Container(
+                  child: Text("Already have an account",
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                          color: CommonMethods.getColorForSpecifiedCode(
+                              "#107C6F")))),
+            ),
+          ),
+          widget.getSpacer(0.0, 15.0),
+          widget.getTermsOfUseRow(),
+          widget.getSpacer(0.0, 30.0),
+        ],
+      ),
+    );
+  }
+
+  Widget _getProfileInformationTextWidget({String? text}) {
+    return Container(
+      margin: EdgeInsets.only(top: 25, left: 8),
+      child: Row(
+        children: [
+          Container(
+            child: Text(
+              text ?? "Profile Information",
+              style: TextStyle(
+                  fontSize: 18,
+                  color: PlunesColors.BLACKCOLOR,
+                  fontWeight: FontWeight.w500),
+            ),
+          ),
+          Expanded(
+            child: Container(
+              margin: EdgeInsets.only(left: 10),
+              height: 0.6,
+              color: CommonMethods.getColorForSpecifiedCode("#DBDBDB"),
+            ),
+          )
+        ],
+      ),
+    );
   }
 }

@@ -7,7 +7,8 @@ class AesEncrypt {
     print("==length " + key.toString().length.toString());
     print("==length " + key.toString());
     final iv = IV.fromBase64('PHli36Hb1Bww1aBjadxk6g==');
-    final encrypter = Encrypter(AES(key, iv, mode: AESMode.cbc));
+    // final encrypter = Encrypter(AES(key, iv, mode: AESMode.cbc));
+    final encrypter = Encrypter(AES(key, mode: AESMode.cbc));
     final encrypted = encrypter.encrypt(plainText);
     final decrypted = encrypter.decrypt(encrypted);
     print("print decrypted" + decrypted); // Lorem ipsum dolor sit amet, consectetur adipiscing elit

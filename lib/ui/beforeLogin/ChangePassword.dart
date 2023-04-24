@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/Preferences.dart';
+import 'package:plunes/Utils/app_config.dart';
+import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
-import 'package:plunes/blocs/bloc.dart';
-import 'package:plunes/Utils/CommonMethods.dart';
+import 'package:plunes/blocs/user_bloc.dart';
+import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
@@ -17,78 +20,178 @@ import 'Login.dart';
  * Description - ChangePassword class is used for Create/Change the password.
  */
 
+// ignore: must_be_immutable
 class ChangePassword extends BaseActivity {
   static const tag = '/changePassword';
 
-   String phone, from;
-  ChangePassword({Key key, this.phone, this.from}) : super(key: key);
+  String? phone, from, otp;
+  bool? isProfessional;
+
+  ChangePassword(
+      {Key? key, this.phone, this.from, this.otp, this.isProfessional})
+      : super(key: key);
 
   @override
   _ChangePasswordState createState() => _ChangePasswordState();
 }
 
-class _ChangePasswordState extends State<ChangePassword> implements DialogCallBack{
-
+class _ChangePasswordState extends State<ChangePassword>
+    implements DialogCallBack {
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final passwordController = TextEditingController();
   final newPasswordController = TextEditingController();
   final oldPasswordController = TextEditingController();
-  FocusNode passwordFocusNode = new FocusNode(), newPasswordFocusNode = new FocusNode(), oldPasswordFocusNode = new FocusNode();
-  bool _isValidPassword =true, _isValidOldPassword = true, _isValidNewPassword =true;
+  FocusNode passwordFocusNode = new FocusNode(),
+      newPasswordFocusNode = new FocusNode(),
+      oldPasswordFocusNode = new FocusNode();
+  bool _isValidPassword = true,
+      _isValidOldPassword = true,
+      _isValidNewPassword = true;
   var globalHeight, globalWidth;
   bool progress = false;
+  late UserBloc _userBloc;
+  bool? _currentPassVisible, _newPassVisible, _rePassVisible;
 
   @override
   void dispose() {
+    _userBloc.dispose();
     super.dispose();
-    bloc.dispose();
   }
+
   @override
   void initState() {
+    _userBloc = UserBloc();
+    _currentPassVisible = true;
+    _newPassVisible = _currentPassVisible;
+    _rePassVisible = _newPassVisible;
     getSharedPreferenceData();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     globalHeight = MediaQuery.of(context).size.height;
     globalWidth = MediaQuery.of(context).size.width;
     CommonMethods.globalContext = context;
-
     return Scaffold(
         key: _scaffoldKey,
-        appBar: widget.getAppBar(context,widget.from == stringsFile.createPassword? stringsFile.createPassword:stringsFile.changePassword, false),
+        appBar: widget.getAppBar(
+            context,
+            widget.from == plunesStrings.createPassword
+                ? plunesStrings.createPassword
+                : plunesStrings.changePassword,
+            true) as PreferredSizeWidget?,
         backgroundColor: Colors.white,
         body: GestureDetector(
             onTap: () => CommonMethods.hideSoftKeyboard(),
-            child: getBodyView()
+            child: getBodyView()));
+  }
+
+  Widget getBodyView() {
+    return Container(
+        margin: EdgeInsets.only(left: 20, right: 20),
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                shrinkWrap: true,
+                children: <Widget>[
+                  widget.getSpacer(0.0,
+                      widget.from == plunesStrings.createPassword ? 100 : 80.0),
+                  widget.createTextViews(
+                      widget.from == plunesStrings.createPassword
+                          ? plunesStrings.createPasswordMsg
+                          : plunesStrings.changePasswordMsg,
+                      25,
+                      colorsFile.darkBrown,
+                      TextAlign.start,
+                      FontWeight.normal),
+                  widget.getSpacer(0.0, 30.0),
+                  widget.from != plunesStrings.createPassword
+                      ? createTextField(
+                          oldPasswordController,
+                          plunesStrings.currentPassword,
+                          TextInputType.text,
+                          TextCapitalization.none,
+                          _isValidOldPassword,
+                          plunesStrings.errorMsgPassword,
+                          obscureText: _currentPassVisible!)
+                      : Container(),
+                  widget.getSpacer(0.0,
+                      widget.from != plunesStrings.createPassword ? 20.0 : 0.0),
+                  createTextField(
+                      passwordController,
+                      plunesStrings.newPassword,
+                      TextInputType.text,
+                      TextCapitalization.none,
+                      _isValidPassword,
+                      plunesStrings.errorMsgPassword,
+                      obscureText: _newPassVisible!),
+                  widget.getSpacer(0.0, 20.0),
+                  createTextField(
+                      newPasswordController,
+                      plunesStrings.reEnterPassword,
+                      TextInputType.text,
+                      TextCapitalization.none,
+                      _isValidNewPassword,
+                      plunesStrings.errorMsgPassword,
+                      obscureText: _rePassVisible!),
+                  widget.getSpacer(0.0, 30.0),
+                  progress
+                      ? SpinKitThreeBounce(
+                          color: Color(hexColorCode.defaultGreen), size: 30.0)
+                      : Container(
+                          margin: EdgeInsets.only(
+                              left: AppConfig.horizontalBlockSize * 30,
+                              right: AppConfig.horizontalBlockSize * 30),
+                          child: InkWell(
+                            borderRadius: BorderRadius.all(Radius.circular(5)),
+                            onTap: changePassword,
+                            child: CustomWidgets().getRoundedButton(
+                                widget.from != plunesStrings.createPassword
+                                    ? plunesStrings.reset
+                                    : plunesStrings.create,
+                                AppConfig.horizontalBlockSize * 8,
+                                PlunesColors.GREENCOLOR,
+                                AppConfig.horizontalBlockSize * 0,
+                                AppConfig.verticalBlockSize * 1.2,
+                                PlunesColors.WHITECOLOR),
+                          ),
+                        ),
+                  widget.getSpacer(0.0, 20.0),
+                  Container(
+                    margin: EdgeInsets.only(
+                        left: AppConfig.horizontalBlockSize * 30,
+                        right: AppConfig.horizontalBlockSize * 30),
+                    child: InkWell(
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                      onTap: onBackPressed,
+                      child: CustomWidgets().getRoundedButton(
+                          plunesStrings.cancel,
+                          AppConfig.horizontalBlockSize * 8,
+                          PlunesColors.WHITECOLOR,
+                          AppConfig.horizontalBlockSize * 0,
+                          AppConfig.verticalBlockSize * 1.2,
+                          PlunesColors.BLACKCOLOR,
+                          hasBorder: true),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ],
         ));
   }
-  Widget getBodyView(){
-    return Container(
-      margin: EdgeInsets.only(left: 25, right: 25,bottom: 50),
-      child: ListView(
-        padding: EdgeInsets.zero,
-        shrinkWrap: true,
-        children: <Widget>[
-          widget.getSpacer(0.0, widget.from == stringsFile.createPassword? 100:80.0),
-          widget.createTextViews(widget.from == stringsFile.createPassword? stringsFile.createPasswordMsg:stringsFile.changePasswordMsg , 25, colorsFile.darkBrown, TextAlign.start, FontWeight.normal),
-          widget.getSpacer(0.0, 30.0),
-          widget.from !=stringsFile.createPassword? createTextField(oldPasswordController, stringsFile.currentPassword, TextInputType.text, TextCapitalization.none, _isValidOldPassword, stringsFile.errorMsgPassword): Container(),
-          widget.getSpacer(0.0, widget.from !=stringsFile.createPassword? 20.0:0.0),
-          createTextField(passwordController, stringsFile.newPassword, TextInputType.text, TextCapitalization.none, _isValidPassword, stringsFile.errorMsgPassword),
-          widget.getSpacer(0.0, 20.0),
-          createTextField(newPasswordController, stringsFile.reEnterPassword, TextInputType.text, TextCapitalization.none, _isValidNewPassword, stringsFile.errorMsgPassword),
-          widget.getSpacer(0.0, 30.0),
-          progress ? SpinKitThreeBounce(color: Color(hexColorCode.defaultGreen), size: 30.0) : widget.getDefaultButton(widget.from !=stringsFile.createPassword?stringsFile.change: stringsFile.create, globalWidth,42, changePassword),
-          widget.getSpacer(0.0, 20.0),
-          widget.getBorderButton(stringsFile.cancel, globalWidth, onBackPressed)
 
-        ],
-      ),
-
-    );
-  }
-  Widget createTextField(TextEditingController controller, String placeHolder, TextInputType inputType, TextCapitalization textCapitalization, bool fieldFlag, String errorMsg) {
+  Widget createTextField(
+      TextEditingController controller,
+      String placeHolder,
+      TextInputType inputType,
+      TextCapitalization textCapitalization,
+      bool fieldFlag,
+      String errorMsg,
+      {bool obscureText = false}) {
     return Container(
         padding: EdgeInsets.zero,
         width: MediaQuery.of(context).size.width,
@@ -98,31 +201,54 @@ class _ChangePasswordState extends State<ChangePassword> implements DialogCallBa
             keyboardType: inputType,
             controller: controller,
             onSubmitted: (String value) {
-              setFocus(controller).unfocus();
-              if(controller!=newPasswordController)
-              FocusScope.of(context).requestFocus(setTargetFocus(controller));
+              setFocus(controller)!.unfocus();
+              if (controller != newPasswordController)
+                FocusScope.of(context).requestFocus(setTargetFocus(controller));
             },
             onChanged: (text) {
               setState(() {
                 if (controller == oldPasswordController)
-                 _isValidOldPassword = text.length > 7 ? true : text.length == 0? true: false;
+                  _isValidOldPassword = text.length > 7
+                      ? true
+                      : text.length == 0
+                          ? true
+                          : false;
                 else if (controller == passwordController)
-                  _isValidPassword = text.length > 7 ? true : text.length == 0? true: false;
+                  _isValidPassword = text.length > 7
+                      ? true
+                      : text.length == 0
+                          ? true
+                          : false;
                 else if (controller == newPasswordController)
-                  _isValidNewPassword = text.length > 7 ? true : text.length == 0? true: false;
+                  _isValidNewPassword = text.length > 7
+                      ? true
+                      : text.length == 0
+                          ? true
+                          : false;
               });
             },
-            obscureText: true,
+            obscureText: obscureText,
             focusNode: setFocus(controller),
-            textInputAction: controller == newPasswordController ? TextInputAction.done : TextInputAction.next,
-            cursorColor: Color(CommonMethods.getColorHexFromStr(colorsFile.defaultGreen)),
+            textInputAction: controller == newPasswordController
+                ? TextInputAction.done
+                : TextInputAction.next,
+            cursorColor: Color(
+                CommonMethods.getColorHexFromStr(colorsFile.defaultGreen)),
             style: TextStyle(
               fontSize: 15.0,
             ),
-            decoration: widget.myInputBoxDecoration(colorsFile.defaultGreen, colorsFile.lightGrey1, placeHolder, errorMsg, fieldFlag, controller)));
+            decoration: myInputBoxDecoration(
+                colorsFile.defaultGreen,
+                colorsFile.lightGrey1,
+                placeHolder,
+                errorMsg,
+                fieldFlag,
+                controller,
+                isObscureText: obscureText)));
   }
-  FocusNode setFocus(TextEditingController controller) {
-    FocusNode focusNode;
+
+  FocusNode? setFocus(TextEditingController controller) {
+    FocusNode? focusNode;
     if (controller == oldPasswordController)
       focusNode = oldPasswordFocusNode;
     else if (controller == passwordController)
@@ -131,58 +257,144 @@ class _ChangePasswordState extends State<ChangePassword> implements DialogCallBa
       focusNode = newPasswordFocusNode;
     return focusNode;
   }
-  FocusNode setTargetFocus(TextEditingController controller) {
-    FocusNode focusNode;
-    if (controller == oldPasswordController)
-      focusNode = passwordFocusNode;
-    if (controller == passwordController)
-      focusNode = newPasswordFocusNode;
+
+  FocusNode? setTargetFocus(TextEditingController controller) {
+    FocusNode? focusNode;
+    if (controller == oldPasswordController) focusNode = passwordFocusNode;
+    if (controller == passwordController) focusNode = newPasswordFocusNode;
     return focusNode;
   }
 
   @override
-  dialogCallBackFunction(String action) {
-  }
+  dialogCallBackFunction(String action) {}
+
   onBackPressed() {
     Navigator.pop(context);
   }
+
   changePassword() async {
-    if(widget.from!=stringsFile.createPassword && _isValidOldPassword && oldPasswordController.text.isEmpty)
-      widget.showInSnackBar(stringsFile.emptyOldPasswordError, Colors.red, _scaffoldKey);
-    else if(_isValidPassword && passwordController.text.isEmpty)
-      widget.showInSnackBar(stringsFile.emptyNewPasswordError, Colors.red, _scaffoldKey);
-    else if(_isValidPassword && _isValidNewPassword && newPasswordController.text.isEmpty)
-      widget.showInSnackBar(stringsFile.emptyConfirmPasswordError, Colors.red, _scaffoldKey);
-    else if(_isValidOldPassword && _isValidPassword && _isValidNewPassword){
-      if(newPasswordController.text!=passwordController.text)
-        widget.showInSnackBar(stringsFile.passwordMismatchError, Colors.red, _scaffoldKey);
-      else{
+    if (widget.from != plunesStrings.createPassword &&
+        _isValidOldPassword &&
+        oldPasswordController.text.isEmpty)
+      _showSnackBar(plunesStrings.emptyOldPasswordError);
+    else if (_isValidPassword && passwordController.text.isEmpty)
+      _showSnackBar(plunesStrings.emptyNewPasswordError);
+    else if (_isValidPassword &&
+        _isValidNewPassword &&
+        newPasswordController.text.isEmpty)
+      _showSnackBar(plunesStrings.emptyConfirmPasswordError);
+    else if (_isValidOldPassword && _isValidPassword && _isValidNewPassword) {
+      if (newPasswordController.text != passwordController.text)
+        _showSnackBar(plunesStrings.passwordMismatchError);
+      else {
         progress = true;
-        bloc.changePassword(context, this, widget.phone, passwordController.text);
-        bloc.changePasswordResult.listen((result) {
-          delay(result);
-        }, onDone: () {
-          bloc.dispose();
-        });
+        _setState();
+        await Future.delayed(Duration(milliseconds: 200));
+        if (widget.from == plunesStrings.createPassword) {
+          _resetPassword();
+        } else {
+          _changePassword();
+        }
       }
     }
   }
-  Future delay(result) async {
-    progress = false;
-    if (result['success']!=null && result['success']) {
-      widget.showInSnackBar(stringsFile.success, Colors.green, _scaffoldKey);
-     if(widget.from==stringsFile.createPassword)
-      await Future.delayed(new Duration(milliseconds: 2000), () {
-        Navigator.pushNamed(context, Login.tag);
-      });
-    }else
-      widget.showInSnackBar(stringsFile.somethingWentWrong, Colors.red, _scaffoldKey);
 
-    }
+  _showSnackBar(String message) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return CustomWidgets()
+              .getInformativePopup(globalKey: _scaffoldKey, message: message);
+        });
+  }
+
+  Future delay(RequestState result) async {
+    progress = false;
+    _setState();
+    await Future.delayed(Duration(milliseconds: 200));
+    if (result is RequestSuccess) {
+      widget.showInSnackBar(PlunesStrings.passwordUpdatedSuccessfully,
+          Colors.green, _scaffoldKey);
+      await Future.delayed(new Duration(milliseconds: 2000));
+      if (widget.from == plunesStrings.createPassword) {
+        Navigator.pushNamed(context, Login.tag);
+      } else {
+        Navigator.pop(context);
+      }
+    } else if (result is RequestFailed) {
+      widget.showInSnackBar(
+          result.failureCause, PlunesColors.BLACKCOLOR, _scaffoldKey);
+    } else
+      widget.showInSnackBar(plunesStrings.somethingWentWrong,
+          PlunesColors.BLACKCOLOR, _scaffoldKey);
+  }
 
   getSharedPreferenceData() {
     Preferences preferences = Preferences();
-    if(widget.phone==null)
-    widget.phone = preferences.getPreferenceString(Constants.PREF_USER_PHONE_NUMBER);
+    if (widget.phone == null)
+      widget.phone =
+          preferences.getPreferenceString(Constants.PREF_USER_PHONE_NUMBER);
+  }
+
+  void _resetPassword() async {
+    var result = await _userBloc.resetPassword(
+        widget.phone?.trim(), widget.otp, passwordController.text.trim(),
+        isProf: widget.isProfessional ?? false);
+    delay(result);
+  }
+
+  void _changePassword() async {
+    var result = await _userBloc.changePassword(
+        oldPasswordController.text.trim(), passwordController.text.trim());
+    delay(result);
+  }
+
+  void _setState() {
+    if (mounted) setState(() {});
+  }
+
+  InputDecoration myInputBoxDecoration(
+      String focusColor,
+      String enableColor,
+      String label,
+      String errorText,
+      bool flag,
+      TextEditingController passwordController,
+      {bool isObscureText = false}) {
+    return InputDecoration(
+      labelText: label,
+      errorText: flag ? null : errorText,
+      counterText: '',
+      hintText: "",
+      suffixIcon: InkWell(
+        onTap: () {
+          setState(() {
+            if (passwordController == oldPasswordController) {
+              _currentPassVisible = !_currentPassVisible!;
+            } else if (passwordController == this.passwordController) {
+              _newPassVisible = !_newPassVisible!;
+            } else if (passwordController == newPasswordController) {
+              _rePassVisible = !_rePassVisible!;
+            }
+          });
+        },
+        child: isObscureText
+            ? Icon(
+                Icons.visibility_off,
+                color: PlunesColors.GREYCOLOR,
+              )
+            : Icon(Icons.visibility, color: PlunesColors.BLACKCOLOR),
+      ),
+//      contentPadding: EdgeInsets.only(
+//          left: 10,
+//          right: (passwordController ==
+//                  (passwordController != null
+//                      ? passwordController
+//                      : controller))
+//              ? (controller != null) ? 40 : 10
+//              : 10,
+//          top: 5,
+//          bottom: 5),
+    );
   }
 }

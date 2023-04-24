@@ -6,6 +6,7 @@ import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/Preferences.dart';
 import 'package:plunes/models/Models.dart';
+import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
 import 'package:plunes/resources/repository.dart';
@@ -18,48 +19,64 @@ class Bloc {
   final _repository = Repository();
 
   var _catalogueFetcher = PublishSubject<CatalogueList>();
-  var loginResponseFetcher = PublishSubject<LoginPost>();
+  var loginResponseFetcher = PublishSubject<LoginPost?>();
   var _checkUserFetcher = PublishSubject<dynamic>();
   var _checkUserOTP = PublishSubject<dynamic>();
   var __changePasswordFetcher = PublishSubject<dynamic>();
   var _helpApiFetcher = PublishSubject<dynamic>();
- var notificationApiFetcher = PublishSubject<AllNotificationsPost>();
+  var notificationApiFetcher = PublishSubject<AllNotificationsPost>();
 
   var _registrationResponseFetcher = PublishSubject<LoginPost>();
   var _logout = PublishSubject<dynamic>();
   var _updateProfileFetcher = PublishSubject<dynamic>();
- final  StreamController<dynamic> _preferenceFetcher = new StreamController.broadcast();
+  final StreamController<dynamic> _preferenceFetcher =
+      new StreamController.broadcast();
   var _profileResponseFetcher = PublishSubject<LoginPost>();
 
+  Stream<CatalogueList> get allCatalogue => _catalogueFetcher.stream;
 
+  Stream<LoginPost?> get loginData => loginResponseFetcher.stream;
 
-  Observable<CatalogueList> get allCatalogue => _catalogueFetcher.stream;
-  Observable<LoginPost> get loginData => loginResponseFetcher.stream;
-  Observable<LoginPost> get profileData => _profileResponseFetcher.stream;
-  Observable<dynamic> get isUserExist => _checkUserFetcher.stream;
-  Observable<dynamic> get userOTP => _checkUserOTP.stream;
-  Observable<dynamic> get changePasswordResult => __changePasswordFetcher.stream;
-  Observable<LoginPost> get registrationResult => _registrationResponseFetcher.stream;
-  Observable<dynamic> get logout => _logout.stream;
-  Observable<dynamic> get updateProfileFetcher => _updateProfileFetcher.stream;
+  Stream<LoginPost> get profileData => _profileResponseFetcher.stream;
+
+  Stream<dynamic> get isUserExist => _checkUserFetcher.stream;
+
+  Stream<dynamic> get userOTP => _checkUserOTP.stream;
+
+  Stream<dynamic> get changePasswordResult =>
+      __changePasswordFetcher.stream;
+
+  Stream<LoginPost> get registrationResult =>
+      _registrationResponseFetcher.stream;
+
+  Stream<dynamic> get logout => _logout.stream;
+
+  Stream<dynamic> get updateProfileFetcher => _updateProfileFetcher.stream;
+
   Stream<dynamic> get preferenceFetcher => _preferenceFetcher.stream;
-  Observable<dynamic> get helpApiFetcher => _helpApiFetcher.stream;
-  Observable<AllNotificationsPost> get notificationApiFetcherList => notificationApiFetcher.stream;
 
-  final  StreamController<dynamic> _deleteListenerFetcher = new StreamController.broadcast();
+  Stream<dynamic> get helpApiFetcher => _helpApiFetcher.stream;
+
+  Stream<AllNotificationsPost> get notificationApiFetcherList =>
+      notificationApiFetcher.stream;
+
+  final StreamController<dynamic> _deleteListenerFetcher =
+      new StreamController.broadcast();
+
   Stream<dynamic> get deleteListenerFetcher => _deleteListenerFetcher.stream;
 
-
   fetchCatalogue(BuildContext context, DialogCallBack callBack) async {
-     _catalogueFetcher = PublishSubject<CatalogueList>();
+    _catalogueFetcher = PublishSubject<CatalogueList>();
     CommonMethods.checkInternetConnectivity().then((bool isConnected) {
       if (isConnected) {
-        CommonMethods.getPreferenceValues(Constants.ACCESS_TOKEN).then((dynamic _token) async {
+        CommonMethods.getPreferenceValues(Constants.ACCESS_TOKEN)
+            .then((dynamic _token) async {
           CatalogueList itemModel = await _repository.fetchCatalogue(context);
           _catalogueFetcher.sink.add(itemModel);
         });
       } else
-        CommonMethods.commonDialog(context, callBack,   StringsFile.noInternetMsg, StringsFile.cantConnectInternet);
+        CommonMethods.commonDialog(context, callBack,
+            PlunesStrings.noInternetMsg, PlunesStrings.cantConnectInternet);
     });
   }
 
@@ -71,7 +88,8 @@ class Bloc {
         dynamic success = await _repository.fetchUserExistence(context, value);
         _checkUserFetcher.sink.add(success);
       } else
-        CommonMethods.commonDialog(context, callBack, StringsFile.noInternetMsg, StringsFile.cantConnectInternet);
+        CommonMethods.commonDialog(context, callBack,
+            PlunesStrings.noInternetMsg, PlunesStrings.cantConnectInternet);
     });
   }
 
@@ -81,18 +99,23 @@ class Bloc {
       if (isConnected) {
         _checkUserOTP.sink.add(await _repository.fetchUserOTP(context, url));
       } else
-        CommonMethods.commonDialog(context, callBack, StringsFile.noInternetMsg, StringsFile.cantConnectInternet);
+        CommonMethods.commonDialog(context, callBack,
+            PlunesStrings.noInternetMsg, PlunesStrings.cantConnectInternet);
     });
   }
 
   loginRequest(BuildContext context, DialogCallBack callBack, String phone,
       String password) async {
-    loginResponseFetcher = PublishSubject<LoginPost>();
+    loginResponseFetcher = PublishSubject<LoginPost?>();
     CommonMethods.checkInternetConnectivity().then((bool isConnected) async {
       if (isConnected) {
-        loginResponseFetcher.sink.add(await _repository.fetchLoginData(context, phone, password));
-      } else
-        CommonMethods.commonDialog(context, callBack, StringsFile.noInternetMsg, StringsFile.cantConnectInternet);
+        loginResponseFetcher.sink
+            .add(await _repository.fetchLoginData(context, phone, password));
+      } else {
+        loginResponseFetcher.sink.add(null);
+        CommonMethods.commonDialog(context, callBack,
+            PlunesStrings.noInternetMsg, PlunesStrings.cantConnectInternet);
+      }
     });
   }
 
@@ -101,9 +124,11 @@ class Bloc {
     __changePasswordFetcher = PublishSubject<dynamic>();
     CommonMethods.checkInternetConnectivity().then((bool isConnected) async {
       if (isConnected) {
-        __changePasswordFetcher.sink.add(await _repository.fetchChangePassword(context, phone, password));
+        __changePasswordFetcher.sink.add(
+            await _repository.fetchChangePassword(context, phone, password));
       } else
-        CommonMethods.commonDialog(context, callBack, StringsFile.noInternetMsg, StringsFile.cantConnectInternet);
+        CommonMethods.commonDialog(context, callBack,
+            PlunesStrings.noInternetMsg, PlunesStrings.cantConnectInternet);
     });
   }
 
@@ -112,9 +137,11 @@ class Bloc {
     _registrationResponseFetcher = PublishSubject<LoginPost>();
     CommonMethods.checkInternetConnectivity().then((bool isConnected) async {
       if (isConnected) {
-        _registrationResponseFetcher.sink.add(await _repository.fetchRegistrationData(context, body));
+        _registrationResponseFetcher.sink
+            .add(await _repository.fetchRegistrationData(context, body));
       } else
-        CommonMethods.commonDialog(context, callBack, StringsFile.noInternetMsg, StringsFile.cantConnectInternet);
+        CommonMethods.commonDialog(context, callBack,
+            PlunesStrings.noInternetMsg, PlunesStrings.cantConnectInternet);
     });
   }
 
@@ -122,11 +149,13 @@ class Bloc {
     _logout = PublishSubject<dynamic>();
     CommonMethods.checkInternetConnectivity().then((bool isConnected) {
       if (isConnected) {
-        CommonMethods.getPreferenceValues(Constants.ACCESS_TOKEN).then((dynamic _token) async {
+        CommonMethods.getPreferenceValues(Constants.ACCESS_TOKEN)
+            .then((dynamic _token) async {
           _logout.sink.add(await _repository.logoutService(context, _token));
         });
       } else
-        CommonMethods.commonDialog(context, callBack, StringsFile.noInternetMsg, StringsFile.cantConnectInternet);
+        CommonMethods.commonDialog(context, callBack,
+            PlunesStrings.noInternetMsg, PlunesStrings.cantConnectInternet);
     });
   }
 
@@ -134,11 +163,14 @@ class Bloc {
     _updateProfileFetcher = PublishSubject<dynamic>();
     CommonMethods.checkInternetConnectivity().then((bool isConnected) async {
       if (isConnected) {
-        CommonMethods.getPreferenceValues(Constants.ACCESS_TOKEN).then((dynamic _token) async {
-          _updateProfileFetcher.sink.add(await _repository.updateProfileData(context, body, _token));
+        CommonMethods.getPreferenceValues(Constants.ACCESS_TOKEN)
+            .then((dynamic _token) async {
+          _updateProfileFetcher.sink
+              .add(await _repository.updateProfileData(context, body, _token));
         });
       } else
-        CommonMethods.commonDialog(context, callBack, StringsFile.noInternetMsg, StringsFile.cantConnectInternet);
+        CommonMethods.commonDialog(context, callBack,
+            PlunesStrings.noInternetMsg, PlunesStrings.cantConnectInternet);
     });
   }
 
@@ -146,26 +178,30 @@ class Bloc {
     _profileResponseFetcher = PublishSubject<LoginPost>();
     CommonMethods.checkInternetConnectivity().then((bool isConnected) {
       if (isConnected) {
-        CommonMethods.getPreferenceValues(Constants.ACCESS_TOKEN).then((dynamic _token) async {
-          _profileResponseFetcher.sink.add(await _repository.fetchProfileData(context, _token));
+        CommonMethods.getPreferenceValues(Constants.ACCESS_TOKEN)
+            .then((dynamic _token) async {
+          _profileResponseFetcher.sink
+              .add(await _repository.fetchProfileData(context, _token));
         });
       } else
-        CommonMethods.commonDialog(context, callBack, StringsFile.noInternetMsg, StringsFile.cantConnectInternet);
+        CommonMethods.commonDialog(context, callBack,
+            PlunesStrings.noInternetMsg, PlunesStrings.cantConnectInternet);
     });
   }
 
-
-  fetchHelpResult(BuildContext context, DialogCallBack callBack, String details) async {
+  fetchHelpResult(
+      BuildContext context, DialogCallBack callBack, String details) async {
     _helpApiFetcher = PublishSubject<dynamic>();
     CommonMethods.checkInternetConnectivity().then((bool isConnected) async {
       if (isConnected) {
-        CommonMethods.getPreferenceValues(Constants.ACCESS_TOKEN).then((dynamic _token) async {
-          _helpApiFetcher.sink.add(await _repository.fetchHelpResult(context, details, _token));
-
+        CommonMethods.getPreferenceValues(Constants.ACCESS_TOKEN)
+            .then((dynamic _token) async {
+          _helpApiFetcher.sink
+              .add(await _repository.fetchHelpResult(context, details, _token));
         });
-
       } else
-        CommonMethods.commonDialog(context, callBack, StringsFile.noInternetMsg, StringsFile.cantConnectInternet);
+        CommonMethods.commonDialog(context, callBack,
+            PlunesStrings.noInternetMsg, PlunesStrings.cantConnectInternet);
     });
   }
 
@@ -173,69 +209,107 @@ class Bloc {
     notificationApiFetcher = PublishSubject<AllNotificationsPost>();
     CommonMethods.checkInternetConnectivity().then((bool isConnected) {
       if (isConnected) {
-        CommonMethods.getPreferenceValues(Constants.ACCESS_TOKEN).then((dynamic _token) async {
-          notificationApiFetcher.sink.add(await _repository.fetchNotificationResult(context, _token));
+        CommonMethods.getPreferenceValues(Constants.ACCESS_TOKEN)
+            .then((dynamic _token) async {
+          var result =
+              await _repository.fetchNotificationResult(context, _token);
+          if (notificationApiFetcher != null &&
+              !(notificationApiFetcher.isClosed)) {
+            notificationApiFetcher.sink.add(result);
+          }
         });
       } else
-        CommonMethods.commonDialog(context, callBack,   StringsFile.noInternetMsg, StringsFile.cantConnectInternet);
+        CommonMethods.commonDialog(context, callBack,
+            PlunesStrings.noInternetMsg, PlunesStrings.cantConnectInternet);
     });
   }
 
-
-
   disposeProfileStream() {
-    _profileResponseFetcher?.close();
+    _profileResponseFetcher.close();
   }
-  disposeHelpApiStream(){
-    _helpApiFetcher?.close();
+
+  disposeHelpApiStream() {
+    _helpApiFetcher.close();
   }
-  disposeNotificationApiStream(){
-    notificationApiFetcher?.close();
+
+  disposeNotificationApiStream() {
+    notificationApiFetcher.close();
   }
+
   disposeProfileBloc() {
-    _preferenceFetcher?.close();
+    _preferenceFetcher.close();
   }
-  disposeEditStream(){
+
+  disposeEditStream() {
 //    _updateProfileFetcher?.close();
   }
 
   dispose() {
-    _catalogueFetcher?.close();
-    _checkUserFetcher?.close();
-    _checkUserOTP?.close();
-    loginResponseFetcher?.close();
-    __changePasswordFetcher?.close();
-    _registrationResponseFetcher?.close();
-    _logout?.close();
+    _catalogueFetcher.close();
+    _checkUserFetcher.close();
+    _checkUserOTP.close();
+    loginResponseFetcher.close();
+    __changePasswordFetcher.close();
+    _registrationResponseFetcher.close();
+    _logout.close();
   }
 
-
-
   ///Below method is for saving data in the preferences
-  saveDataInPreferences(LoginPost data, BuildContext context, String _from) async {
+  saveDataInPreferences(
+      LoginPost data, BuildContext? context, String? _from) async {
     Preferences preferences = Preferences();
-    preferences.setPreferencesString(Constants.PREF_USER_ID, data.user.uid);
-    if(data.token.isNotEmpty)
-    preferences.setPreferencesString(Constants.ACCESS_TOKEN, data.token);
-    preferences.setPreferencesString(Constants.PREF_USERNAME, data.user.name);
-    preferences.setPreferencesString(Constants.PREF_USER_IMAGE, data.user.imageUrl);
-    preferences.setPreferencesString(Constants.PREF_USER_PHONE_NUMBER, data.user.mobileNumber);
-    preferences.setPreferencesString(Constants.PREF_USER_TYPE, data.user.userType);
-    preferences.setPreferencesString(Constants.PREF_PROF_REG_NUMBER, data.user.profRegistrationNumber);
-    preferences.setPreferencesString(Constants.PREF_QUALIFICATION, data.user.qualification);
-    preferences.setPreferencesString(Constants.PREF_USER_LOCATION, data.user.address);
-    preferences.setPreferencesString(Constants.PREF_EXPERIENCE, data.user.experience);
-    preferences.setPreferencesString(Constants.PREF_PRACTISING, data.user.practising);
-    preferences.setPreferencesString(Constants.PREF_COLLEGE, data.user.college);
-    preferences.setPreferencesString(Constants.PREF_INTRODUCTION, data.user.about);
-    preferences.setPreferencesString(Constants.PREF_GENDER, data.user.gender);
-    preferences.setPreferencesString(Constants.PREF_USER_EMAIL, data.user.email);
-    preferences.setPreferencesString(Constants.PREF_DOB, data.user.birthDate);
-    preferences.setPreferencesString(Constants.PREF_USER_BANNER_IMAGE, data.user.coverImageUrl);
-    preferences.setPreferencesString(Constants.PREF_REFERRAL_CODE, data.user.referralCode);
-    preferences.setPreferencesString(Constants.PREF_CREDITS, data.user.credits);
-    if(_from!=null)
-    Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen(screen: Constants.BIDS)));
+    preferences.setPreferencesString(Constants.PREF_USER_ID, data.user!.uid!);
+    if (data.token != null && data.token!.isNotEmpty)
+      preferences.setPreferencesString(Constants.ACCESS_TOKEN, data.token!);
+    preferences.setPreferencesString(Constants.PREF_USERNAME, data.user!.name!);
+    preferences.setPreferencesString(
+        Constants.PREF_USER_IMAGE, data.user!.imageUrl!);
+    preferences.setPreferencesString(
+        Constants.PREF_USER_PHONE_NUMBER, data.user!.mobileNumber!);
+    preferences.setPreferencesString(
+        Constants.PREF_USER_TYPE, data.user!.userType!);
+    preferences.setPreferencesString(
+        Constants.PREF_PROF_REG_NUMBER, data.user!.profRegistrationNumber ?? "");
+    preferences.setPreferencesString(
+        Constants.PREF_QUALIFICATION, data.user!.qualification!);
+    preferences.setPreferencesString(
+        Constants.PREF_USER_LOCATION, data.user!.address!);
+    preferences.setPreferencesString(
+        Constants.PREF_EXPERIENCE, data.user!.experience!);
+    preferences.setPreferencesString(
+        Constants.PREF_PRACTISING, data.user!.practising!);
+    preferences.setPreferencesString(Constants.PREF_COLLEGE, data.user!.college!);
+    preferences.setPreferencesString(
+        Constants.PREF_INTRODUCTION, data.user!.about ?? "");
+    preferences.setPreferencesString(Constants.PREF_GENDER, data.user!.gender!);
+    preferences.setPreferencesString(
+        Constants.PREF_USER_EMAIL, data.user!.email!);
+    preferences.setPreferencesString(Constants.PREF_DOB, data.user!.birthDate!);
+    preferences.setPreferencesString(
+        Constants.PREF_USER_BANNER_IMAGE, data.user!.coverImageUrl!);
+    preferences.setPreferencesString(
+        Constants.PREF_REFERRAL_CODE, data.user!.referralCode!);
+    preferences.setPreferencesString(Constants.LATITUDE, data.user!.latitude!);
+    preferences.setPreferencesString(Constants.LONGITUDE, data.user!.longitude!);
+    preferences.setPreferencesString(Constants.PREF_CREDITS, data.user!.credits!);
+    preferences.setPreferencesBoolean(Constants.IS_ADMIN, data.user!.isAdmin!);
+    preferences.setPreferencesBoolean(Constants.IS_CENTRE, data.user!.isCentre!);
+    preferences.setPreferencesString(
+        Constants.GOOGLE_LOCATION, data.user!.googleLocation ?? "");
+    if (_preferenceFetcher != null && !_preferenceFetcher.isClosed) {
+      _preferenceFetcher.sink.add(data);
+    }
+    preferences.setPreferencesString(Constants.REGION, "");
+    if (_from != null) {
+      preferences.setPreferencesBoolean(Constants.NOTIFICATION_ENABLED, true);
+      UserManager().setDeviceToken(Constants.DEVICE_TOKEN!);
+      Navigator.pushAndRemoveUntil(
+          context!,
+          MaterialPageRoute(
+              builder: (context) =>
+                  HomeScreen(screenNo: Constants.homeScreenNumber)),
+          (_) => false);
+    }
   }
 
   ///Below method is for saving data in the preferences
@@ -246,7 +320,8 @@ class Bloc {
 //    preferences.setPreferencesString(Constants.PREF_USER_PHONE_NUMBER, data.user.phoneNumber);
 //    preferences.setPreferencesString(Constants.PREF_PROF_REG_NUMBER, data.user.profRegistrationNumber);
 //    preferences.setPreferencesString(Constants.PREF_QUALIFICATION, data.user.qualification);
-    preferences.setPreferencesString(Constants.PREF_USER_LOCATION, data['address']);
+    preferences.setPreferencesString(
+        Constants.PREF_USER_LOCATION, data['address']);
 //    preferences.setPreferencesString(Constants.PREF_EXPERIENCE, data.user.experience);
 //    preferences.setPreferencesString(Constants.PREF_PRACTISING, data.user.practising);
 //    preferences.setPreferencesString(Constants.PREF_COLLEGE, data.user.college);
@@ -256,8 +331,7 @@ class Bloc {
     Navigator.of(context).pop();
   }
 
-
-  changeAppBar(BuildContext context, Map data) async {
+  changeAppBar(BuildContext context, Map? data) async {
     _deleteListenerFetcher.sink.add(data);
   }
 }

@@ -1,14 +1,15 @@
 {
   "name": "flutter_local_notifications",
   "version": "0.0.1",
-  "summary": "A new flutter plugin project.",
-  "description": "A new flutter plugin project.",
-  "homepage": "http://example.com",
+  "summary": "Flutter plugin for displaying local notifications.",
+  "description": "Flutter plugin for displaying local notifications.",
+  "homepage": "https://github.com/MaikuB/flutter_local_notifications/tree/master/flutter_local_notifications",
   "license": {
+    "type": "BSD",
     "file": "../LICENSE"
   },
   "authors": {
-    "Your Company": "email@example.com"
+    "Michael Bui": "michael@dexterx.dev"
   },
   "source": {
     "path": "."

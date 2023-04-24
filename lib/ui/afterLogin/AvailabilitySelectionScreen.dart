@@ -1,724 +1,1152 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart' as latest;
 import 'package:plunes/Utils/CommonMethods.dart';
+import 'package:plunes/Utils/app_config.dart';
+import 'package:plunes/Utils/custom_widgets.dart';
+import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/blocs/user_bloc.dart';
+import 'package:plunes/models/Models.dart';
+import 'package:plunes/models/doc_hos_models/common_models/availability_model.dart';
+import 'package:plunes/repositories/user_repo.dart';
+import 'package:plunes/requester/request_states.dart';
+import 'package:plunes/res/AssetsImagesFile.dart';
+import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
-import 'package:shimmer/shimmer.dart';
 
+// ignore: must_be_immutable
 class AvailabilitySelectionScreen extends BaseActivity {
   static const tag = '/availabilitySelectionScreen';
-  final String url;
+  final String? url;
 
-  AvailabilitySelectionScreen({Key key, this.url}) : super(key: key);
+  AvailabilitySelectionScreen({Key? key, this.url}) : super(key: key);
+
   @override
-  _AvailabilitySelectionScreenState createState() => _AvailabilitySelectionScreenState();
+  _AvailabilitySelectionScreenState createState() =>
+      _AvailabilitySelectionScreenState();
 }
 
+// class _AvailabilitySelectionScreenState extends BaseState<AvailabilitySelectionScreen> {
 class _AvailabilitySelectionScreenState extends State<AvailabilitySelectionScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   var globalHeight, globalWidth;
-
-  String url;
-  String user_token = "";
-
+  late UserBloc userBloc;
+  LoginPost? loginPost;
+  String? failureCause;
+  DateTime? initialTime;
+  String? url;
+  bool? hasSubmitted;
   bool progress = true;
+  List<String> check = [];
+  List<String> from_1 = [];
+  List<String> from_2 = [];
+  List<String> to_1 = [];
+  List<String> to_2 = [];
+  List _timeSlots = [];
 
-  List<String> check = new List();
-  List<String> from_1 = new List();
-  List<String> from_2 = new List();
-  List<String> to_1 = new List();
-  List<String> to_2 = new List();
-  List timeslots_ = new List();
+  ///////////new////////////
+  List<AvailabilityModel>? _availabilityModel;
+  int _currentDayIndex = 0;
+  static const int _fromIndex = 0, _toIndex = 1;
+  ScrollController? _dayScrollController, _daySelectionScrollController;
+
+  ////////////////////////
+//  double _movingUnit = 30;
+//  StreamController _streamController;
+//  Timer _timer;
 
   List<String> days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-  List<String> days_name = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday',
-    'Sunday'];
-
-  Future<Null> _selectdata(String check, int position, String time) async {
-    TimeOfDay _startTime = TimeOfDay(
-        hour: int.parse(time.split(":")[0]),
-        minute: int.parse(time.split(":")[1].substring(0,2))
-    );
-
-    final TimeOfDay picker = await showTimePicker(
-      context: context,
-      initialTime: _startTime,
-      builder: (BuildContext context, Widget child) {
-        return MediaQuery(
-          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false, ),
-          child: child,
-        );
-      },
-    );
-
-    if (picker != null) {
-      setState(() {
-        if (check == 'form1') {
-          from_1[position] = picker.format(context);
-        } else if (check == 'form2') {
-          from_2[position] =picker.format(context);
-        } else if (check == 'to1') {
-          to_1[position] =picker.format(context);
-        } else if (check == 'to2') {
-
-          if(position == 0){
-
-            showDialog(
-              context: context,
-              barrierDismissible: true,
-              builder: (
-                  BuildContext context,
-                  ) =>
-                  _confirmation(context),
-            ).then((text){
-
-            setState(() {
-
-              if(text == "Done"){
-                for(int i =0; i< days.length; i++){
-                  from_1[i] = from_1[0];
-                  from_2[i] =  from_2[0];
-                  to_1[i] = to_1[0];
-                  to_2[i] = to_2[0];
-                }
-              }
-            });
-
-            });
-          }
-          to_2[position] =picker.format(context);
-        }
-      });
-    }
-  }
+  List<String> days_name = [
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday'
+  ];
+  DateTime? from1,
+      from2,
+      to1,
+      to2,
+      _tempFromHolder,
+      _tempToHolder,
+      _fromDateHolderForSlotEdit,
+      _toDateHolderForSlotEdit;
 
   @override
   void initState() {
+    _currentDayIndex = 0;
+    _dayScrollController = ScrollController();
+    _daySelectionScrollController = ScrollController();
+    _availabilityModel = [];
+    userBloc = UserBloc();
+    _getSlots();
+    hasSubmitted = false;
+    initialTime = DateTime.now();
     super.initState();
   }
 
-
-
-  void get_slots() async{
-
-    check.clear();
-    from_1.clear();
-    from_2.clear();
-    to_1.clear();
-    to_2.clear();
-
-/*
-
-    GettimeSlots gettimeSlots = await get_time_slots(user_token, url).catchError((error){
-      config.Config.showLongToast("Something went wrong!");
-      print(error);
-      setState(() {
-        progress = false;
-      });
-    });
-*/
-
-    setState(() {
-      progress = false;
-/*      if(gettimeSlots.success){
-
-
-        if(gettimeSlots.fields.length == 0){
-          for(int i =0; i< 7; i++){
-            check.add("false");
-            from_1.add("00:00");
-            from_2.add("00:00");
-            to_1.add("00:00");
-            to_2.add("00:00");
-          }
-        }else{
-
-          for(int i =0; i< gettimeSlots.fields.length; i++){
-            from_1.add(gettimeSlots.fields[i].slots[0].toString().split("-")[0]);
-            to_1.add(gettimeSlots.fields[i].slots[0].toString().split("-")[1]);
-            check.add(gettimeSlots.fields[i].closed);
-            from_2.add(gettimeSlots.fields[i].slots[1].toString().split("-")[0]);
-            to_2.add(gettimeSlots.fields[i].slots[1].toString().split("-")[1]);
-          }
-        }
-
-      }else{
-        config.Config.showInSnackBar(
-            _scaffoldKey, gettimeSlots.message, Colors.red);
-
-      }*/
-    });
+  @override
+  void dispose() {
+    _dayScrollController?.dispose();
+    _daySelectionScrollController?.dispose();
+    super.dispose();
   }
 
-  void addslot() async {
-    setState(() {
-        progress = true;
-    });
-
-    for(int i =0; i< 7; i++){
-      timeslots_.add({
-        "slots": [
-        from_1[i]+"-"+to_1[i],
-          from_2[i]+"-"+to_2[i],
-        ],
-        "day": days_name[i],
-        "closed":check[i]
-      });
+  void _getSlots() async {
+    failureCause = null;
+    if (progress != null && progress == false) {
+      progress = true;
+      _setState();
     }
-
-    var body;
-    var data;
-    List doctors = new List();
-
-    if(url.contains("doctors")) {
-      List doctor_id = url.split("/");
-
-      body = {
-          "doctorId": doctor_id[6],
-          "timeSlots": timeslots_
-      };
-
-      doctors.add(body);
-      data = {
-        "doctors": doctors
-      };
-
-    }else{
-      data = {
-      "timeSlots":timeslots_
-      };
-    }
-
-
-
-    print(data);
-
-   /* TimeSlotsPost timeSlotsPost = await set_time_slots(data, user_token).catchError((error){
-      config.Config.showLongToast("Something went wrong!");
-      progress = false;
-    });*/
-/*
-
-      setState(() {
-        progress = false;
-        if (timeSlotsPost.success) {
-          showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (
-              BuildContext context,
-            ) =>
-                _popup_saved(context),
-          );
-
-        }else{
-          config.Config.showInSnackBar(_scaffoldKey, timeSlotsPost.message, Colors.red);
+    var result = await userBloc
+        .getUserProfile(UserManager().getUserDetails().uid, isGenUser: false);
+    _availabilityModel = [];
+    if (result is RequestSuccess) {
+      RequestSuccess requestSuccess = result;
+      loginPost = requestSuccess.response;
+      if (loginPost!.success != null && loginPost!.success!) {
+        if (loginPost!.user != null &&
+            loginPost!.user!.timeSlots != null &&
+            loginPost!.user!.timeSlots!.isNotEmpty) {
+          for (int i = 0; i < loginPost!.user!.timeSlots!.length; i++) {
+            _availabilityModel!.add(AvailabilityModel(
+                isSelected: i == 0 ? true : false,
+                closed: loginPost!.user!.timeSlots![i].closed ?? false,
+                day: days_name[i],
+                slots: loginPost!.user!.timeSlots![i].slots ?? [],
+                daySelectionList: days_name
+                    .map(
+                        (e) => DaySelectionModel(isSelected: false, dayName: e))
+                    .toList(growable: true)));
+          }
+        } else {
+          for (int i = 0; i < 7; i++) {
+            _availabilityModel!.add(AvailabilityModel(
+                isSelected: i == 0 ? true : false,
+                closed: i == 6 ? true : false,
+                day: days_name[i],
+                slots: [],
+                daySelectionList: days_name
+                    .map(
+                        (e) => DaySelectionModel(isSelected: false, dayName: e))
+                    .toList(growable: true)));
+          }
         }
+      }
+    }
+    if (result is RequestFailed) {
+      RequestFailed requestFailed = result;
+      failureCause = requestFailed.failureCause;
+    }
+    progress = false;
+    _setState();
+  }
 
-      });
-*/
-
+  void _submitSlots() async {
+    _timeSlots =
+        _availabilityModel!.map((e) => e.toJson()).toList(growable: true);
+//    print("timeslots_ $_timeSlots");
+    var data;
+    data = {"timeSlots": _timeSlots};
+    userBloc.updateUserData(data);
   }
 
   @override
   Widget build(BuildContext context) {
-    CommonMethods.globalContext = context;
-    globalHeight = MediaQuery.of(context).size.height;
-    globalWidth = MediaQuery.of(context).size.width;
+    return Scaffold(
+        appBar: widget.getAppBar(context, plunesStrings.availability, true) as PreferredSizeWidget?,
+        key: _scaffoldKey,
+        backgroundColor: Colors.white,
+        body: (progress != null && progress)
+            ? CustomWidgets().getProgressIndicator()
+            : (_availabilityModel == null || _availabilityModel!.isEmpty)
+                ? CustomWidgets().errorWidget(
+                    failureCause ?? "No data available!",
+                    onTap: () => _getSlots(),
+                    isSizeLess: true)
+                : _getBody());
+  }
 
-    final app_bar = AppBar(
-      backgroundColor: Colors.white,
-      brightness: Brightness.light,
-      centerTitle: true,
-      elevation: 0,
-      iconTheme: IconThemeData(color: Colors.black),
-      title: Text(
-        "My Availability",
-        style: TextStyle(color: Colors.black),
+  _openTimePicker(int position) {
+    latest.DatePicker.showTime12hPicker(context, currentTime: initialTime,
+        onConfirm: (date) {
+      if (date == null) {
+        return;
+      }
+      if (position == _fromIndex) {
+        _tempFromHolder = date;
+      } else if (position == _toIndex) {
+        _tempToHolder = date;
+      }
+      _setTimeInBoxes(position);
+    });
+  }
+
+  _openTimePickerForSlotEditing(int position) {
+    latest.DatePicker.showTime12hPicker(context, currentTime: initialTime,
+        onConfirm: (date) {
+      if (date == null) {
+        return;
+      }
+      if (_fromDateHolderForSlotEdit == null) {
+        _fromDateHolderForSlotEdit = date;
+        _openTimePickerForSlotEditing(position);
+        return;
+      } else if (_toDateHolderForSlotEdit == null) {
+        _toDateHolderForSlotEdit = date;
+      }
+      _editTime(position);
+    });
+  }
+
+  void _setState() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  void _showSnackBar(String? message, {bool shouldPop = false}) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return CustomWidgets()
+              .getInformativePopup(globalKey: _scaffoldKey, message: message);
+        }).then((value) {
+      if (shouldPop) {
+        Navigator.pop(context);
+      }
+    });
+  }
+
+  Widget _getBody() {
+    return SingleChildScrollView(
+      child: Container(
+        margin: EdgeInsets.symmetric(
+            horizontal: AppConfig.horizontalBlockSize * 5,
+            vertical: AppConfig.verticalBlockSize * 2),
+        color: Color(CommonMethods.getColorHexFromStr("#FFFFFF")),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              alignment: Alignment.center,
+              margin: EdgeInsets.symmetric(
+                  horizontal: AppConfig.horizontalBlockSize * 4,
+                  vertical: AppConfig.verticalBlockSize * 2),
+              child: Text(
+                "Enter your time slots correctly so that you obtain reservations according to your availability",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: PlunesColors.BLACKCOLOR,
+                    fontSize: 15,
+                    fontWeight: FontWeight.normal),
+              ),
+            ),
+            Container(
+              width: double.infinity,
+              height: AppConfig.verticalBlockSize * 8,
+              margin: EdgeInsets.symmetric(
+                  vertical: AppConfig.verticalBlockSize * 3),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: ListView.builder(
+                      controller: _dayScrollController,
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        return InkWell(
+                          onTap: () {
+                            if (index != _currentDayIndex) {
+                              _currentDayIndex = index;
+                              _availabilityModel!.forEach((element) {
+                                element.isSelected = false;
+                              });
+//                      print("_currentDayIndex ${_availabilityModel[_currentDayIndex].closed}");
+                              _availabilityModel![index].isSelected = true;
+                              _availabilityModel![index]
+                                  .daySelectionList
+                                  ?.forEach((element) {
+                                element.isSelected = false;
+                              });
+                              _setState();
+                            }
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(
+                                right: AppConfig.horizontalBlockSize * 2.5),
+                            padding: EdgeInsets.symmetric(
+                                horizontal:
+                                    AppConfig.horizontalBlockSize * 2.5),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16.0),
+                              color:
+                                  _availabilityModel![index].isSelected ?? false
+                                      ? PlunesColors.GREENCOLOR
+                                      : Color(CommonMethods.getColorHexFromStr(
+                                          "#F5F5F5")),
+                            ),
+                            child: Center(
+                              child: Text(
+                                _availabilityModel![index].day
+                                        ?.substring(0, 3).toUpperCase() ??
+                                    PlunesStrings.NA,
+                                style: TextStyle(
+                                  color:
+                                      _availabilityModel![index].isSelected ??
+                                              false
+                                          ? PlunesColors.WHITECOLOR
+                                          : PlunesColors.BLACKCOLOR,
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      itemCount: _availabilityModel?.length ?? 0,
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      _dayScrollController!.jumpTo(
+                          _dayScrollController!.position.maxScrollExtent);
+                      return;
+                    },
+                    child: Container(
+                      color: Colors.transparent,
+                      child: Icon(
+                        Icons.navigate_next,
+                        color: PlunesColors.BLACKCOLOR,
+                      ),
+                      padding: EdgeInsets.only(
+                          left: AppConfig.horizontalBlockSize * 1,
+                          top: AppConfig.horizontalBlockSize * 2,
+                          bottom: AppConfig.horizontalBlockSize * 2),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            _getSlotView(),
+            Container(
+              margin: EdgeInsets.symmetric(
+                  vertical: AppConfig.verticalBlockSize * 2),
+              child: StreamBuilder<RequestState>(
+                  stream: userBloc.baseStream,
+                  builder: (context, snapshot) {
+                    if (snapshot.data is RequestInProgress) {
+                      return CustomWidgets().getProgressIndicator();
+                    } else if (snapshot.data is RequestFailed) {
+                      RequestFailed? _reqFail = snapshot.data as RequestFailed?;
+                      userBloc.addIntoStream(null);
+                      Future.delayed(Duration(milliseconds: 100)).then((value) {
+                        _showSnackBar(_reqFail?.failureCause);
+                      });
+                    } else if (snapshot.data is RequestSuccess) {
+                      userBloc.addIntoStream(null);
+                      Future.delayed(Duration(milliseconds: 100)).then((value) {
+                        _showSnackBar(PlunesStrings.slotUpdatedSuccessfully,
+                            shouldPop: true);
+                      });
+                    }
+                    return InkWell(
+                      onTap: () {
+                        _submitSlots();
+                        return;
+                      },
+                      child: Center(
+                        child: Text(
+                          "Submit",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: PlunesColors.SPARKLINGGREEN,
+                              fontSize: AppConfig.largeFont,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    );
+                  }),
+            ),
+            _getApplyView(),
+          ],
+        ),
       ),
     );
+  }
 
-    final header = Container(
-      margin: EdgeInsets.only(top: 20, bottom: 10),
-      child: Row(
+  Widget _getSlotView() {
+    if (_availabilityModel == null || _availabilityModel!.isEmpty) {
+      return Container();
+    }
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          Expanded(
-            flex: 1,
-            child: Center(
-                child: Text(
-              "All",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            )),
+          Container(
+            alignment: Alignment.center,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                InkWell(
+                  onTap: () {
+                    _availabilityModel![_currentDayIndex].closed =
+                        !_availabilityModel![_currentDayIndex].closed!;
+                    _setState();
+                    if (_availabilityModel![_currentDayIndex].closed!) {
+                      _showSnackBar(PlunesStrings.daySuccessfullyClosed);
+                    } else {
+                      _showSnackBar(PlunesStrings.daySuccessfullyClosed
+                          .replaceAll("closed", "opened"));
+                    }
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        shape: BoxShape.rectangle,
+                        color:
+                            Color(CommonMethods.getColorHexFromStr("#F5F5F5"))),
+                    height: AppConfig.verticalBlockSize * 4,
+                    width: AppConfig.horizontalBlockSize * 8,
+                    child: (_availabilityModel![_currentDayIndex] == null ||
+                                _availabilityModel![_currentDayIndex].closed! ??
+                            false)
+                        ? Container()
+                        : Center(
+                            child: Icon(
+                              Icons.check,
+                              color: PlunesColors.GREENCOLOR,
+                            ),
+                          ),
+                  ),
+                ),
+                Padding(
+                  padding:
+                      EdgeInsets.only(left: AppConfig.horizontalBlockSize * 2),
+                  child: Text(
+                    "OPEN",
+                    style:
+                        TextStyle(fontSize: 16.5, fontWeight: FontWeight.w500),
+                  ),
+                )
+              ],
+            ),
           ),
-          Expanded(
-            flex: 2,
-            child: Center(
-                child: Text("From - To",
-                    style: TextStyle(fontWeight: FontWeight.bold))),
+          ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) {
+              return Container(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Expanded(
+                        child: Container(
+                      margin: EdgeInsets.symmetric(
+                          vertical: AppConfig.verticalBlockSize * 1.5),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: AppConfig.horizontalBlockSize * 3.5),
+                      child: Card(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: <Widget>[
+                            Text(
+                              _availabilityModel![_currentDayIndex]
+                                  .slots![index]!
+                                  .split("-")[0],
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  color: _availabilityModel![_currentDayIndex]
+                                          .closed!
+                                      ? PlunesColors.GREYCOLOR
+                                      : PlunesColors.BLACKCOLOR),
+                            ),
+                            Icon(
+                              Icons.arrow_forward,
+                              color: _availabilityModel![_currentDayIndex].closed!
+                                  ? PlunesColors.GREYCOLOR
+                                  : PlunesColors.BLACKCOLOR,
+                            ),
+                            Text(
+                                _availabilityModel![_currentDayIndex]
+                                    .slots![index]!
+                                    .split("-")[1],
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    color: _availabilityModel![_currentDayIndex]
+                                            .closed!
+                                        ? PlunesColors.GREYCOLOR
+                                        : PlunesColors.BLACKCOLOR)),
+                          ],
+                        ),
+                      ),
+                    )),
+                    InkWell(
+                        onTap: () {
+                          if (_availabilityModel![_currentDayIndex].closed!) {
+                            return;
+                          }
+                          _availabilityModel![_currentDayIndex]
+                              .slots!
+                              .removeAt(index);
+                          _setState();
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Image.asset(
+                            PlunesImages.binImage,
+                            width: AppConfig.horizontalBlockSize * 8,
+                            height: AppConfig.verticalBlockSize * 2.8,
+                            color: _availabilityModel![_currentDayIndex].closed!
+                                ? PlunesColors.GREYCOLOR
+                                : null,
+                          ),
+                        )),
+                    InkWell(
+                        onTap: () {
+                          if (_availabilityModel![_currentDayIndex].closed!) {
+                            return;
+                          }
+                          _fromDateHolderForSlotEdit = null;
+                          _toDateHolderForSlotEdit = null;
+                          _openTimePickerForSlotEditing(index);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Image.asset(
+                            PlunesImages.availability_edit_image,
+                            width: AppConfig.horizontalBlockSize * 8,
+                            height: AppConfig.verticalBlockSize * 2.8,
+                            color: _availabilityModel![_currentDayIndex].closed!
+                                ? PlunesColors.GREYCOLOR
+                                : null,
+                          ),
+                        ))
+                  ],
+                ),
+              );
+            },
+            itemCount: _availabilityModel![_currentDayIndex].slots?.length ?? 0,
+            shrinkWrap: true,
           ),
-          Expanded(
-            flex: 2,
-            child: Center(
-                child: Text("From - To",
-                    style: TextStyle(fontWeight: FontWeight.bold))),
+          Container(
+            margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
+            child: InkWell(
+              onTap: () {
+                if (_availabilityModel![_currentDayIndex].closed!) {
+                  return;
+                }
+                _checkFirstAndLastSlot();
+                return;
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Container(
+                  height: 28,
+                  width: 48,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: PlunesColors.WHITECOLOR,
+                      border: Border.all(
+                          color: _availabilityModel![_currentDayIndex].closed!
+                              ? PlunesColors.GREYCOLOR
+                              : PlunesColors.GREENCOLOR)),
+                  child: Center(
+                    child: Icon(
+                      Icons.add,
+                      size: 18,
+                      color: _availabilityModel![_currentDayIndex].closed!
+                          ? PlunesColors.GREYCOLOR
+                          : PlunesColors.GREENCOLOR,
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
-          Expanded(
-            flex: 1,
-            child: Center(
-                child: Text("Closed",
-                    style: TextStyle(fontWeight: FontWeight.bold))),
+          Container(
+            child: Text(
+              "Add more slots",
+              style: TextStyle(
+                  color: _availabilityModel![_currentDayIndex].closed!
+                      ? PlunesColors.GREYCOLOR
+                      : PlunesColors.BLACKCOLOR,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600),
+            ),
           ),
         ],
       ),
     );
-
-    final list_days = Expanded(
-      child: ListView.builder(
-        itemBuilder: (context, index) {
-          return Container(
-            margin: EdgeInsets.only(top: 10),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  flex: 1,
-                  child: Center(
-                    child: Container(
-                      height: 40,
-                      width: 40,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
-                          color: Color(0xffefefef)),
-                      child: Center(
-                        child: Text(days[index]),
-                      ),
-                    ),
-                  ),
-                ),
-
-
-                Expanded(
-                  flex: 3,
-                  child: Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        InkWell(
-                          borderRadius: BorderRadius.all(Radius.circular(5)),
-                          onTap: () {
-                            _selectdata("form1", index, from_1[index]);
-                          },
-                          child: Container(
-                            height: 25,
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                BorderRadius.all(Radius.circular(5)),
-                                border:
-                                Border.all(width: 0.5, color: Colors.grey)),
-                            alignment: Alignment.center,
-                            child: Padding(
-                              padding: const EdgeInsets.all(2.0),
-                              child: Text(
-                                from_1[index],
-                                style: TextStyle(fontSize: 10),
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        InkWell(
-                          borderRadius: BorderRadius.all(Radius.circular(5)),
-                          onTap: () {
-                            _selectdata("to1", index, to_1[index]);
-                          },
-                          child: Container(
-                            height: 25,
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                BorderRadius.all(Radius.circular(5)),
-                                border:
-                                Border.all(width: 0.5, color: Colors.grey)),
-                            alignment: Alignment.center,
-                            child: Padding(
-                              padding: const EdgeInsets.all(2.0),
-                              child: Text(
-                                to_1[index],
-                                style: TextStyle(fontSize: 10),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 3,
-                  child: Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        InkWell(
-                          borderRadius: BorderRadius.all(Radius.circular(5)),
-                          onTap: () {
-                            _selectdata("form2", index, from_2[index]);
-                          },
-                          child: Container(
-                            height: 25,
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                BorderRadius.all(Radius.circular(5)),
-                                border:
-                                Border.all(width: 0.5, color: Colors.grey)),
-                            alignment: Alignment.center,
-                            child: Padding(
-                              padding: const EdgeInsets.all(2.0),
-                              child: Text(
-                                from_2[index],
-                                style: TextStyle(fontSize: 10),
-                              ),
-                            ),
-                          ),
-                        ),
-
-
-                        SizedBox(
-                          width: 5,
-                        ),
-
-
-                        InkWell(
-                          borderRadius: BorderRadius.all(Radius.circular(5)),
-                          onTap: () {
-                            _selectdata("to2", index, to_2[index]);
-                          },
-                          child: Container(
-                            height: 25,
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                BorderRadius.all(Radius.circular(5)),
-                                border:
-                                Border.all(width: 0.5, color: Colors.grey)),
-                            alignment: Alignment.center,
-                            child: Padding(
-                              padding: const EdgeInsets.all(2.0),
-                              child: Text(
-                                to_2[index],
-                                style: TextStyle(fontSize: 10),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-
-
-                Expanded(
-                    flex: 1,
-                    child: Center(
-                        child: Theme(
-                          data: Theme.of(context).copyWith(
-                            unselectedWidgetColor: Colors.grey,
-                          ),
-                          child: InkWell(
-                            borderRadius: BorderRadius.all(
-                                Radius.circular(30)),
-                            onTap: () {
-                              setState(() {
-
-                                if(check[index] =='true'){
-                                  check[index] = 'false';
-                                }else{
-                                  check[index] = 'true';
-                                }
-
-                              });
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: Container(
-                                child: check[index] == 'true'
-                                    ? Image.asset(
-                                  'assets/images/bid/check.png',
-                                  height: 20,
-                                  width: 20,
-                                )
-                                    : Image.asset(
-                                  'assets/images/bid/uncheck.png',
-                                  height: 20,
-                                  width: 20,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ))),
-              ],
-            ),
-          );
-        },
-        itemCount: 7,
-      ),
-    );
-
-    final submit = Container(
-      margin: EdgeInsets.only(bottom: 20),
-      child: InkWell(
-        borderRadius: BorderRadius.all(Radius.circular(5)),
-        onTap:addslot,
-        child: Container(
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(5)),
-              color:Color(0xff01d35a)),
-          alignment: Alignment.center,
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Text(
-              'Submit',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        ),
-      ),
-    );
-    
-
-    final loading = Expanded(
-        child: ListView.builder(itemBuilder: (context, index) {
-          return Shimmer.fromColors(
-              baseColor: Color(0xffF5F5F5),
-              highlightColor: Color(0xffFAFAFA),
-              child: Container(
-                margin: EdgeInsets.only(top: 10),
-
-                child: Row(
-                  children: <Widget>[
-
-                    Expanded(
-                      flex: 1,
-                      child: Center(
-                        child: Container(
-                          height: 40,
-                          width: 40,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(
-                                  Radius.circular(20)),
-                              color: Color(0xffefefef)),
-                          child: Center(
-                            child: Text(""),
-                          ),
-                        ),
-                      ),
-                    ),
-
-
-                    Expanded(
-                      flex: 2,
-                      child: Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Container(
-                              height: 25,
-                              width: 40,
-                              decoration: BoxDecoration(
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(5)),
-                                  color: Colors.grey),
-                              alignment: Alignment.center,
-                              child: Padding(
-                                padding: const EdgeInsets.all(2.0),
-                                child: Text(
-                                  "00:00",
-                                  style: TextStyle(fontSize: 12),
-                                ),
-
-                              ),
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Container(
-                              height: 25,
-                              width: 40,
-                              decoration: BoxDecoration(
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(5)),
-                                  color: Colors.grey),
-                              alignment: Alignment.center,
-                              child: Padding(
-                                padding: const EdgeInsets.all(2.0),
-                                child: Text(
-                                  "",
-                                  style: TextStyle(fontSize: 12),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-
-                    Expanded(
-                      flex: 2,
-                      child: Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Container(
-                              height: 25,
-                              width: 40,
-                              decoration: BoxDecoration(
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(5)),
-                                  color: Colors.grey),
-                              alignment: Alignment.center,
-                              child: Padding(
-                                padding: const EdgeInsets.all(2.0),
-                                child: Text(
-                                  "",
-                                  style: TextStyle(fontSize: 12),
-                                ),
-                              ),
-                            ),
-
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Container(
-                              height: 25,
-                              width: 40,
-                              decoration: BoxDecoration(
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(5)),
-                                  color: Colors.grey),
-                              alignment: Alignment.center,
-                              child: Padding(
-                                padding: const EdgeInsets.all(2.0),
-                                child: Text(
-                                  "",
-                                  style: TextStyle(fontSize: 12),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-
-                    Expanded(
-                        flex: 1,
-                        child: Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: Container(
-                                  child: Image.asset('assets/images/bid/check.png', height: 20, width: 20)
-                              ),
-                            ))),
-
-                  ],
-                ),
-              )
-
-          );
-        }, itemCount: 7,)
-
-    );
-
-    final form = Container(
-        child: Padding(
-          padding: const EdgeInsets.only(
-              left: 20.0, right: 20, top: 5, bottom: 10),
-          child: Column(
-            children: <Widget>[
-              header,
-              progress?loading: list_days,
-              submit
-            ],
-          ),
-        ));
-
-    return Scaffold(
-        appBar: widget.getAppBar(context, stringsFile.availability, true),
-        key: _scaffoldKey,
-        backgroundColor: Colors.white,
-        body: form
-    );
   }
 
+  void _setTimeInBoxes(int position) {
+    switch (position) {
+      case _fromIndex:
+        if (_tempFromHolder == null) {
+          return;
+        }
+        try {
+          _doFromIndexOperation();
+        } catch (e, s) {
+          print("error $s");
+        }
+        break;
+      case _toIndex:
+        try {
+          _setToIndexDate();
+        } catch (e, s) {
+          print("error $s");
+        }
+        break;
+    }
+  }
 
-  Widget _confirmation(BuildContext context) {
-    return new CupertinoAlertDialog(
-      title: new Text('Repeat'),
-      content: new Container(
+  void _checkFirstAndLastSlot() {
+    if (_availabilityModel != null &&
+        _availabilityModel!.isNotEmpty &&
+        _currentDayIndex != null &&
+        _availabilityModel!.length > _currentDayIndex) {
+      _openTimePicker(_fromIndex);
+    }
+  }
+
+  void _setToIndexDate() {
+    if (_tempToHolder != null) {
+      if (_availabilityModel != null &&
+          _availabilityModel!.isNotEmpty &&
+          _currentDayIndex != null &&
+          _availabilityModel!.length > _currentDayIndex) {
+        if (_availabilityModel![_currentDayIndex].slots != null &&
+            _availabilityModel![_currentDayIndex].slots!.isNotEmpty) {
+          List<String> _lastTimeArray =
+              _availabilityModel![_currentDayIndex].slots!.last!.split("-");
+//          print("_lastTimeArray $_lastTimeArray");
+
+          List<String> lastSplitTime = _lastTimeArray[1].split(":");
+          int _lastPmTime = 0;
+          if (_lastTimeArray[0].contains("PM") && lastSplitTime.first != "12") {
+            _lastPmTime = 12;
+            lastSplitTime.first =
+                "${_lastPmTime + int.parse(lastSplitTime.first)}";
+          }
+          var _lastDate = DateTime(
+              _tempFromHolder!.year,
+              _tempFromHolder!.month,
+              _tempFromHolder!.day,
+              int.tryParse(lastSplitTime.first)!,
+              int.tryParse(lastSplitTime[1]
+                  .substring(0, lastSplitTime[1].indexOf(" ")))!);
+//          print("_lastDate $_lastDate");
+          if (_tempToHolder!.isAfter(_tempFromHolder!) &&
+              _lastDate.isBefore(_tempToHolder!)) {
+//            print(
+//                "valid hai _tempToHolder $_tempToHolder, _tempFromHolder $_tempFromHolder, _lastDate $_lastDate");
+            String duration =
+                DateUtil.getTimeWithAmAndPmFormat(_tempFromHolder) +
+                    "-" +
+                    DateUtil.getTimeWithAmAndPmFormat(_tempToHolder);
+//            print("duration $duration");
+            _availabilityModel![_currentDayIndex].slots!.add(duration);
+            _setState();
+          } else {
+            _invalidSlotCallBack();
+//            print(
+//                "Invalid hai _tempToHolder $_tempToHolder, _tempFromHolder $_tempFromHolder, _lastDate $_lastDate");
+            return;
+          }
+        } else {
+          String duration = DateUtil.getTimeWithAmAndPmFormat(_tempFromHolder) +
+              "-" +
+              DateUtil.getTimeWithAmAndPmFormat(_tempToHolder);
+//          print("duration $duration");
+          _availabilityModel![_currentDayIndex].slots = [duration];
+          _setState();
+        }
+      }
+    }
+  }
+
+  void _doFromIndexOperation() {
+    if (_availabilityModel != null &&
+        _availabilityModel!.isNotEmpty &&
+        _currentDayIndex != null &&
+        _availabilityModel!.length > _currentDayIndex) {
+      if (_availabilityModel![_currentDayIndex].slots != null &&
+          _availabilityModel![_currentDayIndex].slots!.isNotEmpty) {
+        List<String> _firstTimeArray =
+            _availabilityModel![_currentDayIndex].slots!.first!.split("-");
+//        print("_firstTimeArray $_firstTimeArray");
+        List<String> _lastTimeArray =
+            _availabilityModel![_currentDayIndex].slots!.last!.split("-");
+//        print("_lastTimeArray $_lastTimeArray");
+        List<String> splitTime = _firstTimeArray[0].split(":");
+        int _pmTime = 0;
+        if (_firstTimeArray[0].contains("PM") && splitTime.first != "12") {
+          _pmTime = 12;
+          splitTime.first = "${_pmTime + int.parse(splitTime.first)}";
+        }
+        var _firstDate = DateTime(
+            _tempFromHolder!.year,
+            _tempFromHolder!.month,
+            _tempFromHolder!.day + 1,
+            int.tryParse(splitTime.first)!,
+            int.tryParse(splitTime[1].substring(0, splitTime[1].indexOf(" ")))!);
+//        print("_firstDate $_firstDate");
+        List<String> lastSplitTime = _lastTimeArray[1].split(":");
+//        print(
+//            "${(lastSplitTime[1].contains("PM") && lastSplitTime.first != "12")} lastSplitTime $lastSplitTime");
+        int _lastPmTime = 0;
+        if (lastSplitTime[1].contains("PM") && lastSplitTime.first != "12") {
+          _lastPmTime = 12;
+          lastSplitTime.first =
+              "${_lastPmTime + int.parse(lastSplitTime.first)}";
+        }
+        var _lastDate = DateTime(
+            _tempFromHolder!.year,
+            _tempFromHolder!.month,
+            _tempFromHolder!.day,
+            int.tryParse(lastSplitTime.first)!,
+            int.tryParse(
+                lastSplitTime[1].substring(0, lastSplitTime[1].indexOf(" ")))!);
+//        print("_lastDate $_lastDate");
+        if (_firstDate.isAfter(_tempFromHolder!) &&
+            _lastDate.isBefore(_tempFromHolder!)) {
+//          print(
+//              "valid hai $_firstDate, _tempFromHolder $_tempFromHolder, _lastDate $_lastDate");
+        } else {
+          _invalidSlotCallBack();
+//          print(
+//              "invalid hai _firstDate $_firstDate, _tempFromHolder $_tempFromHolder, _lastDate $_lastDate");
+          return;
+        }
+      }
+//      print("calling _openTimePicker");
+      _openTimePicker(_toIndex);
+    }
+  }
+
+  Widget _getApplyView() {
+    return Container(
+      margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 4),
+      child: Card(
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+        elevation: 3.5,
         child: Column(
-
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-
-            Text("Repeat this slot in whole week"),
-
-            SizedBox(height: 20,),
-
             Container(
-
+              alignment: Alignment.center,
+              margin: EdgeInsets.symmetric(
+                  horizontal: AppConfig.horizontalBlockSize * 4,
+                  vertical: AppConfig.verticalBlockSize * 3),
+              child: Text(
+                "Apply this time slot to",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: PlunesColors.BLACKCOLOR.withOpacity(.7),
+                    fontSize: AppConfig.mediumFont,
+                    fontWeight: FontWeight.w600),
+              ),
+            ),
+            Container(
+              width: double.infinity,
+              height: AppConfig.verticalBlockSize * 10,
+              margin: EdgeInsets.all(
+                AppConfig.horizontalBlockSize * 3,
+              ),
               child: Row(
-
                 children: <Widget>[
                   Expanded(
-                    child: GestureDetector(
-                      onTap: (){
-                        Navigator.of(context).pop("Done");
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      controller: _daySelectionScrollController,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        return InkWell(
+                          onTap: () {
+                            _availabilityModel![_currentDayIndex].daySelectionList![index]
+                                    .isSelected =
+                                !_availabilityModel![_currentDayIndex]
+                                !.daySelectionList![index]
+                                    .isSelected!;
+                            _setState();
+                          },
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Container(
+                                margin: EdgeInsets.only(
+                                    left: AppConfig.verticalBlockSize * .8,
+                                    bottom: AppConfig.horizontalBlockSize * 2),
+                                child: Text(
+                                  _availabilityModel![_currentDayIndex].daySelectionList![index].dayName
+                                          ?.substring(0, 3).toUpperCase() ??
+                                      PlunesStrings.NA,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: _availabilityModel![_currentDayIndex].daySelectionList![index].isSelected ??
+                                            false
+                                        ? PlunesColors.SPARKLINGGREEN
+                                        : PlunesColors.BLACKCOLOR,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                width: AppConfig.verticalBlockSize * 5.4,
+                                height: AppConfig.verticalBlockSize * 5.4,
+                                margin: EdgeInsets.only(
+                                    right: AppConfig.horizontalBlockSize * 4),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal:
+                                        AppConfig.horizontalBlockSize * 5),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: _availabilityModel![_currentDayIndex]
+                                              .daySelectionList![index]
+                                              .isSelected ??
+                                          false
+                                      ? PlunesColors.GREENCOLOR
+                                      : Color(CommonMethods.getColorHexFromStr(
+                                          "#F5F5F5")),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
                       },
-                      child: Container(
-                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text("Yes", style: TextStyle(color: Colors.white),),
-                       ),
-                       decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10)),
-                          color: Color(0xff01d35a), border: Border.all(width: 1, color: Color(0xff01d35a))),
-                    ),
+                      itemCount: _availabilityModel![_currentDayIndex].daySelectionList
+                              ?.length ??
+                          0,
                     ),
                   ),
-
-                  SizedBox(
-                    width: 20,
-                  ),
-
-                  Expanded(child: GestureDetector(
-                    onTap: (){
-                      Navigator.pop(context);
+                  InkWell(
+                    onTap: () {
+                      _daySelectionScrollController!.jumpTo(
+                          _daySelectionScrollController!
+                              .position.maxScrollExtent);
+                      return;
                     },
                     child: Container(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text("No"),
+                      color: Colors.transparent,
+                      child: const Icon(
+                        Icons.navigate_next,
+                        color: PlunesColors.BLACKCOLOR,
                       ),
-                      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10)),
-                         border: Border.all(width: 1, color: Colors.grey)),
+                      padding: EdgeInsets.only(
+                          left: AppConfig.horizontalBlockSize * 1,
+                          top: AppConfig.horizontalBlockSize * 2,
+                          bottom: AppConfig.horizontalBlockSize * 2),
                     ),
-                  )),
-
-
-
+                  ),
                 ],
               ),
-
-            )
-
+            ),
+            _getApplyButton()
           ],
         ),
-
       ),
     );
   }
 
+  void _editTime(int index) {
+    try {
+      String? slotToBeEdited =
+          _availabilityModel![_currentDayIndex]?.slots![index];
+      if (slotToBeEdited != null) {
+        if (_availabilityModel![_currentDayIndex].slots!.first ==
+            slotToBeEdited) {
+          ///if first slot
+          _editFirstSlot(slotToBeEdited);
+        } else if (_availabilityModel![_currentDayIndex].slots!.last ==
+            slotToBeEdited) {
+          ///if last slot
+          _editLastSlot(slotToBeEdited);
+        } else {
+          ///middle slot
+          _editMiddleSlot(slotToBeEdited);
+        }
+      }
+    } catch (e) {
+      print("error $e");
+    }
+  }
 
+  void _editFirstSlot(String slotToBeEdited) {
+    try {
+      if (_availabilityModel![_currentDayIndex].slots!.length > 1) {
+        String _secondSlot = _availabilityModel![_currentDayIndex].slots![1]!;
+        List<String> _lastTimeArray = _secondSlot.split("-");
+//        print("_lastTimeArray $_lastTimeArray");
+        List<String> lastSplitTime = _lastTimeArray[0].split(":");
+        int _lastPmTime = 0;
+        if (lastSplitTime[1].contains("PM") && lastSplitTime.first != "12") {
+          _lastPmTime = 12;
+          lastSplitTime.first =
+              "${_lastPmTime + int.parse(lastSplitTime.first)}";
+        }
+//        print("lastSplitTime $lastSplitTime");
+        var _lastDate = DateTime(
+            _fromDateHolderForSlotEdit!.year,
+            _fromDateHolderForSlotEdit!.month,
+            _fromDateHolderForSlotEdit!.day,
+            int.tryParse(lastSplitTime.first)!,
+            int.tryParse(
+                lastSplitTime[1].substring(0, lastSplitTime[1].indexOf(" ")))!);
+//        print("_lastDate $_lastDate");
+        if (_fromDateHolderForSlotEdit!.isBefore(_toDateHolderForSlotEdit!) &&
+            _toDateHolderForSlotEdit!.isBefore(_lastDate)) {
+//          print(
+//              "valid hai _fromDateHolderForSlotEdit $_fromDateHolderForSlotEdit, _toDateHolderForSlotEdit $_toDateHolderForSlotEdit, _lastDate $_lastDate");
+          String duration =
+              DateUtil.getTimeWithAmAndPmFormat(_fromDateHolderForSlotEdit) +
+                  "-" +
+                  DateUtil.getTimeWithAmAndPmFormat(_toDateHolderForSlotEdit);
+//          print("duration $duration");
+          _availabilityModel![_currentDayIndex].slots![
+              _availabilityModel![_currentDayIndex]
+                  .slots!
+                  .indexOf(slotToBeEdited)] = duration;
+          _setState();
+        } else {
+          _invalidSlotCallBack();
+//          print(
+//              "in valid hai _fromDateHolderForSlotEdit $_fromDateHolderForSlotEdit, _toDateHolderForSlotEdit $_toDateHolderForSlotEdit, _lastDate $_lastDate");
+          return;
+        }
+      } else {
+        if (_fromDateHolderForSlotEdit!.isBefore(_toDateHolderForSlotEdit!)) {
+//          print("valid slot");
+          String duration =
+              DateUtil.getTimeWithAmAndPmFormat(_fromDateHolderForSlotEdit) +
+                  "-" +
+                  DateUtil.getTimeWithAmAndPmFormat(_toDateHolderForSlotEdit);
+//          print("duration $duration");
+          _availabilityModel![_currentDayIndex].slots = [duration];
+          _setState();
+        } else {
+          _invalidSlotCallBack();
+//          print("in valid slot");
+        }
+      }
+    } catch (e) {
+      print("error $e");
+    }
+  }
 
+  void _editLastSlot(String slotToBeEdited) {
+    try {
+      if (_availabilityModel![_currentDayIndex].slots!.length > 1) {
+        String _firstSlot = _availabilityModel![_currentDayIndex].slots![0]!;
+        String previousSlot = _availabilityModel![_currentDayIndex].slots![
+            _availabilityModel![_currentDayIndex].slots!.indexOf(slotToBeEdited) -
+                1]!;
+        List<String> _lastTimeArray = previousSlot.split("-");
+//        print("_lastTimeArray $_lastTimeArray");
+        List<String> lastSplitTime = _lastTimeArray[1].split(":");
+        int _lastPmTime = 0;
+        if (lastSplitTime[1].contains("PM") && lastSplitTime.first != "12") {
+          _lastPmTime = 12;
+          lastSplitTime.first =
+              "${_lastPmTime + int.parse(lastSplitTime.first)}";
+        }
+//        print("lastSplitTime $lastSplitTime");
+        var _lastDate = DateTime(
+            _fromDateHolderForSlotEdit!.year,
+            _fromDateHolderForSlotEdit!.month,
+            _fromDateHolderForSlotEdit!.day,
+            int.tryParse(lastSplitTime.first)!,
+            int.tryParse(
+                lastSplitTime[1].substring(0, lastSplitTime[1].indexOf(" ")))!);
+        //////////////////////////////
+        List<String> _firstTimeArray = _firstSlot.split("-");
+//        print("_lastTimeArray $_lastTimeArray");
+        List<String> firstSplitTime = _firstTimeArray[0].split(":");
+        int _firstPmTime = 0;
+        if (firstSplitTime[1].contains("PM") && firstSplitTime.first != "12") {
+          _firstPmTime = 12;
+          firstSplitTime.first =
+              "${_firstPmTime + int.parse(firstSplitTime.first)}";
+        }
+//        print("firstSplitTime $firstSplitTime");
+        var _firstDate = DateTime(
+            _fromDateHolderForSlotEdit!.year,
+            _fromDateHolderForSlotEdit!.month,
+            _fromDateHolderForSlotEdit!.day + 1,
+            int.tryParse(firstSplitTime.first)!,
+            int.tryParse(firstSplitTime[1]
+                .substring(0, firstSplitTime[1].indexOf(" ")))!);
+//        print("_lastDate $_lastDate");
+        if (_fromDateHolderForSlotEdit!.isBefore(_toDateHolderForSlotEdit!) &&
+            _fromDateHolderForSlotEdit!.isAfter(_lastDate) &&
+            _toDateHolderForSlotEdit!.isBefore(_firstDate)) {
+//          print(
+//              "valid slot _fromDateHolderForSlotEdit: $_fromDateHolderForSlotEdit, _toDateHolderForSlotEdit: $_toDateHolderForSlotEdit, _lastDate: $_lastDate, _firstDate: $_firstDate");
+          String duration =
+              DateUtil.getTimeWithAmAndPmFormat(_fromDateHolderForSlotEdit) +
+                  "-" +
+                  DateUtil.getTimeWithAmAndPmFormat(_toDateHolderForSlotEdit);
+//          print("duration $duration");
+          _availabilityModel![_currentDayIndex].slots![
+              _availabilityModel![_currentDayIndex]
+                  .slots!
+                  .indexOf(slotToBeEdited)] = duration;
+          _setState();
+        } else {
+          _invalidSlotCallBack();
+//          print(
+//              "in valid slot _fromDateHolderForSlotEdit: $_fromDateHolderForSlotEdit, _toDateHolderForSlotEdit: $_toDateHolderForSlotEdit, _lastDate: $_lastDate, _firstDate: $_firstDate");
+          return;
+        }
+      }
+    } catch (e) {
+      print("error $e");
+    }
+  }
 
+  void _editMiddleSlot(String slotToBeEdited) {
+    try {
+      int _editableSlotIndex =
+          _availabilityModel![_currentDayIndex].slots!.indexOf(slotToBeEdited);
+//      print(
+//          "_availabilityModel[_currentDayIndex].slots.length ${_availabilityModel[_currentDayIndex].slots.length}");
+      if (_editableSlotIndex != null && _editableSlotIndex != -1) {
+        if (_availabilityModel![_currentDayIndex].slots!.length > 2 &&
+            (_availabilityModel![_currentDayIndex].slots!.length >=
+                (_editableSlotIndex + 1))) {
+          String _earlierSlot = _availabilityModel![_currentDayIndex]
+              .slots![_editableSlotIndex - 1]!;
+//          print("earlier slot $_earlierSlot");
+          String _laterSlot = _availabilityModel![_currentDayIndex]
+              .slots![_editableSlotIndex + 1]!;
+//          print("later slot $_laterSlot");
+          List<String> _lastTimeArray = _laterSlot.split("-");
+//          print("_lastTimeArray $_lastTimeArray");
+          List<String> lastSplitTime = _lastTimeArray[0].split(":");
+          int _lastPmTime = 0;
+          if (lastSplitTime[1].contains("PM") && lastSplitTime.first != "12") {
+            _lastPmTime = 12;
+            lastSplitTime.first =
+                "${_lastPmTime + int.parse(lastSplitTime.first)}";
+          }
+//          print("lastSplitTime $lastSplitTime");
+          var _lastDate = DateTime(
+              _fromDateHolderForSlotEdit!.year,
+              _fromDateHolderForSlotEdit!.month,
+              _fromDateHolderForSlotEdit!.day,
+              int.tryParse(lastSplitTime.first)!,
+              int.tryParse(lastSplitTime[1]
+                  .substring(0, lastSplitTime[1].indexOf(" ")))!);
+          //////////////////////////////
+          List<String> _firstTimeArray = _earlierSlot.split("-");
+//          print("_firstTimeArray $_firstTimeArray");
+          List<String> firstSplitTime = _firstTimeArray[1].split(":");
+          int _firstPmTime = 0;
+          if (firstSplitTime[1].contains("PM") &&
+              firstSplitTime.first != "12") {
+            _firstPmTime = 12;
+            firstSplitTime.first =
+                "${_firstPmTime + int.parse(firstSplitTime.first)}";
+          }
+//          print("firstSplitTime $firstSplitTime");
+          var _firstDate = DateTime(
+              _fromDateHolderForSlotEdit!.year,
+              _fromDateHolderForSlotEdit!.month,
+              _fromDateHolderForSlotEdit!.day,
+              int.tryParse(firstSplitTime.first)!,
+              int.tryParse(firstSplitTime[1]
+                  .substring(0, firstSplitTime[1].indexOf(" ")))!);
 
+          if (_fromDateHolderForSlotEdit!.isBefore(_toDateHolderForSlotEdit!) &&
+              _fromDateHolderForSlotEdit!.isAfter(_firstDate) &&
+              _toDateHolderForSlotEdit!.isBefore(_lastDate)) {
+//            print(
+//                "valid slot _fromDateHolderForSlotEdit: $_fromDateHolderForSlotEdit, _toDateHolderForSlotEdit: $_toDateHolderForSlotEdit, _lastDate: $_lastDate, _firstDate: $_firstDate");
+            String duration =
+                DateUtil.getTimeWithAmAndPmFormat(_fromDateHolderForSlotEdit) +
+                    "-" +
+                    DateUtil.getTimeWithAmAndPmFormat(_toDateHolderForSlotEdit);
+//            print("duration $duration");
+            _availabilityModel![_currentDayIndex].slots![
+                _availabilityModel![_currentDayIndex]
+                    .slots!
+                    .indexOf(slotToBeEdited)] = duration;
+            _setState();
+          } else {
+            _invalidSlotCallBack();
+//            print(
+//                "in valid slot _fromDateHolderForSlotEdit: $_fromDateHolderForSlotEdit, _toDateHolderForSlotEdit: $_toDateHolderForSlotEdit, _lastDate: $_lastDate, _firstDate: $_firstDate");
+            return;
+          }
+        }
+      }
+    } catch (e) {
+      print("error $e");
+    }
+  }
+
+  void _invalidSlotCallBack() {
+    _showSnackBar(PlunesStrings.slotNotInSequence);
+  }
+
+  Widget _getApplyButton() {
+    bool? isItemSelected = false;
+    _availabilityModel![_currentDayIndex].daySelectionList!.forEach((element) {
+      if (!isItemSelected!) {
+        isItemSelected = element.isSelected;
+      }
+    });
+    return Container(
+        margin:
+            EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 2.5),
+        child: InkWell(
+          onTap: () {
+            if (!isItemSelected!) {
+              return;
+            }
+            for (int index = 0;
+                index <
+                    _availabilityModel![_currentDayIndex]
+                        .daySelectionList!
+                        .length;
+                index++) {
+              if (_availabilityModel![_currentDayIndex]
+                  .daySelectionList![index]
+                  .isSelected!) {
+                _availabilityModel![index].slots =
+                    _availabilityModel![_currentDayIndex].slots;
+                _availabilityModel![index].closed =
+                    _availabilityModel![_currentDayIndex].closed;
+              }
+            }
+            _availabilityModel![_currentDayIndex]
+                .daySelectionList!
+                .forEach((element) {
+              element.isSelected = false;
+            });
+            _setState();
+            _showSnackBar(
+                "Slot Applied Successfully! Press Submit button to save the changes.");
+            return;
+          },
+          child: Center(
+            child: Text(
+              PlunesStrings.apply,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: !isItemSelected!
+                      ? PlunesColors.LIGHTGREYCOLOR
+                      : PlunesColors.SPARKLINGGREEN,
+                  fontSize: AppConfig.largeFont,
+                  fontWeight: FontWeight.w600),
+            ),
+          ),
+        ));
+  }
 }

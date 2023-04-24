@@ -1,0 +1,35 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/gautamsinghmaurya/Freelance/flutter_3.3.10/.pub-cache/hosted/pub.dartlang.org/otpless_flutter-1.0.8/android/src/main/AndroidManifest.xml:1:1-7:12
+INJECTED from /Users/gautamsinghmaurya/Freelance/flutter_3.3.10/.pub-cache/hosted/pub.dartlang.org/otpless_flutter-1.0.8/android/src/main/AndroidManifest.xml:1:1-7:12
+INJECTED from /Users/gautamsinghmaurya/Freelance/flutter_3.3.10/.pub-cache/hosted/pub.dartlang.org/otpless_flutter-1.0.8/android/src/main/AndroidManifest.xml:1:1-7:12
+	package
+		ADDED from /Users/gautamsinghmaurya/Freelance/flutter_3.3.10/.pub-cache/hosted/pub.dartlang.org/otpless_flutter-1.0.8/android/src/main/AndroidManifest.xml:2:3-40
+		INJECTED from /Users/gautamsinghmaurya/Freelance/flutter_3.3.10/.pub-cache/hosted/pub.dartlang.org/otpless_flutter-1.0.8/android/src/main/AndroidManifest.xml
+		INJECTED from /Users/gautamsinghmaurya/Freelance/flutter_3.3.10/.pub-cache/hosted/pub.dartlang.org/otpless_flutter-1.0.8/android/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /Users/gautamsinghmaurya/Freelance/flutter_3.3.10/.pub-cache/hosted/pub.dartlang.org/otpless_flutter-1.0.8/android/src/main/AndroidManifest.xml:1:11-69
+queries
+ADDED from /Users/gautamsinghmaurya/Freelance/flutter_3.3.10/.pub-cache/hosted/pub.dartlang.org/otpless_flutter-1.0.8/android/src/main/AndroidManifest.xml:3:9-6:19
+package#com.whatsapp.w4b
+ADDED from /Users/gautamsinghmaurya/Freelance/flutter_3.3.10/.pub-cache/hosted/pub.dartlang.org/otpless_flutter-1.0.8/android/src/main/AndroidManifest.xml:4:13-56
+	android:name
+		ADDED from /Users/gautamsinghmaurya/Freelance/flutter_3.3.10/.pub-cache/hosted/pub.dartlang.org/otpless_flutter-1.0.8/android/src/main/AndroidManifest.xml:4:22-53
+package#com.whatsapp
+ADDED from /Users/gautamsinghmaurya/Freelance/flutter_3.3.10/.pub-cache/hosted/pub.dartlang.org/otpless_flutter-1.0.8/android/src/main/AndroidManifest.xml:5:13-52
+	android:name
+		ADDED from /Users/gautamsinghmaurya/Freelance/flutter_3.3.10/.pub-cache/hosted/pub.dartlang.org/otpless_flutter-1.0.8/android/src/main/AndroidManifest.xml:5:22-49
+uses-sdk
+INJECTED from /Users/gautamsinghmaurya/Freelance/flutter_3.3.10/.pub-cache/hosted/pub.dartlang.org/otpless_flutter-1.0.8/android/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/gautamsinghmaurya/Freelance/flutter_3.3.10/.pub-cache/hosted/pub.dartlang.org/otpless_flutter-1.0.8/android/src/main/AndroidManifest.xml
+INJECTED from /Users/gautamsinghmaurya/Freelance/flutter_3.3.10/.pub-cache/hosted/pub.dartlang.org/otpless_flutter-1.0.8/android/src/main/AndroidManifest.xml
+INJECTED from /Users/gautamsinghmaurya/Freelance/flutter_3.3.10/.pub-cache/hosted/pub.dartlang.org/otpless_flutter-1.0.8/android/src/main/AndroidManifest.xml
+INJECTED from /Users/gautamsinghmaurya/Freelance/flutter_3.3.10/.pub-cache/hosted/pub.dartlang.org/otpless_flutter-1.0.8/android/src/main/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /Users/gautamsinghmaurya/Freelance/flutter_3.3.10/.pub-cache/hosted/pub.dartlang.org/otpless_flutter-1.0.8/android/src/main/AndroidManifest.xml
+		ADDED from /Users/gautamsinghmaurya/Freelance/flutter_3.3.10/.pub-cache/hosted/pub.dartlang.org/otpless_flutter-1.0.8/android/src/main/AndroidManifest.xml
+		INJECTED from /Users/gautamsinghmaurya/Freelance/flutter_3.3.10/.pub-cache/hosted/pub.dartlang.org/otpless_flutter-1.0.8/android/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /Users/gautamsinghmaurya/Freelance/flutter_3.3.10/.pub-cache/hosted/pub.dartlang.org/otpless_flutter-1.0.8/android/src/main/AndroidManifest.xml
+		ADDED from /Users/gautamsinghmaurya/Freelance/flutter_3.3.10/.pub-cache/hosted/pub.dartlang.org/otpless_flutter-1.0.8/android/src/main/AndroidManifest.xml
+		INJECTED from /Users/gautamsinghmaurya/Freelance/flutter_3.3.10/.pub-cache/hosted/pub.dartlang.org/otpless_flutter-1.0.8/android/src/main/AndroidManifest.xml

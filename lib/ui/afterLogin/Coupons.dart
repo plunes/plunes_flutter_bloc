@@ -6,6 +6,7 @@ import 'package:plunes/Utils/Preferences.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/res/StringsFile.dart';
 
+// ignore: must_be_immutable
 class Coupons extends BaseActivity {
   static const tag = '/coupons';
 
@@ -13,11 +14,12 @@ class Coupons extends BaseActivity {
   _CouponsState createState() => _CouponsState();
 }
 
+// class _CouponsState extends BaseState<Coupons> {
 class _CouponsState extends State<Coupons> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   var globalHeight, globalWidth;
-  Preferences _preferences;
-  List<dynamic> couponsList = new List();
+  Preferences? _preferences;
+  List<dynamic> couponsList = [];
 
   final couponCodeController = new TextEditingController();
   bool isSuccess = false,
@@ -28,7 +30,7 @@ class _CouponsState extends State<Coupons> {
   String user_token = "";
   String user_id = "";
   String credit = "";
-  String refer_code = "", title = stringsFile.coupons;
+  String refer_code = "", title = plunesStrings.coupons;
   bool isFetchingData = true;
   var couponName = '',
       consulCount = '',
@@ -42,11 +44,11 @@ class _CouponsState extends State<Coupons> {
     super.initState();
     initialize();
   }
+
   void initialize() {
     _preferences = Preferences();
     getCouponsHistory();
   }
-
 
   Widget couponScreenView() {
     return Container(
@@ -68,7 +70,8 @@ class _CouponsState extends State<Coupons> {
                                 fontSize: 22,
                                 fontWeight: FontWeight.normal)),
                         Container(
-                          margin: EdgeInsets.only(left: 80, right: 80, bottom: 10, top: 50),
+                          margin: EdgeInsets.only(
+                              left: 80, right: 80, bottom: 10, top: 50),
                           child: TextField(
                             controller: couponCodeController,
                             textAlign: TextAlign.center,
@@ -89,7 +92,8 @@ class _CouponsState extends State<Coupons> {
                                 counterText: '',
                                 hintStyle: TextStyle(
                                     color: Color(
-                                        CommonMethods.getColorHexFromStr('#8A8A8A')))),
+                                        CommonMethods.getColorHexFromStr(
+                                            '#8A8A8A')))),
                           ),
                         ),
                       ],
@@ -258,7 +262,7 @@ class _CouponsState extends State<Coupons> {
 
     return Scaffold(
       key: _scaffoldKey,
-      appBar: widget.getAppBar(context, title, true),
+      appBar: widget.getAppBar(context, title, true) as PreferredSizeWidget?,
       backgroundColor: Colors.white,
       body: isFetchingData
           ? Container(
@@ -327,9 +331,9 @@ class _CouponsState extends State<Coupons> {
                       height: MediaQuery.of(context).size.height / 2 + 20,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                            image: AssetImage('assets/images/bgElephantPopup.png'),
-                            fit: BoxFit.fill
-                        ),
+                            image:
+                                AssetImage('assets/images/bgElephantPopup.png'),
+                            fit: BoxFit.fill),
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -340,10 +344,9 @@ class _CouponsState extends State<Coupons> {
                             },
                             child: Container(
                               child: Padding(
-                                padding: const EdgeInsets.only(right: 30.0, top: 25),
-                                child: Icon(
-                                  Icons.close,
-                                  color: Colors.grey),
+                                padding:
+                                    const EdgeInsets.only(right: 30.0, top: 25),
+                                child: Icon(Icons.close, color: Colors.grey),
                               ),
                               alignment: Alignment.topRight,
                             ),
@@ -386,7 +389,8 @@ class _CouponsState extends State<Coupons> {
                               child: new Text(
                                 'Successfully Applied!',
                                 style: TextStyle(
-                                  color: Color(CommonMethods.getColorHexFromStr('#8F8F8F')),
+                                  color: Color(CommonMethods.getColorHexFromStr(
+                                      '#8F8F8F')),
                                   fontSize: 16.0,
                                   fontFamily: 'helvetica_neue_light',
                                 ),
@@ -404,11 +408,11 @@ class _CouponsState extends State<Coupons> {
         barrierDismissible: true,
         barrierLabel: '',
         context: context,
-        pageBuilder: (context, animation1, animation2) {});
+        pageBuilder: (context, animation1, animation2) {} as Widget Function(BuildContext, Animation<double>, Animation<double>));
   }
 
   Future getCouponsHistory() async {
-  /*  couponsList = [];
+    /*  couponsList = [];
     GetCouponsList result = await getCouponsListInfo(user_token).catchError((error) {
       CommonMethods.showLongToast("Something went wrong!");
       isFetchingData = false;

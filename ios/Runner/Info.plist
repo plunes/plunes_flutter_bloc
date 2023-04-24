@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -17,14 +19,16 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>$(FLUTTER_BUILD_NAME)</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<string>NO</string>
 	<key>FirebaseScreenReportingEnabled</key>
+	<false/>
+	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
@@ -35,14 +39,37 @@
 		<key>NSAllowsArbitraryLoadsInWebContent</key>
 		<true/>
 	</dict>
+	<key>CFBundleURLTypes</key>
+    <array>
+    <dict>
+    <key>CFBundleURLSchemes</key>
+    <array>
+    <string>plunesotpless</string>
+    </array>
+    <key>CFBundleTypeRole</key>
+    <string>Editor</string>
+    <key>CFBundleURLName</key>
+    <string>otpless</string>
+    </dict>
+    </array>
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+    <string>whatsapp</string>
+    </array>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>This app needs access to media to upload your images.</string>
+	<key>NSCameraAlwaysUsageDescription</key>
+	<string>This app needs access to camera to update profile picture and illness document</string>
 	<key>NSCameraUsageDescription</key>
-	<string>This app needs access to camera.</string>
+	<string>This app needs access to camera to update profile picture and illness document.</string>
+	<key>NSCameraWhenInUseUsageDescription</key>
+	<string>This app needs access to camera to update profile picture and illness document</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>This app need access to the location, because our app share the curated list of doctors with price details in the surroundings of the users. They get the nearest 10 doctors post search.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>This app need access to the location, because our app share the curated list of doctors with price details in the surroundings of the users. They get the nearest 10 doctors post search.</string>
+	<key>NSLocationUsageDescription</key>
+	<string>Older devices need location.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app needs to access location to calculate distance.</string>
 	<key>NSMicrophoneUsageDescription</key>
@@ -50,7 +77,10 @@
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app needs access to photo to upload your images.</string>
 	<key>UIBackgroundModes</key>
-	<array/>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

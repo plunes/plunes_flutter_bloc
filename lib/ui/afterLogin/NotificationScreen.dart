@@ -1,12 +1,25 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+// import 'package:flutter_swipe_action_cell/flutter_swipe_action_cell.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
+import 'package:plunes/Utils/Constants.dart';
+import 'package:plunes/Utils/app_config.dart';
+import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
-import 'package:plunes/blocs/bloc.dart';
+import 'package:plunes/blocs/notification_repo/notification_bloc.dart';
+import 'package:plunes/firebase/FirebaseNotification.dart';
 import 'package:plunes/models/Models.dart';
+import 'package:plunes/models/solution_models/solution_model.dart';
+import 'package:plunes/repositories/user_repo.dart';
+import 'package:plunes/requester/request_states.dart';
+import 'package:plunes/res/AssetsImagesFile.dart';
+import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
-import 'package:plunes/resources/interface/DialogCallBack.dart';
+import 'package:plunes/ui/afterLogin/appointment_screens/appointment_main_screen.dart';
+import 'package:plunes/ui/afterLogin/new_solution_screen/solution_show_price_screen.dart';
+import 'package:plunes/ui/afterLogin/new_solution_screen/view_solutions_screen.dart';
+import 'package:plunes/ui/afterLogin/solution_screens/bidding_main_screen.dart';
 
 import 'HomeScreen.dart';
 /*
@@ -17,32 +30,61 @@ import 'HomeScreen.dart';
  *
  */
 
+// ignore: must_be_immutable
 class NotificationScreen extends BaseActivity {
   static const tag = 'notificationscreen';
+  final Function func;
+
+  NotificationScreen(this.func);
 
   @override
   _NotificationScreenState createState() => _NotificationScreenState();
 }
 
-class _NotificationScreenState extends State<NotificationScreen> implements DialogCallBack{
+class _NotificationScreenState extends State<NotificationScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   var globalHeight, globalWidth;
-  bool isSelected =false;
-  List<String> selectedPositions = new List();
-  AllNotificationsPost items;
-
+  bool isSelected = false;
+  List<String> selectedPositions = [];
+  AllNotificationsPost? _items;
+  List<PostsData>? posts = [];
+  late NotificationBloc _notificationBloc;
+  String? _failedMessage;
+  late bool _isProcessing;
+  StreamController? _streamController;
+  Timer? _timer;
+  User? _user;
 
   @override
   void initState() {
+    _user = UserManager().getUserDetails();
+    _notificationBloc = NotificationBloc();
+    _getNotifications();
+    _streamController = StreamController.broadcast();
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (_streamController != null && !_streamController!.isClosed)
+        _streamController?.add(null);
+    });
+    FirebaseNotification().setNotificationCount(0);
+    FirebaseNotification().notificationStream.listen((event) {
+      if (FirebaseNotification().getNotificationCount() != null &&
+          FirebaseNotification().getNotificationCount() != 0 &&
+          mounted) {
+        _getNotifications();
+      }
+    });
     super.initState();
-    initialize();
   }
-
 
   @override
   void dispose() {
+    _timer?.cancel();
+    _streamController?.close();
+    if (FirebaseNotification().getNotificationCount() != null &&
+        FirebaseNotification().getNotificationCount() != 0) {
+      FirebaseNotification().setNotificationCount(0);
+    }
     super.dispose();
-    bloc.disposeNotificationApiStream();
   }
 
   @override
@@ -52,198 +94,326 @@ class _NotificationScreenState extends State<NotificationScreen> implements Dial
     globalWidth = MediaQuery.of(context).size.width;
     return Scaffold(
         key: _scaffoldKey,
-        backgroundColor: Colors.white,
-        body: Container(child: StreamBuilder(
-          stream: bloc.notificationApiFetcherList,
-          builder: ((context, snapshot) {
-            items = snapshot.data;
-            if (snapshot.hasData) {
-              if(items.posts.length==0)
-                return Center(
-                  child: Text(stringsFile.noRecordsFound),
-                );
-             else
-              return buildList(snapshot);
-            }return Center(
-              child: CircularProgressIndicator(),
-            );
-          }),
-        ),)
-    );
-  }
-
-  Widget buildList(AsyncSnapshot<AllNotificationsPost> snapshot) {
-    return ListView.builder(
-      itemCount: snapshot.data.posts.length,
-      itemBuilder: (context, index) {
-        return rowLayout(snapshot.data.posts[index]);
-      },
-    );
-  }
-
-  Widget rowLayout(result){
-    int removePosition = selectedPositions.indexOf(result.id.toString());
-    return InkWell(onTap: ()=>addRemoveSelectedItem(result, removePosition),
-      onLongPress: () {
-        reset();
-        isSelected = true;
-        addRemoveSelectedItem(result, removePosition);
-      },
-
-        child: Container(
-        margin: EdgeInsets.all(5.0),
-        child: Card(
-          elevation: 2,
-          semanticContainer: true,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5.0),
-          ),
-          child: Container(
-            decoration: BoxDecoration(
-                color: Colors.red,
-                borderRadius: BorderRadius.all(Radius.circular(5.0))
-            ),
-            child:  Container(
-              margin: EdgeInsets.only(left: selectedPositions.indexOf(result.id.toString()) > -1 ? 5.0:0.0),
-              padding: EdgeInsets.all(5),
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(5.0))
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-              Container(
-              margin: EdgeInsets.only(bottom: 0, right: 10),
-              child: result.senderImageUrl !='' && !result.senderImageUrl.contains("default") ? CircleAvatar(
-                radius: 20,
-                backgroundImage: NetworkImage(result.senderImageUrl),
-              ): Container(
-                  height: 40,
-                  width: 40,
-                  alignment: Alignment.center,
-                  child:
-                  Text((result.senderName!=''? CommonMethods.getInitialName(result.senderName):'').toUpperCase(),
-                      style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.normal)),
-
-                  decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20)),
-                    gradient: new LinearGradient(
-                        colors: [Color(0xffababab), Color(0xff686868)],
-                        begin: FractionalOffset.topCenter,
-                        end: FractionalOffset.bottomCenter,
-                        stops: [0.0, 1.0],
-                        tileMode: TileMode.clamp
-                    ),) ),
-            ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(result.senderName,
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500
-                          ),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-
-                        Container(
-                          width: 200,
-                          child: Text(
-                            result.notification,
-                            maxLines: null,
-                            style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 12),
-                          ),
-                        )
-                      ],),
-                  ),
-
-                  Container(
-                    margin: EdgeInsets.only(bottom: 20),
-                    alignment: Alignment.topRight,
-                    child: Text(CommonMethods.getDuration(result.createdTime) ,
-                      style: TextStyle(
-                          fontSize: 13),
+        backgroundColor: PlunesColors.WHITECOLOR,
+        body: Column(
+          children: [
+            (_user != null &&
+                    _user!.userType != null &&
+                    _user!.userType!.toLowerCase() ==
+                        Constants.user.toString().toLowerCase())
+                ? Container(
+                    child: HomePageAppBar(
+                      widget.func,
+                      () {},
+                      () {},
+                      one: null,
+                      two: null,
                     ),
+                    margin: EdgeInsets.only(
+                        top: AppConfig.getMediaQuery()!.padding.top),
                   )
-                ],
-              ),
-            ),),
-        ),),);
+                : Container(),
+            Expanded(
+              child: Container(
+                  child:
+            getList(),
+            ),
+            ),
+          ],
+        ));
   }
 
-  Future addRemoveSelectedItem(result, int removePosition) async{
-    if(isSelected){
-      List<String> list = new List();
-      setState(() {
-        String pos = result.id.toString();
-        if (removePosition > -1) {
-          selectedPositions.remove(pos);
-        } else {
-          selectedPositions.add(pos);
-        }
-      });
-      if(selectedPositions.length==0)
-        reset();
-      list = selectedPositions;
-      var body = {};
-      body['selectedItemList'] = list;
-      body['isSelected'] = isSelected;
-      bloc.changeAppBar(context, body);
-    }else {
-      isSelected = false;
-      bloc.changeAppBar(context, null);
-     if(result.notificationType == 'solution' || result.notificationType == 'price'){
-//        Navigator.push(context,MaterialPageRoute(builder: (context) => BiddingActivity(screen: 0)));
-      }else if(result.notificationType == 'booking'){
-//        Navigator.push(context, MaterialPageRoute(builder: (context) => Appointments(screen: 0)));
-      }else if(result.notificationType == 'plockr'){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen(screen: "plocker")));
+  getList() {
+    print("_items->${_items}");
+    if (_items != null) {
+      if (_items == null ||
+          _items!.posts == null ||
+          _items!.posts!.length == 0) {
+        return Container(
+          width: double.infinity,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Image.asset(
+                PlunesImages.notification_empty_screen_icon,
+                height: AppConfig.verticalBlockSize * 22,
+                width: AppConfig.horizontalBlockSize * 42,
+                alignment: Alignment.center,
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                    top: AppConfig.verticalBlockSize * 1.5,
+                    bottom: AppConfig.verticalBlockSize * 3.5),
+                child: Text(
+                    _failedMessage ??
+                        plunesStrings.noRecordsFound,
+                    style: TextStyle(
+                        fontSize: AppConfig.mediumFont,
+                        fontWeight: FontWeight.w600)),
+              ),
+              UserManager().getUserDetails().userType ==
+                  Constants.user
+                  ? FittedBox(
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                HomeScreen(
+                                    screenNo: Constants
+                                        .homeScreenNumber)),
+                            (_) => false);
+                    return;
+                  },
+                  child: CustomWidgets().getRoundedButton(
+                      PlunesStrings.startNegotiating,
+                      AppConfig.horizontalBlockSize * 6,
+                      PlunesColors.GREENCOLOR,
+                      AppConfig.horizontalBlockSize * 3.2,
+                      AppConfig.verticalBlockSize * 1,
+                      PlunesColors.WHITECOLOR),
+                ),
+              )
+                  : Container()
+            ],
+          ),
+        );
+      } else {
+        return buildList(_items!);
       }
+    }
+    return const Center(
+      child: CircularProgressIndicator(),
+    );
+  }
 
+  Widget buildList(final AllNotificationsPost items) {
+    return ListView.builder(
+      padding: const EdgeInsets.all(0),
+      itemCount: posts!.length,
+      itemBuilder: (context, index) {
+        if (posts![index].deleted!) {
+          return Container();
+        }
+        return
+          // SwipeActionCell(
+          //   key: ObjectKey(items.posts![index]),
+          // //  performsFirstActionWithFullSwipe: true,
+          //   closeWhenScrolling: true,
+          //
+          //   trailingActions: <SwipeAction>[
+          //     SwipeAction(
+          //         performsFirstActionWithFullSwipe: true,
+          //         title: "delete",
+          //         onTap: (CompletionHandler handler) async {
+          //           _removeNotification(items.posts!, index);
+          //           //setState(() {});
+          //         },
+          //         color: PlunesColors.SPARKLINGGREEN.withOpacity(.5)),
+          //   ],
+          //   child:
+            rowLayout(items.posts![index]
+            // )
+        );
+      },
+    );
+  }
 
+  Widget rowLayout(PostsData result) {
+    return InkWell(
+      onTap: () => _onTap(result),
+      child: Column(
+        children: <Widget>[
+          Container(
+            color:
+                (result.hasSeen ?? true) ? null : PlunesColors.LIGHTGREENCOLOR,
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              children: <Widget>[
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                        margin: const EdgeInsets.only(bottom: 0, right: 10),
+                        child: result.senderImageUrl != '' &&
+                                !result.senderImageUrl!.contains("default")
+                            ? CircleAvatar(
+                                radius: AppConfig.horizontalBlockSize * 5,
+                                backgroundImage:
+                                    NetworkImage(result.senderImageUrl!),
+                              )
+                            : CustomWidgets().getProfileIconWithName(
+                                result.senderName, 10, 10)),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            CommonMethods.getStringInCamelCase(
+                                result.senderName)!,
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: AppConfig.smallFont,
+                                fontWeight: FontWeight.w600),
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Container(
+                            width: AppConfig.horizontalBlockSize * 65,
+                            child: Text(
+                              result.notification!,
+                              maxLines: null,
+                              style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: AppConfig.smallFont),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 20),
+                      alignment: Alignment.topRight,
+                      child: StreamBuilder<Object?>(
+                          stream: _streamController!.stream,
+                          builder: (context, snapshot) {
+                            return Text(
+                              CommonMethods.getDuration(result.createdTime!),
+                              style: TextStyle(
+                                  fontSize: AppConfig.verySmallFont! - 2),
+                            );
+                          }),
+                    )
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Container(
+            width: double.infinity,
+            height: 0.5,
+            color: PlunesColors.GREYCOLOR,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future _onTap(PostsData result) async {
+    if (result.hasSeen != null && !result.hasSeen!) {
+      result.hasSeen = true;
+      _notificationBloc.addIntoStream(null);
+    }
+    if (result.notificationScreen == null ||
+        result.notificationScreen!.isEmpty) {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  HomeScreen(screenNo: Constants.homeScreenNumber)),
+          (_) => false);
+    }
+    if (result.notificationScreen == FirebaseNotification.solutionScreen &&
+        UserManager().getUserDetails().userType == Constants.user) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => SolutionShowPriceScreen(
+                    catalogueData: CatalogueData(
+                        solutionId: result.notificationId,
+                        isFromNotification: true),
+                  )));
+    } else if (result.notificationScreen ==
+            FirebaseNotification.solutionViewScreen &&
+        UserManager().getUserDetails().userType == Constants.user) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ViewSolutionsScreen(
+                    catalogueData: CatalogueData(
+                        solutionId: result.notificationId,
+                        isFromNotification: true),
+                  )));
+    } else if (result.notificationScreen ==
+        FirebaseNotification.bookingScreen) {
+//      print("notification id is ${result.notificationId}");
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => AppointmentMainScreen(
+                    bookingId: result.notificationId,
+                  )));
+    } else if (result.notificationScreen == FirebaseNotification.reviewScreen) {
+//      print("notification id is ${result.notificationId}");
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => AppointmentMainScreen(
+                    bookingId: result.notificationId,
+                    shouldOpenReviewPopup: true,
+                  )));
+    } else if ((result.notificationScreen ==
+                FirebaseNotification.insightScreen ||
+            result.notificationScreen == FirebaseNotification.solutionScreen) &&
+        UserManager().getUserDetails().userType != Constants.user) {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  HomeScreen(screenNo: Constants.homeScreenNumber)),
+          (_) => false);
+    } else if (result.notificationScreen ==
+        FirebaseNotification.exploreScreen) {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  HomeScreen(screenNo: Constants.exploreScreenNumber)),
+          (_) => false);
+    } else if (result.notificationScreen ==
+        FirebaseNotification.activityScreen) {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  HomeScreen(screenNo: Constants.activityScreenNumber)),
+          (_) => false);
     }
   }
-  void reset() {
-    setState(() {
-      if(selectedPositions.length>0){
-        selectedPositions.clear();
-        isSelected = false;
-      }
-    });
-  }
-  void initialize() {
-    bloc.fetchNotificationData(context, this);
-    bloc.deleteListenerFetcher.listen((data) {
-     if(data==null)
-       reset();
-     else if(data!=null&& data['isYes'] !=null && data['isYes']){
-       CommonMethods.confirmationDialog(context, stringsFile.deleteNotificationMsg, this);
-     }
-    });
 
-  }
-  @override
-  dialogCallBackFunction(String action) {
-    if(action =='CANCEL') {
-      reset();
-    }else {
-      for(int i=0; i< items.posts.length;i++){
-        bool flag =false;
-        for(int j=0; j<selectedPositions.length;j++) {
-          if(!flag &&  items.posts[i].id.toString()==selectedPositions[j]){
-            items.posts.removeAt(i);
-            flag = true;
-            i--;
-          }
+  void _getNotifications() {
+    _notificationBloc.getNotifications().then((requestState) {
+      if (requestState is RequestSuccess) {
+
+        _items = requestState.response;
+        if (_items != null &&
+            _items!.posts != null &&
+            _items!.posts!.isNotEmpty) {
+          posts = [];
+          posts!.addAll(_items!.posts!);
+          // _missedSolutions = [];
+          // _prevSearchedSolution!.data!.forEach((solution) {
+          //   _prevSolutions.add(solution);
+          // });
         }
+      } else if (requestState is RequestFailed) {
+        _failedMessage = requestState.failureCause ?? plunesStrings.somethingWentWrong;
       }
-      reset();
-      bloc.notificationApiFetcher.sink.add(items);
-    }}
+      _isProcessing = false;
+      _setState();
+    });
+  }
+
+  void _setState() {
+    if (mounted) setState(() {});
+  }
+  void _removeNotification(List<PostsData> items, int index) {
+    _notificationBloc.removeNotification(items[index]);
+    items.removeAt(index);
+    _setState();
+  }
+
 }

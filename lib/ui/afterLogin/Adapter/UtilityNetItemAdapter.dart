@@ -14,7 +14,7 @@ class UtilityNetItemAdapter extends BaseActivity {
 }
 
 class _ItemCardState extends State<UtilityNetItemAdapter> {
-  BuildContext screenContext;
+  BuildContext? screenContext;
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +47,7 @@ class _ItemCardState extends State<UtilityNetItemAdapter> {
               ): widget.getAssetIconWidget('assets/default_img.png', 60, 60, BoxFit.contain), decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.5), borderRadius: BorderRadius.all(Radius.circular(30),))),
           ),
           widget.getSpacer(0.0, 10),
-          Expanded(child: widget.createTextViews(index == 4?stringsFile.more:'Name shdj scvsdsdc dshgsdsd scscs', 10 , colorsFile.lightGrey2, TextAlign.center, FontWeight.w100)
+          Expanded(child: widget.createTextViews(index == 4?plunesStrings.more:'Name shdj scvsdsdc dshgsdsd scscs', 10 , colorsFile.lightGrey2, TextAlign.center, FontWeight.w100)
             ,)
         ],
         ));

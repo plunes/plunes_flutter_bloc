@@ -1,231 +1,869 @@
 /// Created by Manvendra Kumar Singh
 
+final plunesStrings = PlunesStrings();
 
-final stringsFile = StringsFile();
+class PlunesStrings {
+//  static const String hospitalTiming = "Hospital Timing";
+  static const String savePriceInCataloge = "Save the price in your Catalog ?";
+  static const String gettingPriceForFacilityText =
+      "Getting Best Prices from this facility";
+  static const String exploreSpecialities =
+      "Explore all our Specialities and try Negotiating. Save Thousands of Rupees in a click";
+  static const String hospitals = "Hospitals";
+  static const String realTimeDecision =
+      "Real time Insight allows you to make Real time decisions.";
+  static const String takeAction =
+      "Take action on insights with in 10 Minutes.";
+  static const String youCanProvide =
+      "You can provide best proposition to potential clients.";
+  static const String directLeadMatching =
+      "Direct leads matching your catalog.";
+  static const String saveLakhs = "Save Lakhs of rupees in Marketing cost.";
+  static const String realtimeInsights = "Real time Insights";
+  static const String weUseAI =
+      "We use Artificial intelligence and BIG DATA to offer intelligent Data Driven insights for increasing the revenue and footfall of clients to our partner facilities.";
+  static const String aboutUsHospital =
+      "PLUNES is powered by AI, offering compelling services and features to our partner Facilities.";
+  static const String seeHowItWorksHospital = "See How it Works !";
+  static const String seeHowItWorks =
+      "India's First Utility Network which enables you to Negotiate on your Medical Bills. See How it Works !";
+  static const String aboutUsDesc =
+      "Our AI will discover in real-time from curated doctors/hospitals & clinics nearest to you to get the best price solution. We help you find the best price solutions to all your medical concerns in just one click. Search instant solutions for all your treatments & medical procedures in Delhi NCR.";
+  static const String perksPrivileges = "Perks & Privileges";
+  static const String perksDownloading =
+      "The perks of Downloading PLUNES will include:";
+  static const String forAnyQueries = "For Any Queries, Call us at: 7011311900";
+  static const String medicalRegistrationVerified =
+      "Medical Registration Verified";
+  static const String view_More = "View more";
+  static const String checkReviews = "Check Reviews";
+  static const String timing = 'Timings';
+  static const String googlePlayStoreUrl =
+      "https://play.google.com/store/apps/details?id=com.plunes&hl=en_IN/";
+  static const String appleStoreUrl =
+      "https://apps.apple.com/us/app/plunes/id1463747553/";
+  static const String exceptionMsg =
+      'An error occurred when converting a color';
+  static const String noInternetMsg = 'No Internet';
+  static const String cantConnectInternet = 'Can\'t connect to the Internet ';
+  static const String tryAgain = 'Try Again';
 
-class StringsFile {
-  static String exceptionMsg = 'An error occurred when converting a color';
-  static String noInternetMsg = 'No Internet';
-  static String cantConnectInternet = 'Can\'t connect to the Internet ';
-  static String tryAgain = 'Try Again';
+  static const String cancelError = "Request cancelled";
+
+  static const String pleaseCheckInternetConnection =
+      "Slow or no internet connection";
+
+  static const String noInternet = noInternetMsg;
+
+  static const String receiveTimeOut = "Server timeout, please try again later";
+
+  static const String pleaseSelectLocation =
+      "To discover nearest facilities, turn on location services, or tap to manually set location.";
+
+  /////
+  ///Solution strings
+  static const String oops = "Oops !";
+  static const String couponExpired =
+      "Looks like this coupon has expired,\nPlease try again.";
+  static const String negotiatingWithSelectedFacility =
+      "We will be negotiating with the selected facilities on your behalf and will get in touch with you soon";
+  static const String thankYou = "Thank You!";
+  static const String thanksForContacting =
+      "Thanks for contacting us!\nWe will be in touch with you shortly";
+  static const String usingOlderVersion =
+      "You are using an older version of the application, please update to continue using our services.";
+  static const String newVersionAvailable = "New Version Available";
+  static const String solutionSearched = "Solution Searched";
+  static const String negotiatedSolutions = "Discovered Prices";
+  static const String validForOneHour = "Valid for ";
+  static const String consultations = "Consultations";
+  static const String tests = "Tests";
+  static const String procedures = "Procedures";
+  static const String yrExp = "Years Experience";
+  static const String NA = "NA";
+  static const String negotiateForBestPrice =
+      "Discover The Prices Of Your Medical Treatment In One Click ";
+  static const String previousActivities = "Activity";
+  static const String noSolutionsAvailable = "No solutions available";
+  static const String searchSolutions = "";
+  static const String consultationNotAvailable = "Consultation not available";
+  static const String proceduresNotAvailable = "Procedures not available";
+  static const String testsNotAvailable = "Tests not available";
+  static const String serviceNotAvailable =
+      "Currently this service is not available";
+  static const String weAreNegotiatingBestSolution =
+      'We are discovering the best solutions for you';
+  static const String receiving = "Receiving...";
+  static const String checkAvailability = "Availability";
+  static const String bookIn = "Lock in";
+  static const String homeCollectionAvailable = "Home Collection Available";
+  static const String oopsServiceNotAvailable =
+      "Currently we don't have professionals in your area , we will update you soon";
+  static const String save = "Saved";
+  static const String kmsAway = "kms away";
+  static const String book = "Book";
+  static const String viewDetails = 'View Details';
+  static const String confirmYourBooking = "Confirm your Booking";
+  static const String negotiating = "Discovering ";
+  static const String topSearches = "Top Searches";
+  static const String switchToGurLoc =
+      'To discover nearest facilities, turn on location services, or manually set location';
+  static const String setYourTime = "Set your Time";
+  static const String choose = "Choose";
+  static const String locationNotAvailable = "Location not available";
+  static const String pleaseSelectValidSlot =
+      "Please select a valid appointment time";
+  static const String pleaseMakeSureText =
+      "Please make sure you book within a short time, keeping in mind price is valid for only one hour.";
+  static const String chooseLocation = "Choose another location";
+  static const String enterYourLocation = "Enter your Location";
+  static const String processing = "Processing...";
+
+  ///Booking strings
+  static const String whyPlunes = "Why Plunes?";
+  static const String getDirection = "Get Direction";
+  static const String addressInSmall = "Address";
+  static const String availableSlots = "Available Slots";
+  static const String slot1 = "Slot 1";
+  static const String slot2 = "Slot 2";
+  static const String appointmentTime = "Choose Appointment time";
+  static const String tcApply = "T&C Apply.";
+  static const String payNow = "PAY NOW";
+  static const String availableCash = "Available Cash";
+  static const String closed = "Closed";
+  static const String reschedule = "Reschedule";
+  static const String requestInvoice = "Download Invoice";
+  static const String requestInvoice2 = "Request Invoice";
+  static const String refund = "Request Refund";
+  static const String refund2 = "Refund";
+  static const String visitAgain = "Visit Again";
+  static const String appointmentScreenError = "Appointment Screen Error";
+  static const String paymentStatus = "Payment status";
+  static const String bookedViaInsurance = "Booked Via Insurance";
+  static const String rescheduledSuccessMessage =
+      "Appointment rescheduled successfully!";
+  static const String rescheduledFailedMessage =
+      "Appointment rescheduled failed!";
+  static const String cancelSuccessMessage =
+      "Appointment cancelled successfully!";
+  static const String cancelFailedMessage = "Appointment cancellation failed!";
+  static const String refundFailedMessage =
+      "Refund Request has been failed! try again Later.";
+  static const String emptyTextFieldWarning = "Please Enter the Refund Reason";
+  static const String thankYouMessage = "Thank You!";
+  static const String refundSuccessMessage =
+      "We have received your refund request . Our team will get in touch with you soon regarding the same";
+  static String uplaodSuccessMessage = "File uploaded successfully!";
+  static String plockrViewer = 'PLUNES PLOCKR VIEWER';
+
+  ///Catalogue View Screen
+  static String youHaveNotAddedAnyServicesYet =
+      "You haven't added any services in your catalogue yet.";
+
+  static const String toChangePriceOrVarianceString =
+      "To change price or variance in catalogue, please add again with new price and variance. ";
+
+  static const String testName = "Test Name";
+  static const String price = "Price";
+  static const String editVariance = "Variance";
+
+  ///Insight main screen
+  static const String realTimeInsights = 'Real Time Insights';
+  static const String doctorDetails = "Doctor Details";
+  static const String realTimePrediction = 'Real Time Prediction';
+  static const String noRealTimeInsights =
+      "You don't have any real time insights yet";
+  static const String noBusinessDataFound = 'No business data found';
+  static const String kindlyUpdateYourPrice = 'Update price';
+  static const String noActionableInsightAvailable =
+      "No Actionable insights yet";
+  static const String noReportAvailabelMessage =
+      "You don't have any reports yet";
+  static const String noMatchReport = "No Match Found!";
+  static const String unableToOpen = "Unable to open the file!";
+  static const String dataNotFound = "Data not found!";
+  static const String unableToDelete = "Unable to delele!";
+  static const String appointmentFailedMessage = "Confirmation request failed";
+  static const String deleteSuccessfully = "Deleted Successfully!";
+  static const String priceUpdateSuccessMessage = "Price updated successfully!";
+  static const String noAppointmentAvailable =
+      "You don't have appointment yet!";
+  static const String noConfirmedAppointments = "No Confirmed appointments";
+  static const String noCancelledAppointments = "No Cancelled appointments";
+  static const String noNewAppointments = "No New appointments";
+  static const String invalidOtp = "Invalid OTP";
+  static const String confirmFailedMessage = 'booking confirmation failed';
+  static const String pleaseSelectALocation = "Please select a valid location.";
+  static const String pay = "Pay";
+  static const String paymentDone = "Payment Done!";
+  static const String helpQueryFailedMessage =
+      "Query submission has been failed! Try Again";
+  static const String emptyQueryFieldMessage = "Please Enter your query";
+  static const String helpQuerySuccessMessage =
+      "Thanks for contacting us! We will be in touch with you shortly.";
+  static const String timeNotAvailable =
+      "The selected time is not available with this facility, make sure to select in the available time slot to confirm your booking";
+
+  ///Doc_hos profile
+  static const String emailIdText = "Email_Id";
+  static const String viewOnMap = "View on map";
+  static const String serviceList = "Service List";
+  static const String seeAllDoctors = "See all Doctors";
+  static const String unableToLoadServices = "No Services available";
+  static const String knowMore = "Know More";
+
+  ///Coupon
+  static const String pleaseEnterYourCoupon = "Please enter coupon";
+  static const String enterYourCode = "Enter your code";
+  static const String hurry = "HURRY!";
+
+  ///Bank details
+  static const String bankDetails = "Bank Details";
+
+  static const String reductionInPrice = "Reduction in Price";
+
+  static const String queryCantBeEmpty = "Please fill your description";
+  static const String unableToCancel =
+      "Appointment time is over, unable to cancel.";
+  static const String unableToReschedule =
+      "Appointment time is over, unable to reschedule";
+  static const String unableToConfirm =
+      "Appointment time is over, unable to confirm";
+  static const String unableToProcess =
+      "Appointment time is over, request cannot be processed";
+  static const String numberNotExist = "Phone number doesn't exists";
+
+  static const String invalidCredentials = "Invalid credentials";
+
+  static const String turnOnLocationService =
+      "To discover nearest facilities, turn on location services, or tap to manually set location.";
+
+  static const String pleaseSelectLocationPopup =
+      "Please select a valid location to discover nearest facilities";
+
+  static const String ourTeamWillContactYou = "Our team will contact you soon";
+  static const String ourTeamWillContactYouSoonOnCancel =
+      "Our team will contact you soon regarding the confirmation of your appointment cancellation";
+  static const String userName = "Phone Number or User ID";
+
+  static const String usernameCantBeEmpty =
+      "Please fill valid Phone Number or User ID";
+
+  static const String cantRescheduleForUser =
+      "Sorry, cannot reschedule the appointment as it is requested for cancellation";
+  static const String cantRescheduleForDocHos =
+      "Sorry, cannot reschedule the appointment as it is requested for cancellation";
+  static const String codeCanBeUsedThreeTimes =
+      "Your Referral Code can be used for up to 3 times. So, ";
+  static const String hurryAndRefer = "Hurry and Refer!";
+  static const String looksLikeReferralCodeIsExpired =
+      "Looks like Your Referral Code is expired !";
+  static const String writeYourConcern = "Write your Concern";
+  static const String thanksForService =
+      "We would like to know your review,\nSubmit your review to help us improve\nyour experience with us";
+  static const String pleaseFillYourReview = "Please write your review.";
+
+  static const String thankYouForValuableFeedback =
+      "Thank you for your valuable feedback.";
+  static const String invoiceSuccessMessage =
+      "Your Invoice has been sent at your registered mail. Make sure that you have entered the right credentials";
+
+  static const String enterTheRestToSubmit = "Enter the rest to submit.";
+
+  static const String reachUsAt = "Call us at : 7011311900";
+
+  static const String unableToGenerateInvoice =
+      "Unable to generate invoice, please try again later";
+  static const String emailIdAsConst = "Email-Id";
+  static const String makeSureYouFillSlotAccurately =
+      "Make sure to Enter your time slots accurately so that you receive bookings as per your availability and never lose a patient";
+
+  static const String cantBookPriceExpired =
+      "Can't book the appointment as the prices are valid for only 7 days.";
+  static const String cantNegotiateWithMoreFacilities =
+      "Can't discover more facilities as the prices are valid for only 7 days.";
+
+  ///More Facilities Screen
+  static const String moreFacilities = "More Facilities";
+  static const String congrats = "Congrats!";
+  static const String negotiateWithFiveMore =
+      "Discover up to 5 more facilities near you";
+  static const String searchFacilities = "Search Facilities";
+  static const String chooseFacilities = "Choose Facilities";
+  static const String negotiate = "Discover";
+
+  ///Manual Bidding
+  static const String couldNotFindText =
+      "Couldn't find what you are looking for?";
+  static const String negotiateManually = "Discover Manually";
+  static const String enterProcedureAndTestDetails =
+      "Enter Procedure & Test details";
+  static const String makeSureTheDetailsText =
+      "Enter the complete procedure details to get competitive bids from the selected facilities.";
+  static const String selectTheFacilities =
+      "Select the facilities that you want to discover";
+  static const String makeSureToUpdatePrice =
+      "Make sure to Update price in the Preferred time to ensure booking";
+  static const String specialities = "Choose Speciality";
+  static const String enterTheSpecialityRelatedText =
+      "Enter the speciality related to the Procedure you're looking for so we can help you choosing the facilities";
+
+  static const String actionAbleMessage =
+      "These insights are predicted by our AI so that you get maximum conversions. Make sure to act on Actionable Insights so that You increase your Revenue.";
+  static const String realTimeMessage =
+      "These are real Time requests from Patients near you who are looking for Procedures and are viewing your Profiles. Make sure to take action on the insights to achieve successful conversion.";
+  static const String appointmentWithText = "Appointment with ";
+
+  ///Highlight Desc for demo
+  static const String youCanChangeLocationFromHere =
+      "You can change your location from here.";
+  static const String locationDesc = "Location";
+  static const String menu = "Menu";
+  static const String menuDesc = "Tap to see menu options.";
+  static const String searchDesc = "Tap here to search Procedures.";
+  static const String viewDetailsDesc = "Tap to view details.";
+  static const String moreFacilityDesc = "Tap to choose more facilities.";
+  static const String businessEarnedLostTitle = "Business Earned/Lost";
+  static const String realTimeDesc =
+      "Real Time requests from Patients Near you.";
+  static const String enterProcedureAndTestDetailsToReceiveBids =
+      "Please enter Procedure & Test details to receive competitive bids from hospitals.";
+  static const String selectFacilityToReceiveBid =
+      "Please select facilities to receive competitive bids from hospitals.";
+  static const String refresh = "Refresh";
+  static const String startNegotiating = "Start Negotiating";
+  static const String pleasePayFull = "Please pay due amount to get Invoice";
+  static const String continueText = "Continue";
+  static const String addMore = "Add more";
+  static const String facilityNotAvailableMessage =
+      "Sorry, the facility you are searching is currently not available";
+  static const String emptyStr = "";
+  static const String profileUpdatedSuccessfully =
+      "Profile updated successfully.";
+  static const String passwordUpdatedSuccessfully =
+      "Password updated successfully.";
+  static const String afterFacilitySelectedText =
+      "Sorry, the facilities of selected speciality aren't available currently";
+  static const String reviewYourExpr = "Review your experience";
+  static const String watch = "Watch";
+  static const String noSlot = "No slot";
+  static const String doNotNotifyForThisService =
+      "Stop notifications for this service ?";
+  static const String serviceNotAvailableAtFacility =
+      "Service not available at your facility";
+  static const String yes = "Yes";
+  static const String no = "No";
+  static const String serviceNotAvailableText = "Service Not Available";
+  static const String notificationDisabled =
+      "We have received your request.You won't be notified for this service any more!";
+  static const String slotUpdatedSuccessfully =
+      "Time slots updated successfully!";
+  static const String daySuccessfullyClosed =
+      "Selected day is successfully closed";
+  static const String slotNotInSequence =
+      "Seems like your slots are not in sequence, try again.";
+  static const String exploreMore = "Explore more";
+  static const String apply = "Apply";
+  static const String explore = "Explore";
+  static const String priceValidThroughPlunes =
+      "Prices valid exclusively on Plunes";
+  static const String zestMoney = "No Cost EMI";
+  static const String payOnWeb = "Pay On Web";
+  static const String payUpi = "Pay Through Upi";
+  static const String nameMustBeGreaterThanTwoChar =
+      "Please enter valid name, name length should be greater than 2 characters";
+  static const String bookLater = "Add To Cart";
+  static const String enterName = "Enter name";
+  static const String successfullyAddedToCart =
+      "Successfully added in the cart";
+  static const String myCart = "My Cart";
+  static const String priceExpiredNegotiateAgain =
+      "Prices have expired, discover again to book";
+  static const String enterValidAge = "Please enter a valid age";
+  static const String pleaseSelectYourGender = "Please select your gender";
+  static const String cartItemExpiredMessage =
+      "Sorry, looks like your selected appointment time isn't valid , try again";
+  static const String cart = "Cart";
+  static const String useCredits = "Apply credits";
+  static const String proceedText = "Proceed";
+  static const String amountPaidText = "Amount Paid";
+  static const String totalAmountText = "Total Amount";
+  static const String completePaymentText = "Complete Payment";
+  static const String invalidPaymentDetails =
+      "Invalid payment details, please try again later";
+  static const String discoverMoreFacilityButtonText = "Add more facility";
+  static const String discoverPrice = "Discover Prices Now";
+  static const String discoverFacilityNearYou = "Discover facilities near you";
+  static const String experienceText = "Experience";
+  static const String selectedFacilities = "Selected facilities";
+  //static const String bookYourProcedure = "Book your Treatment";
+  static const String bookYourProcedure = "Book your Test";
+  static const String enterAdditionalDetails =
+      "Enter additional details for the required ";
+  static const String next = "Next";
+  static const String previousText = "Previous";
+  static const String haveYouEverBeenTreatedPreviously =
+      "Have You Ever Been Treated Previously ?";
+  static const String pleaseDescribePreviousCondition =
+      "Please Describe Your Condition of previous treatment";
+  static const String isInsuranceCovered =
+      "Do you have your insurance covered ?";
+  static const String whyUs = "Why us";
+  static const String knowYourProcedure =
+      "Explore Top Rated Hospitals Near You";
+  static const String selectValidDocWarningText =
+      "Please select a valid document.Allowed format is .pdf";
+  static const String close = "Close";
+  static const String bookNowText = "Book Now";
+  static const String unableToPlayVideo = "Unable to play video";
+  static const String phoneNoText = "Phone no";
+  static const String whatsAppMessage = "";
+  static const String bookAppointmentText = "Book Appointment";
 
   get healthSolInfoArray => [
-    'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',
-    'Acne Scar Treatment\n Anti-Aging\n Acne Scars\n Pigmentation\n Hairfall\n Dermoscopy\n Chemical Peel\n Wart Removal\n Wart Removal\n Baldness Treatment\n Skin Polishing\n Wrinkle Treatment\n Mole Removal\n Melasma\n Eczema',
-    'Caesarean Section\n Colposcopy\n Cervical Cerclage\n Ovary Removal Surgery\n Female Infertility Treatment\n PCOD & Fibroids Management\n Hyteroscopy\n Dilation & Curettage\n Iud Placement\n',
-    'Lasik Surgery\n Refractive Surgery\n Cataract Eye Surgery\n Oculoplasty\n Glaucoma Treatment\n Keratoconus Treatment\n Laser Photocoagulation\n Phacoemulsification\n Vitreoretinal Surgery\n',
-    'Joint Replacement\n Spinal Disc Problem\n Fracture Treatment\n Revision Surgery\n Asthoscopic Surgery\n Osteoporosis\n Sports Injuries\n Spondylitis\n Arthritis\n Trauma Injuries\n',
-    'Full Body Check-Up\n Complete Blood Count (CBC)\n Lipid Profile\n Fasting Blood Sugar Test (FBS)\n Thyroid Stimulating Harmone (TSH)\n Liver Function Tests (LFT)\n H1n1 Test (Swine Flu)\n Mp Test (Malarial Parasite)\n Haemoglobin Test\n Hiv Antibody Test\n Kft (Kidney Funtion Test)\n Hba1c (Sugar Test)\n Vitamin D / B12 Test\n',
-    'Electro Therapy\n Laser Therapy\n Speech Therapy\n Neck Pain\n Back Pain\n Shoulder Pain & Frozen Shoulder\n Paralysis\n Sports Injury\n Spine Correction',
-    'Cognitive Behavioural Therapy (CBT)\n De-Addiction\n Marriage Counselling\n Obsessive Compulsive Disorder (OCD)\n Mood Disorders\n Stress Management Counselling\n Psychoanalysis\n Anger Management\n Life Skill Training',
-    'CT Scan\n MRI\n X-Ray\n Ultrasound\n ECG\n Colour Doppler\n ECHO\n Ultrasonography\n Carotid Ultrasound'
-  ];
+        'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',
+        'Acne Scar Treatment\n Anti-Aging\n Acne Scars\n Pigmentation\n Hairfall\n Dermoscopy\n Chemical Peel\n Wart Removal\n Wart Removal\n Baldness Treatment\n Skin Polishing\n Wrinkle Treatment\n Mole Removal\n Melasma\n Eczema',
+        'Caesarean Section\n Colposcopy\n Cervical Cerclage\n Ovary Removal Surgery\n Female Infertility Treatment\n PCOD & Fibroids Management\n Hyteroscopy\n Dilation & Curettage\n Iud Placement\n',
+        'Lasik Surgery\n Refractive Surgery\n Cataract Eye Surgery\n Oculoplasty\n Glaucoma Treatment\n Keratoconus Treatment\n Laser Photocoagulation\n Phacoemulsification\n Vitreoretinal Surgery\n',
+        'Joint Replacement\n Spinal Disc Problem\n Fracture Treatment\n Revision Surgery\n Asthoscopic Surgery\n Osteoporosis\n Sports Injuries\n Spondylitis\n Arthritis\n Trauma Injuries\n',
+        'Full Body Check-Up\n Complete Blood Count (CBC)\n Lipid Profile\n Fasting Blood Sugar Test (FBS)\n Thyroid Stimulating Harmone (TSH)\n Liver Function Tests (LFT)\n H1n1 Test (Swine Flu)\n Mp Test (Malarial Parasite)\n Haemoglobin Test\n Hiv Antibody Test\n Kft (Kidney Funtion Test)\n Hba1c (Sugar Test)\n Vitamin D / B12 Test\n',
+        'Electro Therapy\n Laser Therapy\n Speech Therapy\n Neck Pain\n Back Pain\n Shoulder Pain & Frozen Shoulder\n Paralysis\n Sports Injury\n Spine Correction',
+        'Cognitive Behavioural Therapy (CBT)\n De-Addiction\n Marriage Counselling\n Obsessive Compulsive Disorder (OCD)\n Mood Disorders\n Stress Management Counselling\n Psychoanalysis\n Anger Management\n Life Skill Training',
+        'CT Scan\n MRI\n X-Ray\n Ultrasound\n ECG\n Colour Doppler\n ECHO\n Ultrasonography\n Carotid Ultrasound'
+      ];
 
-  get healthSolSpecialistArray => ['Dentist', 'Dermatology', 'Gynaecology', 'Opthalmologist', 'Orthopedic', 'Pathology', 'Physiotherapy', 'Phychotherapy', 'Radiology'];
+  get aboutUsUser => [
+        '100% \nRefundable Payment',
+        'Preferred Timing\nas Per Your\nAvailability',
+        'Make Partial\nPayments',
+        'Discover curated Hospitals & Doctors in Real Time',
+        'Automated Appointments & Payments',
+      ];
 
-  get healthSolProcedureArray => ['Dental', 'Dermatology', 'Gynae', 'Ophthalmology', 'Orthopedic', 'Pathology Tests', 'Physiotherapy Treatments', 'Psychotherapy Treatments', 'Radiology Tests'];
+  get aboutUsHosp => [
+        'Real\nTime Insights',
+        'Actionable\nInsights',
+        'Extensive\nMarketing',
+        'Patient\nFootfall',
+        'Get Data to track and Increase your Business Performance.',
+        'Multiple Center\nIntegration',
+      ];
+
+  get healthSolSpecialistArray => [
+        'Dentist',
+        'Dermatology',
+        'Gynaecology',
+        'Opthalmologist',
+        'Orthopedic',
+        'Pathology',
+        'Physiotherapy',
+        'Phychotherapy',
+        'Radiology'
+      ];
+
+  get healthSolProcedureArray => [
+        'Dental',
+        'Dermatology',
+        'Gynae',
+        'Ophthalmology',
+        'Orthopedic',
+        'Pathology Tests',
+        'Physiotherapy Treatments',
+        'Psychotherapy Treatments',
+        'Radiology Tests'
+      ];
 
   get enterANewEra => 'Enter a new Era of \n Healthcare';
-  get enterEmailOrPhone => 'Please enter your Email id or Mobile Number';
-  get phoneNumber => 'Phone Number';
-  get countryCode => '+91';
-  get enterNumber => 'Enter Number';
-  get enterValidNumber => 'Please enter valid phone number';
-  get enter => 'ENTER';
-  get checkOTP => 'Check OTP';
-  get wrongOTPError => 'Wrong OTP Please Try Again!';
-  get enterYourOTPMsg => 'Enter your 4 digit code that \n you received on your phone';
-  get resendCodeIn => 'Resend code in ';
-  get resendCode => 'Resend code';
-  get signUp => 'Sign up';
-  get login => 'Login';
-  get male => 'Male';
-  get female=> 'Female';
-  get name =>'Name*';
-  get phoneNo =>'Phone No';
-  get emailId => 'Email Id*';
-  get dateOfBirth => 'Date of Birth';
-  get location => 'Location*';
-  get referralCode => 'Enter Referral Code (Optional)';
-  get errorMsgEnterFullName=> 'Please enter your full name';
-  get errorMsgEnterDocName=> 'Please enter doctor name';
 
-  get errorMsgEnterHosName=> 'Please enter hospital name';
+  get enterEmailOrPhone => 'Please enter your Mobile Number';
+
+  get phoneNumber => 'Phone Number';
+
+  get countryCode => '+91';
+
+  get enterNumber => 'Enter Number';
+
+  get enterValidNumber => 'Please enter valid phone number';
+
+  get enter => 'ENTER';
+
+  get checkOTP => 'Check OTP';
+
+  get wrongOTPError => 'Wrong OTP Please Try Again!';
+
+  get enterYourOTPMsg =>
+      'Enter your 4 digit code that \n you received on your phone';
+
+  get resendCodeIn => 'Resend code in ';
+
+  get resendCode => 'Resend code';
+
+  get signUp => 'Sign Up';
+
+  get login => 'Login';
+
+  get whatsapplogin => 'Continue With WhatsApp';
+
+  get male => 'Male';
+
+  get female => 'Female';
+
+  get name => 'Name*';
+
+  get phoneNo => 'Phone No';
+
+  get alternatePhoneNo => 'Alternate Phone No';
+
+  get MobileNumber => 'Mobile Number';
+
+  get emailId => 'Email Id*';
+
+  get dateOfBirth => 'Date of Birth';
+
+  get location => 'Location*';
+
+  get referralCode => 'Enter Referral Code (Optional)';
+
+  get errorMsgEnterFullName => 'Please enter your full name';
+
+  get errorMsgEnterDocName => 'Please enter doctor name';
+
+  get errorMsgEnterDoctorName =>
+      'Please enter valid name, name length should be greater than 5 characters';
 
   get errorValidEmailMsg => 'Please enter valid email id';
+
   get errorEmptyEmailMsg => 'Please enter email id';
 
+  get errorFullAddressRequired => 'Please enter full address';
+
   get password => 'Password*';
+
   get errorMsgPassword => 'Please enter atleast 8 character password';
+
   get setLocation => 'Set Location';
-  get address =>'ADDRESS';
+
+  get address => 'ADDRESS';
+
   get houseFlatNo => 'HOUSE/FLAT NO.';
+
   get landMark => 'LANDMARK';
-  get signUpBtn=> 'Signup';
+
+  get signUpBtn => 'Signup';
+
   get submit => 'Submit';
+
   get proceed => 'PROCEED';
-  get signUpMsg => 'By registering, you agree to our';
+
+  get signUpMsg => 'By Registering you agree to our';
+
   get termsServices => 'Terms of Service.';
-  get professionalRegNo =>'Professional Reg. No*';
-  get specialization =>'Specialization';
+
+  get professionalRegNo => 'Professional Reg. No*';
+
+  get specialization => 'Specialization';
+
   get errorMsgEnterProfRegNo => 'Please enter professional reg. no';
+
   get errorMsgEnterDocDep => 'Please enter department';
 
   get errorMsgEnterRegNo => 'Please enter registration. no';
+
+  get fullAddress => 'Full Address*';
+
   get errorMsgEnterEducation => 'Please enter education qualification';
 
   get errorMsgEnterSpecialization => 'Please select specialization';
-  get errorMsgEnterExp =>'Please enter experience in number';
-  get errorMsgAddDoctor =>'Please add atleast one doctor for the registration';
+
+  get errorMsgEnterExp => 'Please enter experience in number';
+
+  get errorMsgAddDoctor => 'Please add atleast one doctor for the registration';
 
   get experienceInNo => 'Experience (in number)*';
+
   get profileInformation => 'Profile Information';
+
   get hospitalName => 'Hospital Name';
+
+  get labName => 'Labs/Diagnostic Center Name';
+
+  get aboutLab => 'About Lab';
+
   get addressSmall => 'Address';
+
   get mobileNumber => 'Mobile Number';
+
   get aboutHospital => 'About Hospital';
-  get registrationNo => 'Registration No';
+
+  get registrationNo => 'Registration No*';
+
   get addSpecialization => 'Add Specialization';
+
   get addSpecializationServices => 'Add Specialization & Service';
+
   get add => 'Add';
+
   get addDoctors => 'Add Doctors';
+
   get addManually => 'Add Manually';
+
   get manageAccount => 'Manage Account';
+
   get addUsers => 'Add Users';
+
   get admin => 'Admin';
-  get userEmail => 'User Email';
-  get userPassword => 'User Password';
+
+  get userEmail => 'User Email*';
+
+  get userPassword => 'User Password*';
+
   get profileImage => 'Profile Image';
+
   get upload => 'Upload';
 
   get fullName => 'Full Name';
+
   get educationQualification => 'Education Qualification';
+
   get designation => 'Designation';
+
   get department => 'Department';
+
   get availability => 'Availability';
-  get forgotPassword =>'Forgot password?';
-  get dontHaveAccount =>'Don\'t have an account? ';
-  get somethingWentWrong => 'Somehting went wrong!';
+
+  get forgotPassword => 'Forgot password?';
+
+  get dontHaveAccount => 'Don\'t have an account ';
+
+  get somethingWentWrong => "Sorry, we could not find what you're looking for";
+
   get success => 'Success';
-  get forgotPasswordTitle =>'Forgot Password';
+
+  get forgotPasswordTitle => 'Forgot Password';
+
   get cancel => 'Cancel';
+
   get resetPassword => 'Reset Password';
-  get createPassword => 'Create Password';
-  get changePasswordMsg => 'Enter your old password once and the new password twice to confirm';
-  get createPasswordMsg => 'Enter your New password twice to confirm';
-  get currentPassword => 'Current Password';
-  get newPassword => 'New Password';
-  get reEnterPassword => 'Re-enter New Password';
-  get changePassword => 'Change Password';
+
   get reset => 'Reset';
+
+  get createPassword => 'Create Password';
+
+  get changePasswordMsg =>
+      'Enter your old password once and the new password twice to confirm';
+
+  get createPasswordMsg => 'Enter your New password twice to confirm';
+
+  get currentPassword => 'Current Password';
+
+  get newPassword => 'New Password';
+
+  get reEnterPassword => 'Re-enter New Password';
+
+  get changePassword => 'Change Password';
+
   get change => 'Change';
+
   get create => 'Create';
+
   get emptyOldPasswordError => "Please enter your current password";
+
   get emptyConfirmPasswordError => "Please Re-enter new password.";
+
   get emptyNewPasswordError => "Please enter new password.";
+
   get emptyPasswordError => "Please enter password.";
 
-  get passwordMismatchError => "New Password and Re-enter New Password do not match.";
-  get profile => 'PROFILE';
+  get passwordMismatchError =>
+      "New Password and Re-enter New Password do not match.";
+
+  get profile => 'Profile';
+
   get notification => 'NOTIFICATION';
+
   get enquiry => 'ENQUIRY';
+
   get plockr => 'PLOCKR';
-  get plocker => 'Plockr';
 
   get solution => 'SOLUTION';
+
+  get home => 'HOME';
+
   get appointments => 'Appointments';
+
   get help => 'Help';
+
   get logout => 'Log Out';
+
   get settings => 'Settings';
+
   get aboutUs => 'About Us';
+
   get generalUser => 'General User';
+
   get myAvailability => 'My Availability';
+
   get managePayment => 'Manage Payment';
+
   get availOfferMsg => 'People availing offers near you';
-  get solutionNearYouMsg => 'Health Solutions Near you \n Avail upto 50% discount on this';
+
+  get solutionNearYouMsg =>
+      'Health Solutions Near you \n Avail upto 50% discount on this';
+
   get searchNearByMsg => 'Search for the best price \n solution near you';
+
   get searchHint => 'Procedures, Medical Tests, Appointments';
+
   get solutionActivity => 'Solution Activities';
+
   get availUpTo => 'Avail upto 50% discount';
+
   get ok => 'OK';
+
   get viewMore => 'View more';
+
   get editProfile => 'Edit Profile';
+
   get profiles => 'Profile';
+
   get locationSep => 'Location';
+
   get gender => 'Gender';
+
   get education => 'Education';
+
   get college => 'College/University';
+
   get achievements => 'Achievements';
+
   get achievement => 'Achievement';
+
   get utilityNetwork => 'Utility Network';
+
   get more => 'More';
+
   get catalogue => 'Catalogue';
+
   get areaExpertise => 'Area of Expertise';
-  get expOfPractice =>'Experience of Practice';
+
+  get expOfPractice => 'Experience of Practice';
+
   get practising => 'Practising';
+
   get qualification => 'Qualification';
+
   get introduction => 'Introduction';
+
   get achievementBook => 'Achievement Book';
+
   get deleteAchievementMsg => 'Do you want to delete this Achievement?';
+
   get shareYourAchievement => 'Share your Achievement';
+
   get removeImageMsg => 'Do you want to remove this image?';
+
   get update => 'Update';
+
   get speciality => 'Speciality';
-  get logoutMsg  => 'Do you want to logout?';
-  get logoutAllMsg  => 'Do you want to logout from all devices?';
-get deleteReportMsg => 'Do you want to delete this report?';
+
+  get logoutMsg => 'Do you want to logout?';
+
+  get logoutAllMsg => 'Do you want to logout from all devices?';
+
+  get deleteReportMsg => 'Do you want to delete this report?';
+
   get deleteNotificationMsg => 'Do you want to delete notification?';
 
-
   get edit => 'Edit';
+
   get chooseSpeciality => 'Choose Speciality';
+
   get teamOfExperts => 'Team of Experts';
+
   get registration => 'Registration';
+
   get accountSettings => 'Account Settings';
+
   get securitySettings => 'Security Settings';
+
   get notifications => 'Notifications';
+
   get logoutFromAllDevices => 'Logout from all devices';
+
   get iHaveIssueWith => 'I have an issue with';
+
   get bookingAppointments => 'Booking Appointments';
+
   get bookingFailure => 'Booking failure';
+
   get wrongContactDetails => 'Wrong lab/contact details';
+
   get appointmentDelayed => 'Appointment delayed or cancelled';
+
   get cancellingAppointment => 'Cancelling/rescheduling an appointment';
-  get smsOtpIssues=> 'SMS/OTP issues';
+
+  get smsOtpIssues => 'SMS/OTP issues';
+
   get onlineSolution => 'Online Solution';
+
   get questionsNotAns => 'Questions not answered';
+
   get notHappyWithRes => 'Not happy with response';
+
   get paymentIssues => 'Payment issues';
+
   get feedBacks => 'Feedbacks';
+
   get feedBackNotPublished => 'My feedback is not getting published';
+
   get unableWriteFeedBack => 'Unable to write a feedback';
-get wantEditFeedBack =>'I want to edit my feedback';
-get description => 'Description';
-get successfullySent => 'Successfully Sent..';
-get uploadReports => 'Upload Reports';
-get search => 'Search';
-get reportName => 'Report Name';
-get addNotes => 'Add Notes';
-get noRecordsFound => 'No Record(s) Found';
-get referAndEarn => 'Refer & Earn';
-get coupons => 'Coupons';
-get copyToClipboard => 'Copy to clipboard';
-get inviteFriends => 'Invite Friends';
-get copyCode => 'Copy code';
-get shareYourInviteCode => 'Share Your Invite Code';
-get availableCredits => 'Available Credits';
-get cashCanBeUsed => 'Cash can be used on all the medical procedures, appointments & tests';
-get inviteYourFriends => 'Invite your friends & get\nRs 100 each';
-get text1Referral => 'Share the code below or ask them to enter it when they sign up';
-  get text2Referral => 'You will get instant cash as soon as your friend registers successfully';
 
+  get wantEditFeedBack => 'I want to edit my feedback';
 
+  get description => 'Enter your Concern';
 
+  get successfullySent => 'Successfully Sent..';
 
+  get uploadReports => 'Upload Reports';
 
+  get search => 'Search';
 
+  get reportName => 'Report Name';
 
+  get addNotes => 'Add Notes';
 
+  get noRecordsFound => 'No Notifications yet';
 
+  get referAndEarn => 'Refer & Earn';
 
+  get coupons => 'Coupons';
+
+  get copyToClipboard => 'Copied to clipboard';
+
+  get inviteFriends => 'Invite Friends';
+
+  get copyCode => 'Copy code';
+
+  get shareYourInviteCode => 'Share Your Invite Code';
+
+  get availableCredits => 'Available Credits';
+
+  get cashCanBeUsed =>
+      'Cash can be used on all the medical procedures, appointments & tests';
+
+  get inviteYourFriends => 'Invite your friends & get\nRs 100 each';
+
+  get text1Referral =>
+      'Share the code below or ask them to enter it when they sign up';
+
+  get text2Referral =>
+      'You will get instant cash as soon as your friend registers successfully';
+
+  get hospitalTiming => 'Hospital Timings';
+
+  static const String prePayConfirmBooking =
+      "Make a payment of  300/- to confirm the booking";
+
+  String get invalidPhoneNumber =>
+      'Valid phone number is required.Digit must be equals to 10';
 }

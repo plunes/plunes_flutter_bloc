@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -10,23 +11,23 @@ import '../interface/CallBackListener.dart';
 
 class ApiRequestWithMultiParts {
   final JsonDecoder _decoder = new JsonDecoder();
-  String url, action = "";
-  Map<String, String> headers;
-  Map<String, File> mapOfFilesAndKey;
+  String? url, action = "";
+  Map<String, String>? headers;
+  late Map<String, File> mapOfFilesAndKey;
 
   dynamic body, result;
-  BuildContext mContext;
-  Encoding encoding;
-  CallBackListener callBackListener;
+  BuildContext? mContext;
+  Encoding? encoding;
+  CallBackListener? callBackListener;
   bool isMultiparts = false;
 
   ApiRequestWithMultiParts(
       BuildContext mContext,
       CallBackListener callBackListener,
-      String url,
+      String? url,
       String action,
       Map<String, File> mapOfFilesAndKey,
-      {Map<String, String> headers,
+      {Map<String, String>? headers,
       body}) {
     this.callBackListener = callBackListener;
     this.url = url;
@@ -38,7 +39,7 @@ class ApiRequestWithMultiParts {
     isMultiparts = true;
    _showLoaderNew(mContext);
     getApiRequestWithMultiParts();
-  }  BuildContext mContextLoader;
+  }  BuildContext? mContextLoader;
 
 
   Future<Null> _showLoaderNew(BuildContext context) async {
@@ -73,13 +74,13 @@ class ApiRequestWithMultiParts {
 
   // for multiparts...........
   Future<dynamic> getApiRequestWithMultiParts() async {
-    List<String> keysForImage = List();
+    List<String> keysForImage = [];
     for (int i = 0; i < mapOfFilesAndKey.length; i++) {
       String key = mapOfFilesAndKey.keys.elementAt(i);
       keysForImage.add(key);
     }
     // string to uri
-    var uri = Uri.parse(url);
+    var uri = Uri.parse(url!);
 
     // create multipart request
     var request = new http.MultipartRequest("POST", uri);
@@ -91,15 +92,15 @@ class ApiRequestWithMultiParts {
 
     for (int i = 0; i < keysForImage.length; i++) {
       var stream = new http.ByteStream(
-          DelegatingStream.typed(mapOfFilesAndKey[keysForImage[i]].openRead()));
+          DelegatingStream.typed(mapOfFilesAndKey[keysForImage[i]]!.openRead()));
       // get file length
-      var length = await mapOfFilesAndKey[keysForImage[i]].length();
+      var length = await mapOfFilesAndKey[keysForImage[i]]!.length();
 
       // multipart that takes file
 
       var multipartFile = new http.MultipartFile(
           keysForImage[i], stream, length,
-          filename: basename(mapOfFilesAndKey[keysForImage[i]].path));
+          filename: basename(mapOfFilesAndKey[keysForImage[i]]!.path));
 
       // add file to multipart
       request.files.add(multipartFile);

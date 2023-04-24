@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'dart:io';
 
@@ -17,8 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'AvailabilitySelectionScreen.dart';
 
-
-
+// ignore: must_be_immutable
 class AddDoctorScreen extends BaseActivity {
   static const tag = '/addDoctor';
 
@@ -26,8 +24,9 @@ class AddDoctorScreen extends BaseActivity {
   _AddDoctorScreenState createState() => _AddDoctorScreenState();
 }
 
-class _AddDoctorScreenState extends State<AddDoctorScreen>  with TickerProviderStateMixin,ImagePickerListener implements DialogCallBack{
-
+class _AddDoctorScreenState extends State<AddDoctorScreen>
+    with TickerProviderStateMixin, ImagePickerListener
+    implements DialogCallBack {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   final nameController = TextEditingController();
@@ -52,50 +51,48 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>  with TickerProviderS
       practisingFocusNode = new FocusNode(),
       collegeFocusNode = new FocusNode(),
       aboutFocusNode = new FocusNode();
-  String image;
-  AnimationController _animationController;
-  ImagePickerHandler imagePicker;
-  bool isDoctor = false,isSpecificationValid = true;
+  String? image;
+  AnimationController? _animationController;
+  late ImagePickerHandler imagePicker;
+  bool isDoctor = false, isSpecificationValid = true;
   bool emain_valid = true;
   var globalHeight, globalWidth;
   bool profession_valid = true;
-  bool specification_valid = true,
-      name_valid = true;
-  bool experience_valid = true,isExperienceValid = true;
-  String _userType,
-      _latitude = '',
-      _longitude = '';
+  bool specification_valid = true, name_valid = true;
+  bool experience_valid = true, isExperienceValid = true;
+  String? _userType, _latitude = '', _longitude = '';
   bool progress = false;
-  String user_token = "";
-  String user_id = "",errorMessage = '';
-  File _image;
+  String? user_token = "";
+  String? user_id = "", errorMessage = '';
+  File? _image;
 
-  List<dynamic> _selectedItemId = List(),_selectedSpecializationData = List();
-@override
+  List<dynamic>? _selectedItemId = [],
+      _selectedSpecializationData = [];
+
+  @override
   void dispose() {
-  bloc.dispose();
-  _animationController.dispose();
+    bloc.dispose();
+    _animationController!.dispose();
 
-  super.dispose();
+    super.dispose();
   }
+
   @override
   void initState() {
     initialize();
     super.initState();
   }
 
-
   getSharedPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String token = prefs.getString("token");
-    String uid = prefs.getString("uid");
+    String? token = prefs.getString("token");
+    String? uid = prefs.getString("uid");
 
     setState(() {
       user_token = token;
       user_id = uid;
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -105,9 +102,10 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>  with TickerProviderS
 
     return Scaffold(
         key: _scaffoldKey,
-        appBar: widget.getAppBar(context, '', true),
+        appBar: widget.getAppBar(context, '', true) as PreferredSizeWidget?,
         backgroundColor: Colors.white,
-        body: GestureDetector(onTap: () => CommonMethods.hideSoftKeyboard(), child: bodyView()));
+        body: GestureDetector(
+            onTap: () => CommonMethods.hideSoftKeyboard(), child: bodyView()));
   }
 
   Widget bodyView() {
@@ -121,25 +119,27 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>  with TickerProviderS
       ),
     );
   }
+
   Widget getAddDoctorsView() {
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-                widget.getSpacer(20.0, 0.0),
-          widget.createTextViews(stringsFile.profileImage, 18, colorsFile.black0, TextAlign.left, FontWeight.normal),
+          widget.getSpacer(20.0, 0.0),
+          widget.createTextViews(plunesStrings.profileImage, 18,
+              colorsFile.black0, TextAlign.left, FontWeight.normal),
           widget.getSpacer(0.0, 20.0),
           Row(
             children: <Widget>[
               InkWell(
-                onTap: () {
-
-                },
+                onTap: () {},
                 child: Stack(
                   alignment: Alignment.center,
                   children: <Widget>[
                     Container(
-                      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(40)), color: Color(0x90ffBDBDBD)),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(40)),
+                          color: Color(0x90ffBDBDBD)),
                       height: 80,
                       width: 80,
                     ),
@@ -152,7 +152,9 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>  with TickerProviderS
                     ),
                     Align(
                         child: image != null
-                            ? CircleAvatar(radius: 40, backgroundImage: ExactAssetImage(image))
+                            ? CircleAvatar(
+                                radius: 40,
+                                backgroundImage: ExactAssetImage(image!))
                             : Container()),
                   ],
                 ),
@@ -160,21 +162,42 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>  with TickerProviderS
               SizedBox(
                 width: 20,
               ),
-              widget.getDefaultButton(stringsFile.upload, 100,35, _pickImage),
+              widget.getDefaultButton(plunesStrings.upload, 100, 35, _pickImage),
             ],
           ),
           widget.getSpacer(0.0, 30.0),
-          createTextField(docNameController, stringsFile.fullName, TextInputType.text, TextCapitalization.words, true, ''),
+          createTextField(docNameController, plunesStrings.fullName,
+              TextInputType.text, TextCapitalization.words, true, ''),
           widget.getSpacer(0.0, 20.0),
-          createTextField(docEducationController, stringsFile.educationQualification, TextInputType.text, TextCapitalization.characters, true, ''),
+          createTextField(
+              docEducationController,
+              plunesStrings.educationQualification,
+              TextInputType.text,
+              TextCapitalization.characters,
+              true,
+              ''),
           widget.getSpacer(0.0, 20.0),
-          createTextField(docDesignationController, stringsFile.designation, TextInputType.text, TextCapitalization.characters, true, ''),
+          createTextField(docDesignationController, plunesStrings.designation,
+              TextInputType.text, TextCapitalization.characters, true, ''),
           widget.getSpacer(0.0, 20.0),
-          createTextField(docDepartmentController, stringsFile.department, TextInputType.text, TextCapitalization.words, true, ''),
+          createTextField(docDepartmentController, plunesStrings.department,
+              TextInputType.text, TextCapitalization.words, true, ''),
           widget.getSpacer(0.0, 20.0),
-          createTextField(specializationController, stringsFile.speciality, TextInputType.text, TextCapitalization.words, isSpecificationValid, stringsFile.errorMsgEnterSpecialization),
+          createTextField(
+              specializationController,
+              plunesStrings.speciality,
+              TextInputType.text,
+              TextCapitalization.words,
+              isSpecificationValid,
+              plunesStrings.errorMsgEnterSpecialization),
           widget.getSpacer(0.0, 20.0),
-          createTextField(experienceController, stringsFile.experienceInNo, TextInputType.numberWithOptions(decimal: true), TextCapitalization.none, isExperienceValid, stringsFile.errorMsgEnterExp),
+          createTextField(
+              experienceController,
+              plunesStrings.experienceInNo,
+              TextInputType.numberWithOptions(decimal: true),
+              TextCapitalization.none,
+              isExperienceValid,
+              plunesStrings.errorMsgEnterExp),
           widget.getSpacer(0.0, 20.0),
           /*     widget.createTextViews(stringsFile.availability, 18, colorsFile.black0, TextAlign.left, FontWeight.normal),
           widget.getSpacer(0.0, 10.0),
@@ -188,23 +211,28 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>  with TickerProviderS
             ],
           ),*/
           widget.getSpacer(0.0, 20.0),
-          widget.getDefaultButton(stringsFile.availability, globalWidth - 40, 42, goToAvailabilityScreen),
+          widget.getDefaultButton(plunesStrings.availability, globalWidth - 40,
+              42, goToAvailabilityScreen),
           widget.getSpacer(0.0, 20.0),
-          widget.getDefaultButton(stringsFile.add, globalWidth - 40,42, addDoctorsInRow),
+          widget.getDefaultButton(
+              plunesStrings.add, globalWidth - 40, 42, addDoctorsInRow),
           widget.getSpacer(0.0, 40.0),
         ],
       ),
     );
   }
 
-
-  Widget createTextField(TextEditingController controller, String placeHolder,
-      TextInputType inputType, TextCapitalization textCapitalization,
-      bool fieldFlag, String errorMsg) {
+  Widget createTextField(
+      TextEditingController controller,
+      String placeHolder,
+      TextInputType inputType,
+      TextCapitalization textCapitalization,
+      bool fieldFlag,
+      String errorMsg) {
     return InkWell(
       onTap: () {
         if (controller == dobController)
-          CommonMethods.selectDate(context).then((value) {
+          CommonMethods.selectHoloTypeDate(context).then((value) {
             dobController.text = value;
           });
         else if (controller == locationController)
@@ -215,26 +243,48 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>  with TickerProviderS
       child: Container(
           padding: EdgeInsets.zero,
           width: MediaQuery.of(context).size.width,
-          child: TextField(maxLines: (controller == locationController) || (controller == aboutController) ? 4 : null,
-              maxLength: (controller == aboutController) ? 250 : ((controller == experienceController) ? 2 : null),
+          child: TextField(
+              maxLines: (controller == locationController) ||
+                      (controller == aboutController)
+                  ? 4
+                  : null,
+              maxLength: (controller == aboutController)
+                  ? 250
+                  : ((controller == experienceController) ? 2 : null),
               textCapitalization: textCapitalization,
               keyboardType: inputType,
-              textInputAction: controller == aboutController ? TextInputAction.done : TextInputAction.next,
+              textInputAction: controller == aboutController
+                  ? TextInputAction.done
+                  : TextInputAction.next,
               onSubmitted: (String value) {
-                setFocus(controller).unfocus();
+                setFocus(controller)!.unfocus();
                 FocusScope.of(context).requestFocus(setTargetFocus(controller));
               },
               controller: controller,
-              cursorColor: Color(CommonMethods.getColorHexFromStr(colorsFile.defaultGreen)),
+              cursorColor: Color(
+                  CommonMethods.getColorHexFromStr(colorsFile.defaultGreen)),
               focusNode: setFocus(controller),
-              enabled: (controller == dobController || controller == locationController || controller == specializationController) ? false : true,
-              style: TextStyle(fontSize: 15.0,),
-              decoration: widget.myInputBoxDecoration(colorsFile.defaultGreen, colorsFile.lightGrey1, placeHolder, errorMsg, fieldFlag, controller, null))),
+              enabled: (controller == dobController ||
+                      controller == locationController ||
+                      controller == specializationController)
+                  ? false
+                  : true,
+              style: TextStyle(
+                fontSize: 15.0,
+              ),
+              decoration: widget.myInputBoxDecoration(
+                  colorsFile.defaultGreen,
+                  colorsFile.lightGrey1,
+                  placeHolder,
+                  errorMsg,
+                  fieldFlag,
+                  controller,
+                  null))),
     );
   }
 
-  FocusNode setFocus(TextEditingController controller) {
-    FocusNode focusNode;
+  FocusNode? setFocus(TextEditingController controller) {
+    FocusNode? focusNode;
     if (controller == nameController) {
       focusNode = nameFocusNode;
     } else if (controller == educationController) {
@@ -253,8 +303,8 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>  with TickerProviderS
     return focusNode;
   }
 
-  FocusNode setTargetFocus(TextEditingController controller) {
-    FocusNode focusNode;
+  FocusNode? setTargetFocus(TextEditingController controller) {
+    FocusNode? focusNode;
     if (controller == nameController) {
       focusNode = educationFocusNode;
     } else if (controller == educationController) {
@@ -272,12 +322,18 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>  with TickerProviderS
   }
 
   fetchLocation() {
-    Navigator.of(context).push(PageRouteBuilder(opaque: false,
-        pageBuilder: (BuildContext context, _, __) => LocationFetch())).then((
-        val) {
-      var addressControllerList = new List();
+    Navigator.of(context)
+        .push(PageRouteBuilder(
+            opaque: false,
+            pageBuilder: (BuildContext context, _, __) => LocationFetch()))
+        .then((val) {
+      var addressControllerList = [];
       addressControllerList = val.toString().split(":");
-      locationController.text = addressControllerList[0] + ' ' + addressControllerList[1] + ' ' + addressControllerList[2];
+      locationController.text = addressControllerList[0] +
+          ' ' +
+          addressControllerList[1] +
+          ' ' +
+          addressControllerList[2];
       _latitude = addressControllerList[3];
       _longitude = addressControllerList[4];
     });
@@ -286,10 +342,12 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>  with TickerProviderS
   void initialize() {
     isDoctor = widget.usersType == Constants.doctor ? true : false;
     initializeForImageFetching();
-
   }
+
   initializeForImageFetching() {
-    _animationController = new AnimationController(vsync: this, duration: const Duration(milliseconds: 500))..addListener(() {});
+    _animationController = new AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 500))
+      ..addListener(() {});
     imagePicker = new ImagePickerHandler(this, _animationController, false);
     imagePicker.init();
   }
@@ -305,19 +363,17 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>  with TickerProviderS
     bloc.updateRequest(context, this, body);
     bloc.updateProfileFetcher.listen((data) async {
       progress = false;
-      if (data!=null && data['success']!=null && data['success']) {
+      if (data != null && data['success'] != null && data['success']) {
         await bloc.saveEditProfileDataInPreferences(context, body);
-        widget.showInSnackBar(stringsFile.success, Colors.green, _scaffoldKey);
+        widget.showInSnackBar(plunesStrings.success, Colors.green, _scaffoldKey);
       } else {
         widget.showInSnackBar(data.message, Colors.red, _scaffoldKey);
       }
     });
   }
 
-
   @override
-  dialogCallBackFunction(String action) {
-  }
+  dialogCallBackFunction(String action) {}
 
   addDoctorsInRow() {
     if (validationAddDoctors()) {
@@ -335,56 +391,67 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>  with TickerProviderS
         docDesignationController.text = '';
         docDepartmentController.text = '';
         experienceController.text = '';
-        specializationController.text ='';
-        _selectedItemId =[];
-
+        specializationController.text = '';
+        _selectedItemId = [];
       });
-    }else {
+    } else {
       widget.showInSnackBar((errorMessage), Colors.red, _scaffoldKey);
     }
   }
+
   bool validationAddDoctors() {
-    if (docNameController.text.trim().isEmpty ) {
-      errorMessage = stringsFile.errorMsgEnterDocName;
+    if (docNameController.text.trim().isEmpty) {
+      errorMessage = plunesStrings.errorMsgEnterDocName;
       return false;
     } else if (docEducationController.text.trim().isEmpty) {
-      errorMessage = stringsFile.errorMsgEnterEducation;
+      errorMessage = plunesStrings.errorMsgEnterEducation;
       return false;
-    }  else if( docDepartmentController.text.trim().isEmpty){
-      errorMessage = stringsFile.errorMsgEnterDocDep;
+    } else if (docDepartmentController.text.trim().isEmpty) {
+      errorMessage = plunesStrings.errorMsgEnterDocDep;
       return false;
-    } else if(specializationController.text.trim().isEmpty){
-      errorMessage = stringsFile.errorMsgEnterSpecialization;
+    } else if (specializationController.text.trim().isEmpty) {
+      errorMessage = plunesStrings.errorMsgEnterSpecialization;
       return false;
-    }  else if(experienceController.text.trim().isEmpty){
-      errorMessage = stringsFile.errorMsgEnterExp;
+    } else if (experienceController.text.trim().isEmpty) {
+      errorMessage = plunesStrings.errorMsgEnterExp;
       return false;
-    }  else {
+    } else {
       return true;
     }
   }
 
   getSpecializationData() {
-    showDialog(context: context, builder: (BuildContext context,
+    showDialog(
+        context: context,
+        builder: (
+          BuildContext context,
         ) =>
-        SelectSpecialization(spec: CommonMethods.catalogueLists, from: Constants.doctor, selectedItemId: _selectedItemId, selectedItemData: _selectedSpecializationData)).then((val) {
+            SelectSpecialization(
+                spec: CommonMethods.catalogueLists,
+                from: Constants.doctor,
+                selectedItemId: _selectedItemId,
+                selectedItemData: _selectedSpecializationData)).then((val) {
       if (val != '' && val != null) {
         _selectedItemId = val['SelectedId'];
-        specializationController.text = val['SelectedData'].toString().replaceAll('[', '').replaceAll(']', '');
+        specializationController.text = val['SelectedData']
+            .toString()
+            .replaceAll('[', '')
+            .replaceAll(']', '');
       }
     });
   }
-   _pickImage() {
+
+  _pickImage() {
     imagePicker.showDialog(context);
   }
+
   @override
-  fetchImageCallBack(File _image) {
+  fetchImageCallBack(_image) {
     if (_image != null) {
       print("image==" + base64Encode(_image.readAsBytesSync()).toString());
       this._image = _image;
-      image  = _image.path;
-      setState(() {
-      });
+      image = _image.path;
+      setState(() {});
     }
   }
 

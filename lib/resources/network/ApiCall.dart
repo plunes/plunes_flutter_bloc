@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:plunes/Utils/Preferences.dart';
 
-import '../interface/CallBackListener.dart';
 import '../../Utils/Constants.dart';
+import '../interface/CallBackListener.dart';
 
 /*
  * Created by - Plunes Technologies .
@@ -16,20 +16,22 @@ import '../../Utils/Constants.dart';
 
 class ApiCall implements CallBackListener {
   final JsonDecoder _decoder = new JsonDecoder();
-  String url, action, _token, _method;
-  Map<String, String> headers;
+  String? url, action, _token, _method;
+  Map<String, String>? headers;
   int statusCode = 0;
   bool onlyOnce = false, isLoader = false;
 
-  BuildContext mContextLoader;
+  late BuildContext mContextLoader;
   dynamic body;
   dynamic resultFinal;
-  BuildContext mContext;
-  Encoding encoding;
-  CallBackListener callBackListener;
-  Preferences preferences;
+  late BuildContext mContext;
+  Encoding? encoding;
+  CallBackListener? callBackListener;
+  late Preferences preferences;
 
-  Future<dynamic> getAPIRequest(BuildContext mContext, String url, String action, bool _isLoader, {var body, encoding, var token, String method}) async {
+  Future<dynamic> getAPIRequest(
+      BuildContext mContext, String url, String action, bool _isLoader,
+      {var body, encoding, var token, String? method}) async {
     this.url = url;
     this.body = body;
     this.encoding = encoding;
@@ -44,37 +46,43 @@ class ApiCall implements CallBackListener {
     onlyOnce = true;
     if (_token != null)
       headers = {
-        (action =='1'?'Content-Type': 'Accept' ) : "application/json",
-        "Authorization": "Bearer " + _token
+        (action == '1' ? 'Content-Type' : 'Accept'): "application/json",
+        "Authorization": "Bearer " + _token!
       };
     else
-      headers = {(action =='1'?'Content-Type': "Accept" ): "application/json"};
+      headers = {
+        (action == '1' ? 'Content-Type' : "Accept"): "application/json"
+      };
 
     print("URL is:  " + url);
     print("Body is:  " + body.toString());
 
-    if (body != null){
-      if(_method == Constants.POST)
-      return http.Client().post(url, headers: headers, body: body, encoding: encoding).then((http.Response response) {
-        onlyOnce = false;
-        final String res = response.body;
-        print("result=res============" + res.toString());
-        statusCode = response.statusCode;
-        resultFinal = _decoder.convert(res);
-        if (isLoader) Navigator.pop(mContextLoader);
-        if (statusCode == 401) {
-          logoutWebService();
-        }
-        return resultFinal;
-      }).catchError((onError) {
-        onlyOnce = false;
-        Navigator.pop(mContext);
-      });
-      else if(_method == Constants.PUT)
-        return http.Client().put(url, headers: headers, body: body, encoding: encoding).then((http.Response response) {
+    if (body != null) {
+      if (_method == Constants.POST)
+        return http.Client()
+            .post(Uri.parse(url), headers: headers, body: body, encoding: encoding)
+            .then((http.Response response) {
           onlyOnce = false;
           final String res = response.body;
-          print("result=res============" + res.toString());
+          print("result=res============67" + res.toString());
+          statusCode = response.statusCode;
+          resultFinal = _decoder.convert(res);
+          if (isLoader) Navigator.pop(mContextLoader);
+          if (statusCode == 401) {
+            logoutWebService();
+          }
+          return resultFinal;
+        }).catchError((onError) {
+          onlyOnce = false;
+//        Navigator.pop(mContext);
+        });
+      else if (_method == Constants.PUT)
+        return http.Client()
+            .put(Uri.parse(url), headers: headers, body: body, encoding: encoding)
+            .then((http.Response response) {
+          onlyOnce = false;
+          final String res = response.body;
+          print("result=res============85" + res.toString());
           statusCode = response.statusCode;
           resultFinal = _decoder.convert(res);
           if (isLoader) Navigator.pop(mContextLoader);
@@ -86,13 +94,13 @@ class ApiCall implements CallBackListener {
           onlyOnce = false;
           Navigator.pop(mContext);
         });
-    }
-
-    else
-      return http.Client().get(url, headers: headers).then((http.Response response) {
+    } else
+      return http.Client()
+          .get(Uri.parse(url), headers: headers)
+          .then((http.Response response) {
         onlyOnce = false;
         final String res = response.body;
-        print("result=res============" + res.toString());
+        print("result=res============103" + res.toString());
         statusCode = response.statusCode;
         resultFinal = _decoder.convert(res);
         if (isLoader) Navigator.pop(mContextLoader);
@@ -135,9 +143,9 @@ class ApiCall implements CallBackListener {
   void navigationPage() {
     preferences.clearPreferences();
     Future.delayed(Duration(milliseconds: 200), () {
-      return  Navigator.of(mContext).pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
+      return Navigator.of(mContext)
+          .pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
     });
-
   }
 
   Future logoutWebService() async {
@@ -155,20 +163,20 @@ class ApiCall implements CallBackListener {
 */
 //      CommonMethods.clearPreferences();
     } else {
-      Scaffold.of(mContext).showSnackBar(new SnackBar(content: new Text(result[Constants.MESSAGE])));
+      ScaffoldMessenger.of(mContext).showSnackBar(SnackBar(content: new Text(result[Constants.MESSAGE])));
     }
   }
 
   @override
   callBackFunctionError(action, result) {}
 
-  Future<dynamic> no(BuildContext context) {
-    Future.delayed(Duration(milliseconds: 100), () {
-      return resultFinal;
-    });
-    /*if( isResponse)
-      {
-        Navigator.pop(context);
-      }*/
-  }
+  // Future<dynamic> foo(BuildContext context) {
+  //   Future.delayed(Duration(milliseconds: 100), () {
+  //     return resultFinal;
+  //   });
+  //   /*if( isResponse)
+  //     {
+  //       Navigator.pop(context);
+  //     }*/
+  // }
 }

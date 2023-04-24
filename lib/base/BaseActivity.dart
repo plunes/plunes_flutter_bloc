@@ -1,16 +1,21 @@
-
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
+import 'package:plunes/Utils/event_bus.dart';
+import 'package:plunes/blocs/base_bloc.dart';
 import 'package:plunes/blocs/bloc.dart';
+import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
+import 'package:plunes/res/Http_constants.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/network/Urls.dart';
 import 'package:plunes/ui/afterLogin/GalleryScreen.dart';
 import 'package:plunes/ui/beforeLogin/Registration.dart';
+import 'package:toast/toast.dart';
 
 /*
  * Created by - Plunes Technologies .
@@ -18,47 +23,59 @@ import 'package:plunes/ui/beforeLogin/Registration.dart';
  * Description - BaseActivity class is used for rendering the Widgets into their child class and having common functions and variables.
  */
 
-
 // ignore: must_be_immutable
 class BaseActivity extends StatefulWidget {
-  String applicationType = '', machineID = '', domain = '', name = '', deviceId = '';
+  String? applicationType = '',
+      machineID = '',
+      domain = '',
+      name = '',
+      deviceId = '';
 
-  BaseActivity({Key key}) : super(key: key);
+  BaseActivity({Key? key}) : super(key: key);
 
-  final usersType = [Constants.generalUser, Constants.doctor, Constants.hospital];//, Constants.diagnosticCenter
-  PasswordCallback onTap;
+  final usersType = [
+    Constants.generalUser,
+    Constants.doctor,
+    Constants.hospital,
+    Constants.labDiagnosticCenter
+  ]; //, Constants.diagnosticCenter
+  PasswordCallback? onTap;
 
-  @override
-  State<StatefulWidget> createState() => null;
-
-  void showInSnackBar(String value, MaterialColor color,  GlobalKey<ScaffoldState> _scaffoldKey) {
-    _scaffoldKey.currentState.showSnackBar(new SnackBar(
-      content: new Text(value),
-      backgroundColor: color,
-    ));
+  void showInSnackBar(
+      String? value, Color color, GlobalKey<ScaffoldState> _scaffoldKey) {
+    // _scaffoldKey.currentState!.showSnackBar(new SnackBar(
+    //   content: new Text(value ?? plunesStrings.somethingWentWrong),
+    //   backgroundColor: color,
+    // ));
   }
-  Widget createTextViews(String label, double fontSize, String colorCode, TextAlign textAlign, FontWeight fontWeight) {
+
+  Widget createTextViews(String label, double? fontSize, String colorCode,
+      TextAlign textAlign, FontWeight fontWeight) {
     return Text(label,
         textAlign: textAlign,
+        overflow: TextOverflow.clip,
         style: TextStyle(
             fontSize: fontSize,
-            decoration: label==stringsFile.solutionNearYouMsg?TextDecoration.underline: TextDecoration.none,
+            decoration: label == plunesStrings.solutionNearYouMsg
+                ? TextDecoration.underline
+                : TextDecoration.none,
             color: Color(CommonMethods.getColorHexFromStr(colorCode)),
             fontWeight: fontWeight));
   }
+
   Widget createTextWithoutColor(String label, double fontSize,
       TextAlign textAlign, FontWeight fontWeight) {
     return Text(label,
         textAlign: textAlign,
-        style: TextStyle(
-            fontSize: fontSize,
-            fontWeight: fontWeight));
+        style: TextStyle(fontSize: fontSize, fontWeight: fontWeight));
   }
+
   BoxDecoration myBoxDecoration() {
     return BoxDecoration(
       border: Border.all(
           width: 1.0,
-          color: Color(CommonMethods.getColorHexFromStr(colorsFile.lightGrey1))),
+          color:
+              Color(CommonMethods.getColorHexFromStr(colorsFile.lightGrey1))),
       borderRadius: BorderRadius.all(Radius.circular(10.0)),
     );
   }
@@ -80,14 +97,17 @@ class BaseActivity extends StatefulWidget {
       margin: EdgeInsets.only(top: top, bottom: bottom),
     );
   }
-  Widget getDividerRow(BuildContext context, double top, double bottom, double left ) {
+
+  Widget getDividerRow(
+      BuildContext context, double top, double bottom, double left) {
     return Container(
       height: 1.0,
       width: MediaQuery.of(context).size.width,
       color: Color(CommonMethods.getColorHexFromStr(colorsFile.lightGrey3)),
-      margin: EdgeInsets.only(top: top,left: left, bottom: bottom),
+      margin: EdgeInsets.only(top: top, left: left, bottom: bottom),
     );
   }
+
   Widget getLinearProgressView(bool _isAddFetch) {
     return Container(
       height: 5,
@@ -95,61 +115,152 @@ class BaseActivity extends StatefulWidget {
         visible: _isAddFetch,
         child: Container(
           height: 5,
-          child: LinearProgressIndicator(),
+          child: const LinearProgressIndicator(),
         ),
       ),
     );
   }
-  Widget getCrossButton(){
+
+  Widget getCrossButton() {
     return Container(
         alignment: Alignment.center,
         width: 25,
         height: 25,
         margin: EdgeInsets.only(right: 0),
-        child:  getAssetIconWidget(assetsImageFile.crossIcon, 8, 8,  BoxFit.contain), decoration: BoxDecoration(color: Colors.white,border: Border.all(color: Colors.grey,), borderRadius: BorderRadius.all(Radius.circular(12.5),)));
+        child: getAssetIconWidget(plunesImages.crossIcon, 8, 8, BoxFit.contain),
+        decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(
+              color: Colors.grey,
+            ),
+            borderRadius: BorderRadius.all(
+              Radius.circular(12.5),
+            )));
   }
 
-  InputDecoration inputDecorationWithoutError(String hint){
-  return InputDecoration(
-    hintText: hint,
-    border: OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(15)),
-        borderSide: BorderSide(
-            width: 0.1, color: Color(0xff01d35a))),
-  );
-}
+  InputDecoration inputDecorationWithoutError(String hint) {
+    return InputDecoration(
+      hintText: hint,
+      border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(15)),
+          borderSide: BorderSide(width: 0.1, color: Color(0xff01d35a))),
+    );
+  }
 
-
-
-  Widget createTextField(TextEditingController controller, BuildContext context, TextInputType inputType, String hintText) {
+  Widget createTextField(TextEditingController controller, BuildContext context,
+      TextInputType inputType, String hintText) {
     return Container(
         padding: EdgeInsets.zero,
         width: MediaQuery.of(context).size.width,
         child: TextField(
           textAlign: TextAlign.center,
-            keyboardType: inputType,
-            controller: controller,
+          keyboardType: inputType,
+          controller: controller,
           maxLength: 250,
           maxLines: null,
-          maxLengthEnforced: true,
-            cursorColor: Color(CommonMethods.getColorHexFromStr(colorsFile.black)),
-            style: TextStyle(
+          // maxLengthEnforced: true,
+          cursorColor:
+              Color(CommonMethods.getColorHexFromStr(colorsFile.black)),
+          style: TextStyle(
               height: 1.5,
               fontSize: 18.0,
-              color: Color(CommonMethods.getColorHexFromStr(colorsFile.black0))
-            ),
-          decoration: InputDecoration(hintText: hintText, border: InputBorder.none, counterText: '',),
-          /*  decoration: inputDecorationWithoutError(hintText)*/));
+              color:
+                  Color(CommonMethods.getColorHexFromStr(colorsFile.black0))),
+          decoration: InputDecoration(
+            hintText: hintText,
+            border: InputBorder.none,
+            counterText: '',
+          ),
+          /*  decoration: inputDecorationWithoutError(hintText)*/
+        ));
   }
 
-  InputDecoration myInputBoxDecoration(String focusColor, String enableColor, String label, String errorText, bool flag, TextEditingController passwordController, [TextEditingController controller, String hint]) {
+  InputDecoration myInputBoxDecoration(
+      String focusColor,
+      String enableColor,
+      String? label,
+      String? errorText,
+      bool flag,
+      TextEditingController? passwordController,
+      [TextEditingController? controller,
+      String? hint]) {
     return InputDecoration(
       labelText: label,
-      errorText: flag ? null : errorText,
+      labelStyle: TextStyle(
+          color: CommonMethods.getColorForSpecifiedCode("#000000"),
+          fontSize: 14),
+      errorText: flag
+          ? null
+          : (errorText == null || errorText.trim().isEmpty)
+              ? null
+              : errorText,
       counterText: '',
       hintText: hint,
-      contentPadding: EdgeInsets.only(left: 10, right: (controller == (passwordController != null ? passwordController : controller)) ? (controller!=null)? 40 : 10 : 10, top: 5, bottom: 5),
-/*      focusedBorder: OutlineInputBorder(
+      contentPadding: EdgeInsets.only(
+          left: 10,
+          right: (controller ==
+                  (passwordController != null
+                      ? passwordController
+                      : controller))
+              ? (controller != null)
+                  ? 40
+                  : 10
+              : 10,
+          top: 5,
+          bottom: 5),
+      focusedBorder: UnderlineInputBorder(
+        borderRadius: const BorderRadius.all(
+          const Radius.circular(10.0),
+        ),
+        borderSide: BorderSide(
+            color: Color(CommonMethods.getColorHexFromStr(focusColor)),
+            width: 1.0),
+      ),
+      enabledBorder: UnderlineInputBorder(
+        borderRadius: const BorderRadius.all(
+          const Radius.circular(10.0),
+        ),
+        borderSide: BorderSide(
+            color: Color(CommonMethods.getColorHexFromStr(enableColor)),
+            width: 1.0),
+      ),
+    );
+  }
+
+  InputDecoration myInputBoxDecorationWithOutlinedBorder(
+      String focusColor,
+      String enableColor,
+      String label,
+      String errorText,
+      bool flag,
+      TextEditingController passwordController,
+      [TextEditingController? controller,
+      String? hint]) {
+    return InputDecoration(
+      labelText: label,
+      labelStyle: TextStyle(
+          color: CommonMethods.getColorForSpecifiedCode("#000000"),
+          fontSize: 14),
+      errorText: flag
+          ? null
+          : (errorText == null || errorText.trim().isEmpty)
+              ? null
+              : errorText,
+      counterText: '',
+      hintText: hint,
+      contentPadding: EdgeInsets.only(
+          left: 10,
+          right: (controller ==
+                  (passwordController != null
+                      ? passwordController
+                      : controller))
+              ? (controller != null)
+                  ? 40
+                  : 10
+              : 10,
+          top: 5,
+          bottom: 5),
+      focusedBorder: OutlineInputBorder(
         borderRadius: const BorderRadius.all(
           const Radius.circular(10.0),
         ),
@@ -165,54 +276,54 @@ class BaseActivity extends StatefulWidget {
             color: Color(CommonMethods.getColorHexFromStr(enableColor)),
             width: 1.0),
       ),
-      border: OutlineInputBorder(
-        borderRadius: const BorderRadius.all(
-          const Radius.circular(10.0),
-        ),
-        borderSide: BorderSide(
-            color: Color(CommonMethods.getColorHexFromStr(enableColor)),
-            width: 1.0),
-      ),*/
-
     );
   }
-
 
   Widget getCountryBox() {
     return Container(
         height: 45,
         width: 50,
         decoration: myBoxDecorationBottom(),
-        child: Center(child: createTextViews(stringsFile.countryCode, 18, colorsFile.black0, TextAlign.center, FontWeight.normal)));
+        child: Center(
+            child: createTextViews(plunesStrings.countryCode, 18,
+                colorsFile.black0, TextAlign.center, FontWeight.normal)));
   }
 
-  Widget getDefaultButton(String text, double _width, double _height, void Function() sendOtp) {
+  Widget getDefaultButton(
+      String text, double? _width, double _height, void Function() sendOtp) {
     return Container(
       width: _width,
-      height: _height/*text == stringsFile.upload? 35: 42.0*/,
-      child: FlatButton(
+      height: _height /*text == stringsFile.upload? 35: 42.0*/,
+      child: ElevatedButton(
         onPressed: sendOtp,
-        color: Color(hexColorCode.defaultGreen),
+        //color: Color(hexColorCode.defaultGreen),
         child: Center(
-            child: createTextViews(text, 18, colorsFile.white, TextAlign.center, FontWeight.normal)),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-      ),
-    );
-  }
-  Widget getBorderButton(String text, double _width, void Function() sendOtp) {
-    return Container(
-      width: _width,
-      height: text == stringsFile.upload? 35: 42.0,
-      child: FlatButton(
-        onPressed: sendOtp,
-        color: Colors.white,
-        child: Center(
-            child: createTextViews(text, 18, colorsFile.black0, TextAlign.center,
+            child: createTextViews(text, 18, colorsFile.white, TextAlign.center,
                 FontWeight.normal)),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50), side: BorderSide(color: Color(CommonMethods.getColorHexFromStr(colorsFile.lightGrey3)))),
+        // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
       ),
     );
   }
+
+  Widget getBorderButton(String text, double? _width, void Function() sendOtp) {
+    return Container(
+      width: _width,
+      height: text == plunesStrings.upload ? 35 : 42.0,
+      child: ElevatedButton(
+        onPressed: sendOtp,
+        //color: Colors.white,
+        child: Center(
+            child: createTextViews(text, 18, colorsFile.black0,
+                TextAlign.center, FontWeight.normal)),
+        // shape: RoundedRectangleBorder(
+        //     borderRadius: BorderRadius.circular(50),
+        //     side: BorderSide(
+        //         color: Color(
+        //             CommonMethods.getColorHexFromStr(colorsFile.lightGrey3)))),
+      ),
+    );
+  }
+
   Widget getBlackBackButton(BuildContext context) {
     return Align(
       alignment: Alignment.topLeft,
@@ -222,8 +333,8 @@ class BaseActivity extends StatefulWidget {
           onTap: () {
             Navigator.pop(context);
           },
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
+          child: const Padding(
+            padding: EdgeInsets.all(12.0),
             child: Icon(
               Icons.arrow_back_ios,
               color: Colors.black,
@@ -248,55 +359,73 @@ class BaseActivity extends StatefulWidget {
         ));
   }
 
-  Widget getAppBar(BuildContext context, String title, bool flag) {
+  Widget getAppBar(BuildContext context, String title, bool isIosBackButton,
+      {Function? func}) {
     return AppBar(
-        automaticallyImplyLeading: flag,
+        automaticallyImplyLeading: isIosBackButton,
         backgroundColor: Colors.white,
         brightness: Brightness.light,
         iconTheme: IconThemeData(color: Colors.black),
         centerTitle: true,
-        leading: flag? IconButton(
-          icon: Icon(Icons.arrow_back_ios),
-          onPressed: () => Navigator.pop(context, false),
-        ): Container(),
+        leading: isIosBackButton
+            ? IconButton(
+                icon: Icon(Icons.arrow_back_ios),
+                onPressed: () {
+                  if (func != null) {
+                    func();
+                  }
+                  Navigator.pop(context, false);
+                  return;
+                },
+              )
+            : Container(),
         title: createTextViews(
             title, 18, colorsFile.black, TextAlign.center, FontWeight.w500));
   }
-  Widget getHomeAppBar(BuildContext context, String title, bool isSelected, List<String> selectedPositions, String from, _homeScreenState) {
+
+  Widget getHomeAppBar(BuildContext context, String title, bool isSelected,
+      List<String>? selectedPositions, String from, _homeScreenState,
+      {bool isSolutionPageSelected = false}) {
     return AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor:
+            isSolutionPageSelected ? Colors.transparent : Colors.white,
+        elevation: isSolutionPageSelected ? 0.0 : 1.0,
         brightness: Brightness.light,
         iconTheme: IconThemeData(color: Colors.black),
         centerTitle: true,
-        title: createTextViews(title, 18, colorsFile.black, TextAlign.center, FontWeight.w500),
+        title: createTextViews(
+            title, 18, colorsFile.black, TextAlign.start, FontWeight.w500),
         actions: <Widget>[
-          isSelected?IconButton(
-            icon: Icon(Icons.clear, color: Colors.grey),
-            onPressed: () => reset(context),
-          ): Container(),
-         (isSelected && from == stringsFile.notification)?IconButton(
-           padding: EdgeInsets.zero,
-            icon: Icon(Icons.delete, color: Colors.grey),
-            onPressed: () {
-              var body = {};
-              body['isYes'] = true;
-              bloc.changeAppBar(context, body);
-
-            },
-          ):Container(),
-          (isSelected && from == stringsFile.notification)? Padding(
-            padding: EdgeInsets.fromLTRB(0.0,20,20,20),
-            child: Text('${selectedPositions.length}'),): Container()
-
-        ]
-
-
-    );
+          isSelected
+              ? IconButton(
+                  icon: Icon(Icons.clear, color: Colors.grey),
+                  onPressed: () => reset(context),
+                )
+              : Container(),
+          (isSelected && from == plunesStrings.notification)
+              ? IconButton(
+                  padding: EdgeInsets.zero,
+                  icon: Icon(Icons.delete, color: Colors.grey),
+                  onPressed: () {
+//                    var body = {};
+//                    body['isYes'] = true;
+//                    bloc.changeAppBar(context, body);
+                  },
+                )
+              : Container(),
+          (isSelected && from == plunesStrings.notification)
+              ? Padding(
+                  padding: EdgeInsets.fromLTRB(0.0, 20, 20, 20),
+                  child: Text('${selectedPositions!.length}'),
+                )
+              : Container()
+        ]);
   }
+
   reset(context) {
     bloc.changeAppBar(context, null);
-
   }
+
   Widget getTermsOfUseRow() {
     return Container(
       child: Column(
@@ -304,12 +433,12 @@ class BaseActivity extends StatefulWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          createTextViews(stringsFile.signUpMsg, 13, colorsFile.lightGrey2,
+          createTextViews(plunesStrings.signUpMsg, 13, colorsFile.lightGrey2,
               TextAlign.center, FontWeight.normal),
           InkWell(
               onTap: () => CommonMethods.launchURL(urls.terms),
               child: Container(
-                  child: Text(stringsFile.termsServices,
+                  child: Text(plunesStrings.termsServices,
                       style: TextStyle(decoration: TextDecoration.underline))))
         ],
       ),
@@ -320,23 +449,34 @@ class BaseActivity extends StatefulWidget {
     return Image.asset(image, fit: BoxFit.cover);
   }
 
-  Widget getAssetIconWidget(String image, double height, double width, BoxFit fit) {
+  Widget getAssetIconWidget(
+      String image, double height, double width, BoxFit fit) {
     return Image.asset(image, fit: fit, height: height, width: width);
   }
 
   List<DropdownMenuItem<String>> getDropDownMenuItems() {
-    List<DropdownMenuItem<String>> items = new List();
-    for (String user in usersType) {
-      items.add(new DropdownMenuItem(
-          value: user,
-          child: createTextViews(user, 18, colorsFile.black0, TextAlign.center,
+    List<DropdownMenuItem<String>> items = [];
+
+    usersType.forEach((element) {
+      items.add(DropdownMenuItem(
+          value: element.toString(),
+          child: createTextViews(element.toString(), 16, colorsFile.black0, TextAlign.center,
               FontWeight.normal)));
-    }
+    });
+    // 6-apr-2023
+    // for (String user in usersType as Iterable<String>) {
+    //   items.add(DropdownMenuItem(
+    //       value: user,
+    //       child: createTextViews(user, 16, colorsFile.black0, TextAlign.center,
+    //           FontWeight.normal)));
+    // }
     return items;
   }
 
   void statusBarColor() {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarIconBrightness: Brightness.dark));
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark));
   }
 
   getApplicationType() {
@@ -356,31 +496,191 @@ class BaseActivity extends StatefulWidget {
   }
 
   getDeviceId() {
-    CommonMethods.getDeviceId().then((String deviceId) {
+    CommonMethods.getDeviceId().then((String? deviceId) {
       this.deviceId = deviceId;
     });
   }
 
-   showPhoto(BuildContext context, Photo image) {
-    Navigator.push(context, MaterialPageRoute<void>(
-        builder: (BuildContext context) {
-          return Scaffold(
-            backgroundColor: Colors.black,
-            appBar: AppBar(
-              title: Text(/*photo.title*/''),
-            ),
-            body: SizedBox.expand(
-              child: Hero(
-                tag: image,
-                child: GridPhotoViewer(photo: image),
-              ),
-            ),
-          );
-        }
-    ));
+  showPhoto(BuildContext context, Photo image) {
+    Navigator.push(context,
+        MaterialPageRoute<void>(builder: (BuildContext context) {
+      return Scaffold(
+        backgroundColor: Colors.black,
+        appBar: AppBar(
+          title: Text(/*photo.title*/ ''),
+        ),
+        body: SizedBox.expand(
+          child: Hero(
+            tag: image,
+            child: GridPhotoViewer(photo: image),
+          ),
+        ),
+      );
+    }));
   }
 
+  showLongToast(String message) {
+    Toast.show(message, duration: Toast.lengthShort, gravity: Toast.bottom);
 
+    // Fluttertoast.showToast(
+    //     msg: message,
+    //     gravity: ToastGravity.BOTTOM,
+    //     backgroundColor: Colors.transparent,
+    //     textColor: Colors.grey,
+    //     toastLength: Toast.LENGTH_LONG,);
+  }
 
+  showToast(String message, Color color) {
+    Toast.show(message, duration: Toast.lengthShort, gravity: Toast.bottom);
 
+    // Fluttertoast.showToast(
+    //     msg: message,
+    //     gravity: ToastGravity.BOTTOM,
+    //     textColor: color ?? PlunesColors.WHITECOLOR,
+    //     toastLength: Toast.LENGTH_LONG,);
+  }
+
+  @override
+  State<StatefulWidget> createState() {
+    return test();
+  }
+}
+
+class test extends State<BaseActivity> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold();
+  }
+}
+
+///Base State class
+abstract class BaseState<T extends BaseActivity> extends State<T>
+    with WidgetsBindingObserver {
+  GlobalKey<ScaffoldState>? scaffoldKey;
+  final BlocBase bloc;
+  PersistentBottomSheetController? _controller2;
+
+  BaseState({required this.bloc});
+
+  StreamSubscription? _loginSubscription;
+
+  @override
+  @mustCallSuper
+  void initState() {
+    WidgetsBinding.instance.addObserver(this);
+    scaffoldKey = GlobalKey<ScaffoldState>();
+    bloc.baseStream?.listen((response) {
+      if (response is RequestFailed) {
+        RequestFailed requestFailed = response;
+        if (requestFailed.requestCode == HttpResponseCode.UNAUTHORIZED) {
+          handleAuthTokenExpired();
+        }
+      }
+    });
+
+    ///Event bus to handle unauthorized user
+    _loginSubscription =
+        EventProvider().getSessionEventBus()!.on<RequestState>().listen((data) {
+      if (data is RequestFailed) {
+        RequestFailed requestFailed = data;
+        if (requestFailed.requestCode == HttpResponseCode.UNAUTHORIZED) {
+          handleAuthTokenExpired(
+              buildContext: scaffoldKey!.currentState!.context,
+              errorMessage: requestFailed.failureCause);
+        }
+      }
+    });
+
+    super.initState();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+  }
+
+  @override
+  void deactivate() {
+    _loginSubscription?.cancel();
+    super.deactivate();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  @override
+  void didUpdateWidget(T oldWidget) {
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    bloc.dispose();
+    super.dispose();
+  }
+
+  ///This method used to show error and success Toast.
+  ///@Params failureCause, message to show
+  ///@Params isSuccess, to notify weather request success or failed
+  void showSnackBar(String failureCause, {bool isSuccess = false}) {
+    if (failureCause == null || failureCause.isEmpty) {
+      return;
+    }
+    Future.delayed(Duration(milliseconds: 200), () async {
+//      _controller2 = CustomWidgets().showScafoldBottomSheet(
+//          textToShow: failureCause,
+//          scaffoldKey: scaffoldKey,
+//          iconColor: isSuccess ? FnpColors.colorPrimary : FnpColors.red,
+//          icon: isSuccess ? Icons.done : null);
+    });
+    Future.delayed(Duration(milliseconds: 1500), () async {
+      if (_controller2 != null) _controller2!.close();
+    });
+  }
+
+  /// This method used to show the share system tray
+  /// @Params msg, the message visible to user
+  void showShareTray(String msg) {
+//    CustomWidgets().openSystemShareTray(text: msg);
+  }
+
+  /// This method used to handle unauthenticated user throwout app
+  /// @Params buildContext, widget context
+  /// @Params errorMessage, the message which will be visible in dialog
+  void handleAuthTokenExpired(
+      {BuildContext? buildContext, String? errorMessage}) {
+//    showDialog(
+//      context: scaffoldKey.currentState.context,
+//      barrierDismissible: false,
+//      builder: (BuildContext context) {
+//        return AlertDialog(
+//          title: new Text("Session Expired"),
+//          content: new Text(errorMessage),
+//          actions: <Widget>[
+//            new FlatButton(
+//              child: new Text("ok"),
+//              onPressed: () {
+//                Preferences().clearPreferences();
+//                Navigator.of(context).pushNamedAndRemoveUntil(
+//                    '/login', (Route<dynamic> route) => false);
+//              },
+//            ),
+//          ],
+//        );
+//      },
+//    );
+  }
+
+//  Widget getProgressWidget({int progressType}) {
+//    return GestureDetector(
+//      onTap: () {},
+//      child: Container(
+//        color: FnpColors.transparentWhite,
+//        child: Center(child: CustomWidgets().dashedProgressIndicator()),
+//      ),
+//    );
+//  }
 }
