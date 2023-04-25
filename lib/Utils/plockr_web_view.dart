@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+// import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
@@ -15,39 +15,65 @@ class PlockrWebViewContainer extends BaseActivity {
   createState() => _PlockrWebViewContainerState(this.url);
 }
 
-class _PlockrWebViewContainerState extends BaseState<PlockrWebViewContainer> {
+class _PlockrWebViewContainerState extends State<PlockrWebViewContainer> {
   var _url;
   final _key = UniqueKey();
 
   _PlockrWebViewContainerState(this._url);
 
+  late var controller;
+
   @override
   Widget build(BuildContext context) {
+    controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(const Color(0x00000000))
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onProgress: (int progress) {
+            // Update loading bar.
+          },
+          onPageStarted: (String url) {},
+          onPageFinished: (String url) {},
+          onWebResourceError: (WebResourceError error) {},
+          onNavigationRequest: (NavigationRequest request) {
+            return NavigationDecision.navigate;
+          },
+        ),
+      )
+      ..loadRequest(Uri.parse(_url));
+
     return Scaffold(
+      appBar: widget.getAppBar(context, PlunesStrings.plockrViewer, true) as PreferredSizeWidget?,
         body: Container(
       color: Colors.white70,
       width: double.infinity,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Expanded(
-              child: WebviewScaffold(
-            clearCache: false,
-            withZoom: true,
-            hidden: true,
-            initialChild: Container(
-              color: Colors.white,
-              child: Center(
-                  child: SpinKitThreeBounce(
-                color: Color(hexColorCode.defaultTransGreen),
-                size: 30.0,
-              )),
-            ),
-            url: _url,
-            appBar: widget.getAppBar(context, PlunesStrings.plockrViewer, true),
-          ))
-        ],
-      ),
+      child: WebViewWidget(
+        controller: controller
+      )
+
+      // Column(
+      //   mainAxisAlignment: MainAxisAlignment.center,
+      //   children: [
+      //     Expanded(
+      //         child: WebviewScaffold(
+      //       clearCache: false,
+      //       withZoom: true,
+      //       hidden: true,
+      //       initialChild: Container(
+      //         color: Colors.white,
+      //         child: Center(
+      //             child: SpinKitThreeBounce(
+      //           color: Color(hexColorCode.defaultTransGreen),
+      //           size: 30.0,
+      //         )),
+      //       ),
+      //       url: _url,
+      //       appBar: widget.getAppBar(context, PlunesStrings.plockrViewer, true),
+      //     ))
+      //   ],
+      // ),
+
     ));
   }
 }

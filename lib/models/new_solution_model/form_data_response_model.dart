@@ -1,6 +1,6 @@
 class FormDataModel {
-  bool success;
-  FormInnerData data;
+  bool? success;
+  FormInnerData? data;
   static const String bodyPartKey = "bodyPart",
       sessionGraftKey = "session_grafts";
 
@@ -16,27 +16,27 @@ class FormDataModel {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['success'] = this.success;
     if (this.data != null) {
-      data['data'] = this.data.toJson();
+      data['data'] = this.data!.toJson();
     }
     return data;
   }
 }
 
 class FormInnerData {
-  String sId;
-  List<String> childrenKeys;
-  List<Children> children;
-  String sessionKey;
-  List<String> sessions;
-  String speciality;
-  String family;
-  String specialityId;
-  String familyId;
-  String technique;
-  String service;
-  String serviceName;
-  String duration;
-  String category;
+  String? sId;
+  List<String>? childrenKeys;
+  List<Children>? children;
+  String? sessionKey;
+  List<String>? sessions;
+  String? speciality;
+  String? family;
+  String? specialityId;
+  String? familyId;
+  String? technique;
+  String? service;
+  String? serviceName;
+  String? duration;
+  String? category;
 
   FormInnerData(
       {this.sId,
@@ -58,9 +58,9 @@ class FormInnerData {
     sId = json['_id'];
     childrenKeys = json['childrenKeys']?.cast<String>();
     if (json['children'] != null) {
-      children = new List<Children>();
+      children = [];
       json['children'].forEach((v) {
-        children.add(new Children.fromJson(v));
+        children!.add(new Children.fromJson(v));
       });
     }
     sessionKey = json['sessionKey'];
@@ -81,7 +81,7 @@ class FormInnerData {
     data['_id'] = this.sId;
     data['childrenKeys'] = this.childrenKeys;
     if (this.children != null) {
-      data['children'] = this.children.map((v) => v.toJson()).toList();
+      data['children'] = this.children!.map((v) => v.toJson()).toList();
     }
     data['sessionKey'] = this.sessionKey;
     data['sessions'] = this.sessions;
@@ -99,8 +99,8 @@ class FormInnerData {
 }
 
 class Children {
-  String bodyPart;
-  List<String> possibleValues;
+  String? bodyPart;
+  List<String>? possibleValues;
 
   Children({this.bodyPart, this.possibleValues});
 

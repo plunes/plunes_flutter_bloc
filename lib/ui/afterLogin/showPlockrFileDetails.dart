@@ -3,7 +3,6 @@ import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/Utils/plockr_web_view.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/models/plockr_model/plockr_response_model.dart';
-import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -11,7 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 // ignore: must_be_immutable
 class ShowImageDetails extends BaseActivity {
   final UploadedReports uploadedReport;
-  final String webViewUrl;
+  final String? webViewUrl;
 
   ShowImageDetails(this.uploadedReport, this.webViewUrl);
 
@@ -20,9 +19,10 @@ class ShowImageDetails extends BaseActivity {
       _ShowImageDetailsState(uploadedReport, webViewUrl);
 }
 
-class _ShowImageDetailsState extends BaseState<ShowImageDetails> {
+class _ShowImageDetailsState extends State<ShowImageDetails> {
+  final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   final UploadedReports uploadedReport;
-  final String webViewUrl;
+  final String? webViewUrl;
 
   _ShowImageDetailsState(this.uploadedReport, this.webViewUrl);
 
@@ -67,17 +67,17 @@ class _ShowImageDetailsState extends BaseState<ShowImageDetails> {
             ),
             InkWell(
                 onTap: () async {
-                  String url = uploadedReport.reportUrl;
+                  String? url = uploadedReport.reportUrl;
                   if (url == null || url.isEmpty) {
                     widget.showInSnackBar(PlunesStrings.unableToOpen,
-                        PlunesColors.BLACKCOLOR, scaffoldKey);
+                        PlunesColors.BLACKCOLOR, scaffoldKey!);
                     return;
                   }
                   if (uploadedReport.fileType != null &&
                       uploadedReport.fileType == UploadedReports.dicomFile) {
                     String plockrUrl =
                         "https://plockr.plunes.com/dicom_viewer?fieldId=$url";
-                    if (webViewUrl != null && webViewUrl.isNotEmpty) {
+                    if (webViewUrl != null && webViewUrl!.isNotEmpty) {
                       plockrUrl = "$webViewUrl$url";
                     }
 //                    print("webview url" + plockrUrl);
@@ -91,7 +91,7 @@ class _ShowImageDetailsState extends BaseState<ShowImageDetails> {
                       await launch(url);
                     } else {
                       widget.showInSnackBar(PlunesStrings.unableToOpen,
-                          PlunesColors.BLACKCOLOR, scaffoldKey);
+                          PlunesColors.BLACKCOLOR, scaffoldKey!);
                     }
                   }
                 },
@@ -232,7 +232,7 @@ class _ShowImageDetailsState extends BaseState<ShowImageDetails> {
 //                                    UploadedReports.dicomFile)
 //                            ? ExactAssetImage(PlunesImages.defaultImage)
 //                            :
-                            NetworkImage(uploadedReport.reportThumbnail)),
+                            NetworkImage(uploadedReport.reportThumbnail!)),
                   ),
                   child: Stack(
                     children: <Widget>[
@@ -258,7 +258,7 @@ class _ShowImageDetailsState extends BaseState<ShowImageDetails> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    uploadedReport.reportName.trimLeft(),
+                    uploadedReport.reportName!.trimLeft(),
                     textAlign: TextAlign.left,
                     style: TextStyle(
                         color: Colors.black,
@@ -281,7 +281,7 @@ class _ShowImageDetailsState extends BaseState<ShowImageDetails> {
                         height: 5,
                       ),
                       Text(
-                        uploadedReport.userName,
+                        uploadedReport.userName!,
                         style: TextStyle(
                             fontWeight: FontWeight.w500, fontSize: 15),
                       ),

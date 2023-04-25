@@ -1,13 +1,13 @@
 import 'package:plunes/Utils/Constants.dart';
+import 'package:plunes/models/booking_models/appointment_model.dart';
 import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/dio_requester.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/Http_constants.dart';
 import 'package:plunes/resources/network/Urls.dart';
-import 'package:plunes/models/booking_models/appointment_model.dart';
 
 class AppointmentRepo {
-  static AppointmentRepo _instance;
+  static AppointmentRepo? _instance;
 
   AppointmentRepo._init();
 
@@ -15,7 +15,7 @@ class AppointmentRepo {
     if (_instance == null) {
       _instance = AppointmentRepo._init();
     }
-    return _instance;
+    return _instance!;
   }
 
   Future<RequestState> getAppointmentDetails() async {
@@ -26,9 +26,9 @@ class AppointmentRepo {
           : Urls.BOOKING_URL,
       headerIncluded: true,
     );
-    if (result.isRequestSucceed) {
+    if (result!.isRequestSucceed!) {
       AppointmentResponseModel _appointmentModel =
-          AppointmentResponseModel.fromJson(result.response.data);
+          AppointmentResponseModel.fromJson(result.response!.data);
       return RequestSuccess(response: _appointmentModel);
     } else {
       return RequestFailed(failureCause: result.failureCause);

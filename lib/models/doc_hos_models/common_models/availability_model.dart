@@ -1,8 +1,8 @@
 class AvailabilityModel {
-  String day;
-  bool closed, isSelected;
-  List<String> slots;
-  List<DaySelectionModel> daySelectionList;
+  String? day;
+  bool? closed, isSelected;
+  List<String?>? slots;
+  List<DaySelectionModel>? daySelectionList;
 
   AvailabilityModel(
       {this.day,
@@ -15,15 +15,15 @@ class AvailabilityModel {
     var json = {
       "slots": this.slots ?? [],
       "day": this.day,
-      "closed": (this.slots == null || this.slots.isEmpty) ? true : this.closed
+      "closed": (this.slots == null || this.slots!.isEmpty) ? true : this.closed
     };
     return json;
   }
 }
 
 class DaySelectionModel {
-  String dayName;
-  bool isSelected;
+  String? dayName;
+  bool? isSelected;
 
   DaySelectionModel({this.isSelected, this.dayName});
 }

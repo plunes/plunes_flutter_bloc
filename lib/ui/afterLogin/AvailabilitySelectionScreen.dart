@@ -1,6 +1,8 @@
 import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart' as latest;
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
@@ -14,44 +16,42 @@ import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
-import 'package:shimmer/shimmer.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart' as latest;
 
 // ignore: must_be_immutable
 class AvailabilitySelectionScreen extends BaseActivity {
   static const tag = '/availabilitySelectionScreen';
-  final String url;
+  final String? url;
 
-  AvailabilitySelectionScreen({Key key, this.url}) : super(key: key);
+  AvailabilitySelectionScreen({Key? key, this.url}) : super(key: key);
 
   @override
   _AvailabilitySelectionScreenState createState() =>
       _AvailabilitySelectionScreenState();
 }
 
-class _AvailabilitySelectionScreenState
-    extends BaseState<AvailabilitySelectionScreen> {
+// class _AvailabilitySelectionScreenState extends BaseState<AvailabilitySelectionScreen> {
+class _AvailabilitySelectionScreenState extends State<AvailabilitySelectionScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   var globalHeight, globalWidth;
-  UserBloc userBloc;
-  LoginPost loginPost;
-  String failureCause;
-  DateTime initialTime;
-  String url;
-  bool hasSubmitted;
+  late UserBloc userBloc;
+  LoginPost? loginPost;
+  String? failureCause;
+  DateTime? initialTime;
+  String? url;
+  bool? hasSubmitted;
   bool progress = true;
-  List<String> check = new List();
-  List<String> from_1 = new List();
-  List<String> from_2 = new List();
-  List<String> to_1 = new List();
-  List<String> to_2 = new List();
-  List _timeSlots = new List();
+  List<String> check = [];
+  List<String> from_1 = [];
+  List<String> from_2 = [];
+  List<String> to_1 = [];
+  List<String> to_2 = [];
+  List _timeSlots = [];
 
   ///////////new////////////
-  List<AvailabilityModel> _availabilityModel;
+  List<AvailabilityModel>? _availabilityModel;
   int _currentDayIndex = 0;
   static const int _fromIndex = 0, _toIndex = 1;
-  ScrollController _dayScrollController, _daySelectionScrollController;
+  ScrollController? _dayScrollController, _daySelectionScrollController;
 
   ////////////////////////
 //  double _movingUnit = 30;
@@ -68,7 +68,7 @@ class _AvailabilitySelectionScreenState
     'Saturday',
     'Sunday'
   ];
-  DateTime from1,
+  DateTime? from1,
       from2,
       to1,
       to2,
@@ -109,16 +109,16 @@ class _AvailabilitySelectionScreenState
     if (result is RequestSuccess) {
       RequestSuccess requestSuccess = result;
       loginPost = requestSuccess.response;
-      if (loginPost.success != null && loginPost.success) {
-        if (loginPost.user != null &&
-            loginPost.user.timeSlots != null &&
-            loginPost.user.timeSlots.isNotEmpty) {
-          for (int i = 0; i < loginPost.user.timeSlots.length; i++) {
-            _availabilityModel.add(AvailabilityModel(
+      if (loginPost!.success != null && loginPost!.success!) {
+        if (loginPost!.user != null &&
+            loginPost!.user!.timeSlots != null &&
+            loginPost!.user!.timeSlots!.isNotEmpty) {
+          for (int i = 0; i < loginPost!.user!.timeSlots!.length; i++) {
+            _availabilityModel!.add(AvailabilityModel(
                 isSelected: i == 0 ? true : false,
-                closed: loginPost.user.timeSlots[i].closed ?? false,
+                closed: loginPost!.user!.timeSlots![i].closed ?? false,
                 day: days_name[i],
-                slots: loginPost.user.timeSlots[i].slots ?? [],
+                slots: loginPost!.user!.timeSlots![i].slots ?? [],
                 daySelectionList: days_name
                     .map(
                         (e) => DaySelectionModel(isSelected: false, dayName: e))
@@ -126,7 +126,7 @@ class _AvailabilitySelectionScreenState
           }
         } else {
           for (int i = 0; i < 7; i++) {
-            _availabilityModel.add(AvailabilityModel(
+            _availabilityModel!.add(AvailabilityModel(
                 isSelected: i == 0 ? true : false,
                 closed: i == 6 ? true : false,
                 day: days_name[i],
@@ -149,7 +149,7 @@ class _AvailabilitySelectionScreenState
 
   void _submitSlots() async {
     _timeSlots =
-        _availabilityModel.map((e) => e.toJson()).toList(growable: true);
+        _availabilityModel!.map((e) => e.toJson()).toList(growable: true);
 //    print("timeslots_ $_timeSlots");
     var data;
     data = {"timeSlots": _timeSlots};
@@ -159,12 +159,12 @@ class _AvailabilitySelectionScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: widget.getAppBar(context, plunesStrings.availability, true),
+        appBar: widget.getAppBar(context, plunesStrings.availability, true) as PreferredSizeWidget?,
         key: _scaffoldKey,
         backgroundColor: Colors.white,
         body: (progress != null && progress)
             ? CustomWidgets().getProgressIndicator()
-            : (_availabilityModel == null || _availabilityModel.isEmpty)
+            : (_availabilityModel == null || _availabilityModel!.isEmpty)
                 ? CustomWidgets().errorWidget(
                     failureCause ?? "No data available!",
                     onTap: () => _getSlots(),
@@ -210,7 +210,7 @@ class _AvailabilitySelectionScreenState
     }
   }
 
-  void _showSnackBar(String message, {bool shouldPop = false}) {
+  void _showSnackBar(String? message, {bool shouldPop = false}) {
     showDialog(
         context: context,
         builder: (context) {
@@ -265,12 +265,12 @@ class _AvailabilitySelectionScreenState
                           onTap: () {
                             if (index != _currentDayIndex) {
                               _currentDayIndex = index;
-                              _availabilityModel.forEach((element) {
+                              _availabilityModel!.forEach((element) {
                                 element.isSelected = false;
                               });
 //                      print("_currentDayIndex ${_availabilityModel[_currentDayIndex].closed}");
-                              _availabilityModel[index].isSelected = true;
-                              _availabilityModel[index]
+                              _availabilityModel![index].isSelected = true;
+                              _availabilityModel![index]
                                   .daySelectionList
                                   ?.forEach((element) {
                                 element.isSelected = false;
@@ -287,21 +287,19 @@ class _AvailabilitySelectionScreenState
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(16.0),
                               color:
-                                  _availabilityModel[index]?.isSelected ?? false
+                                  _availabilityModel![index].isSelected ?? false
                                       ? PlunesColors.GREENCOLOR
                                       : Color(CommonMethods.getColorHexFromStr(
                                           "#F5F5F5")),
                             ),
                             child: Center(
                               child: Text(
-                                _availabilityModel[index]
-                                        ?.day
-                                        ?.substring(0, 3)
-                                        ?.toUpperCase() ??
+                                _availabilityModel![index].day
+                                        ?.substring(0, 3).toUpperCase() ??
                                     PlunesStrings.NA,
                                 style: TextStyle(
                                   color:
-                                      _availabilityModel[index]?.isSelected ??
+                                      _availabilityModel![index].isSelected ??
                                               false
                                           ? PlunesColors.WHITECOLOR
                                           : PlunesColors.BLACKCOLOR,
@@ -316,8 +314,8 @@ class _AvailabilitySelectionScreenState
                   ),
                   InkWell(
                     onTap: () {
-                      _dayScrollController.jumpTo(
-                          _dayScrollController.position.maxScrollExtent);
+                      _dayScrollController!.jumpTo(
+                          _dayScrollController!.position.maxScrollExtent);
                       return;
                     },
                     child: Container(
@@ -345,7 +343,7 @@ class _AvailabilitySelectionScreenState
                     if (snapshot.data is RequestInProgress) {
                       return CustomWidgets().getProgressIndicator();
                     } else if (snapshot.data is RequestFailed) {
-                      RequestFailed _reqFail = snapshot.data as RequestFailed;
+                      RequestFailed? _reqFail = snapshot.data as RequestFailed?;
                       userBloc.addIntoStream(null);
                       Future.delayed(Duration(milliseconds: 100)).then((value) {
                         _showSnackBar(_reqFail?.failureCause);
@@ -383,7 +381,7 @@ class _AvailabilitySelectionScreenState
   }
 
   Widget _getSlotView() {
-    if (_availabilityModel == null || _availabilityModel.isEmpty) {
+    if (_availabilityModel == null || _availabilityModel!.isEmpty) {
       return Container();
     }
     return SingleChildScrollView(
@@ -398,10 +396,10 @@ class _AvailabilitySelectionScreenState
               children: <Widget>[
                 InkWell(
                   onTap: () {
-                    _availabilityModel[_currentDayIndex].closed =
-                        !_availabilityModel[_currentDayIndex].closed;
+                    _availabilityModel![_currentDayIndex].closed =
+                        !_availabilityModel![_currentDayIndex].closed!;
                     _setState();
-                    if (_availabilityModel[_currentDayIndex].closed) {
+                    if (_availabilityModel![_currentDayIndex].closed!) {
                       _showSnackBar(PlunesStrings.daySuccessfullyClosed);
                     } else {
                       _showSnackBar(PlunesStrings.daySuccessfullyClosed
@@ -415,8 +413,8 @@ class _AvailabilitySelectionScreenState
                             Color(CommonMethods.getColorHexFromStr("#F5F5F5"))),
                     height: AppConfig.verticalBlockSize * 4,
                     width: AppConfig.horizontalBlockSize * 8,
-                    child: (_availabilityModel[_currentDayIndex] == null ||
-                                _availabilityModel[_currentDayIndex].closed ??
+                    child: (_availabilityModel![_currentDayIndex] == null ||
+                                _availabilityModel![_currentDayIndex].closed! ??
                             false)
                         ? Container()
                         : Center(
@@ -457,30 +455,30 @@ class _AvailabilitySelectionScreenState
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: <Widget>[
                             Text(
-                              _availabilityModel[_currentDayIndex]
-                                  .slots[index]
+                              _availabilityModel![_currentDayIndex]
+                                  .slots![index]!
                                   .split("-")[0],
                               style: TextStyle(
                                   fontSize: 14,
-                                  color: _availabilityModel[_currentDayIndex]
-                                          .closed
+                                  color: _availabilityModel![_currentDayIndex]
+                                          .closed!
                                       ? PlunesColors.GREYCOLOR
                                       : PlunesColors.BLACKCOLOR),
                             ),
                             Icon(
                               Icons.arrow_forward,
-                              color: _availabilityModel[_currentDayIndex].closed
+                              color: _availabilityModel![_currentDayIndex].closed!
                                   ? PlunesColors.GREYCOLOR
                                   : PlunesColors.BLACKCOLOR,
                             ),
                             Text(
-                                _availabilityModel[_currentDayIndex]
-                                    .slots[index]
+                                _availabilityModel![_currentDayIndex]
+                                    .slots![index]!
                                     .split("-")[1],
                                 style: TextStyle(
                                     fontSize: 14,
-                                    color: _availabilityModel[_currentDayIndex]
-                                            .closed
+                                    color: _availabilityModel![_currentDayIndex]
+                                            .closed!
                                         ? PlunesColors.GREYCOLOR
                                         : PlunesColors.BLACKCOLOR)),
                           ],
@@ -489,11 +487,11 @@ class _AvailabilitySelectionScreenState
                     )),
                     InkWell(
                         onTap: () {
-                          if (_availabilityModel[_currentDayIndex].closed) {
+                          if (_availabilityModel![_currentDayIndex].closed!) {
                             return;
                           }
-                          _availabilityModel[_currentDayIndex]
-                              .slots
+                          _availabilityModel![_currentDayIndex]
+                              .slots!
                               .removeAt(index);
                           _setState();
                         },
@@ -503,14 +501,14 @@ class _AvailabilitySelectionScreenState
                             PlunesImages.binImage,
                             width: AppConfig.horizontalBlockSize * 8,
                             height: AppConfig.verticalBlockSize * 2.8,
-                            color: _availabilityModel[_currentDayIndex].closed
+                            color: _availabilityModel![_currentDayIndex].closed!
                                 ? PlunesColors.GREYCOLOR
                                 : null,
                           ),
                         )),
                     InkWell(
                         onTap: () {
-                          if (_availabilityModel[_currentDayIndex].closed) {
+                          if (_availabilityModel![_currentDayIndex].closed!) {
                             return;
                           }
                           _fromDateHolderForSlotEdit = null;
@@ -523,7 +521,7 @@ class _AvailabilitySelectionScreenState
                             PlunesImages.availability_edit_image,
                             width: AppConfig.horizontalBlockSize * 8,
                             height: AppConfig.verticalBlockSize * 2.8,
-                            color: _availabilityModel[_currentDayIndex].closed
+                            color: _availabilityModel![_currentDayIndex].closed!
                                 ? PlunesColors.GREYCOLOR
                                 : null,
                           ),
@@ -532,14 +530,14 @@ class _AvailabilitySelectionScreenState
                 ),
               );
             },
-            itemCount: _availabilityModel[_currentDayIndex].slots?.length ?? 0,
+            itemCount: _availabilityModel![_currentDayIndex].slots?.length ?? 0,
             shrinkWrap: true,
           ),
           Container(
             margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
             child: InkWell(
               onTap: () {
-                if (_availabilityModel[_currentDayIndex].closed) {
+                if (_availabilityModel![_currentDayIndex].closed!) {
                   return;
                 }
                 _checkFirstAndLastSlot();
@@ -554,14 +552,14 @@ class _AvailabilitySelectionScreenState
                       shape: BoxShape.circle,
                       color: PlunesColors.WHITECOLOR,
                       border: Border.all(
-                          color: _availabilityModel[_currentDayIndex].closed
+                          color: _availabilityModel![_currentDayIndex].closed!
                               ? PlunesColors.GREYCOLOR
                               : PlunesColors.GREENCOLOR)),
                   child: Center(
                     child: Icon(
                       Icons.add,
                       size: 18,
-                      color: _availabilityModel[_currentDayIndex].closed
+                      color: _availabilityModel![_currentDayIndex].closed!
                           ? PlunesColors.GREYCOLOR
                           : PlunesColors.GREENCOLOR,
                     ),
@@ -574,7 +572,7 @@ class _AvailabilitySelectionScreenState
             child: Text(
               "Add more slots",
               style: TextStyle(
-                  color: _availabilityModel[_currentDayIndex].closed
+                  color: _availabilityModel![_currentDayIndex].closed!
                       ? PlunesColors.GREYCOLOR
                       : PlunesColors.BLACKCOLOR,
                   fontSize: 12,
@@ -610,9 +608,9 @@ class _AvailabilitySelectionScreenState
 
   void _checkFirstAndLastSlot() {
     if (_availabilityModel != null &&
-        _availabilityModel.isNotEmpty &&
+        _availabilityModel!.isNotEmpty &&
         _currentDayIndex != null &&
-        _availabilityModel.length > _currentDayIndex) {
+        _availabilityModel!.length > _currentDayIndex) {
       _openTimePicker(_fromIndex);
     }
   }
@@ -620,13 +618,13 @@ class _AvailabilitySelectionScreenState
   void _setToIndexDate() {
     if (_tempToHolder != null) {
       if (_availabilityModel != null &&
-          _availabilityModel.isNotEmpty &&
+          _availabilityModel!.isNotEmpty &&
           _currentDayIndex != null &&
-          _availabilityModel.length > _currentDayIndex) {
-        if (_availabilityModel[_currentDayIndex].slots != null &&
-            _availabilityModel[_currentDayIndex].slots.isNotEmpty) {
+          _availabilityModel!.length > _currentDayIndex) {
+        if (_availabilityModel![_currentDayIndex].slots != null &&
+            _availabilityModel![_currentDayIndex].slots!.isNotEmpty) {
           List<String> _lastTimeArray =
-              _availabilityModel[_currentDayIndex].slots.last.split("-");
+              _availabilityModel![_currentDayIndex].slots!.last!.split("-");
 //          print("_lastTimeArray $_lastTimeArray");
 
           List<String> lastSplitTime = _lastTimeArray[1].split(":");
@@ -637,15 +635,15 @@ class _AvailabilitySelectionScreenState
                 "${_lastPmTime + int.parse(lastSplitTime.first)}";
           }
           var _lastDate = DateTime(
-              _tempFromHolder.year,
-              _tempFromHolder.month,
-              _tempFromHolder.day,
-              int.tryParse(lastSplitTime.first),
+              _tempFromHolder!.year,
+              _tempFromHolder!.month,
+              _tempFromHolder!.day,
+              int.tryParse(lastSplitTime.first)!,
               int.tryParse(lastSplitTime[1]
-                  .substring(0, lastSplitTime[1].indexOf(" "))));
+                  .substring(0, lastSplitTime[1].indexOf(" ")))!);
 //          print("_lastDate $_lastDate");
-          if (_tempToHolder.isAfter(_tempFromHolder) &&
-              _lastDate.isBefore(_tempToHolder)) {
+          if (_tempToHolder!.isAfter(_tempFromHolder!) &&
+              _lastDate.isBefore(_tempToHolder!)) {
 //            print(
 //                "valid hai _tempToHolder $_tempToHolder, _tempFromHolder $_tempFromHolder, _lastDate $_lastDate");
             String duration =
@@ -653,7 +651,7 @@ class _AvailabilitySelectionScreenState
                     "-" +
                     DateUtil.getTimeWithAmAndPmFormat(_tempToHolder);
 //            print("duration $duration");
-            _availabilityModel[_currentDayIndex].slots.add(duration);
+            _availabilityModel![_currentDayIndex].slots!.add(duration);
             _setState();
           } else {
             _invalidSlotCallBack();
@@ -666,7 +664,7 @@ class _AvailabilitySelectionScreenState
               "-" +
               DateUtil.getTimeWithAmAndPmFormat(_tempToHolder);
 //          print("duration $duration");
-          _availabilityModel[_currentDayIndex].slots = [duration];
+          _availabilityModel![_currentDayIndex].slots = [duration];
           _setState();
         }
       }
@@ -675,16 +673,16 @@ class _AvailabilitySelectionScreenState
 
   void _doFromIndexOperation() {
     if (_availabilityModel != null &&
-        _availabilityModel.isNotEmpty &&
+        _availabilityModel!.isNotEmpty &&
         _currentDayIndex != null &&
-        _availabilityModel.length > _currentDayIndex) {
-      if (_availabilityModel[_currentDayIndex].slots != null &&
-          _availabilityModel[_currentDayIndex].slots.isNotEmpty) {
+        _availabilityModel!.length > _currentDayIndex) {
+      if (_availabilityModel![_currentDayIndex].slots != null &&
+          _availabilityModel![_currentDayIndex].slots!.isNotEmpty) {
         List<String> _firstTimeArray =
-            _availabilityModel[_currentDayIndex].slots.first.split("-");
+            _availabilityModel![_currentDayIndex].slots!.first!.split("-");
 //        print("_firstTimeArray $_firstTimeArray");
         List<String> _lastTimeArray =
-            _availabilityModel[_currentDayIndex].slots.last.split("-");
+            _availabilityModel![_currentDayIndex].slots!.last!.split("-");
 //        print("_lastTimeArray $_lastTimeArray");
         List<String> splitTime = _firstTimeArray[0].split(":");
         int _pmTime = 0;
@@ -693,11 +691,11 @@ class _AvailabilitySelectionScreenState
           splitTime.first = "${_pmTime + int.parse(splitTime.first)}";
         }
         var _firstDate = DateTime(
-            _tempFromHolder.year,
-            _tempFromHolder.month,
-            _tempFromHolder.day + 1,
-            int.tryParse(splitTime.first),
-            int.tryParse(splitTime[1].substring(0, splitTime[1].indexOf(" "))));
+            _tempFromHolder!.year,
+            _tempFromHolder!.month,
+            _tempFromHolder!.day + 1,
+            int.tryParse(splitTime.first)!,
+            int.tryParse(splitTime[1].substring(0, splitTime[1].indexOf(" ")))!);
 //        print("_firstDate $_firstDate");
         List<String> lastSplitTime = _lastTimeArray[1].split(":");
 //        print(
@@ -709,15 +707,15 @@ class _AvailabilitySelectionScreenState
               "${_lastPmTime + int.parse(lastSplitTime.first)}";
         }
         var _lastDate = DateTime(
-            _tempFromHolder.year,
-            _tempFromHolder.month,
-            _tempFromHolder.day,
-            int.tryParse(lastSplitTime.first),
+            _tempFromHolder!.year,
+            _tempFromHolder!.month,
+            _tempFromHolder!.day,
+            int.tryParse(lastSplitTime.first)!,
             int.tryParse(
-                lastSplitTime[1].substring(0, lastSplitTime[1].indexOf(" "))));
+                lastSplitTime[1].substring(0, lastSplitTime[1].indexOf(" ")))!);
 //        print("_lastDate $_lastDate");
-        if (_firstDate.isAfter(_tempFromHolder) &&
-            _lastDate.isBefore(_tempFromHolder)) {
+        if (_firstDate.isAfter(_tempFromHolder!) &&
+            _lastDate.isBefore(_tempFromHolder!)) {
 //          print(
 //              "valid hai $_firstDate, _tempFromHolder $_tempFromHolder, _lastDate $_lastDate");
         } else {
@@ -772,12 +770,11 @@ class _AvailabilitySelectionScreenState
                       itemBuilder: (context, index) {
                         return InkWell(
                           onTap: () {
-                            _availabilityModel[_currentDayIndex]
-                                    ?.daySelectionList[index]
+                            _availabilityModel![_currentDayIndex].daySelectionList![index]
                                     .isSelected =
-                                !_availabilityModel[_currentDayIndex]
-                                    ?.daySelectionList[index]
-                                    .isSelected;
+                                !_availabilityModel![_currentDayIndex]
+                                !.daySelectionList![index]
+                                    .isSelected!;
                             _setState();
                           },
                           child: Column(
@@ -789,17 +786,12 @@ class _AvailabilitySelectionScreenState
                                     left: AppConfig.verticalBlockSize * .8,
                                     bottom: AppConfig.horizontalBlockSize * 2),
                                 child: Text(
-                                  _availabilityModel[_currentDayIndex]
-                                          ?.daySelectionList[index]
-                                          ?.dayName
-                                          ?.substring(0, 3)
-                                          ?.toUpperCase() ??
+                                  _availabilityModel![_currentDayIndex].daySelectionList![index].dayName
+                                          ?.substring(0, 3).toUpperCase() ??
                                       PlunesStrings.NA,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                    color: _availabilityModel[_currentDayIndex]
-                                                ?.daySelectionList[index]
-                                                ?.isSelected ??
+                                    color: _availabilityModel![_currentDayIndex].daySelectionList![index].isSelected ??
                                             false
                                         ? PlunesColors.SPARKLINGGREEN
                                         : PlunesColors.BLACKCOLOR,
@@ -816,9 +808,9 @@ class _AvailabilitySelectionScreenState
                                         AppConfig.horizontalBlockSize * 5),
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: _availabilityModel[_currentDayIndex]
-                                              ?.daySelectionList[index]
-                                              ?.isSelected ??
+                                  color: _availabilityModel![_currentDayIndex]
+                                              .daySelectionList![index]
+                                              .isSelected ??
                                           false
                                       ? PlunesColors.GREENCOLOR
                                       : Color(CommonMethods.getColorHexFromStr(
@@ -829,22 +821,21 @@ class _AvailabilitySelectionScreenState
                           ),
                         );
                       },
-                      itemCount: _availabilityModel[_currentDayIndex]
-                              ?.daySelectionList
+                      itemCount: _availabilityModel![_currentDayIndex].daySelectionList
                               ?.length ??
                           0,
                     ),
                   ),
                   InkWell(
                     onTap: () {
-                      _daySelectionScrollController.jumpTo(
-                          _daySelectionScrollController
+                      _daySelectionScrollController!.jumpTo(
+                          _daySelectionScrollController!
                               .position.maxScrollExtent);
                       return;
                     },
                     child: Container(
                       color: Colors.transparent,
-                      child: Icon(
+                      child: const Icon(
                         Icons.navigate_next,
                         color: PlunesColors.BLACKCOLOR,
                       ),
@@ -866,14 +857,14 @@ class _AvailabilitySelectionScreenState
 
   void _editTime(int index) {
     try {
-      String slotToBeEdited =
-          _availabilityModel[_currentDayIndex]?.slots[index];
+      String? slotToBeEdited =
+          _availabilityModel![_currentDayIndex]?.slots![index];
       if (slotToBeEdited != null) {
-        if (_availabilityModel[_currentDayIndex].slots.first ==
+        if (_availabilityModel![_currentDayIndex].slots!.first ==
             slotToBeEdited) {
           ///if first slot
           _editFirstSlot(slotToBeEdited);
-        } else if (_availabilityModel[_currentDayIndex].slots.last ==
+        } else if (_availabilityModel![_currentDayIndex].slots!.last ==
             slotToBeEdited) {
           ///if last slot
           _editLastSlot(slotToBeEdited);
@@ -889,8 +880,8 @@ class _AvailabilitySelectionScreenState
 
   void _editFirstSlot(String slotToBeEdited) {
     try {
-      if (_availabilityModel[_currentDayIndex].slots.length > 1) {
-        String _secondSlot = _availabilityModel[_currentDayIndex].slots[1];
+      if (_availabilityModel![_currentDayIndex].slots!.length > 1) {
+        String _secondSlot = _availabilityModel![_currentDayIndex].slots![1]!;
         List<String> _lastTimeArray = _secondSlot.split("-");
 //        print("_lastTimeArray $_lastTimeArray");
         List<String> lastSplitTime = _lastTimeArray[0].split(":");
@@ -902,15 +893,15 @@ class _AvailabilitySelectionScreenState
         }
 //        print("lastSplitTime $lastSplitTime");
         var _lastDate = DateTime(
-            _fromDateHolderForSlotEdit.year,
-            _fromDateHolderForSlotEdit.month,
-            _fromDateHolderForSlotEdit.day,
-            int.tryParse(lastSplitTime.first),
+            _fromDateHolderForSlotEdit!.year,
+            _fromDateHolderForSlotEdit!.month,
+            _fromDateHolderForSlotEdit!.day,
+            int.tryParse(lastSplitTime.first)!,
             int.tryParse(
-                lastSplitTime[1].substring(0, lastSplitTime[1].indexOf(" "))));
+                lastSplitTime[1].substring(0, lastSplitTime[1].indexOf(" ")))!);
 //        print("_lastDate $_lastDate");
-        if (_fromDateHolderForSlotEdit.isBefore(_toDateHolderForSlotEdit) &&
-            _toDateHolderForSlotEdit.isBefore(_lastDate)) {
+        if (_fromDateHolderForSlotEdit!.isBefore(_toDateHolderForSlotEdit!) &&
+            _toDateHolderForSlotEdit!.isBefore(_lastDate)) {
 //          print(
 //              "valid hai _fromDateHolderForSlotEdit $_fromDateHolderForSlotEdit, _toDateHolderForSlotEdit $_toDateHolderForSlotEdit, _lastDate $_lastDate");
           String duration =
@@ -918,9 +909,9 @@ class _AvailabilitySelectionScreenState
                   "-" +
                   DateUtil.getTimeWithAmAndPmFormat(_toDateHolderForSlotEdit);
 //          print("duration $duration");
-          _availabilityModel[_currentDayIndex].slots[
-              _availabilityModel[_currentDayIndex]
-                  .slots
+          _availabilityModel![_currentDayIndex].slots![
+              _availabilityModel![_currentDayIndex]
+                  .slots!
                   .indexOf(slotToBeEdited)] = duration;
           _setState();
         } else {
@@ -930,14 +921,14 @@ class _AvailabilitySelectionScreenState
           return;
         }
       } else {
-        if (_fromDateHolderForSlotEdit.isBefore(_toDateHolderForSlotEdit)) {
+        if (_fromDateHolderForSlotEdit!.isBefore(_toDateHolderForSlotEdit!)) {
 //          print("valid slot");
           String duration =
               DateUtil.getTimeWithAmAndPmFormat(_fromDateHolderForSlotEdit) +
                   "-" +
                   DateUtil.getTimeWithAmAndPmFormat(_toDateHolderForSlotEdit);
 //          print("duration $duration");
-          _availabilityModel[_currentDayIndex].slots = [duration];
+          _availabilityModel![_currentDayIndex].slots = [duration];
           _setState();
         } else {
           _invalidSlotCallBack();
@@ -951,11 +942,11 @@ class _AvailabilitySelectionScreenState
 
   void _editLastSlot(String slotToBeEdited) {
     try {
-      if (_availabilityModel[_currentDayIndex].slots.length > 1) {
-        String _firstSlot = _availabilityModel[_currentDayIndex].slots[0];
-        String previousSlot = _availabilityModel[_currentDayIndex].slots[
-            _availabilityModel[_currentDayIndex].slots.indexOf(slotToBeEdited) -
-                1];
+      if (_availabilityModel![_currentDayIndex].slots!.length > 1) {
+        String _firstSlot = _availabilityModel![_currentDayIndex].slots![0]!;
+        String previousSlot = _availabilityModel![_currentDayIndex].slots![
+            _availabilityModel![_currentDayIndex].slots!.indexOf(slotToBeEdited) -
+                1]!;
         List<String> _lastTimeArray = previousSlot.split("-");
 //        print("_lastTimeArray $_lastTimeArray");
         List<String> lastSplitTime = _lastTimeArray[1].split(":");
@@ -967,12 +958,12 @@ class _AvailabilitySelectionScreenState
         }
 //        print("lastSplitTime $lastSplitTime");
         var _lastDate = DateTime(
-            _fromDateHolderForSlotEdit.year,
-            _fromDateHolderForSlotEdit.month,
-            _fromDateHolderForSlotEdit.day,
-            int.tryParse(lastSplitTime.first),
+            _fromDateHolderForSlotEdit!.year,
+            _fromDateHolderForSlotEdit!.month,
+            _fromDateHolderForSlotEdit!.day,
+            int.tryParse(lastSplitTime.first)!,
             int.tryParse(
-                lastSplitTime[1].substring(0, lastSplitTime[1].indexOf(" "))));
+                lastSplitTime[1].substring(0, lastSplitTime[1].indexOf(" ")))!);
         //////////////////////////////
         List<String> _firstTimeArray = _firstSlot.split("-");
 //        print("_lastTimeArray $_lastTimeArray");
@@ -985,16 +976,16 @@ class _AvailabilitySelectionScreenState
         }
 //        print("firstSplitTime $firstSplitTime");
         var _firstDate = DateTime(
-            _fromDateHolderForSlotEdit.year,
-            _fromDateHolderForSlotEdit.month,
-            _fromDateHolderForSlotEdit.day + 1,
-            int.tryParse(firstSplitTime.first),
+            _fromDateHolderForSlotEdit!.year,
+            _fromDateHolderForSlotEdit!.month,
+            _fromDateHolderForSlotEdit!.day + 1,
+            int.tryParse(firstSplitTime.first)!,
             int.tryParse(firstSplitTime[1]
-                .substring(0, firstSplitTime[1].indexOf(" "))));
+                .substring(0, firstSplitTime[1].indexOf(" ")))!);
 //        print("_lastDate $_lastDate");
-        if (_fromDateHolderForSlotEdit.isBefore(_toDateHolderForSlotEdit) &&
-            _fromDateHolderForSlotEdit.isAfter(_lastDate) &&
-            _toDateHolderForSlotEdit.isBefore(_firstDate)) {
+        if (_fromDateHolderForSlotEdit!.isBefore(_toDateHolderForSlotEdit!) &&
+            _fromDateHolderForSlotEdit!.isAfter(_lastDate) &&
+            _toDateHolderForSlotEdit!.isBefore(_firstDate)) {
 //          print(
 //              "valid slot _fromDateHolderForSlotEdit: $_fromDateHolderForSlotEdit, _toDateHolderForSlotEdit: $_toDateHolderForSlotEdit, _lastDate: $_lastDate, _firstDate: $_firstDate");
           String duration =
@@ -1002,9 +993,9 @@ class _AvailabilitySelectionScreenState
                   "-" +
                   DateUtil.getTimeWithAmAndPmFormat(_toDateHolderForSlotEdit);
 //          print("duration $duration");
-          _availabilityModel[_currentDayIndex].slots[
-              _availabilityModel[_currentDayIndex]
-                  .slots
+          _availabilityModel![_currentDayIndex].slots![
+              _availabilityModel![_currentDayIndex]
+                  .slots!
                   .indexOf(slotToBeEdited)] = duration;
           _setState();
         } else {
@@ -1022,18 +1013,18 @@ class _AvailabilitySelectionScreenState
   void _editMiddleSlot(String slotToBeEdited) {
     try {
       int _editableSlotIndex =
-          _availabilityModel[_currentDayIndex].slots.indexOf(slotToBeEdited);
+          _availabilityModel![_currentDayIndex].slots!.indexOf(slotToBeEdited);
 //      print(
 //          "_availabilityModel[_currentDayIndex].slots.length ${_availabilityModel[_currentDayIndex].slots.length}");
       if (_editableSlotIndex != null && _editableSlotIndex != -1) {
-        if (_availabilityModel[_currentDayIndex].slots.length > 2 &&
-            (_availabilityModel[_currentDayIndex].slots.length >=
+        if (_availabilityModel![_currentDayIndex].slots!.length > 2 &&
+            (_availabilityModel![_currentDayIndex].slots!.length >=
                 (_editableSlotIndex + 1))) {
-          String _earlierSlot = _availabilityModel[_currentDayIndex]
-              .slots[_editableSlotIndex - 1];
+          String _earlierSlot = _availabilityModel![_currentDayIndex]
+              .slots![_editableSlotIndex - 1]!;
 //          print("earlier slot $_earlierSlot");
-          String _laterSlot = _availabilityModel[_currentDayIndex]
-              .slots[_editableSlotIndex + 1];
+          String _laterSlot = _availabilityModel![_currentDayIndex]
+              .slots![_editableSlotIndex + 1]!;
 //          print("later slot $_laterSlot");
           List<String> _lastTimeArray = _laterSlot.split("-");
 //          print("_lastTimeArray $_lastTimeArray");
@@ -1046,12 +1037,12 @@ class _AvailabilitySelectionScreenState
           }
 //          print("lastSplitTime $lastSplitTime");
           var _lastDate = DateTime(
-              _fromDateHolderForSlotEdit.year,
-              _fromDateHolderForSlotEdit.month,
-              _fromDateHolderForSlotEdit.day,
-              int.tryParse(lastSplitTime.first),
+              _fromDateHolderForSlotEdit!.year,
+              _fromDateHolderForSlotEdit!.month,
+              _fromDateHolderForSlotEdit!.day,
+              int.tryParse(lastSplitTime.first)!,
               int.tryParse(lastSplitTime[1]
-                  .substring(0, lastSplitTime[1].indexOf(" "))));
+                  .substring(0, lastSplitTime[1].indexOf(" ")))!);
           //////////////////////////////
           List<String> _firstTimeArray = _earlierSlot.split("-");
 //          print("_firstTimeArray $_firstTimeArray");
@@ -1065,16 +1056,16 @@ class _AvailabilitySelectionScreenState
           }
 //          print("firstSplitTime $firstSplitTime");
           var _firstDate = DateTime(
-              _fromDateHolderForSlotEdit.year,
-              _fromDateHolderForSlotEdit.month,
-              _fromDateHolderForSlotEdit.day,
-              int.tryParse(firstSplitTime.first),
+              _fromDateHolderForSlotEdit!.year,
+              _fromDateHolderForSlotEdit!.month,
+              _fromDateHolderForSlotEdit!.day,
+              int.tryParse(firstSplitTime.first)!,
               int.tryParse(firstSplitTime[1]
-                  .substring(0, firstSplitTime[1].indexOf(" "))));
+                  .substring(0, firstSplitTime[1].indexOf(" ")))!);
 
-          if (_fromDateHolderForSlotEdit.isBefore(_toDateHolderForSlotEdit) &&
-              _fromDateHolderForSlotEdit.isAfter(_firstDate) &&
-              _toDateHolderForSlotEdit.isBefore(_lastDate)) {
+          if (_fromDateHolderForSlotEdit!.isBefore(_toDateHolderForSlotEdit!) &&
+              _fromDateHolderForSlotEdit!.isAfter(_firstDate) &&
+              _toDateHolderForSlotEdit!.isBefore(_lastDate)) {
 //            print(
 //                "valid slot _fromDateHolderForSlotEdit: $_fromDateHolderForSlotEdit, _toDateHolderForSlotEdit: $_toDateHolderForSlotEdit, _lastDate: $_lastDate, _firstDate: $_firstDate");
             String duration =
@@ -1082,9 +1073,9 @@ class _AvailabilitySelectionScreenState
                     "-" +
                     DateUtil.getTimeWithAmAndPmFormat(_toDateHolderForSlotEdit);
 //            print("duration $duration");
-            _availabilityModel[_currentDayIndex].slots[
-                _availabilityModel[_currentDayIndex]
-                    .slots
+            _availabilityModel![_currentDayIndex].slots![
+                _availabilityModel![_currentDayIndex]
+                    .slots!
                     .indexOf(slotToBeEdited)] = duration;
             _setState();
           } else {
@@ -1105,9 +1096,9 @@ class _AvailabilitySelectionScreenState
   }
 
   Widget _getApplyButton() {
-    bool isItemSelected = false;
-    _availabilityModel[_currentDayIndex].daySelectionList.forEach((element) {
-      if (!isItemSelected) {
+    bool? isItemSelected = false;
+    _availabilityModel![_currentDayIndex].daySelectionList!.forEach((element) {
+      if (!isItemSelected!) {
         isItemSelected = element.isSelected;
       }
     });
@@ -1116,26 +1107,26 @@ class _AvailabilitySelectionScreenState
             EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 2.5),
         child: InkWell(
           onTap: () {
-            if (!isItemSelected) {
+            if (!isItemSelected!) {
               return;
             }
             for (int index = 0;
                 index <
-                    _availabilityModel[_currentDayIndex]
-                        .daySelectionList
+                    _availabilityModel![_currentDayIndex]
+                        .daySelectionList!
                         .length;
                 index++) {
-              if (_availabilityModel[_currentDayIndex]
-                  .daySelectionList[index]
-                  .isSelected) {
-                _availabilityModel[index].slots =
-                    _availabilityModel[_currentDayIndex].slots;
-                _availabilityModel[index].closed =
-                    _availabilityModel[_currentDayIndex].closed;
+              if (_availabilityModel![_currentDayIndex]
+                  .daySelectionList![index]
+                  .isSelected!) {
+                _availabilityModel![index].slots =
+                    _availabilityModel![_currentDayIndex].slots;
+                _availabilityModel![index].closed =
+                    _availabilityModel![_currentDayIndex].closed;
               }
             }
-            _availabilityModel[_currentDayIndex]
-                .daySelectionList
+            _availabilityModel![_currentDayIndex]
+                .daySelectionList!
                 .forEach((element) {
               element.isSelected = false;
             });
@@ -1149,7 +1140,7 @@ class _AvailabilitySelectionScreenState
               PlunesStrings.apply,
               textAlign: TextAlign.center,
               style: TextStyle(
-                  color: !(isItemSelected)
+                  color: !isItemSelected!
                       ? PlunesColors.LIGHTGREYCOLOR
                       : PlunesColors.SPARKLINGGREEN,
                   fontSize: AppConfig.largeFont,

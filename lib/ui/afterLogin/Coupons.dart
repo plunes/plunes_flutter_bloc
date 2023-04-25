@@ -14,11 +14,12 @@ class Coupons extends BaseActivity {
   _CouponsState createState() => _CouponsState();
 }
 
-class _CouponsState extends BaseState<Coupons> {
+// class _CouponsState extends BaseState<Coupons> {
+class _CouponsState extends State<Coupons> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   var globalHeight, globalWidth;
-  Preferences _preferences;
-  List<dynamic> couponsList = new List();
+  Preferences? _preferences;
+  List<dynamic> couponsList = [];
 
   final couponCodeController = new TextEditingController();
   bool isSuccess = false,
@@ -261,7 +262,7 @@ class _CouponsState extends BaseState<Coupons> {
 
     return Scaffold(
       key: _scaffoldKey,
-      appBar: widget.getAppBar(context, title, true),
+      appBar: widget.getAppBar(context, title, true) as PreferredSizeWidget?,
       backgroundColor: Colors.white,
       body: isFetchingData
           ? Container(
@@ -407,7 +408,7 @@ class _CouponsState extends BaseState<Coupons> {
         barrierDismissible: true,
         barrierLabel: '',
         context: context,
-        pageBuilder: (context, animation1, animation2) {});
+        pageBuilder: (context, animation1, animation2) {} as Widget Function(BuildContext, Animation<double>, Animation<double>));
   }
 
   Future getCouponsHistory() async {

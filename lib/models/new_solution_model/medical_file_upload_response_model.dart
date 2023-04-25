@@ -1,5 +1,5 @@
 class MedicalFileResponseModel {
-  FileResponseData data;
+  FileResponseData? data;
 
   MedicalFileResponseModel({this.data});
 
@@ -12,24 +12,24 @@ class MedicalFileResponseModel {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     if (this.data != null) {
-      data['data'] = this.data.toJson();
+      data['data'] = this.data!.toJson();
     }
     return data;
   }
 }
 
 class FileResponseData {
-  String reportType;
-  List<UploadedReportUrl> reports;
+  String? reportType;
+  List<UploadedReportUrl>? reports;
 
   FileResponseData({this.reportType, this.reports});
 
   FileResponseData.fromJson(Map<String, dynamic> json) {
     reportType = json['reportType'];
     if (json['reports'] != null) {
-      reports = new List<UploadedReportUrl>();
+      reports = [];
       json['reports'].forEach((v) {
-        reports.add(new UploadedReportUrl.fromJson(v));
+        reports!.add(new UploadedReportUrl.fromJson(v));
       });
     }
   }
@@ -38,15 +38,15 @@ class FileResponseData {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['reportType'] = this.reportType;
     if (this.reports != null) {
-      data['reports'] = this.reports.map((v) => v.toJson()).toList();
+      data['reports'] = this.reports!.map((v) => v.toJson()).toList();
     }
     return data;
   }
 }
 
 class UploadedReportUrl {
-  String key;
-  String url, thumbnail;
+  String? key;
+  String? url, thumbnail;
 
   UploadedReportUrl({this.key, this.url, this.thumbnail});
 

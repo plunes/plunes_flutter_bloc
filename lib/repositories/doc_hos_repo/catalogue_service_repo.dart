@@ -10,9 +10,9 @@ class CatalogueServiceRepo {
         headerIncluded: true,
         requestType: HttpRequestMethods.HTTP_GET,
         url: Urls.CATALOGUE_SERVICE_URL);
-    if (result.isRequestSucceed) {
+    if (result!.isRequestSucceed!) {
       CatalogueServiceModel _catalogueServiceModel =
-          CatalogueServiceModel.fromJson(result.response.data);
+          CatalogueServiceModel.fromJson(result.response!.data);
       return RequestSuccess(response: _catalogueServiceModel);
     } else {
       return RequestFailed(failureCause: result.failureCause);

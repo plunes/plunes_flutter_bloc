@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:plunes/Utils/log.dart';
 import 'package:plunes/models/Models.dart';
@@ -9,26 +10,26 @@ import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/network/Urls.dart';
 
 class DioRequester {
-  static DioRequester _instance;
-  Dio _dioClient, _customClient;
+  static DioRequester? _instance;
+  Dio? _dioClient, _customClient;
 
   DioRequester._create() {
     _dioClient = Dio();
     _customClient = Dio();
-    _dioClient.options.baseUrl = Urls.baseUrl;
-    _dioClient.options.sendTimeout = Urls.SEND_TIMEOUT;
-    _dioClient.options.connectTimeout = Urls.CONNECTION_TIMEOUT;
-    _dioClient.options.receiveTimeout = Urls.RECEIVE_TIMEOUT;
-    _customClient.options.sendTimeout = Urls.SEND_TIMEOUT;
-    _customClient.options.connectTimeout = Urls.CONNECTION_TIMEOUT;
-    _customClient.options.receiveTimeout = Urls.RECEIVE_TIMEOUT;
+    _dioClient!.options.baseUrl = Urls.baseUrl;
+    _dioClient!.options.sendTimeout = Duration(seconds: Urls.SEND_TIMEOUT);
+    _dioClient!.options.connectTimeout = Duration(seconds: Urls.CONNECTION_TIMEOUT);
+    _dioClient!.options.receiveTimeout = Duration(seconds: Urls.RECEIVE_TIMEOUT);
+    _customClient!.options.sendTimeout = Duration(seconds: Urls.SEND_TIMEOUT);
+    _customClient!.options.connectTimeout = Duration(seconds: Urls.CONNECTION_TIMEOUT);
+    _customClient!.options.receiveTimeout = Duration(seconds: Urls.RECEIVE_TIMEOUT);
   }
 
   factory DioRequester() {
     if (_instance == null) {
       _instance = DioRequester._create();
     }
-    return _instance;
+    return _instance!;
   }
 
   final String _debug = "[Debug]";
@@ -37,17 +38,30 @@ class DioRequester {
   final String _dioErrorSection = '[Debug] DioError section';
   final String _keyAuth = 'Authorization';
 
-  Future<RequestOutput> requestMethod(
-      {final String url,
+  Future<RequestOutput?> requestMethod(
+      {required final String url,
       dynamic postData,
       dynamic queryParameter,
-      final String requestType,
-      bool headerIncluded,
-      Function fileUploadProgress,
-      bool isMultipartEnabled = false}) async {
+      final String? requestType,
+      bool? headerIncluded,
+      Function? fileUploadProgress,
+      bool isMultipartEnabled = false,
+      bool isPayViaInsurance = false}) async {
     RequestOutput response;
     try {
-      AppLog.printLog(_dioClient.options.baseUrl + url);
+
+      if(isPayViaInsurance) {
+        _dioClient!.options.baseUrl = Urls.customBaseUrl;
+      } else {
+        _dioClient!.options.baseUrl = Urls.baseUrl;
+      }
+
+
+      print(url);
+      print("api_url--->${_dioClient!.options.baseUrl + url}");
+      print("api_requestType--->${requestType}");
+      print("api_queryParameter--->${queryParameter}");
+      AppLog.printLog(_dioClient!.options.baseUrl + url);
       AppLog.printLog(_debug + _postData + " $postData");
       print(_debug + _paramData + " $queryParameter");
       var options = Options(method: requestType);
@@ -58,25 +72,58 @@ class DioRequester {
         AppLog.debugLog("jwt token " + accessToken);
         options.headers = {
           _keyAuth: 'Bearer $accessToken',
+          HttpHeaders.contentTypeHeader: "application/json",
+
         };
       }
 
       if (isMultipartEnabled) {
+        AppLog.debugLog("jwt token multipart enabled");
+
         options.contentType = "multipart/form-data";
+      } else {
+        AppLog.debugLog("jwt token multipart not enabled");
+
+        options.contentType = "application/json";
       }
-      Response response = await _dioClient.request(url,
+
+
+      Response response = await _dioClient!.request(url,
           data: postData,
           queryParameters: queryParameter,
           options: options, onSendProgress: (int sent, int total) {
         AppLog.debugLog("${sent / total * 100} total sent");
         if (fileUploadProgress != null) {
           fileUploadProgress(sent / total * 100);
+        } else {
+          print("eeeeerrrrrrrrrr----000000101010");
+
         }
       });
+
+
+      print("result.statusCode----->all_common_data");
+      print("url-->${_dioClient!.options.baseUrl + url}");
+      print(response);
+      print(requestType);
+      print(_dioClient!.options.baseUrl + url);
+      print(url);
+      print(accessToken);
+      print(postData);
+      print(_postData);
+      print(response.statusCode);
+      // print(response.request);
+      // print(response.request.toString());
+      // print(response.request.data);
+      print(response.data);
+      print(response.statusCode);
+      print(response.statusMessage);
+
       AppLog.printLog("Response occurred ${response.data.toString()}");
       return ResponseStatusCodeHandler()
           .checkRequestResponseStatusCode(response);
     } catch (e) {
+      print("eeeeerrrrrrrrrr----${e.toString()}");
       AppLog.printLog("Response occurred ${e}");
       AppLog.printError(_debug + ' ${e.toString()}');
       if (e is TimeoutException) {
@@ -106,24 +153,24 @@ class DioRequester {
 
   RequestOutput _handleDioError(final DioError e) {
 //    print(_dioErrorSection);
-    String errorDescription;
+    String? errorDescription;
     switch (e.type) {
-      case DioErrorType.CANCEL:
+      case DioErrorType.cancel:
         errorDescription = PlunesStrings.cancelError;
         break;
-      case DioErrorType.CONNECT_TIMEOUT:
+      case DioErrorType.connectionTimeout:
         errorDescription = PlunesStrings.pleaseCheckInternetConnection;
         break;
-      case DioErrorType.DEFAULT:
+      case DioErrorType.connectionError:
         errorDescription = PlunesStrings.noInternet;
         break;
-      case DioErrorType.RECEIVE_TIMEOUT:
+      case DioErrorType.receiveTimeout:
         errorDescription = PlunesStrings.receiveTimeOut;
         break;
-      case DioErrorType.RESPONSE:
+      case DioErrorType.unknown:
         try {
           HttpErrorModel httpErrorModel =
-              HttpErrorModel.fromJson(e.response.data);
+              HttpErrorModel.fromJson(e.response!.data);
 //          if (httpErrorModel.statusCode == HttpResponseCode.UNAUTHORIZED) {
 //            SessionExpirationEvent().getSessionEventBus().fire(RequestFailed(
 //                requestCode: httpErrorModel.statusCode,
@@ -131,31 +178,34 @@ class DioRequester {
 //            // return null;
 //          }
           errorDescription = httpErrorModel?.error ??
-              plunesStrings.somethingWentWrong + " - ${e.response.statusCode}";
+              plunesStrings.somethingWentWrong + " - ${e.response!.statusCode}";
           AppLog.printError("$errorDescription");
         } catch (error) {
-          errorDescription =
-              plunesStrings.somethingWentWrong + " - ${e.response.statusCode}";
+          try {
+            errorDescription = plunesStrings.somethingWentWrong + " - ${e.response!.statusCode ?? ""}";
+          } catch (e) {
+            errorDescription = plunesStrings.somethingWentWrong;
+          }
         }
         break;
-      case DioErrorType.SEND_TIMEOUT:
+      case DioErrorType.sendTimeout:
         break;
     }
     return RequestOutput(
         isRequestSucceed: false,
         failureCause: errorDescription,
         statusCode:
-            e.type == DioErrorType.RESPONSE ? e.response.statusCode : 0);
+            e.type == DioErrorType.unknown ? e.response!.statusCode : 0);
   }
 
-  Future<RequestOutput> requestMethodWithNoBaseUrl(
-      {final String url,
+  Future<RequestOutput?> requestMethodWithNoBaseUrl(
+      {final String? url,
       dynamic postData,
       dynamic queryParameter,
-      final String requestType,
-      bool headerIncluded,
+      final String? requestType,
+      bool? headerIncluded,
       bool isMultipartEnabled = false,
-      String savePath}) async {
+      String? savePath}) async {
     RequestOutput response;
     try {
       AppLog.printLog(url);
@@ -177,11 +227,12 @@ class DioRequester {
       }
       Response response;
       if (savePath != null) {
-        response = await _customClient.download(url, savePath);
+        response = await _customClient!.download(url!, savePath);
+
         return ResponseStatusCodeHandler()
             .checkRequestResponseStatusCode(response);
       }
-      response = await _customClient.request(url,
+      response = await _customClient!.request(url!,
           data: postData,
           queryParameters: queryParameter,
           options: options, onSendProgress: (int sent, int total) {

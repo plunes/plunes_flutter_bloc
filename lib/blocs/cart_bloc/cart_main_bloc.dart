@@ -4,32 +4,29 @@ import 'package:plunes/requester/request_states.dart';
 import 'package:rxdart/rxdart.dart';
 
 class CartMainBloc extends BlocBase {
-  final _cartItemProvider = PublishSubject<RequestState>();
+  final _cartItemProvider = PublishSubject<RequestState?>();
+  Stream<RequestState?> get cartMainStream => _cartItemProvider.stream;
 
-  Observable<RequestState> get cartMainStream => _cartItemProvider.stream;
-  final _deleteCartItemProvider = PublishSubject<RequestState>();
+  final _deleteCartItemProvider = PublishSubject<RequestState?>();
+  Stream<RequestState?> get deleteItemStream => _deleteCartItemProvider.stream;
 
-  Observable<RequestState> get deleteItemStream =>
-      _deleteCartItemProvider.stream;
+  final _reGenerateCartItemProvider = PublishSubject<RequestState?>();
+  Stream<RequestState?> get reGenerateCartItemStream => _reGenerateCartItemProvider.stream;
 
-  final _reGenerateCartItemProvider = PublishSubject<RequestState>();
+  final _editInfoStreamProvider = PublishSubject<RequestState?>();
+  Stream<RequestState?> get editInfoStream => _editInfoStreamProvider.stream;
 
-  Observable<RequestState> get reGenerateCartItemStream =>
-      _reGenerateCartItemProvider.stream;
+  final _bookViaInsuranceProvider = PublishSubject<RequestState?>();
+  Stream<RequestState?> get bookViaInsuranceStream => _bookViaInsuranceProvider.stream;
 
-  final _editInfoStreamProvider = PublishSubject<RequestState>();
-
-  Observable<RequestState> get editInfoStream => _editInfoStreamProvider.stream;
-
-  final _payCartBillStreamProvider = PublishSubject<RequestState>();
-
-  Observable<RequestState> get payCartBillStream =>
-      _payCartBillStreamProvider.stream;
+  final _payCartBillStreamProvider = PublishSubject<RequestState?>();
+  Stream<RequestState?> get payCartBillStream => _payCartBillStreamProvider.stream;
 
   Future<RequestState> addItemToCart(Map<String, dynamic> postData) async {
     addIntoStream(RequestInProgress());
     var result = await CartMainRepo().addItemToCart(postData);
     addIntoStream(result);
+    super.addIntoStream(result);
     return result;
   }
 
@@ -37,6 +34,7 @@ class CartMainBloc extends BlocBase {
     addStateInCartMainStream(RequestInProgress());
     var result = await CartMainRepo().getCartItems();
     addStateInCartMainStream(result);
+    super.addIntoStream(result);
     return result;
   }
 
@@ -55,35 +53,35 @@ class CartMainBloc extends BlocBase {
   }
 
   @override
-  void addStateInGenericStream(
-      PublishSubject publishSubject, RequestState data) {
+  void addStateInGenericStream(PublishSubject publishSubject, RequestState? data) {
     super.addStateInGenericStream(publishSubject, data);
   }
 
   @override
-  void addIntoStream(RequestState result) {
+  void addIntoStream(RequestState? result) {
     super.addIntoStream(result);
   }
 
   @override
   void dispose() {
-    _cartItemProvider?.close();
-    _deleteCartItemProvider?.close();
-    _reGenerateCartItemProvider?.close();
-    _editInfoStreamProvider?.close();
-    _payCartBillStreamProvider?.close();
+    _cartItemProvider.close();
+    _deleteCartItemProvider.close();
+    _reGenerateCartItemProvider.close();
+    _editInfoStreamProvider.close();
+    _payCartBillStreamProvider.close();
+    _bookViaInsuranceProvider.close();
     super.dispose();
   }
 
-  void addStateInCartMainStream(RequestState result) {
+  void addStateInCartMainStream(RequestState? result) {
     addStateInGenericStream(_cartItemProvider, result);
   }
 
-  void addStateInDeleteCartItemStream(RequestState result) {
+  void addStateInDeleteCartItemStream(RequestState? result) {
     addStateInGenericStream(_deleteCartItemProvider, result);
   }
 
-  void addStateInReGenerateCartItemStream(RequestState result) {
+  void addStateInReGenerateCartItemStream(RequestState? result) {
     addStateInGenericStream(_reGenerateCartItemProvider, result);
   }
 
@@ -95,15 +93,14 @@ class CartMainBloc extends BlocBase {
     return result;
   }
 
-  void addStateInEditDetailsStream(RequestState data) {
+  void addStateInEditDetailsStream(RequestState? data) {
     addStateInGenericStream(_editInfoStreamProvider, data);
   }
 
-  Future<RequestState> payCartItemBill(bool creditsUsed, String cartId,
-      String paymentPercent, bool zestMoney) async {
+  Future<RequestState> payCartItemBill(bool creditsUsed, String? cartId,
+      String? paymentPercent, bool zestMoney) async {
     addStatePaymentStream(RequestInProgress());
-    var result = await CartMainRepo()
-        .payCartItemBill(creditsUsed, cartId, paymentPercent, zestMoney);
+    var result = await CartMainRepo().payCartItemBill(creditsUsed, cartId, paymentPercent, zestMoney);
     addStatePaymentStream(result);
     return result;
   }
@@ -115,4 +112,22 @@ class CartMainBloc extends BlocBase {
   Future<RequestState> getCartCount() {
     return CartMainRepo().getCartCount();
   }
+
+  Future<RequestState> getBookingDoneViaInsurance(String? bookingId) async {
+    addIntoStream(RequestInProgress());
+    var result =  await CartMainRepo().getBookingDoneViaInsurance(bookingId!);
+    addIntoStream(result);
+    super.addIntoStream(result);
+    return result;
+  }
+
+  Future<RequestState> getBookingDoneViaInsurance1(String? bookingID) async {
+   // addIntoStream(RequestInProgress());
+    var result =  await CartMainRepo().getBookingDoneViaInsurance(bookingID!);
+   // addIntoStream(result);
+   // super.addIntoStream(result);
+    return result;
+
+  }
+
 }

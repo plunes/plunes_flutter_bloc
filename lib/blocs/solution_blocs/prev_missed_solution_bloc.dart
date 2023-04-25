@@ -9,7 +9,7 @@ class PrevMissSolutionBloc extends BlocBase {
     return result;
   }
 
-  Future<RequestState> getUserReport(String userReportId) async {
+  Future<RequestState> getUserReport(String? userReportId) async {
     var result = await PrevMissSolutionRepo().getUserReport(userReportId);
     return result;
   }

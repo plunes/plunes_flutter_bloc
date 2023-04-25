@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,10 +16,10 @@ import 'SelectSpecialization.dart';
 
 // ignore: must_be_immutable
 class UploadPrescriptionDialog extends BaseActivity {
-  final String imageUrl;
-  final PlockrBloc plockrBloc;
+  final String? imageUrl;
+  final PlockrBloc? plockrBloc;
 
-  UploadPrescriptionDialog({Key key, this.imageUrl, this.plockrBloc})
+  UploadPrescriptionDialog({Key? key, this.imageUrl, this.plockrBloc})
       : super(key: key);
 
   @override
@@ -27,8 +28,8 @@ class UploadPrescriptionDialog extends BaseActivity {
 }
 
 class _UploadPrescriptionDialogState
-    extends BaseState<UploadPrescriptionDialog> {
-  List<dynamic> _selectedItemId = List(), _selectedSpecializationData = List();
+    extends State<UploadPrescriptionDialog> {
+  List<dynamic>? _selectedItemId = [], _selectedSpecializationData = [];
   final specializationController = TextEditingController();
   final reportNameController = new TextEditingController();
   final notesController = new TextEditingController();
@@ -36,7 +37,7 @@ class _UploadPrescriptionDialogState
   final reportsNameFocus = new FocusNode();
   var globalHeight, globalWidth;
   bool progress = false;
-  PlockrBloc _plockrBloc;
+  PlockrBloc? _plockrBloc;
 
   @override
   void initState() {
@@ -83,7 +84,7 @@ class _UploadPrescriptionDialogState
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10.0),
             ),
-            child: Image.file(File(widget.imageUrl)),
+            child: Image.file(File(widget.imageUrl!)),
             //child: widget.getAssetImageWidget(widget.imageUrl)
           ),
         ));
@@ -171,7 +172,7 @@ class _UploadPrescriptionDialogState
                   ? TextInputAction.done
                   : TextInputAction.next,
               onSubmitted: (String value) {
-                setFocus(controller).unfocus();
+                setFocus(controller)!.unfocus();
                 FocusScope.of(context).requestFocus(setTargetFocus(controller));
               },
               controller: controller,
@@ -193,8 +194,8 @@ class _UploadPrescriptionDialogState
     );
   }
 
-  FocusNode setFocus(TextEditingController controller) {
-    FocusNode focusNode;
+  FocusNode? setFocus(TextEditingController controller) {
+    FocusNode? focusNode;
     if (controller == reportNameController) {
       focusNode = reportsNameFocus;
     } else if (controller == notesController) {
@@ -203,8 +204,8 @@ class _UploadPrescriptionDialogState
     return focusNode;
   }
 
-  FocusNode setTargetFocus(TextEditingController controller) {
-    FocusNode focusNode;
+  FocusNode? setTargetFocus(TextEditingController controller) {
+    FocusNode? focusNode;
     if (controller == reportNameController) {
       focusNode = notesFocus;
     } else if (controller == notesController) {
@@ -254,14 +255,14 @@ class _UploadPrescriptionDialogState
       "reportDisplayName": reportNameController.text.trim(),
       "remarks": notesController.text.trim(),
       "file": await MultipartFile.fromFile(
-        widget.imageUrl,
+        widget.imageUrl!,
       ),
     };
-    if (widget.imageUrl != null && widget.imageUrl.isNotEmpty) {
+    if (widget.imageUrl != null && widget.imageUrl!.isNotEmpty) {
       String responseMessage = plunesStrings.somethingWentWrong;
       progress = true;
       _setState();
-      var result = await _plockrBloc.uploadFilesAndData(fileData);
+      var result = await _plockrBloc!.uploadFilesAndData(fileData);
       if (result is RequestSuccess) {
         Navigator.pop(context, PlunesStrings.uplaodSuccessMessage);
       } else if (result is RequestFailed) {

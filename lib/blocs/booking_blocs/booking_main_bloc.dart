@@ -4,38 +4,39 @@ import 'package:plunes/models/booking_models/init_payment_response.dart';
 import 'package:plunes/repositories/booking_repo/booking_repo.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:rxdart/rxdart.dart';
+// import 'package:video_compress/video_compress.dart';
 
 class BookingBloc extends BlocBase {
-  final _rescheduleAppointmentProvider = PublishSubject<RequestState>();
+  final _rescheduleAppointmentProvider = PublishSubject<RequestState?>();
 
-  final _cancelAppointmentProvider = PublishSubject<RequestState>();
+  final _cancelAppointmentProvider = PublishSubject<RequestState?>();
 
-  final _refundAppointmentProvider = PublishSubject<RequestState>();
-  final _rateReviewProvider = PublishSubject<RequestState>();
+  final _refundAppointmentProvider = PublishSubject<RequestState?>();
+  final _rateReviewProvider = PublishSubject<RequestState?>();
 
   // ignore: close_sinks
-  final _confirmAppointmentByDocHosProvider = PublishSubject<RequestState>();
-  final _installmentPaymentProvider = PublishSubject<RequestState>();
-  final _requestInvoiceProvider = PublishSubject<RequestState>();
+  final _confirmAppointmentByDocHosProvider = PublishSubject<RequestState?>();
+  final _installmentPaymentProvider = PublishSubject<RequestState?>();
+  final _requestInvoiceProvider = PublishSubject<RequestState?>();
 
-  Observable<RequestState> get rescheduleAppointmentStream =>
+  Stream<RequestState?> get rescheduleAppointmentStream =>
       _rescheduleAppointmentProvider.stream;
 
-  Observable<RequestState> get cancelAppointmentStream =>
+  Stream<RequestState?> get cancelAppointmentStream =>
       _cancelAppointmentProvider.stream;
 
-  Observable<RequestState> get refundAppointmentStream =>
+  Stream<RequestState?> get refundAppointmentStream =>
       _refundAppointmentProvider.stream;
 
-  Observable<RequestState> get confirmAppointmentByDocHosStream =>
+  Stream<RequestState?> get confirmAppointmentByDocHosStream =>
       _confirmAppointmentByDocHosProvider.stream;
 
-  Observable<RequestState> get installmentStream =>
+  Stream<RequestState?> get installmentStream =>
       _installmentPaymentProvider.stream;
 
-  Observable<RequestState> get rateReviewStream => _rateReviewProvider.stream;
+  Stream<RequestState?> get rateReviewStream => _rateReviewProvider.stream;
 
-  Observable<RequestState> get requestInvoiceStream =>
+  Stream<RequestState?> get requestInvoiceStream =>
       _requestInvoiceProvider.stream;
 
   Future<RequestState> initPayment(InitPayment initPayment) async {
@@ -45,7 +46,7 @@ class BookingBloc extends BlocBase {
   }
 
   Future rescheduleAppointment(
-      String bookingId, String appointmentTime, String selectedTimeSlot) async {
+      String? bookingId, String appointmentTime, String? selectedTimeSlot) async {
     addStateInRescheduledProvider(RequestInProgress());
     var result = await BookingRepo()
         .rescheduleAppointment(bookingId, appointmentTime, selectedTimeSlot);
@@ -53,21 +54,21 @@ class BookingBloc extends BlocBase {
     return result;
   }
 
-  Future<RequestState> cancelAppointment(String bookingId, int index) async {
+  Future<RequestState> cancelAppointment(String? bookingId, int? index) async {
     addStateInCancelProvider(RequestInProgress(requestCode: index));
     var result = await BookingRepo().cancelAppointment(bookingId, index);
     addStateInCancelProvider(result);
     return result;
   }
 
-  Future refundAppointment(String bookingId, String reason) async {
+  Future refundAppointment(String? bookingId, String reason) async {
     addStateInRefundProvider(RequestInProgress());
     var result = await BookingRepo().refundAppointment(bookingId, reason);
     addStateInRefundProvider(result);
     return result;
   }
 
-  Future confirmAppointmentByDocHos(String bookingId) async {
+  Future confirmAppointmentByDocHos(String? bookingId) async {
     addStateInConfirmProvider(RequestInProgress());
     var result = await BookingRepo().confirmAppointment(bookingId);
     addStateInConfirmProvider(result);
@@ -82,7 +83,7 @@ class BookingBloc extends BlocBase {
   }
 
   Future<RequestState> submitRateAndReview(
-      double rate, String review, String professionalId) async {
+      double rate, String review, String? professionalId) async {
     addStateInRateAndReviewProvider(RequestInProgress());
     var result =
         await BookingRepo().submitRateAndReview(rate, review, professionalId);
@@ -91,7 +92,7 @@ class BookingBloc extends BlocBase {
   }
 
   Future<RequestState> requestInvoice(
-      String bookingId, int index, bool shouldSendInvoice) async {
+      String? bookingId, int? index, bool shouldSendInvoice) async {
     addStateInRequestInvoiceProvider(RequestInProgress(requestCode: index));
     var result =
         await BookingRepo().requestInvoice(bookingId, index, shouldSendInvoice);
@@ -111,19 +112,19 @@ class BookingBloc extends BlocBase {
     super.dispose();
   }
 
-  void addStateInRescheduledProvider(RequestState state) {
+  void addStateInRescheduledProvider(RequestState? state) {
     addStateInGenericStream(_rescheduleAppointmentProvider, state);
   }
 
-  void addStateInCancelProvider(RequestState state) {
+  void addStateInCancelProvider(RequestState? state) {
     addStateInGenericStream(_cancelAppointmentProvider, state);
   }
 
-  void addStateInRefundProvider(RequestState state) {
+  void addStateInRefundProvider(RequestState? state) {
     addStateInGenericStream(_refundAppointmentProvider, state);
   }
 
-  void addStateInConfirmProvider(RequestState state) {
+  void addStateInConfirmProvider(RequestState? state) {
     addStateInGenericStream(_confirmAppointmentByDocHosProvider, state);
   }
 
@@ -131,15 +132,15 @@ class BookingBloc extends BlocBase {
     addStateInGenericStream(_installmentPaymentProvider, state);
   }
 
-  Future<RequestState> cancelPayment(String bookingId) {
+  Future<RequestState> cancelPayment(String? bookingId) {
     return BookingRepo().cancelPayment(bookingId);
   }
 
-  void addStateInRateAndReviewProvider(RequestState state) {
+  void addStateInRateAndReviewProvider(RequestState? state) {
     addStateInGenericStream(_rateReviewProvider, state);
   }
 
-  void addStateInRequestInvoiceProvider(RequestState state) {
+  void addStateInRequestInvoiceProvider(RequestState? state) {
     addStateInGenericStream(_requestInvoiceProvider, state);
   }
 

@@ -1,8 +1,8 @@
 class SolutionHomeScreenModel {
-  bool success;
-  String backgroundImage;
-  int count;
-  String knowYourProcedure,
+  bool? success;
+  String? backgroundImage;
+  int? count;
+  String? knowYourProcedure,
       whyUs,
       topFacilities,
       topSearch,
@@ -10,8 +10,8 @@ class SolutionHomeScreenModel {
       videos,
       heading,
       searchBarText;
-  List<HomeScreenButtonInfo> data;
-  List<String> specialityList;
+  List<HomeScreenButtonInfo>? data;
+  List<String>? specialityList;
 
   SolutionHomeScreenModel(
       {this.success,
@@ -41,9 +41,9 @@ class SolutionHomeScreenModel {
     heading = json['homeTitle'];
     searchBarText = json['searchText'];
     if (json['data'] != null) {
-      data = new List<HomeScreenButtonInfo>();
+      data = [];
       json['data'].forEach((v) {
-        data.add(new HomeScreenButtonInfo.fromJson(v));
+        data!.add(new HomeScreenButtonInfo.fromJson(v));
       });
     }
     if (json["specialityList"] != null) {
@@ -58,17 +58,17 @@ class SolutionHomeScreenModel {
     data['backgroundImage'] = this.backgroundImage;
     data['count'] = this.count;
     if (this.data != null) {
-      data['data'] = this.data.map((v) => v.toJson()).toList();
+      data['data'] = this.data!.map((v) => v.toJson()).toList();
     }
     return data;
   }
 }
 
 class HomeScreenButtonInfo {
-  int index;
-  String category;
-  String categoryName;
-  String categoryImage;
+  int? index;
+  String? category;
+  String? categoryName;
+  String? categoryImage;
 
   HomeScreenButtonInfo(
       {this.index, this.category, this.categoryName, this.categoryImage});

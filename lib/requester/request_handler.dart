@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:plunes/res/Http_constants.dart';
 
 class ResponseStatusCodeHandler {
-  static ResponseStatusCodeHandler _instance;
+  static ResponseStatusCodeHandler? _instance;
 
   ResponseStatusCodeHandler._create();
 
@@ -10,10 +10,10 @@ class ResponseStatusCodeHandler {
     if (_instance == null) {
       _instance = ResponseStatusCodeHandler._create();
     }
-    return _instance;
+    return _instance!;
   }
 
-  RequestOutput checkRequestResponseStatusCode(final Response response) {
+  RequestOutput? checkRequestResponseStatusCode(final Response response) {
     RequestOutput _response;
 //    print(response);
     if (response.statusCode == HttpResponseCode.OK) {
@@ -32,14 +32,15 @@ class ResponseStatusCodeHandler {
           statusCode: HttpResponseCode.NO_CONTENT);
       return _response;
     }
+    return null;
   }
 }
 
 class RequestOutput {
-  bool isRequestSucceed;
-  String failureCause;
-  Response response;
-  int statusCode;
+  bool? isRequestSucceed;
+  String? failureCause;
+  Response? response;
+  int? statusCode;
 
   RequestOutput(
       {this.failureCause,

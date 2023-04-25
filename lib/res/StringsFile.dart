@@ -133,10 +133,13 @@ class PlunesStrings {
   static const String closed = "Closed";
   static const String reschedule = "Reschedule";
   static const String requestInvoice = "Download Invoice";
+  static const String requestInvoice2 = "Request Invoice";
   static const String refund = "Request Refund";
+  static const String refund2 = "Refund";
   static const String visitAgain = "Visit Again";
   static const String appointmentScreenError = "Appointment Screen Error";
-  static const String paymentStatus = "Payment Status";
+  static const String paymentStatus = "Payment status";
+  static const String bookedViaInsurance = "Booked Via Insurance";
   static const String rescheduledSuccessMessage =
       "Appointment rescheduled successfully!";
   static const String rescheduledFailedMessage =
@@ -393,7 +396,8 @@ class PlunesStrings {
   static const String discoverFacilityNearYou = "Discover facilities near you";
   static const String experienceText = "Experience";
   static const String selectedFacilities = "Selected facilities";
-  static const String bookYourProcedure = "Book your Treatment";
+  //static const String bookYourProcedure = "Book your Treatment";
+  static const String bookYourProcedure = "Book your Test";
   static const String enterAdditionalDetails =
       "Enter additional details for the required ";
   static const String next = "Next";
@@ -406,7 +410,7 @@ class PlunesStrings {
       "Do you have your insurance covered ?";
   static const String whyUs = "Why us";
   static const String knowYourProcedure =
-      "Explore Top rated Hospitals Near You";
+      "Explore Top Rated Hospitals Near You";
   static const String selectValidDocWarningText =
       "Please select a valid document.Allowed format is .pdf";
   static const String close = "Close";

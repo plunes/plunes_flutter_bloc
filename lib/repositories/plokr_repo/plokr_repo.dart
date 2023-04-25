@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:plunes/models/plockr_model/plockr_response_model.dart';
 import 'package:plunes/models/plockr_model/plockr_shareable_report_model.dart';
@@ -10,7 +8,7 @@ import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/network/Urls.dart';
 
 class PlockrRepo {
-  static PlockrRepo _instance;
+  static PlockrRepo? _instance;
 
   PlockrRepo._init();
 
@@ -18,7 +16,7 @@ class PlockrRepo {
     if (_instance == null) {
       _instance = PlockrRepo._init();
     }
-    return _instance;
+    return _instance!;
   }
 
   Future<RequestState> uploadPlockrData(
@@ -31,7 +29,7 @@ class PlockrRepo {
       isMultipartEnabled: true,
       postData: FormData.fromMap(postData),
     );
-    if (result.isRequestSucceed) {
+    if (result!.isRequestSucceed!) {
       return RequestSuccess(response: result);
     } else {
       return RequestFailed(failureCause: result.failureCause);
@@ -44,13 +42,13 @@ class PlockrRepo {
       url: Urls.GET_UPLOAD_PLOCKR_DATA_URL,
       headerIncluded: true,
     );
-    if (result.isRequestSucceed) {
+    if (result!.isRequestSucceed!) {
       PlockrResponseModel plockrResponseModel =
-          PlockrResponseModel.fromJson(result.response.data);
+          PlockrResponseModel.fromJson(result.response!.data);
       if ((plockrResponseModel.uploadedReports == null ||
-              plockrResponseModel.uploadedReports.isEmpty) &&
+              plockrResponseModel.uploadedReports!.isEmpty) &&
           (plockrResponseModel.sharedReports == null ||
-              plockrResponseModel.sharedReports.isEmpty)) {
+              plockrResponseModel.sharedReports!.isEmpty)) {
         return RequestFailed(
             failureCause: PlunesStrings.noReportAvailabelMessage);
       }
@@ -67,25 +65,25 @@ class PlockrRepo {
       url: url,
       headerIncluded: true,
     );
-    if (result.isRequestSucceed) {
+    if (result!.isRequestSucceed!) {
       ShareableReportModel shareableReportModel =
-          ShareableReportModel.fromJson(result.response.data);
+          ShareableReportModel.fromJson(result.response!.data);
       return RequestSuccess(response: shareableReportModel);
     } else {
       return RequestFailed(failureCause: result.failureCause);
     }
   }
 
-  Future<RequestState> deletePlockrFile(String id) async {
+  Future<RequestState> deletePlockrFile(String? id) async {
     String url = Urls.GET_UPLOAD_PLOCKR_DATA_URL + '/$id';
     var result = await DioRequester().requestMethod(
       requestType: HttpRequestMethods.HTTP_DELETE,
       url: url,
       headerIncluded: true,
     );
-    if (result.isRequestSucceed) {
-      if (result.response.data["success"] != null &&
-          result.response.data["success"]) {
+    if (result!.isRequestSucceed!) {
+      if (result.response!.data["success"] != null &&
+          result.response!.data["success"]) {
         return RequestSuccess(response: result);
       } else {
         return RequestFailed(failureCause: PlunesStrings.unableToDelete);

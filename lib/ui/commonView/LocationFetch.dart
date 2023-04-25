@@ -1,19 +1,21 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
-import 'package:geocoder/geocoder.dart';
+
+// import 'package:geocoder/geocoder.dart';
+// import 'package:geocoder_location/geocoder.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:location/location.dart' as loc;
+import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/Preferences.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/Utils/location_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
-import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/network/Urls.dart';
@@ -22,7 +24,7 @@ import 'package:plunes/resources/network/Urls.dart';
 
 // ignore: must_be_immutable
 class LocationFetch extends BaseActivity {
-  final bool shouldSaveLocation;
+  final bool? shouldSaveLocation;
 
   LocationFetch({this.shouldSaveLocation});
 
@@ -38,18 +40,18 @@ class _LocationFetchState extends State<LocationFetch> {
   final locationController = TextEditingController();
   final regionController = TextEditingController();
 
-  GoogleMapController _mapController;
+  GoogleMapController? _mapController;
 
   Set<Marker> marker = <Marker>{};
   var location = new loc.Location(), globalHeight, globalWidth;
-  List _coordinateList = new List();
+  List _coordinateList = [];
 
 //  final double lat = 28.4594965, long = 77.0266383;
-  String latitude = '0.0', longitude = '0.0', address = '';
+  String? latitude = '0.0', longitude = '0.0', address = '';
   bool _isAddFetch = false, _isSettingLocationFromPlacesApi = false;
-  Preferences _preferences;
+  late Preferences _preferences;
   Completer<GoogleMapController> _completer = Completer();
-  BuildContext _context;
+  BuildContext? _context;
 
   @override
   void initState() {
@@ -61,6 +63,10 @@ class _LocationFetchState extends State<LocationFetch> {
     _preferences = new Preferences();
     String lat = _preferences.getPreferenceString(Constants.LATITUDE);
     String lng = _preferences.getPreferenceString(Constants.LONGITUDE);
+
+    print("llllllll_lat---$lat");
+    print("lng---$lng");
+
     if (lat == null ||
         lng == null ||
         lat.isEmpty ||
@@ -87,13 +93,26 @@ class _LocationFetchState extends State<LocationFetch> {
       longitude = lng;
       print("lat $lat long $lng");
       print("lat $latitude long $longitude");
-      final coordinates = new Coordinates(double.parse(lat), double.parse(lng));
-      var addresses =
-          await Geocoder.local.findAddressesFromCoordinates(coordinates);
-      var addr = addresses?.first;
-      String full_address = addr?.addressLine;
+      // final coordinates = new Coordinates(double.parse(lat), double.parse(lng));
+      var addresses = await GeocodingPlatform.instance
+          .placemarkFromCoordinates(double.parse(lat), double.parse(lng));
+      // await Geocoder.local.findAddressesFromCoordinates(coordinates);
+      // var addr = addresses.first;
+
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(double.parse(lat), double.parse(lng));
+
+      print("placemarks");
+      print(placemarks);
+      print(placemarks[0].locality);
+      print(placemarks[0].subLocality);
+
+      // String full_address = addresses.iterator.current.locality!;
+      String full_address =
+          '${placemarks[0].subLocality}, ${placemarks[0].locality}, ${placemarks[0].administrativeArea}, ${placemarks[0].country}';
+      // addr.addressLine!;
       locationController.text = full_address;
-      _setRegionAddress(addr);
+      _setRegionAddress(full_address);
       if (lat != null && lng != null) {
         _setMarker(double.parse(lat), double.parse(lng));
         _animateCamera();
@@ -104,8 +123,8 @@ class _LocationFetchState extends State<LocationFetch> {
 
   saveLatLang() async {
     if (widget.shouldSaveLocation == null) {
-      await _preferences.setPreferencesString(Constants.LATITUDE, latitude);
-      await _preferences.setPreferencesString(Constants.LONGITUDE, longitude);
+      await _preferences.setPreferencesString(Constants.LATITUDE, latitude!);
+      await _preferences.setPreferencesString(Constants.LONGITUDE, longitude!);
     }
     String home = houseController.text;
     String land = landMarkController.text;
@@ -114,11 +133,11 @@ class _LocationFetchState extends State<LocationFetch> {
         ":" +
         land +
         ":" +
-        locationController.text?.trim() +
+        locationController.text.trim() +
         ":" +
-        latitude +
+        latitude! +
         ":" +
-        longitude +
+        longitude! +
         ":" +
         regionController.text);
   }
@@ -167,7 +186,7 @@ class _LocationFetchState extends State<LocationFetch> {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Container(
-        padding: EdgeInsets.only(left: 20, right: 20),
+        padding: const EdgeInsets.only(left: 20, right: 20),
         height: globalHeight / 2,
         color: Colors.white,
         child: ListView(
@@ -192,7 +211,7 @@ class _LocationFetchState extends State<LocationFetch> {
                   left: AppConfig.horizontalBlockSize * 30,
                   right: AppConfig.horizontalBlockSize * 30),
               child: InkWell(
-                borderRadius: BorderRadius.all(Radius.circular(5)),
+                borderRadius: const BorderRadius.all(Radius.circular(5)),
                 onTap: saveLatLang,
                 child: CustomWidgets().getRoundedButton(
                     plunesStrings.proceed,
@@ -221,16 +240,27 @@ class _LocationFetchState extends State<LocationFetch> {
       onTap: () async {
         try {
           if (controller == locationController) {
-            Prediction p = await PlacesAutocomplete.show(
+            Prediction? p = await PlacesAutocomplete.show(
                 context: context,
                 apiKey: Urls.googleApiKey,
+                radius: 10000000,
+                types: [],
+                strictbounds: false,
+                mode: Mode.overlay,
+                components: [
+                  //add this
+                  Component(Component.country, "fr"),
+                  Component(Component.country, "in"),
+                  Component(Component.country, "UK")
+                ],
                 onError: (error) {
-//                  print("error ${error.errorMessage}");
+                  print("error_while_pred:");
+                  print("error_while_pred ${error.errorMessage}");
                 });
             displayPrediction(p);
           }
         } catch (e) {
-//          print(e);
+          print("error_while_catch ${e.toString()}");
         }
       },
       child: Container(
@@ -245,7 +275,7 @@ class _LocationFetchState extends State<LocationFetch> {
               cursorColor: Color(
                   CommonMethods.getColorHexFromStr(colorsFile.defaultGreen)),
               enabled: (controller == locationController) ? false : true,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 15.0,
               ),
               decoration: widget.myInputBoxDecoration(
@@ -261,8 +291,25 @@ class _LocationFetchState extends State<LocationFetch> {
 
   Widget getGoogleMapView() {
     return GoogleMap(
-      onTap: (LatLng latlng) {
-//        print(latlng.latitude.toString() + "," + latlng.longitude.toString());
+      onTap: (LatLng latlng) async {
+        print("Started to move_onTap");
+        _setMarker(latlng.latitude, latlng.longitude);
+        latitude = latlng.latitude.toString();
+        longitude = latlng.longitude.toString();
+        if (mounted)
+          setState(() {
+            _animateCamera();
+            // locationController.text = first.addressLine!;
+            // locationController.text = first.latitude.toString();
+          });
+
+        List<Placemark> placemarks = await placemarkFromCoordinates(latlng.latitude, latlng.longitude);
+        print("placemarks_for_touch");
+        String full_address =
+            '${"${placemarks[0].street}," ?? ""}  ${placemarks[0].subLocality}, ${placemarks[0].locality}, ${placemarks[0].administrativeArea}, ${placemarks[0].country}';
+        // addr.addressLine!;
+        locationController.text = full_address;
+        houseController.text = placemarks[0].street ?? "";
       },
       mapType: MapType.normal,
       myLocationButtonEnabled: true,
@@ -274,39 +321,69 @@ class _LocationFetchState extends State<LocationFetch> {
       tiltGesturesEnabled: true,
       markers: marker,
       onCameraMoveStarted: () {
-//        print("Started to move");
+        print("Started to move");
       },
       onCameraIdle: () async {
+        print("Started to onIdle");
         if (!_completer.isCompleted) {
+          print("Started to onIdle return");
           return;
         }
+
+        print("_coordinateList.length");
+        print(_coordinateList.length);
+        print(_coordinateList[_coordinateList.length - 1].toString());
+
         try {
           if (_coordinateList.length != 0 && !_isSettingLocationFromPlacesApi) {
             _isAddFetch = true;
-            Coordinates coordinates =
-                _coordinateList[_coordinateList.length - 1];
-            _setMarker(coordinates?.latitude, coordinates?.longitude);
-            latitude = coordinates.latitude?.toString();
-            longitude = coordinates.longitude?.toString();
+            print("_coordinateList.length22222");
+
+            var latLongList = _coordinateList[_coordinateList.length - 1]
+                .toString()
+                .split(" ");
+            if (latLongList.length >= 2) {
+              latitude = latLongList[0];
+              longitude = latLongList[1];
+            }
+
+            print("_coordinateList.length__latitude:$latitude");
+            print("_coordinateList.length__longitude:$longitude");
+
+            // Coordinates coordinates = _coordinateList[_coordinateList.length - 1];
+            _setMarker(double.parse(latitude ?? "0.0"),
+                double.parse(longitude ?? "0.0"));
             if (latitude == '0.0' && longitude == '0.0') {
               return;
             }
-//            print(
-//                "${_coordinateList[_coordinateList.length - 1]}lat is $latitude long is $longitude");
-            var addresses = await Geocoder.local.findAddressesFromCoordinates(
-                _coordinateList[_coordinateList.length - 1]);
-            var addr = addresses.first;
-            _setRegionAddress(addr);
-            String full_address = addr.addressLine;
+            List<Placemark> placemarks = await placemarkFromCoordinates(
+                double.parse(latitude ?? "0.0"),
+                double.parse(longitude ?? "0.0"));
+
+            print("placemarks:---$placemarks");
+            print("placemarks:--ff-${placemarks.first}");
+
+            // var addresses = await Geocoder.local.findAddressesFromCoordinates(_coordinateList[_coordinateList.length - 1]);
+            // var addr = placemarks.first;
+            // String full_address = addr.addressLine!;
+            String full_address =
+                '${placemarks[0].subLocality}, ${placemarks[0].locality}, ${placemarks[0].administrativeArea}, ${placemarks[0].country}';
+
             locationController.text = full_address;
+            _setRegionAddress(full_address);
             _isAddFetch = false;
             if (mounted) setState(() {});
+            print("Started_to_onIdle_try_block");
           }
-        } catch (e) {}
+        } catch (e) {
+          print("Started_to_onIdle_catch_block");
+        }
       },
       onCameraMove: ((_p) async {
-        _coordinateList
-            .add(Coordinates(_p.target.latitude, _p.target.longitude));
+        print("-----------------------------------------2");
+        var cor = '${_p.target.latitude} ${_p.target.longitude}';
+        // _coordinateList.add(_p.target.latitude, _p.target.longitude);
+        _coordinateList.add(cor);
       }),
       initialCameraPosition: CameraPosition(
         target: LatLng(double.parse(latitude ?? "28.4594965"),
@@ -314,6 +391,9 @@ class _LocationFetchState extends State<LocationFetch> {
         zoom: 15.0,
       ),
       onMapCreated: (GoogleMapController controller) {
+
+        print("-----------------------------------------1");
+
         if (!_completer.isCompleted) {
           _mapController = controller;
           _completer.complete(_mapController);
@@ -322,41 +402,57 @@ class _LocationFetchState extends State<LocationFetch> {
     );
   }
 
-  Future<Null> displayPrediction(Prediction p) async {
+  Future<Null> displayPrediction(Prediction? p) async {
+    print("prediction----->called");
+
     try {
       if (p != null) {
-//      PlacesDetailsResponse detail =
-//          await _places.getDetailsByPlaceId(p.placeId);
-        final query = p.description;
-        var addresses = await Geocoder.local.findAddressesFromQuery(query);
-        var first = addresses.first;
-        _setRegionAddress(first);
+        print("prediction----->");
+        print(p);
+        print(p.description);
+        print(p.description);
+        print(p.placeId);
+        // PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(p.placeId);
+        final query = p.description!;
+        // var addresses = await Geocoder.local.findAddressesFromQuery(query);
+        var addresses =
+            await GeocodingPlatform.instance.locationFromAddress(query);
+        print("prediction_addresses:$addresses");
+        print("prediction_addresses:${addresses[0].longitude}");
+        print("prediction_addresses:${addresses[0].latitude}");
+        _setRegionAddress(p.description);
 //        print("${first.addressLine} : ${first.coordinates}");
-        if (first == null ||
-            first.addressLine == null ||
-            first.coordinates == null) {
+        if (addresses == null ||
+            addresses[0].longitude == null ||
+            addresses[0].latitude == null) {
           return;
         }
         _isSettingLocationFromPlacesApi = true;
-        double lat = first.coordinates.latitude;
-        double lng = first.coordinates.longitude;
+        double? lat = addresses[0].latitude;
+        double? lng = addresses[0].longitude;
         _setMarker(lat, lng);
-        latitude = lat?.toString();
-        longitude = lng?.toString();
+        latitude = lat.toString();
+        longitude = lng.toString();
         if (mounted)
           setState(() {
             _animateCamera();
-            locationController.text = first.addressLine;
+            // locationController.text = first.addressLine!;
+            // locationController.text = first.latitude.toString();
           });
         Future.delayed(Duration(milliseconds: 1500)).then((value) {
           _coordinateList = [];
           _isSettingLocationFromPlacesApi = false;
         });
       }
-    } catch (e) {}
+
+      print("prediction----->else");
+    } catch (e) {
+      print("prediction----->error=${e.toString()}");
+    }
   }
 
-  _setMarker(double lat, double lon) {
+  _setMarker(double? lat, double? lon) {
+    print("---------lat_long:${lat},${lon}");
     if (lat != null && lon != null) {
       marker.add(Marker(
           markerId: MarkerId("currentLocation"),
@@ -367,33 +463,54 @@ class _LocationFetchState extends State<LocationFetch> {
 
   void _animateCamera() {
     if (latitude != null &&
-        latitude.isNotEmpty &&
+        latitude!.isNotEmpty &&
         longitude != null &&
-        longitude.isNotEmpty &&
+        longitude!.isNotEmpty &&
         _completer.isCompleted) {
-      _mapController.animateCamera(
+      _mapController!.animateCamera(
         CameraUpdate.newCameraPosition(
           CameraPosition(
               zoom: 12,
-              target: LatLng(double.parse(latitude), double.parse(longitude))),
+              target:
+                  LatLng(double.parse(latitude!), double.parse(longitude!))),
         ),
       );
     }
   }
 
-  void _setRegionAddress(Address address) {
-    if (address != null) {
-      if (address != null &&
-          address.locality != null &&
-          address.locality.isNotEmpty) {
-        if (address.subLocality != null && address.subLocality.isNotEmpty) {
-          regionController.text = address.subLocality;
-        } else {
-          regionController.text = address.locality;
-        }
+  void _setRegionAddress(var address) {
+    print("address_searched:$address");
+    if (null != address && address.isNotEmpty) {
+      var localAddress = address.toString().split(",");
+      if (localAddress.length > 4) {
+        houseController.text = localAddress[0];
+        print("localAddress");
+        print(localAddress);
+        localAddress.removeAt(0);
+        print("localAddress22");
+        print(localAddress);
+        print("address--------->");
+        print(address);
+        print(localAddress.toString());
+        regionController.text = address;
+        locationController.text = localAddress
+            .toString()
+            .replaceAll("[", "")
+            .replaceAll("]", "")
+            .trim();
       } else {
-        regionController.text = address.addressLine;
+        regionController.text = address;
+        locationController.text = localAddress
+            .toString()
+            .replaceAll("[", "")
+            .replaceAll("]", "")
+            .trim();
+        houseController.text = '';
       }
+      // houseController.text = address;
+      landMarkController.text = "";
+    } else {
+      regionController.text = "";
     }
   }
 }

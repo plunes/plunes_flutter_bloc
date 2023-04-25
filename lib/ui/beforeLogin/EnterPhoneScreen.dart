@@ -32,9 +32,9 @@ import 'Registration.dart';
 // ignore: must_be_immutable
 class EnterPhoneScreen extends BaseActivity {
   static const tag = 'enter_phonescreen';
-  String from;
+  String? from;
 
-  EnterPhoneScreen({Key key, this.from}) : super(key: key);
+  EnterPhoneScreen({Key? key, this.from}) : super(key: key);
 
   @override
   _EnterPhoneScreenState createState() => _EnterPhoneScreenState();
@@ -46,7 +46,7 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
 
   final phoneNumberController = new TextEditingController();
   bool progress = false, isValidNumber = true;
-  UserBloc _userBloc;
+  UserBloc? _userBloc;
   final String _dummyUserId = "PL-1WQPS-S7PN";
 
   @override
@@ -79,7 +79,7 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
 //          keyboardType: TextInputType.number,
           maxLength: _isNumber() ? 10 : null,
           inputFormatters:
-              _isNumber() ? [WhitelistingTextInputFormatter.digitsOnly] : null,
+              _isNumber() ? [FilteringTextInputFormatter.digitsOnly] : null,
           textInputAction: TextInputAction.done,
           style: TextStyle(
               fontSize: 18,
@@ -143,7 +143,7 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
         progress = true;
         _setState();
         await Future.delayed(Duration(milliseconds: 200));
-        var result = await _userBloc
+        var result = await _userBloc!
             .checkUserExistence(phoneNumberController.text.trim());
         if (result is RequestSuccess) {
           getUserExistenceData(result.response);
@@ -186,7 +186,7 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
     return Scaffold(
         key: _scaffoldKey,
         appBar: widget.from == plunesStrings.login
-            ? widget.getAppBar(context, '', true)
+            ? widget.getAppBar(context, '', true) as PreferredSizeWidget?
             : null,
         body: GestureDetector(
           onTap: () {
@@ -319,8 +319,8 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
   }
 
   void _sendOtp() async {
-    String signature = await AppConfig.getAppSignature();
-    var requestState = await _userBloc.getGenerateOtp(
+    String? signature = await AppConfig.getAppSignature();
+    var requestState = await _userBloc!.getGenerateOtp(
         phoneNumberController.text.trim(),
         signature: signature);
     progress = false;

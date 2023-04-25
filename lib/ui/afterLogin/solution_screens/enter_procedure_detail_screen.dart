@@ -12,8 +12,8 @@ import 'package:plunes/res/StringsFile.dart';
 
 // ignore: must_be_immutable
 class EnterProcedureDetailScreen extends BaseActivity {
-  final SearchSolutionBloc searchSolutionBloc;
-  final List<MoreFacility> selectedItemList;
+  final SearchSolutionBloc? searchSolutionBloc;
+  final List<MoreFacility>? selectedItemList;
 
   EnterProcedureDetailScreen({this.searchSolutionBloc, this.selectedItemList});
 
@@ -22,8 +22,9 @@ class EnterProcedureDetailScreen extends BaseActivity {
       _EnterProcedureDetailScreenState();
 }
 
-class _EnterProcedureDetailScreenState
-    extends BaseState<EnterProcedureDetailScreen> {
+// class _EnterProcedureDetailScreenState extends BaseState<EnterProcedureDetailScreen> {
+class _EnterProcedureDetailScreenState extends State<EnterProcedureDetailScreen> {
+  final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   TextEditingController _testDetailsController = TextEditingController();
 
   @override
@@ -39,18 +40,18 @@ class _EnterProcedureDetailScreenState
         child: Scaffold(
           key: scaffoldKey,
           appBar:
-              widget.getAppBar(context, PlunesStrings.negotiateManually, true),
+              widget.getAppBar(context, PlunesStrings.negotiateManually, true) as PreferredSizeWidget?,
           body: Builder(builder: (context) {
-            return StreamBuilder<RequestState>(
+            return StreamBuilder<RequestState?>(
                 stream:
-                    widget.searchSolutionBloc.getManualBiddingAdditionStream(),
+                    widget.searchSolutionBloc!.getManualBiddingAdditionStream(),
                 builder: (context, snapshot) {
                   if (snapshot.data is RequestInProgress) {
                     return CustomWidgets().getProgressIndicator();
                   }
                   if (snapshot.data is RequestFailed) {
-                    RequestFailed requestFailed = snapshot.data;
-                    String errorMessage = requestFailed?.failureCause;
+                    RequestFailed? requestFailed = snapshot.data as RequestFailed?;
+                    String? errorMessage = requestFailed?.failureCause;
                     Future.delayed(Duration(milliseconds: 50)).then((value) {
                       showDialog(
                           context: context,
@@ -59,7 +60,7 @@ class _EnterProcedureDetailScreenState
                                 globalKey: scaffoldKey, message: errorMessage);
                           });
                     });
-                    widget.searchSolutionBloc
+                    widget.searchSolutionBloc!
                         .addStateInManualBiddingAdditionStream(null);
                   } else if (snapshot.data is RequestSuccess) {
                     Future.delayed(Duration(milliseconds: 50)).then((value) {
@@ -73,7 +74,7 @@ class _EnterProcedureDetailScreenState
                         Navigator.pop(context, true);
                       });
                     });
-                    widget.searchSolutionBloc
+                    widget.searchSolutionBloc!
                         .addStateInManualBiddingAdditionStream(null);
                   }
                   return SingleChildScrollView(
@@ -194,9 +195,9 @@ class _EnterProcedureDetailScreenState
                                     });
                                 return;
                               }
-                              widget.searchSolutionBloc.saveManualBiddingData(
+                              widget.searchSolutionBloc!.saveManualBiddingData(
                                   _testDetailsController.text.trim(),
-                                  widget.selectedItemList);
+                                  widget.selectedItemList!);
                             },
                             child: CustomWidgets().getRoundedButton(
                               plunesStrings.submit,

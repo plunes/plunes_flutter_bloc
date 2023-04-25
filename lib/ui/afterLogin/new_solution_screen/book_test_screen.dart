@@ -7,11 +7,13 @@ import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/ui/afterLogin/new_common_widgets/common_widgets.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/enter_facility_details_scr.dart';
 
+import '../../../models/new_solution_model/new_hos_facility_model.dart';
+
 // ignore: must_be_immutable
 class BookTestScreen extends BaseActivity {
-  List<ServiceCategory> test;
-  String profId;
-  bool isAlreadyInBookingProcess;
+  List<NewServiceCategory>? test;
+  String? profId;
+  bool? isAlreadyInBookingProcess;
 
   BookTestScreen(this.test, this.profId, {this.isAlreadyInBookingProcess});
 
@@ -19,8 +21,10 @@ class BookTestScreen extends BaseActivity {
   _TestBookingScreenState createState() => _TestBookingScreenState();
 }
 
-class _TestBookingScreenState extends BaseState<BookTestScreen> {
-  TextEditingController _textController;
+// class _TestBookingScreenState extends BaseState<BookTestScreen> {
+class _TestBookingScreenState extends State<BookTestScreen> {
+final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  TextEditingController? _textController;
   int _totalCount = 0;
 
   _onTextClear() {
@@ -54,7 +58,7 @@ class _TestBookingScreenState extends BaseState<BookTestScreen> {
       top: false,
       child: Scaffold(
           key: scaffoldKey,
-          appBar: widget.getAppBar(context, "Book Test", true),
+          appBar: widget.getAppBar(context, "Book Test", true) as PreferredSizeWidget?,
           body: _getBodyWidget()),
     );
   }
@@ -74,26 +78,25 @@ class _TestBookingScreenState extends BaseState<BookTestScreen> {
               shrinkWrap: true,
               padding: EdgeInsets.zero,
               itemBuilder: (context, index) {
-                if (_textController.text.trim().isNotEmpty &&
-                    widget.test[index].serviceName
+                if (_textController!.text.trim().isNotEmpty &&
+                    widget.test![index].serviceName!
                         .toLowerCase()
-                        .contains(_textController.text.trim().toLowerCase())) {
-                  return CommonWidgets().getBookTestWidget(
-                      widget.test,
+                        .contains(_textController!.text.trim().toLowerCase())) {
+                  // return CommonWidgets().getBookTestWidget(widget.test!, index, ()
+                  return CommonWidgets().getBookTestWidgetNew(widget.test!, index, ()
+                  => _calcTestDataAndOpenAdditionalDetailScrNew(widget.test![index]), isFromIndividualScreen: true);
+                  // => _calcTestDataAndOpenAdditionalDetailScr(widget.test![index]), isFromIndividualScreen: true);
+                } else if (_textController!.text.trim().isEmpty) {
+                  return CommonWidgets().getBookTestWidgetNew(
+                      widget.test!,
                       index,
-                      () => _calcTestDataAndOpenAdditionalDetailScr(
-                          widget.test[index]),
-                      isFromIndividualScreen: true);
-                } else if (_textController.text.trim().isEmpty) {
-                  return CommonWidgets().getBookTestWidget(
-                      widget.test,
-                      index,
-                      () => _calcTestDataAndOpenAdditionalDetailScr(
-                          widget.test[index]),
+                      // () => _calcTestDataAndOpenAdditionalDetailScr(
+                      () => _calcTestDataAndOpenAdditionalDetailScrNew(
+                          widget.test![index]),
                       isFromIndividualScreen: true);
                 } else {
                   _totalCount++;
-                  return _totalCount == widget.test.length
+                  return _totalCount == widget.test!.length
                       ? Container(
                           height: AppConfig.verticalBlockSize * 70,
                           child: Center(
@@ -102,7 +105,7 @@ class _TestBookingScreenState extends BaseState<BookTestScreen> {
                       : Container();
                 }
               },
-              itemCount: widget.test.length,
+              itemCount: widget.test!.length,
             ),
           ),
         ],
@@ -114,12 +117,39 @@ class _TestBookingScreenState extends BaseState<BookTestScreen> {
     if (widget.isAlreadyInBookingProcess != null) {
       return;
     }
-    num servicePrice = 0;
+    num? servicePrice = 0;
     if (test != null &&
         test.price != null &&
-        test.price.isNotEmpty &&
-        test.price.first > 0) {
-      servicePrice = test.price.first;
+        test.price!.isNotEmpty &&
+        test.price!.first! > 0) {
+      servicePrice = test.price!.first;
+    }
+    var data = CatalogueData(
+        category: test.category,
+        serviceId: test.serviceId,
+        service: test.service,
+        speciality: test.speciality,
+        specialityId: test.specialityId,
+        family: test.service,
+        isFromProfileScreen: true,
+        profId: widget.profId,
+        servicePrice: servicePrice);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => EnterAdditionalUserDetailScr(data, "")));
+  }
+
+  _calcTestDataAndOpenAdditionalDetailScrNew(NewServiceCategory test) {
+    if (widget.isAlreadyInBookingProcess != null) {
+      return;
+    }
+    num? servicePrice = 0;
+    if (test != null &&
+        test.price != null &&
+        test.price!.isNotEmpty &&
+        test.price!.first! > 0) {
+      servicePrice = test.price!.first;
     }
     var data = CatalogueData(
         category: test.category,

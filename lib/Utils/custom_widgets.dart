@@ -37,11 +37,11 @@ import 'package:plunes/ui/afterLogin/GalleryScreen.dart';
 import 'package:plunes/ui/afterLogin/appointment_screens/appointment_main_screen.dart';
 import 'package:plunes/ui/afterLogin/hos_popup_scr/real_insight_popup_scr.dart';
 import 'package:plunes/ui/commonView/LocationFetch.dart';
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
-import 'package:upi_pay/upi_pay.dart';
+// import 'package:upi_pay/upi_pay.dart';
 
 // import 'package:upi_pay/upi_pay.dart';
 import 'CommonMethods.dart';
@@ -49,7 +49,7 @@ import 'app_config.dart';
 
 ///This class holds all the common widgets.
 class CustomWidgets {
-  static CustomWidgets _instance;
+  static CustomWidgets? _instance;
 
   CustomWidgets._init();
 
@@ -57,17 +57,17 @@ class CustomWidgets {
     if (_instance == null) {
       _instance = CustomWidgets._init();
     }
-    return _instance;
+    return _instance!;
   }
 
   Widget searchBar(
-      {@required final TextEditingController searchController,
-      @required final String hintText,
+      {required final TextEditingController? searchController,
+      required final String hintText,
       bool hasFocus = false,
       isRounded = true,
-      FocusNode focusNode,
+      FocusNode? focusNode,
       double searchBarHeight = 6,
-      Function onTextClear}) {
+      Function? onTextClear}) {
     return StatefulBuilder(builder: (context, newState) {
       return Card(
         elevation: 3.0,
@@ -104,7 +104,7 @@ class CustomWidgets {
                           fontSize: AppConfig.smallFont)),
                 ),
               ),
-              searchController.text.trim().isEmpty
+              searchController!.text.trim().isEmpty
                   ? Image.asset(
                       PlunesImages.searchIcon,
                       width: AppConfig.verticalBlockSize * 2.0,
@@ -133,19 +133,19 @@ class CustomWidgets {
   }
 
   Widget rectangularButtonWithPadding(
-      {@required final String buttonText,
-      @required final Color buttonColor,
-      @required final Color textColor,
-      @required final double horizontalPadding,
-      @required final double verticalPadding,
-      @required final Color borderColor,
-      Function onTap,
-      Function onDoubleTap}) {
+      {required final String buttonText,
+      required final Color buttonColor,
+      required final Color textColor,
+      required final double horizontalPadding,
+      required final double verticalPadding,
+      required final Color borderColor,
+      Function? onTap,
+      Function? onDoubleTap}) {
     return Material(
       child: InkWell(
-        onTap: onTap,
+        onTap: onTap as void Function()?,
         splashColor: Colors.green,
-        onDoubleTap: onDoubleTap ?? () {},
+        onDoubleTap: onDoubleTap as void Function()? ?? () {},
         child: Container(
           decoration: BoxDecoration(
               shape: BoxShape.rectangle,
@@ -165,32 +165,32 @@ class CustomWidgets {
     );
   }
 
-  Widget getSolutionRow(List<CatalogueData> solutionList, int index,
-      {Function onButtonTap,
-      TapGestureRecognizer onViewMoreTap,
+  Widget getSolutionRow(List<CatalogueData>? solutionList, int index,
+      {Function? onButtonTap,
+      TapGestureRecognizer? onViewMoreTap,
       bool isTopSearches = true}) {
     return StatefulBuilder(builder: (context, newState) {
       return Column(
         children: <Widget>[
           InkWell(
             onTap: () {
-              if (solutionList[index].createdAt != null &&
+              if (solutionList![index].createdAt != null &&
                   solutionList[index].createdAt != 0) {
                 var difference = DateTime.fromMillisecondsSinceEpoch(
-                        solutionList[index].createdAt)
+                        solutionList[index].createdAt!)
                     .difference(DateTime.now());
                 if (difference.inHours == 0) {
-                  onButtonTap();
+                  onButtonTap!();
                   return;
                 }
               }
               newState(() {
                 solutionList[index].isSelected =
-                    !solutionList[index].isSelected ?? false;
+                    !solutionList[index].isSelected! ?? false;
               });
             },
             child: Container(
-              color: solutionList[index].isSelected ?? false
+              color: solutionList![index].isSelected ?? false
                   ? PlunesColors.LIGHTGREENCOLOR
                   : PlunesColors.WHITECOLOR,
               padding: (index == 0)
@@ -215,7 +215,7 @@ class CustomWidgets {
                         width: AppConfig.horizontalBlockSize * 14,
                         child: (solutionList[index] == null ||
                                 solutionList[index].speciality == null ||
-                                solutionList[index].speciality.isEmpty)
+                                solutionList[index].speciality!.isEmpty)
                             ? Image.asset(PlunesImages.basicImage,
                                 fit: BoxFit.contain)
                             : getImageFromUrl(
@@ -233,9 +233,9 @@ class CustomWidgets {
                           children: <Widget>[
                             RichText(
                                 text: TextSpan(
-                                    text: solutionList[index]?.family ??
+                                    text: solutionList[index].family ??
                                         PlunesStrings.NA,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontSize: 16,
                                         color: Colors.black,
                                         fontWeight: FontWeight.w500),
@@ -244,11 +244,11 @@ class CustomWidgets {
                                       text: solutionList[index].technique ==
                                                   null ||
                                               solutionList[index]
-                                                  .technique
+                                                  .technique!
                                                   .trim()
                                                   .isEmpty
                                           ? ""
-                                          : " (${solutionList[index].technique.trim() ?? PlunesStrings.NA})",
+                                          : " (${solutionList[index].technique!.trim() ?? PlunesStrings.NA})",
                                       style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.normal,
@@ -259,21 +259,21 @@ class CustomWidgets {
                                     top: AppConfig.verticalBlockSize * 1)),
                             (solutionList[index].service != null &&
                                     solutionList[index]
-                                        .service
+                                        .service!
                                         .trim()
                                         .isNotEmpty)
                                 ? (solutionList[index].family != null &&
                                         (solutionList[index]
-                                                .service
+                                                .service!
                                                 .trim()
                                                 .toLowerCase() ==
                                             solutionList[index]
-                                                .family
+                                                .family!
                                                 .trim()
                                                 .toLowerCase()))
                                     ? Container()
                                     : Text(
-                                        "${solutionList[index].service.trim()}",
+                                        "${solutionList[index].service!.trim()}",
                                         style: TextStyle(
                                             fontSize: 15,
                                             color: CommonMethods
@@ -339,7 +339,7 @@ class CustomWidgets {
                 ),
           solutionList[index].isSelected ?? false
               ? InkWell(
-                  onTap: onButtonTap,
+                  onTap: onButtonTap as void Function()?,
                   child: Container(
                       color: PlunesColors.WHITECOLOR,
                       padding: EdgeInsets.only(
@@ -370,28 +370,28 @@ class CustomWidgets {
   }
 
   Widget getTopSearchesPrevSearchedSolutionRow(
-      List<CatalogueData> solutionList, int index,
-      {Function onButtonTap,
-      TapGestureRecognizer onViewMoreTap,
+      List<CatalogueData>? solutionList, int index,
+      {Function? onButtonTap,
+      TapGestureRecognizer? onViewMoreTap,
       bool isTopSearches = false}) {
     return StatefulBuilder(builder: (context, newState) {
       return Column(
         children: <Widget>[
           InkWell(
             onTap: () {
-              if (solutionList[index].createdAt != null &&
+              if (solutionList![index].createdAt != null &&
                   solutionList[index].createdAt != 0) {
                 var difference = DateTime.fromMillisecondsSinceEpoch(
-                        solutionList[index].createdAt)
+                        solutionList[index].createdAt!)
                     .difference(DateTime.now());
                 if (difference.inHours == 0) {
-                  onButtonTap();
+                  onButtonTap!();
                   return;
                 }
               }
               newState(() {
                 solutionList[index].isSelected =
-                    !solutionList[index].isSelected ?? false;
+                    !solutionList[index].isSelected! ?? false;
               });
             },
             focusColor: Colors.transparent,
@@ -402,7 +402,7 @@ class CustomWidgets {
               margin: EdgeInsets.symmetric(
                   horizontal: AppConfig.horizontalBlockSize * 3,
                   vertical: AppConfig.verticalBlockSize * 0.8),
-              color: solutionList[index].isSelected ?? false
+              color: solutionList![index].isSelected ?? false
                   ? PlunesColors.LIGHTGREENCOLOR
                   : Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
               shape: RoundedRectangleBorder(
@@ -430,7 +430,7 @@ class CustomWidgets {
                           width: AppConfig.horizontalBlockSize * 14,
                           child: (solutionList[index] == null ||
                                   solutionList[index].speciality == null ||
-                                  solutionList[index].speciality.isEmpty)
+                                  solutionList[index].speciality!.isEmpty)
                               ? Image.asset(PlunesImages.basicImage,
                                   fit: BoxFit.contain)
                               : getImageFromUrl(
@@ -448,10 +448,10 @@ class CustomWidgets {
                             children: <Widget>[
                               RichText(
                                   text: TextSpan(
-                                      text: solutionList[index]?.service ??
+                                      text: solutionList[index].service ??
                                           PlunesStrings.NA,
                                       style: TextStyle(
-                                        fontSize: AppConfig.smallFont + 1,
+                                        fontSize: AppConfig.smallFont! + 1,
                                         color: Colors.black,
                                         //fontWeight: FontWeight.w500
                                       ),
@@ -467,7 +467,7 @@ class CustomWidgets {
                                   padding: EdgeInsets.only(
                                       top: AppConfig.verticalBlockSize * 1)),
                               (solutionList[index].details == null ||
-                                      solutionList[index].details.isEmpty)
+                                      solutionList[index].details!.isEmpty)
                                   ? (solutionList[index].createdAt == null ||
                                           solutionList[index].createdAt == 0)
                                       ? Container()
@@ -488,7 +488,7 @@ class CustomWidgets {
                                             color: Colors.black),
                                       )),
                               (solutionList[index].details == null ||
-                                      solutionList[index].details.isEmpty)
+                                      solutionList[index].details!.isEmpty)
                                   ? Container()
                                   : RichText(
                                       text: TextSpan(
@@ -498,16 +498,16 @@ class CustomWidgets {
                                               fontSize: AppConfig.verySmallFont,
                                               color: PlunesColors.GREENCOLOR)),
                                     ),
-                              (!(solutionList[index].isActive) &&
+                              (!solutionList[index].isActive! &&
                                       solutionList[index].maxDiscount != null &&
                                       solutionList[index].maxDiscount != 0 &&
                                       (solutionList[index].booked == null ||
-                                          !(solutionList[index].booked)))
+                                          !solutionList[index].booked!))
                                   ? Padding(
                                       padding: EdgeInsets.only(
                                           top: AppConfig.verticalBlockSize * 1),
                                       child: Text(
-                                        "You have missed ${solutionList[index].maxDiscount.toStringAsFixed(0)}% on your ${solutionList[index].service ?? PlunesStrings.NA} Previously",
+                                        "You have missed ${solutionList[index].maxDiscount!.toStringAsFixed(0)}% on your ${solutionList[index].service ?? PlunesStrings.NA} Previously",
                                         style: TextStyle(
                                             fontSize: AppConfig.smallFont,
                                             color: Colors.black),
@@ -526,7 +526,7 @@ class CustomWidgets {
           ),
           solutionList[index].isSelected ?? false
               ? InkWell(
-                  onTap: onButtonTap,
+                  onTap: onButtonTap as void Function()?,
                   child: Container(
                       color: PlunesColors.WHITECOLOR,
                       padding: EdgeInsets.only(
@@ -556,9 +556,9 @@ class CustomWidgets {
     });
   }
 
-  Widget getImageFromUrl(final String imageUrl,
-      {BoxFit boxFit = BoxFit.contain, String placeHolderPath}) {
-//    print("file url is $imageUrl");
+  Widget getImageFromUrl(final String? imageUrl,
+      {BoxFit boxFit = BoxFit.contain, String? placeHolderPath}) {
+    print("file-->url is $imageUrl");
     return CachedNetworkImage(
       imageUrl: imageUrl ?? PlunesStrings.NA,
       fit: boxFit,
@@ -567,7 +567,17 @@ class CustomWidgets {
           fit: boxFit),
       placeholder: (_, sds) => Image.asset(
           placeHolderPath ?? PlunesImages.plunesPlaceHolderAndErrorLogo,
-          fit: boxFit),
+          fit: boxFit
+      ),
+    );
+  }
+
+  Widget getImageFromAsset(final String imageUrl,
+      {BoxFit boxFit = BoxFit.contain, String? placeHolderPath}) {
+//    print("file url is $imageUrl");
+    return Image.asset(
+      imageUrl,
+      fit: boxFit,
     );
   }
 
@@ -581,7 +591,7 @@ class CustomWidgets {
       {bool hasBorder = false,
       Color borderColor = PlunesColors.GREYCOLOR,
       double borderWidth = 0.8,
-      double fontSize}) {
+      double? fontSize}) {
     return Container(
       padding: EdgeInsets.symmetric(
           horizontal: horizontalPadding, vertical: verticalPadding),
@@ -616,7 +626,7 @@ class CustomWidgets {
         Container(
           height: height,
           child: ClipRRect(
-            borderRadius: BorderRadius.only(
+            borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(16),
                 bottomRight: Radius.circular(16)),
             child: Row(
@@ -624,11 +634,11 @@ class CustomWidgets {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Expanded(
-                  child: FlatButton(
-                      highlightColor: Colors.transparent,
-                      hoverColor: Colors.transparent,
-                      splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
-                      focusColor: Colors.transparent,
+                  child: ElevatedButton(
+                      // highlightColor: Colors.transparent,
+                      // hoverColor: Colors.transparent,
+                      // splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                      // focusColor: Colors.transparent,
                       onPressed: () {
                         Navigator.pop(
                             context, false); // showDialog() returns false
@@ -653,11 +663,11 @@ class CustomWidgets {
                   width: 0.5,
                 ),
                 Expanded(
-                  child: FlatButton(
-                      highlightColor: Colors.transparent,
-                      hoverColor: Colors.transparent,
-                      splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
-                      focusColor: Colors.transparent,
+                  child: ElevatedButton(
+                      // highlightColor: Colors.transparent,
+                      // hoverColor: Colors.transparent,
+                      // splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                      // focusColor: Colors.transparent,
                       onPressed: () {
                         Navigator.pop(context);
                         _callBack.dialogCallBackFunction('DONE');
@@ -697,11 +707,11 @@ class CustomWidgets {
           borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(16),
               bottomRight: Radius.circular(16)),
-          child: FlatButton(
-              highlightColor: Colors.transparent,
-              hoverColor: Colors.transparent,
-              splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
-              focusColor: Colors.transparent,
+          child: ElevatedButton(
+              // highlightColor: Colors.transparent,
+              // hoverColor: Colors.transparent,
+              // splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+              // focusColor: Colors.transparent,
               onPressed: () => Navigator.of(context).pop(),
               child: Container(
                   height: AppConfig.verticalBlockSize * 6,
@@ -720,7 +730,7 @@ class CustomWidgets {
     ]);
   }
 
-  Widget getProgressIndicator({Color color}) {
+  Widget getProgressIndicator({Color? color}) {
     return Container(
       child: Center(
         child: SpinKitCircle(
@@ -730,12 +740,13 @@ class CustomWidgets {
     );
   }
 
-  Widget errorWidget(String failureCause,
-      {Function onTap,
-      String buttonText,
+  Widget errorWidget(String? failureCause,
+      {Function? onTap,
+      String? buttonText,
       bool isSizeLess = false,
       bool shouldNotShowImage = false,
-      String imagePath}) {
+      String? imagePath}) {
+
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -768,7 +779,7 @@ class CustomWidgets {
                           ? AppConfig.horizontalBlockSize * 30
                           : AppConfig.horizontalBlockSize * 35),
                   child: InkWell(
-                    onTap: onTap,
+                    onTap: onTap as void Function()?,
                     child: getRoundedButton(
                         buttonText ?? PlunesStrings.refresh,
                         AppConfig.horizontalBlockSize * 8,
@@ -800,7 +811,7 @@ class CustomWidgets {
       int index,
       Function onButtonTap) {
     return InkWell(
-      onTap: onButtonTap,
+      onTap: onButtonTap as void Function()?,
       child: Container(
         width: double.infinity,
         child: Column(
@@ -822,7 +833,7 @@ class CustomWidgets {
                         left: AppConfig.horizontalBlockSize * 2)),
                 Expanded(
                   child: Text(
-                    testAndProcedures[index]?.sId ?? PlunesStrings.NA,
+                    testAndProcedures[index].sId ?? PlunesStrings.NA,
                     style: TextStyle(
                         color: PlunesColors.BLACKCOLOR,
                         fontWeight: FontWeight.w500),
@@ -860,11 +871,11 @@ class CustomWidgets {
       int index,
       Function checkAvailability,
       Function onBookingTap,
-      CatalogueData catalogueData,
-      BuildContext context,
+      CatalogueData? catalogueData,
+      BuildContext? context,
       Function viewProfile,
       int currentStep,
-      StreamController timerStream) {
+      StreamController? timerStream) {
     if (currentStep == null || currentStep >= 33) {
       currentStep = 32;
     }
@@ -889,8 +900,8 @@ class CustomWidgets {
                   onTap: () => viewProfile(),
                   onDoubleTap: () {},
                   child: (solutions[index].imageUrl != null &&
-                          solutions[index].imageUrl.isNotEmpty &&
-                          solutions[index].imageUrl.contains("http"))
+                          solutions[index].imageUrl!.isNotEmpty &&
+                          solutions[index].imageUrl!.contains("http"))
                       ? CircleAvatar(
                           backgroundColor: Colors.transparent,
                           child: Container(
@@ -901,7 +912,7 @@ class CustomWidgets {
                                     solutions[index].imageUrl,
                                     boxFit: BoxFit.fill,
                                     placeHolderPath: (solutions[index]
-                                                .userType
+                                                .userType!
                                                 .toLowerCase() ==
                                             Constants.doctor
                                                 .toString()
@@ -938,10 +949,10 @@ class CustomWidgets {
                                     top: AppConfig.verticalBlockSize * .5),
                                 alignment: Alignment.topLeft,
                                 child: Text(
-                                  solutions[index]?.name ?? PlunesStrings.NA,
+                                  solutions[index].name ?? PlunesStrings.NA,
                                   maxLines: 3,
                                   overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontSize: 15,
                                       color: PlunesColors.BLACKCOLOR,
                                       fontWeight: FontWeight.normal),
@@ -967,9 +978,9 @@ class CustomWidgets {
                           children: <Widget>[
                             (solutions[index] != null &&
                                     solutions[index].experience != null &&
-                                    solutions[index].experience > 0)
+                                    solutions[index].experience! > 0)
                                 ? Text(
-                                    "${solutions[index].experience > 100 ? "100+" : solutions[index].experience} ${PlunesStrings.yrExp}",
+                                    "${solutions[index].experience! > 100 ? "100+" : solutions[index].experience} ${PlunesStrings.yrExp}",
                                     style: TextStyle(
                                       fontSize: 13.5,
                                       color: PlunesColors.GREYCOLOR,
@@ -978,7 +989,7 @@ class CustomWidgets {
                                 : Container(),
                             !(solutions[index] != null &&
                                     solutions[index].experience != null &&
-                                    solutions[index].experience > 0)
+                                    solutions[index].experience! > 0)
                                 ? Container(
                                     height: AppConfig.verticalBlockSize * 3,
                                     width: AppConfig.horizontalBlockSize * 5,
@@ -987,7 +998,7 @@ class CustomWidgets {
                                 : Container(),
                             !(solutions[index] != null &&
                                     solutions[index].experience != null &&
-                                    solutions[index].experience > 0)
+                                    solutions[index].experience! > 0)
                                 ? Text(
                                     "${solutions[index].distance?.toStringAsFixed(1) ?? _getEmptyString()}kms",
                                     style: TextStyle(
@@ -1023,7 +1034,7 @@ class CustomWidgets {
                       ),
                       !(solutions[index] != null &&
                               solutions[index].experience != null &&
-                              solutions[index].experience > 0)
+                              solutions[index].experience! > 0)
                           ? Container()
                           : Padding(
                               padding: EdgeInsets.only(
@@ -1079,25 +1090,25 @@ class CustomWidgets {
                             child: RichText(
                                 text: TextSpan(
                                     text: (solutions[index].price == null ||
-                                            solutions[index].price.isEmpty ||
-                                            solutions[index]?.price[0] ==
-                                                solutions[index]?.newPrice[0])
+                                            solutions[index].price!.isEmpty ||
+                                            solutions[index].price![0] ==
+                                                solutions[index].newPrice![0])
                                         ? ""
-                                        : "\u20B9${solutions[index].price[0]?.toStringAsFixed(0) ?? PlunesStrings.NA} ",
+                                        : "\u20B9${solutions[index].price![0].toStringAsFixed(0) ?? PlunesStrings.NA} ",
                                     style: TextStyle(
                                         fontSize: 14,
-                                        color: solutions[index].negotiating
+                                        color: solutions[index].negotiating!
                                             ? PlunesColors.BLACKCOLOR
                                             : PlunesColors.GREYCOLOR,
-                                        decoration: solutions[index].negotiating
+                                        decoration: solutions[index].negotiating!
                                             ? TextDecoration.none
                                             : TextDecoration.lineThrough),
                                     children: <TextSpan>[
                                   TextSpan(
-                                    text: solutions[index].negotiating
+                                    text: solutions[index].negotiating!
                                         ? ""
-                                        : " \u20B9${solutions[index].newPrice[0]?.toStringAsFixed(2) ?? PlunesStrings.NA}",
-                                    style: TextStyle(
+                                        : " \u20B9${solutions[index].newPrice![0].toStringAsFixed(2) ?? PlunesStrings.NA}",
+                                    style: const TextStyle(
                                         fontSize: 14,
                                         color: PlunesColors.BLACKCOLOR,
                                         fontWeight: FontWeight.w500,
@@ -1108,19 +1119,19 @@ class CustomWidgets {
                           Padding(
                               padding: EdgeInsets.only(
                                   left: AppConfig.horizontalBlockSize * 1)),
-                          solutions[index].negotiating
+                          solutions[index].negotiating!
                               ? Container()
-                              : ((solutions[index].price.isEmpty) ||
-                                      (solutions[index].newPrice.isEmpty) ||
-                                      solutions[index].price[0] ==
-                                          solutions[index].newPrice[0])
+                              : ((solutions[index].price!.isEmpty) ||
+                                      (solutions[index].newPrice!.isEmpty) ||
+                                      solutions[index].price![0] ==
+                                          solutions[index].newPrice![0])
                                   ? Container()
                                   : Text(
                                       (solutions[index].discount == null ||
                                               solutions[index].discount == 0 ||
-                                              solutions[index].discount < 0)
+                                              solutions[index].discount! < 0)
                                           ? ""
-                                          : " ${PlunesStrings.save} \u20B9 ${(solutions[index].price[0] - solutions[index].newPrice[0])?.toStringAsFixed(2)}",
+                                          : " ${PlunesStrings.save} \u20B9 ${(solutions[index].price![0] - solutions[index].newPrice![0])?.toStringAsFixed(2)}",
                                       style: TextStyle(
                                           fontSize: 14,
                                           color: PlunesColors.GREENCOLOR),
@@ -1128,8 +1139,8 @@ class CustomWidgets {
                         ],
                       ),
                       ((solutions[index].homeCollection != null &&
-                                  solutions[index].homeCollection) &&
-                              !(solutions[index].negotiating))
+                                  solutions[index].homeCollection!) &&
+                              !solutions[index].negotiating!)
                           ? Container(
                               width: double.infinity,
                               margin: EdgeInsets.only(top: 4),
@@ -1149,13 +1160,13 @@ class CustomWidgets {
                   padding: const EdgeInsets.only(left: 2),
                   child: InkWell(
                       onTap:
-                          solutions[index].negotiating ? () {} : onBookingTap,
+                          solutions[index].negotiating! ? () {} : onBookingTap as void Function()?,
                       child: getRoundedButton(
                           solutions[index].bookIn == null
                               ? PlunesStrings.book
                               : "${PlunesStrings.bookIn} ${solutions[index].bookIn}",
                           AppConfig.horizontalBlockSize * 8,
-                          solutions[index].negotiating
+                          solutions[index].negotiating!
                               ? PlunesColors.GREYCOLOR
                               : PlunesColors.SPARKLINGGREEN,
                           AppConfig.horizontalBlockSize * 3,
@@ -1164,7 +1175,7 @@ class CustomWidgets {
                 ),
               ],
             ),
-            solutions[index].negotiating
+            solutions[index].negotiating!
                 ? Container(
                     width: double.infinity,
                     margin:
@@ -1179,13 +1190,13 @@ class CustomWidgets {
                     ),
                   )
                 : Container(),
-            solutions[index].negotiating
+            solutions[index].negotiating!
                 ? Container(
                     width: double.infinity,
                     margin:
                         EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
-                    child: StreamBuilder<Object>(
-                        stream: timerStream.stream,
+                    child: StreamBuilder<Object?>(
+                        stream: timerStream!.stream,
                         builder: (context, snapshot) {
                           return StepProgressIndicator(
                             totalSteps: 33,
@@ -1207,12 +1218,12 @@ class CustomWidgets {
   }
 
   Widget buttonWithImageAhead(
-      {String imageName,
-      final String buttonText,
-      Color textColor,
-      Color backgroundColor,
-      double verticalPadding,
-      double horizontalPadding}) {
+      {String? imageName,
+      required final String buttonText,
+      Color? textColor,
+      Color? backgroundColor,
+      required double verticalPadding,
+      required double horizontalPadding}) {
     return Container(
       padding: EdgeInsets.symmetric(
           vertical: verticalPadding, horizontal: horizontalPadding),
@@ -1248,8 +1259,8 @@ class CustomWidgets {
   }
 
   Widget showRatingBar(num rating) {
-    return RatingBar(
-      initialRating: rating,
+    return RatingBar.builder(
+      initialRating: rating as double,
       ignoreGestures: true,
       minRating: 1,
       direction: Axis.horizontal,
@@ -1268,7 +1279,7 @@ class CustomWidgets {
     );
   }
 
-  Widget getLinearIndicator({Color color}) {
+  Widget getLinearIndicator({Color? color}) {
     return Container(
       child: Center(
         child: SpinKitThreeBounce(
@@ -1281,7 +1292,7 @@ class CustomWidgets {
   }
 
   Widget buildViewMoreDialog({
-    CatalogueData catalogueData,
+    CatalogueData? catalogueData,
   }) {
     return StatefulBuilder(builder: (context, newState) {
       return Dialog(
@@ -1295,7 +1306,7 @@ class CustomWidgets {
 
   Widget viewMoreContent(
     BuildContext context,
-    CatalogueData catalogueData,
+    CatalogueData? catalogueData,
   ) {
     String replaceFrom = "\\n";
     return SingleChildScrollView(
@@ -1393,20 +1404,20 @@ class CustomWidgets {
 
   // ignore: non_constant_identifier_names
   Widget updatePricePopUp(
-      {RealInsight realInsight, DocHosMainInsightBloc docHosMainInsightBloc}) {
-    var sliderVal = (realInsight.userPrice.toDouble() / 2) +
-        (((realInsight.userPrice.toDouble() / 2)) / 2);
-    num chancesPercent = 25,
+      {required RealInsight realInsight, DocHosMainInsightBloc? docHosMainInsightBloc}) {
+    var sliderVal = (realInsight.userPrice!.toDouble() / 2) +
+        (realInsight.userPrice!.toDouble() / 2 / 2);
+    num? chancesPercent = 25,
         reductionInPrice =
-            ((((realInsight.userPrice.toDouble() / 2)) / 2) * 100) /
-                realInsight.userPrice.toDouble();
+            ((realInsight.userPrice!.toDouble() / 2 / 2) * 100) /
+                realInsight.userPrice!.toDouble();
     if (sliderVal == 0) {
       chancesPercent = 0;
       reductionInPrice = 0;
     }
     TextEditingController _priceController = TextEditingController();
     ScrollController _scrollController = ScrollController();
-    String failureCause;
+    String? failureCause;
     bool shouldShowField = false;
     return StatefulBuilder(builder: (context, newState) {
       return Dialog(
@@ -1425,8 +1436,8 @@ class CustomWidgets {
                         ),
                         fit: BoxFit.cover),
                     borderRadius: BorderRadius.circular(16.0)),
-                child: StreamBuilder<RequestState>(
-                    stream: docHosMainInsightBloc.realTimePriceUpdateStream,
+                child: StreamBuilder<RequestState?>(
+                    stream: docHosMainInsightBloc!.realTimePriceUpdateStream,
                     builder: (context, snapShot) {
                       if (snapShot.data is RequestInProgress) {
                         return Container(
@@ -1444,8 +1455,8 @@ class CustomWidgets {
                         });
                       }
                       if (snapShot.data is RequestFailed) {
-                        RequestFailed requestFailed = snapShot.data;
-                        String failureCause = requestFailed.failureCause;
+                        RequestFailed requestFailed = snapShot.data as RequestFailed;
+                        String? failureCause = requestFailed.failureCause;
                         return SingleChildScrollView(
                           child: Container(
                             decoration: BoxDecoration(
@@ -1491,12 +1502,12 @@ class CustomWidgets {
                                     borderRadius: BorderRadius.only(
                                         bottomLeft: Radius.circular(16),
                                         bottomRight: Radius.circular(16)),
-                                    child: FlatButton(
-                                        highlightColor: Colors.transparent,
-                                        hoverColor: Colors.transparent,
-                                        splashColor: PlunesColors.SPARKLINGGREEN
-                                            .withOpacity(.1),
-                                        focusColor: Colors.transparent,
+                                    child: ElevatedButton(
+                                        // highlightColor: Colors.transparent,
+                                        // hoverColor: Colors.transparent,
+                                        // splashColor: PlunesColors.SPARKLINGGREEN
+                                        //     .withOpacity(.1),
+                                        // focusColor: Colors.transparent,
                                         onPressed: () => Navigator.pop(context),
                                         child: Container(
                                             height:
@@ -1524,7 +1535,7 @@ class CustomWidgets {
                         controller: _scrollController,
                         reverse: shouldShowField
                             ? true
-                            : (failureCause != null && failureCause.isNotEmpty)
+                            : (failureCause != null && failureCause!.isNotEmpty)
                                 ? true
                                 : false,
                         child: Container(
@@ -1568,8 +1579,7 @@ class CustomWidgets {
                                     margin: EdgeInsets.symmetric(
                                         horizontal:
                                             AppConfig.horizontalBlockSize * 3),
-                                    child: Text(
-                                      realInsight?.serviceName ??
+                                    child: Text(realInsight.serviceName ??
                                           PlunesStrings.NA,
                                       style: TextStyle(
                                         color: Colors.white,
@@ -1591,9 +1601,9 @@ class CustomWidgets {
                                           Text(
                                             (chancesPercent == null ||
                                                     chancesPercent == 0 ||
-                                                    chancesPercent < 0)
+                                                    chancesPercent! < 0)
                                                 ? '0%'
-                                                : '${chancesPercent.toStringAsFixed(0)}%',
+                                                : '${chancesPercent!.toStringAsFixed(0)}%',
                                             style: TextStyle(
                                                 color: Colors.white70,
                                                 fontSize: AppConfig.mediumFont,
@@ -1608,9 +1618,9 @@ class CustomWidgets {
                                     child: Slider(
                                       value: sliderVal,
                                       min:
-                                          (realInsight.userPrice.floor() / 2) ??
+                                          (realInsight.userPrice!.floor() / 2) ??
                                               0,
-                                      max: realInsight.userPrice
+                                      max: realInsight.userPrice!
                                           .floor()
                                           .toDouble(),
                                       divisions: 100,
@@ -1627,19 +1637,18 @@ class CustomWidgets {
                                         newState(() {
                                           try {
                                             var val = (newValue * 100) /
-                                                realInsight.userPrice
+                                                realInsight.userPrice!
                                                     .floor()
                                                     .toDouble();
                                             reductionInPrice =
                                                 ((newValue) * 100) /
-                                                    realInsight.userPrice
+                                                    realInsight.userPrice!
                                                         .toDouble();
                                             reductionInPrice =
-                                                100 - reductionInPrice;
+                                                100 - reductionInPrice!;
 
                                             chancesPercent = double.tryParse(
-                                                (100 - val)
-                                                    ?.toStringAsFixed(1));
+                                                (100 - val).toStringAsFixed(1));
                                           } catch (e) {
                                             chancesPercent = 50;
                                             reductionInPrice = 50;
@@ -1658,7 +1667,7 @@ class CustomWidgets {
                                           MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
                                         Text(
-                                          ' \u20B9 ${(realInsight.userPrice.floor() / 2)?.toStringAsFixed(0)}',
+                                          ' \u20B9 ${(realInsight.userPrice!.floor() / 2).toStringAsFixed(0)}',
                                           style: TextStyle(
                                               color: Colors.white70,
                                               fontSize: AppConfig.mediumFont,
@@ -1686,7 +1695,7 @@ class CustomWidgets {
                                               AppConfig.horizontalBlockSize *
                                                   15),
                                       child: (realInsight.suggested != null &&
-                                              realInsight.suggested &&
+                                              realInsight.suggested! &&
                                               shouldShowField)
                                           ? Row(
                                               mainAxisAlignment:
@@ -1698,9 +1707,8 @@ class CustomWidgets {
                                                   child: TextField(
                                                     controller:
                                                         _priceController,
-                                                    inputFormatters: [
-                                                      WhitelistingTextInputFormatter
-                                                          .digitsOnly
+                                                    inputFormatters: <TextInputFormatter>[
+                                                      FilteringTextInputFormatter.digitsOnly
                                                     ],
                                                     maxLines: 1,
                                                     autofocus: true,
@@ -1742,7 +1750,7 @@ class CustomWidgets {
                                               mainAxisAlignment: (realInsight
                                                               .suggested !=
                                                           null &&
-                                                      realInsight.suggested &&
+                                                      realInsight.suggested! &&
                                                       shouldShowField)
                                                   ? MainAxisAlignment.end
                                                   : MainAxisAlignment.center,
@@ -1763,7 +1771,7 @@ class CustomWidgets {
                                                 ),
                                                 (realInsight.suggested !=
                                                             null &&
-                                                        realInsight.suggested)
+                                                        realInsight.suggested!)
                                                     ? Flexible(
                                                         child: InkWell(
                                                         onTap: () {
@@ -1840,9 +1848,9 @@ class CustomWidgets {
                                       child: chancesPercent != null
                                           ? Text(
                                               chancesPercent == 0 ||
-                                                      chancesPercent < 0
+                                                      chancesPercent! < 0
                                                   ? '0%'
-                                                  : '${chancesPercent.toStringAsFixed(0)}%',
+                                                  : '${chancesPercent!.toStringAsFixed(0)}%',
                                               style: TextStyle(
                                                   color: Colors.white70,
                                                   fontSize:
@@ -1862,7 +1870,7 @@ class CustomWidgets {
                                   failureCause != null
                                       ? Container(
                                           child: Text(
-                                            failureCause,
+                                            failureCause!,
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                                 fontSize: AppConfig.smallFont,
@@ -1901,11 +1909,11 @@ class CustomWidgets {
                                             MainAxisAlignment.center,
                                         children: <Widget>[
                                           Expanded(
-                                            child: FlatButton(
-                                                splashColor: Colors.transparent,
-                                                highlightColor:
-                                                    Colors.transparent,
-                                                focusColor: Colors.transparent,
+                                            child: ElevatedButton(
+                                                // splashColor: Colors.transparent,
+                                                // highlightColor:
+                                                //     Colors.transparent,
+                                                // focusColor: Colors.transparent,
                                                 onPressed: () {
                                                   Navigator.pop(context);
                                                   return;
@@ -1935,15 +1943,14 @@ class CustomWidgets {
                                             width: 0.5,
                                           ),
                                           Expanded(
-                                            child: FlatButton(
-                                                focusColor: Colors.transparent,
-                                                splashColor: Colors.transparent,
-                                                highlightColor:
-                                                    Colors.transparent,
+                                            child: ElevatedButton(
+                                                // focusColor: Colors.transparent,
+                                                // splashColor: Colors.transparent,
+                                                // highlightColor: Colors.transparent,
                                                 onPressed: () {
                                                   if (realInsight.suggested !=
                                                           null &&
-                                                      realInsight.suggested &&
+                                                      realInsight.suggested! &&
                                                       shouldShowField) {
                                                     if (_priceController.text
                                                             .trim()
@@ -1955,7 +1962,7 @@ class CustomWidgets {
                                                         (double.tryParse(
                                                                 _priceController
                                                                     .text
-                                                                    .trim()) <
+                                                                    .trim())! <
                                                             1)) {
                                                       failureCause =
                                                           'Price must not be lesser than 1 or empty';
@@ -2009,7 +2016,7 @@ class CustomWidgets {
                                                                         .suggested !=
                                                                     null &&
                                                                 realInsight
-                                                                    .suggested),
+                                                                    .suggested!),
                                                             packagePrice:
                                                                 sliderVal);
                                                   }
@@ -2046,22 +2053,22 @@ class CustomWidgets {
               ),
             ),
           ) ??
-          false;
+          false as Widget;
     });
   }
 
   // ignore: non_constant_identifier_names
   Widget UpdatePricePopUpForActionableInsight(
-      {ActionableInsight actionableInsight,
-      DocHosMainInsightBloc docHosMainInsightBloc,
-      String centreId}) {
-    var sliderVal = (num.parse(actionableInsight.userPrice).toDouble() / 2) +
-        (((num.parse(actionableInsight.userPrice).toDouble() / 2)) / 2);
-    num chancesPercent = 25;
+      {required ActionableInsight actionableInsight,
+      DocHosMainInsightBloc? docHosMainInsightBloc,
+      String? centreId}) {
+    var sliderVal = (num.parse(actionableInsight.userPrice!).toDouble() / 2) +
+        (num.parse(actionableInsight.userPrice!).toDouble() / 2 / 2);
+    num? chancesPercent = 25;
     num reductionInPrice =
-        ((((num.parse(actionableInsight.userPrice).toDouble() / 2)) / 2) *
+        ((num.parse(actionableInsight.userPrice!).toDouble() / 2 / 2) *
                 100) /
-            num.parse(actionableInsight.userPrice).toDouble();
+            num.parse(actionableInsight.userPrice!).toDouble();
     if (sliderVal == 0) {
       chancesPercent = 0;
       reductionInPrice = 0;
@@ -2069,24 +2076,24 @@ class CustomWidgets {
     TextEditingController _priceController = TextEditingController();
     bool shouldShowField = false;
     ScrollController _scrollController = ScrollController();
-    String failureCause;
+    String? failureCause;
     return StatefulBuilder(builder: (context, newState) {
       return Dialog(
-            insetPadding: EdgeInsets.only(top: 0),
+            insetPadding: const EdgeInsets.only(top: 0),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16.0)),
             elevation: 0.0,
             child: Container(
               width: double.infinity,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                   image: DecorationImage(
                       image: ExactAssetImage(PlunesImages.insight_bg_img),
                       fit: BoxFit.fill)),
               // decoration: BoxDecoration(
               //     borderRadius: BorderRadius.circular(16.0),
               //     color: Color(CommonMethods.getColorHexFromStr("#00427B"))),
-              child: StreamBuilder<RequestState>(
-                  stream: docHosMainInsightBloc.actionablePriceUpdateStream,
+              child: StreamBuilder<RequestState?>(
+                  stream: docHosMainInsightBloc!.actionablePriceUpdateStream,
                   builder: (context, snapShot) {
                     if (snapShot.data is RequestInProgress) {
                       return Container(
@@ -2103,7 +2110,7 @@ class CustomWidgets {
                       });
                     }
                     if (snapShot.data is RequestFailed) {
-                      RequestFailed requestFailed = snapShot.data;
+                      RequestFailed requestFailed = snapShot.data as RequestFailed;
                       failureCause = requestFailed.failureCause;
                     }
                     return SingleChildScrollView(
@@ -2157,7 +2164,7 @@ class CustomWidgets {
                                         AppConfig.horizontalBlockSize * 3,
                                   ),
                                   child: Text(
-                                    actionableInsight?.serviceName ??
+                                    actionableInsight.serviceName ??
                                         PlunesStrings.NA,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
@@ -2216,19 +2223,14 @@ class CustomWidgets {
                                           value: sliderVal,
                                           min: (actionableInsight.userPrice !=
                                                   null)
-                                              ? num.tryParse(
-                                                      (num.parse(actionableInsight
-                                                                      .userPrice)
-                                                                  .floor() /
-                                                              2)
-                                                          ?.toStringAsFixed(0))
+                                              ? num.tryParse((num.parse(actionableInsight.userPrice!).floor() / 2).toStringAsFixed(0))!
                                                   .toDouble()
                                               : 0,
                                           max: (actionableInsight.userPrice !=
                                                   null)
                                               ? num.tryParse(num.parse(
-                                                          actionableInsight.userPrice)
-                                                      .toStringAsFixed(0))
+                                                          actionableInsight.userPrice!)
+                                                      .toStringAsFixed(0))!
                                                   .toDouble()
                                               : 0,
                                           divisions: 100,
@@ -2240,16 +2242,15 @@ class CustomWidgets {
                                               try {
                                                 var val = (newValue * 100) /
                                                     num.parse(actionableInsight
-                                                            .userPrice)
+                                                            .userPrice!)
                                                         .floor()
                                                         .toDouble();
                                                 chancesPercent =
-                                                    double.tryParse((100 - val)
-                                                        ?.toStringAsFixed(1));
+                                                    double.tryParse((100 - val).toStringAsFixed(1));
                                                 reductionInPrice = ((newValue) *
                                                         100) /
                                                     num.parse(actionableInsight
-                                                            .userPrice)
+                                                            .userPrice!)
                                                         .toDouble();
                                                 reductionInPrice =
                                                     100 - (reductionInPrice);
@@ -2269,8 +2270,8 @@ class CustomWidgets {
                                         MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
                                       Text(
-                                        ' \u20B9 ${(num.parse(actionableInsight.userPrice).floor() / 2)?.toStringAsFixed(0)}',
-                                        style: TextStyle(
+                                        ' \u20B9 ${(num.parse(actionableInsight.userPrice!).floor() / 2).toStringAsFixed(0)}',
+                                        style: const TextStyle(
                                             color: Colors.white70,
                                             fontSize: 20,
                                             fontWeight: FontWeight.w600),
@@ -2290,15 +2291,15 @@ class CustomWidgets {
                                               style: TextStyle(
                                                   color: Colors.white,
                                                   fontSize:
-                                                      AppConfig.mediumFont - 1,
+                                                      AppConfig.mediumFont! - 1,
                                                   fontWeight: FontWeight.w600),
                                             ),
                                           ],
                                         ),
                                       )),
                                       Text(
-                                        ' \u20B9 ${num.parse(actionableInsight.userPrice)?.toStringAsFixed(0)}',
-                                        style: TextStyle(
+                                        ' \u20B9 ${num.parse(actionableInsight.userPrice!).toStringAsFixed(0)}',
+                                        style: const TextStyle(
                                             fontSize: 20,
                                             color: Colors.white70,
                                             fontWeight: FontWeight.w600),
@@ -2321,9 +2322,8 @@ class CustomWidgets {
                                             Flexible(
                                               child: TextField(
                                                 controller: _priceController,
-                                                inputFormatters: [
-                                                  WhitelistingTextInputFormatter
-                                                      .digitsOnly
+                                                inputFormatters: <TextInputFormatter>[
+                                                  FilteringTextInputFormatter.digitsOnly
                                                 ],
                                                 maxLines: 1,
                                                 autofocus: true,
@@ -2426,9 +2426,9 @@ class CustomWidgets {
                                           RangePointer(
                                               value: chancesPercent == null ||
                                                       chancesPercent == 0 ||
-                                                      chancesPercent < 0
+                                                      chancesPercent! < 0
                                                   ? 0
-                                                  : double.parse(chancesPercent
+                                                  : double.parse(chancesPercent!
                                                       .toStringAsFixed(0)),
                                               width: 0.25,
                                               sizeUnit: GaugeSizeUnit.factor,
@@ -2456,9 +2456,9 @@ class CustomWidgets {
                                               widget: Text(
                                                 chancesPercent == null ||
                                                         chancesPercent == 0 ||
-                                                        chancesPercent < 0
+                                                        chancesPercent! < 0
                                                     ? "0 %"
-                                                    : "${chancesPercent.toStringAsFixed(0)} %",
+                                                    : "${chancesPercent!.toStringAsFixed(0)} %",
                                                 style: TextStyle(
                                                     fontSize: 16,
                                                     color: PlunesColors
@@ -2513,7 +2513,7 @@ class CustomWidgets {
                                 failureCause != null
                                     ? Container(
                                         child: Text(
-                                          failureCause,
+                                          failureCause!,
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                               fontSize: AppConfig.smallFont,
@@ -2534,7 +2534,7 @@ class CustomWidgets {
                                 InkWell(
                                   onTap: () {
                                     if (shouldShowField) {
-                                      double value = double.tryParse(
+                                      double? value = double.tryParse(
                                           _priceController.text.trim());
                                       if (value == null ||
                                           value == 0 ||
@@ -2556,7 +2556,7 @@ class CustomWidgets {
                                         newState(() {});
                                         return;
                                       } else if (sliderVal.toStringAsFixed(0) ==
-                                          num.parse(actionableInsight.userPrice)
+                                          num.parse(actionableInsight.userPrice!)
                                               .toStringAsFixed(0)) {
                                         failureCause =
                                             'Sorry, Make sure Updated Price is not equal to Original Price !';
@@ -2579,7 +2579,7 @@ class CustomWidgets {
                                         'Apply here',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
-                                            fontSize: AppConfig.largeFont + 2,
+                                            fontSize: AppConfig.largeFont! + 2,
                                             fontWeight: FontWeight.w600,
                                             color: PlunesColors.GREENCOLOR),
                                       ),
@@ -2595,30 +2595,31 @@ class CustomWidgets {
                   }),
             ),
           ) ??
-          false;
+          false as Widget;
     });
   }
 
   Widget amountProgressBar(AppointmentModel appointmentModel) {
     double percentage = 0;
     if (appointmentModel.paidBookingAmount != null &&
-        appointmentModel.paidBookingAmount >= 0 &&
+        appointmentModel.paidBookingAmount! >= 0 &&
         appointmentModel.totalAmount != null &&
-        appointmentModel.totalAmount >= 0) {
+        appointmentModel.totalAmount! >= 0) {
       percentage =
-          appointmentModel.paidBookingAmount / appointmentModel.totalAmount;
+          appointmentModel.paidBookingAmount! / appointmentModel.totalAmount!;
 //      print("percentage $percentage");
     }
     if (percentage > 1) {
       percentage = 1.0;
     }
     return (appointmentModel.paidBookingAmount != null &&
-            appointmentModel.paidBookingAmount >= 0 &&
+            appointmentModel.paidBookingAmount! >= 0 &&
             appointmentModel.totalAmount != null &&
-            appointmentModel.totalAmount >= 0)
+            appointmentModel.totalAmount! >= 0)
         ? Container(
             child: Column(
-              children: <Widget>[
+              children: <Widget>[  (null != appointmentModel.insuranceDetails && null != appointmentModel.insuranceDetails!.insurancePolicy &&
+                  null != appointmentModel.insuranceDetails!.insurancePolicy.toString().isNotEmpty ) ||
                 (appointmentModel.paidBookingAmount != null &&
                         appointmentModel.totalAmount != null &&
                         appointmentModel.paidBookingAmount ==
@@ -2628,19 +2629,20 @@ class CustomWidgets {
                         animationDuration: 800,
                         linearStrokeCap: LinearStrokeCap.roundAll,
                         animation: true,
-                        lineHeight: 10.0,
+                        lineHeight: 14.0,
                         progressColor: PlunesColors.GREENCOLOR,
                         backgroundColor:
                             PlunesColors.GREYCOLOR.withOpacity(0.4),
 //                  width: double.infinity,
                       )
                     : LinearPercentIndicator(
+                  //leading: Icon(Icons.add, color: Colors.red,),
                         percent: percentage,
                         animationDuration: 800,
                         linearStrokeCap: LinearStrokeCap.roundAll,
                         animation: true,
-                        lineHeight: 10.0,
-                        progressColor: PlunesColors.GREENCOLOR,
+                        lineHeight: 14.0,
+                        progressColor: PlunesColors.GREENCOLOR2,
                         backgroundColor:
                             PlunesColors.GREYCOLOR.withOpacity(0.4),
 //                  width: double.infinity,
@@ -2649,7 +2651,7 @@ class CustomWidgets {
                   margin: EdgeInsets.only(
                       left: AppConfig.horizontalBlockSize * 2,
                       right: AppConfig.horizontalBlockSize * 2,
-                      top: AppConfig.verticalBlockSize * 1.5),
+                      top: AppConfig.verticalBlockSize * 1.7),
                   child: Row(
                     children: <Widget>[
                       Expanded(
@@ -2659,17 +2661,24 @@ class CustomWidgets {
                             Text(
                               PlunesStrings.amountPaidText,
                               style: TextStyle(
-                                fontWeight: FontWeight.normal,
+                                fontWeight: FontWeight.bold,
                                 fontSize: 14,
-                                color: Colors.black54,
+                                color: PlunesColors.LIGHT_BLUEMIX,
                               ),
                             ),
+                            SizedBox(
+                                height: 3,
+                            ),
                             Text(
+
+                             null != appointmentModel.insuranceDetails && null != appointmentModel.insuranceDetails!.insurancePolicy &&
+                                  null != appointmentModel.insuranceDetails!.insurancePolicy.toString().isNotEmpty ?
+                              "\u20B9 ${appointmentModel.totalAmount?.toStringAsFixed(1) ?? 0}" :
                               "\u20B9${appointmentModel.paidBookingAmount?.toStringAsFixed(1) ?? 0}",
                               maxLines: 2,
                               style: TextStyle(
                                 fontWeight: FontWeight.normal,
-                                fontSize: 14,
+                                fontSize: 13,
                                 color: Colors.black54,
                               ),
                             )
@@ -2683,15 +2692,22 @@ class CustomWidgets {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text(
-                                PlunesStrings.totalAmountText,
+                                null != appointmentModel.insuranceDetails && null != appointmentModel.insuranceDetails!.policyNumber &&
+                                    null != appointmentModel.insuranceDetails!.policyNumber!.isNotEmpty ? "Insurance Covered" : PlunesStrings.totalAmountText,
                                 style: TextStyle(
-                                  fontWeight: FontWeight.normal,
+                                  fontWeight: FontWeight.bold,
                                   fontSize: 14,
-                                  color: Colors.black54,
+                                  color: PlunesColors.LIGHT_BLUEMIX,
                                 ),
                               ),
-                              Text(
-                                "\u20B9${appointmentModel.totalAmount?.toStringAsFixed(1) ?? 0}",
+                              SizedBox(
+                                height: 3,
+                              ),
+                              Text( null != appointmentModel.insuranceDetails &&
+                                  null != appointmentModel.insuranceDetails!.policyNumber &&
+                                  null != appointmentModel.insuranceDetails!.policyNumber!.isNotEmpty ?
+                              "-\u20B9 ${appointmentModel.totalAmount?.toStringAsFixed(1) ?? 0}" :
+                                "\u20B9 ${appointmentModel.totalAmount?.toStringAsFixed(1) ?? 0}",
                                 maxLines: 2,
                                 style: TextStyle(
                                   fontWeight: FontWeight.normal,
@@ -2715,13 +2731,13 @@ class CustomWidgets {
   refundPopup(BookingBloc bookingBloc, AppointmentModel appointmentModel) {
     TextEditingController textEditingController = TextEditingController();
     bool isSuccess = false;
-    String failureMessage;
+    String? failureMessage;
     return AnimatedContainer(
-      padding: AppConfig.getMediaQuery().viewInsets,
+      padding: AppConfig.getMediaQuery()!.viewInsets,
       duration: const Duration(milliseconds: 300),
       child: Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        child: StreamBuilder<RequestState>(
+        child: StreamBuilder<RequestState?>(
           stream: bookingBloc.refundAppointmentStream,
           builder: (BuildContext context, snapshot) {
             if (snapshot.data != null && snapshot.data is RequestInProgress) {
@@ -2734,7 +2750,7 @@ class CustomWidgets {
               isSuccess = true;
             }
             if (snapshot.data != null && snapshot.data is RequestFailed) {
-              RequestFailed requestFailed = snapshot.data;
+              RequestFailed requestFailed = snapshot.data as RequestFailed;
               failureMessage = requestFailed.failureCause ??
                   PlunesStrings.refundFailedMessage;
               bookingBloc.addStateInRefundProvider(null);
@@ -2872,12 +2888,11 @@ class CustomWidgets {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Expanded(
-                                  child: FlatButton(
-                                      highlightColor: Colors.transparent,
-                                      hoverColor: Colors.transparent,
-                                      splashColor: PlunesColors.SPARKLINGGREEN
-                                          .withOpacity(.1),
-                                      focusColor: Colors.transparent,
+                                  child: ElevatedButton(
+                                      // highlightColor: Colors.transparent,
+                                      // hoverColor: Colors.transparent,
+                                      // splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                                      // focusColor: Colors.transparent,
                                       onPressed: () {
                                         Navigator.pop(context);
                                         return;
@@ -2904,12 +2919,11 @@ class CustomWidgets {
                                   width: 0.5,
                                 ),
                                 Expanded(
-                                  child: FlatButton(
-                                      highlightColor: Colors.transparent,
-                                      hoverColor: Colors.transparent,
-                                      splashColor: PlunesColors.SPARKLINGGREEN
-                                          .withOpacity(.1),
-                                      focusColor: Colors.transparent,
+                                  child: ElevatedButton(
+                                      // highlightColor: Colors.transparent,
+                                      // hoverColor: Colors.transparent,
+                                      // splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                                      // focusColor: Colors.transparent,
                                       onPressed: () {
                                         if (appointmentModel != null &&
                                             textEditingController.text
@@ -3066,7 +3080,7 @@ class CustomWidgets {
   Widget getDocHosConfirmAppointmentPopUp(BuildContext context,
       BookingBloc bookingBloc, AppointmentModel appointmentModel) {
     bool isSuccess = false;
-    String failureMessage;
+    String? failureMessage;
     return Container(
       margin:
           EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 8),
@@ -3075,7 +3089,7 @@ class CustomWidgets {
         child: Card(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          child: StreamBuilder<Object>(
+          child: StreamBuilder<Object?>(
               stream: bookingBloc.confirmAppointmentByDocHosStream,
               builder: (context, snapshot) {
                 if (snapshot.data != null &&
@@ -3090,7 +3104,7 @@ class CustomWidgets {
                   isSuccess = true;
                 }
                 if (snapshot.data != null && snapshot.data is RequestFailed) {
-                  RequestFailed requestFailed = snapshot.data;
+                  RequestFailed requestFailed = snapshot.data as RequestFailed;
                   failureMessage = requestFailed.failureCause ??
                       PlunesStrings.confirmFailedMessage;
                   bookingBloc.addStateInConfirmProvider(null);
@@ -3165,13 +3179,13 @@ class CustomWidgets {
                                   )
                                 ],
                               ),
-                              failureMessage == null || failureMessage.isEmpty
+                              failureMessage == null || failureMessage!.isEmpty
                                   ? Container()
                                   : Container(
                                       padding: EdgeInsets.only(
                                           top: AppConfig.verticalBlockSize * 1),
                                       child: Text(
-                                        failureMessage,
+                                        failureMessage!,
                                         style: TextStyle(color: Colors.red),
                                       ),
                                     ),
@@ -3195,10 +3209,10 @@ class CustomWidgets {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                FlatButton(
+                ElevatedButton(
                     onPressed: () => Navigator.pop(context, false),
                     child: Text("No")),
-                FlatButton(
+                ElevatedButton(
                     onPressed: () => Navigator.pop(context, true),
                     child: Text(
                       "Yes",
@@ -3223,10 +3237,10 @@ class CustomWidgets {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                FlatButton(
+                ElevatedButton(
                     onPressed: () => Navigator.pop(context, false),
                     child: Text("No")),
-                FlatButton(
+                ElevatedButton(
                     onPressed: () => Navigator.pop(context, true),
                     child: Text(
                       "Yes",
@@ -3240,17 +3254,17 @@ class CustomWidgets {
     );
   }
 
-  Widget getProfileIconWithName(String name, double height, double width) {
+  Widget getProfileIconWithName(String? name, double height, double width) {
     return Container(
         height: AppConfig.horizontalBlockSize * height,
         width: AppConfig.horizontalBlockSize * width,
         alignment: Alignment.center,
         child: Text(
-            (name != '' ? CommonMethods.getInitialName(name) : '')
+            (name != '' ? CommonMethods.getInitialName(name!) : '')
                 .toUpperCase(),
             style: TextStyle(
                 color: Colors.white,
-                fontSize: AppConfig.extraLargeFont - 4,
+                fontSize: AppConfig.extraLargeFont! - 4,
                 fontWeight: FontWeight.bold)),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(
@@ -3264,7 +3278,7 @@ class CustomWidgets {
         ));
   }
 
-  Widget getBackImageView(String name, {double height, double width}) {
+  Widget getBackImageView(String? name, {double? height, double? width}) {
     return Container(
         height: height ?? 60,
         width: width ?? 60,
@@ -3364,9 +3378,9 @@ class CustomWidgets {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               (doctorsData[itemIndex].imageUrl == null ||
-                                      doctorsData[itemIndex].imageUrl.isEmpty ||
+                                      doctorsData[itemIndex].imageUrl!.isEmpty ||
                                       !(doctorsData[itemIndex]
-                                          .imageUrl
+                                          .imageUrl!
                                           .contains("http")))
                                   ? CustomWidgets().getBackImageView(
                                       doctorsData[itemIndex].name ??
@@ -3393,16 +3407,15 @@ class CustomWidgets {
                                 children: <Widget>[
                                   Container(
                                     width: AppConfig.horizontalBlockSize * 40,
-                                    padding:
-                                        EdgeInsets.symmetric(vertical: 0.2),
+                                    padding: const EdgeInsets.symmetric(vertical: 0.2),
                                     child: Text(
                                       CommonMethods.getStringInCamelCase(
-                                              doctorsData[itemIndex]?.name) ??
+                                              doctorsData[itemIndex].name) ??
                                           PlunesStrings.NA,
                                       textAlign: TextAlign.start,
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 1,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           color: PlunesColors.BLACKCOLOR,
                                           fontSize: 15),
                                     ),
@@ -3467,7 +3480,7 @@ class CustomWidgets {
                     ),
                   );
                 },
-                itemCount: doctorsData?.length ?? 0,
+                itemCount: doctorsData.length ?? 0,
               ),
             ))
           ],
@@ -3525,7 +3538,7 @@ class CustomWidgets {
                 itemBuilder: (context, itemIndex) {
                   return (timeSlots[itemIndex] != null &&
                           timeSlots[itemIndex].closed != null &&
-                          timeSlots[itemIndex].closed)
+                          timeSlots[itemIndex].closed!)
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
@@ -3561,10 +3574,10 @@ class CustomWidgets {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Container(
-                              padding: EdgeInsets.only(
+                              padding: const EdgeInsets.only(
                                   top: 3, bottom: 3, right: 2, left: 2),
                               child: Text(
-                                timeSlots[itemIndex]?.day?.toUpperCase() ??
+                                timeSlots[itemIndex].day?.toUpperCase() ??
                                     _getEmptyString(),
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
@@ -3584,7 +3597,7 @@ class CustomWidgets {
                                   return Container(
 //                                    padding: EdgeInsets.only(bottom: 5,),
                                       child: Text(
-                                    "${timeSlots[itemIndex].slots[index]} ",
+                                    "${timeSlots[itemIndex].slots![index]} ",
                                     textAlign: TextAlign.left,
                                     style: TextStyle(
                                         fontSize: AppConfig.smallFont,
@@ -3592,13 +3605,13 @@ class CustomWidgets {
                                   ));
                                 },
                                 itemCount:
-                                    timeSlots[itemIndex]?.slots?.length ?? 0,
+                                    timeSlots[itemIndex].slots?.length ?? 0,
                               ),
                             ),
                           ],
                         );
                 },
-                itemCount: timeSlots?.length ?? 0,
+                itemCount: timeSlots.length ?? 0,
               ),
             ))
           ],
@@ -3607,7 +3620,7 @@ class CustomWidgets {
     );
   }
 
-  showReviewList(List<RateAndReview> _rateAndReviewList, BuildContext context) {
+  showReviewList(List<RateAndReview>? _rateAndReviewList, BuildContext context) {
     return Material(
       child: Container(
         child: Column(
@@ -3656,13 +3669,13 @@ class CustomWidgets {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: <Widget>[
-                                (_rateAndReviewList[itemIndex].userImage ==
+                                (_rateAndReviewList![itemIndex].userImage ==
                                             null ||
                                         _rateAndReviewList[itemIndex]
-                                            .userImage
+                                            .userImage!
                                             .isEmpty ||
                                         !_rateAndReviewList[itemIndex]
-                                            .userImage
+                                            .userImage!
                                             .contains("http"))
                                     ? CustomWidgets().getBackImageView(
                                         _rateAndReviewList[itemIndex].userName,
@@ -3696,10 +3709,9 @@ class CustomWidgets {
                                         Padding(
                                           padding: const EdgeInsets.all(5.0),
                                           child: Text(
-                                            _rateAndReviewList[itemIndex]
-                                                    ?.userName ??
+                                            _rateAndReviewList[itemIndex].userName ??
                                                 PlunesStrings.NA,
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                                 color: PlunesColors.BLACKCOLOR,
                                                 fontSize: 16),
                                           ),
@@ -3879,7 +3891,7 @@ class CustomWidgets {
   }
 
   Widget showDocPopup(
-      DoctorsData doctorsData, BuildContext context, String hospitalName) {
+      DoctorsData doctorsData, BuildContext context, String? hospitalName) {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       elevation: 0.0,
@@ -3902,8 +3914,8 @@ class CustomWidgets {
                                 List<Photo> photos = [];
                                 if ((doctorsData != null &&
                                     doctorsData.imageUrl != null &&
-                                    doctorsData.imageUrl.isNotEmpty &&
-                                    doctorsData.imageUrl.contains("http"))) {
+                                    doctorsData.imageUrl!.isNotEmpty &&
+                                    doctorsData.imageUrl!.contains("http"))) {
                                   photos.add(
                                       Photo(assetName: doctorsData.imageUrl));
                                 }
@@ -3917,8 +3929,8 @@ class CustomWidgets {
                               },
                               child: (doctorsData != null &&
                                       doctorsData.imageUrl != null &&
-                                      doctorsData.imageUrl.isNotEmpty &&
-                                      doctorsData.imageUrl.contains("http"))
+                                      doctorsData.imageUrl!.isNotEmpty &&
+                                      doctorsData.imageUrl!.contains("http"))
                                   ? CircleAvatar(
                                       backgroundColor: Colors.transparent,
                                       child: Container(
@@ -3936,7 +3948,7 @@ class CustomWidgets {
                                       radius: 30,
                                     )
                                   : CustomWidgets().getBackImageView(
-                                      doctorsData?.name ?? _getEmptyString())),
+                                      doctorsData.name ?? _getEmptyString())),
                           Expanded(
                             child: Padding(
                               padding: EdgeInsets.only(
@@ -3946,9 +3958,9 @@ class CustomWidgets {
                                 children: <Widget>[
                                   Text(
                                     CommonMethods.getStringInCamelCase(
-                                            doctorsData?.name) ??
+                                            doctorsData.name) ??
                                         _getEmptyString(),
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 16),
                                   ),
@@ -3963,7 +3975,7 @@ class CustomWidgets {
                         ],
                       ),
                       doctorsData.department == null ||
-                              doctorsData.department.trim().isEmpty
+                              doctorsData.department!.trim().isEmpty
                           ? Container()
                           : Padding(
                               padding: EdgeInsets.only(
@@ -3976,7 +3988,7 @@ class CustomWidgets {
                                   doctorsData?.department ?? _getEmptyString()),
                             ),
                       doctorsData.experience == null ||
-                              doctorsData.experience.trim().isEmpty ||
+                              doctorsData.experience!.trim().isEmpty ||
                               doctorsData.experience == "0"
                           ? Container()
                           : Padding(
@@ -3988,7 +4000,7 @@ class CustomWidgets {
                                   plunesImages.clockIcon,
                                   plunesStrings.expOfPractice,
                                   (doctorsData.experience == null ||
-                                          doctorsData?.experience == "0")
+                                          doctorsData.experience == "0")
                                       ? _getEmptyString()
                                       : doctorsData.experience),
                             ),
@@ -4007,7 +4019,7 @@ class CustomWidgets {
                                       _getEmptyString()),
                             ),
                       doctorsData.education == null ||
-                              doctorsData.education.trim().isEmpty
+                              doctorsData.education!.trim().isEmpty
                           ? Container()
                           : Padding(
                               padding: EdgeInsets.only(
@@ -4017,7 +4029,7 @@ class CustomWidgets {
                                   22,
                                   plunesImages.eduIcon,
                                   plunesStrings.qualification,
-                                  doctorsData?.education ?? _getEmptyString()),
+                                  doctorsData.education ?? _getEmptyString()),
                             ),
                     ],
                   ),
@@ -4034,7 +4046,7 @@ class CustomWidgets {
   }
 
   Widget getProfileInfoView(
-      double height, double width, String icon, String title, String value) {
+      double height, double width, String icon, String title, String? value) {
     return Container(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -4053,14 +4065,14 @@ class CustomWidgets {
                 maxLines: 3,
                 text: TextSpan(
                     text: "${title ?? _getEmptyString()}:",
-                    style: TextStyle(
+                    style: const TextStyle(
                         color: PlunesColors.GREYCOLOR,
                         fontSize: 14,
                         fontWeight: FontWeight.normal),
                     children: <InlineSpan>[
                       TextSpan(
                         text: value ?? _getEmptyString(),
-                        style: TextStyle(
+                        style: const TextStyle(
                             color: PlunesColors.BLACKCOLOR,
                             fontSize: 15,
                             fontWeight: FontWeight.normal),
@@ -4072,9 +4084,9 @@ class CustomWidgets {
     );
   }
 
-  Widget fetchLocationPopUp(BuildContext context,
+  Widget fetchLocationPopUp(BuildContext? context,
       {bool isCalledFromHomeScreen = false}) {
-    String message;
+    String? message;
     bool isProgressing = false;
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
@@ -4093,8 +4105,8 @@ class CustomWidgets {
                 child: InkWell(
                   onTap: () => Navigator.of(context).pop(),
                   onDoubleTap: () {},
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
+                  child: const Padding(
+                    padding: EdgeInsets.all(10),
                     child: Icon(Icons.close),
                   ),
                 ),
@@ -4121,7 +4133,7 @@ class CustomWidgets {
                                         : PlunesStrings
                                             .pleaseSelectLocationPopup,
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         color: PlunesColors.BLACKCOLOR,
                                         fontWeight: FontWeight.w500,
                                         fontSize: 15),
@@ -4135,20 +4147,15 @@ class CustomWidgets {
                                           AppConfig.horizontalBlockSize * 15.5),
                                   child: InkWell(
                                     onTap: () {
-                                      Navigator.of(context)
-                                          .push(PageRouteBuilder(
-                                              opaque: false,
-                                              pageBuilder:
-                                                  (BuildContext context, _,
-                                                          __) =>
-                                                      LocationFetch()))
-                                          .then((val) async {
+                                      Navigator.of(context).push(PageRouteBuilder(
+                                              opaque: false, pageBuilder: (BuildContext context, _, __) =>
+                                                      LocationFetch())).then((val) async {
                                         if (val != null) {
-                                          var addressControllerList =
-                                              new List();
+                                          print("vvvvvvalll");
+                                          var addressControllerList = [];
                                           addressControllerList =
                                               val.toString().split(":");
-                                          String addr =
+                                          String? addr =
                                               addressControllerList[0] +
                                                   ' ' +
                                                   addressControllerList[1] +
@@ -4158,7 +4165,7 @@ class CustomWidgets {
                                               addressControllerList[3];
                                           var _longitude =
                                               addressControllerList[4];
-                                          String region = addr;
+                                          String? region = addr;
                                           if (addressControllerList.length ==
                                                   6 &&
                                               addressControllerList[5] !=
@@ -4175,7 +4182,7 @@ class CustomWidgets {
                                                   region: region)
                                               .then((value) {
                                             if (value is RequestSuccess) {
-                                              CheckLocationResponse
+                                              CheckLocationResponse?
                                                   checkLocationResponse =
                                                   value.response;
                                               if (checkLocationResponse !=
@@ -4183,7 +4190,7 @@ class CustomWidgets {
                                                   checkLocationResponse.msg !=
                                                       null &&
                                                   checkLocationResponse
-                                                      .msg.isNotEmpty) {
+                                                      .msg!.isNotEmpty) {
                                                 message =
                                                     checkLocationResponse.msg;
                                               }
@@ -4201,6 +4208,9 @@ class CustomWidgets {
                                             isProgressing = false;
                                             newState(() {});
                                           });
+                                        } else {
+
+                                          print("vvvvvvalll_else");
                                         }
                                       });
                                     },
@@ -4233,9 +4243,9 @@ class CustomWidgets {
                                       horizontal:
                                           AppConfig.horizontalBlockSize * 5),
                                   child: Text(
-                                    message.isEmpty
+                                    message!.isEmpty
                                         ? plunesStrings.somethingWentWrong
-                                        : message,
+                                        : message!,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         color: PlunesColors.BLACKCOLOR,
@@ -4271,7 +4281,7 @@ class CustomWidgets {
   }
 
   Widget appointmentCancellationPopup(
-      String message, GlobalKey<ScaffoldState> globalKey) {
+      String message, GlobalKey<ScaffoldState>? globalKey) {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       elevation: 0.0,
@@ -4308,13 +4318,13 @@ class CustomWidgets {
                 borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(16),
                     bottomRight: Radius.circular(16)),
-                child: FlatButton(
-                    highlightColor: Colors.transparent,
-                    hoverColor: Colors.transparent,
-                    splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
-                    focusColor: Colors.transparent,
+                child: ElevatedButton(
+                    // highlightColor: Colors.transparent,
+                    // hoverColor: Colors.transparent,
+                    // splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                    // focusColor: Colors.transparent,
                     onPressed: () =>
-                        Navigator.of(globalKey.currentState.context).pop(),
+                        Navigator.of(globalKey!.currentState!.context).pop(),
                     child: Container(
                         height: AppConfig.verticalBlockSize * 6,
                         width: double.infinity,
@@ -4374,13 +4384,13 @@ class CustomWidgets {
                 borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(16),
                     bottomRight: Radius.circular(16)),
-                child: FlatButton(
-                    highlightColor: Colors.transparent,
-                    hoverColor: Colors.transparent,
-                    splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
-                    focusColor: Colors.transparent,
+                child: ElevatedButton(
+                    // highlightColor: Colors.transparent,
+                    // hoverColor: Colors.transparent,
+                    // splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                    // focusColor: Colors.transparent,
                     onPressed: () =>
-                        Navigator.of(globalKey.currentState.context).pop(),
+                        Navigator.of(globalKey.currentState!.context).pop(),
                     child: Container(
                         height: AppConfig.verticalBlockSize * 6,
                         width: double.infinity,
@@ -4455,21 +4465,21 @@ class CustomWidgets {
   }
 
   showScrollableDialog(BuildContext context, AppointmentModel appointmentModel,
-      BookingBloc bookingBloc) async {
+      BookingBloc? bookingBloc) async {
     TextEditingController _reviewController = TextEditingController();
     double rating = 1;
     return await showDialog(
         context: context,
         builder: (context) {
-          String failureCause;
+          String? failureCause;
           return AnimatedContainer(
-            padding: AppConfig.getMediaQuery().viewInsets,
+            padding: AppConfig.getMediaQuery()!.viewInsets,
             duration: const Duration(milliseconds: 300),
             child: Dialog(
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15)),
-              child: StreamBuilder<Object>(
-                  stream: bookingBloc.rateReviewStream,
+              child: StreamBuilder<Object?>(
+                  stream: bookingBloc!.rateReviewStream,
                   builder: (context, snapshot) {
                     if (snapshot.data is RequestInProgress) {
                       return Container(
@@ -4511,7 +4521,7 @@ class CustomWidgets {
                         ),
                       );
                     } else if (snapshot.data is RequestFailed) {
-                      RequestFailed requestFailed = snapshot.data;
+                      RequestFailed requestFailed = snapshot.data as RequestFailed;
                       failureCause = requestFailed.failureCause;
                     }
                     return SingleChildScrollView(
@@ -4537,9 +4547,9 @@ class CustomWidgets {
                                 right: AppConfig.horizontalBlockSize * 2,
                               ),
                               child: (appointmentModel.service == null ||
-                                      appointmentModel.service.imageUrl ==
+                                      appointmentModel.service!.imageUrl ==
                                           null ||
-                                      appointmentModel.service.imageUrl.isEmpty)
+                                      appointmentModel.service!.imageUrl!.isEmpty)
                                   ? CustomWidgets().getBackImageView(
                                       appointmentModel.professionalName ??
                                           _getEmptyString(),
@@ -4559,7 +4569,7 @@ class CustomWidgets {
                                               child: CustomWidgets()
                                                   .getImageFromUrl(
                                                       appointmentModel
-                                                          .service.imageUrl,
+                                                          .service!.imageUrl,
                                                       boxFit: BoxFit.fill)),
                                         ),
                                       ),
@@ -4573,10 +4583,10 @@ class CustomWidgets {
                                   top: AppConfig.verticalBlockSize * 0.8),
                               child: Text(
                                 CommonMethods.getStringInCamelCase(
-                                        appointmentModel?.professionalName) ??
+                                        appointmentModel.professionalName) ??
                                     _getEmptyString(),
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w600,
                                     color: PlunesColors.BLACKCOLOR),
@@ -4588,10 +4598,10 @@ class CustomWidgets {
                                   right: AppConfig.horizontalBlockSize * 2,
                                   top: AppConfig.verticalBlockSize * 0.8),
                               child: Text(
-                                appointmentModel?.serviceName ??
+                                appointmentModel.serviceName ??
                                     _getEmptyString(),
                                 textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 16),
+                                style: const TextStyle(fontSize: 16),
                               ),
                             ),
                             Container(
@@ -4599,7 +4609,7 @@ class CustomWidgets {
                                   left: AppConfig.horizontalBlockSize * 2,
                                   right: AppConfig.horizontalBlockSize * 2,
                                   top: AppConfig.verticalBlockSize * 5),
-                              child: Text(
+                              child: const Text(
                                 "Rate your experience",
                                 style: TextStyle(
                                   fontSize: 15,
@@ -4611,7 +4621,7 @@ class CustomWidgets {
                                   left: AppConfig.horizontalBlockSize * 2,
                                   right: AppConfig.horizontalBlockSize * 2,
                                   top: AppConfig.verticalBlockSize * 1.5),
-                              child: RatingBar(
+                              child: RatingBar.builder(
                                 onRatingUpdate: (currentRating) {
                                   rating = currentRating;
                                 },
@@ -4708,13 +4718,11 @@ class CustomWidgets {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
                                     Expanded(
-                                      child: FlatButton(
-                                          highlightColor: Colors.transparent,
-                                          hoverColor: Colors.transparent,
-                                          splashColor: PlunesColors
-                                              .SPARKLINGGREEN
-                                              .withOpacity(.1),
-                                          focusColor: Colors.transparent,
+                                      child: ElevatedButton(
+                                          // highlightColor: Colors.transparent,
+                                          // hoverColor: Colors.transparent,
+                                          // splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                                          // focusColor: Colors.transparent,
                                           onPressed: () {
                                             Navigator.pop(context);
                                             return;
@@ -4742,13 +4750,11 @@ class CustomWidgets {
                                       width: 0.5,
                                     ),
                                     Expanded(
-                                      child: FlatButton(
-                                          highlightColor: Colors.transparent,
-                                          hoverColor: Colors.transparent,
-                                          splashColor: PlunesColors
-                                              .SPARKLINGGREEN
-                                              .withOpacity(.1),
-                                          focusColor: Colors.transparent,
+                                      child: ElevatedButton(
+                                          // highlightColor: Colors.transparent,
+                                          // hoverColor: Colors.transparent,
+                                          // splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                                          // focusColor: Colors.transparent,
                                           onPressed: () {
                                             if (_reviewController.text
                                                 .trim()
@@ -4796,11 +4802,11 @@ class CustomWidgets {
   }
 
   Widget getManualBiddingEnterDetailsPopup(
-      {GlobalKey<ScaffoldState> globalKey,
-      SearchSolutionBloc searchSolutionBloc,
-      List<MoreFacility> selectedItemList}) {
+      {GlobalKey<ScaffoldState>? globalKey,
+      SearchSolutionBloc? searchSolutionBloc,
+      List<MoreFacility>? selectedItemList}) {
     return AnimatedContainer(
-      padding: AppConfig.getMediaQuery().viewInsets,
+      padding: AppConfig.getMediaQuery()!.viewInsets,
       duration: const Duration(milliseconds: 300),
       child: Dialog(
           shape:
@@ -4862,14 +4868,13 @@ class CustomWidgets {
                           borderRadius: BorderRadius.only(
                               bottomLeft: Radius.circular(16),
                               bottomRight: Radius.circular(16)),
-                          child: FlatButton(
-                              highlightColor: Colors.transparent,
-                              hoverColor: Colors.transparent,
-                              splashColor:
-                                  PlunesColors.SPARKLINGGREEN.withOpacity(.1),
-                              focusColor: Colors.transparent,
+                          child: ElevatedButton(
+                              // highlightColor: Colors.transparent,
+                              // hoverColor: Colors.transparent,
+                              // splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                              // focusColor: Colors.transparent,
                               onPressed: () =>
-                                  Navigator.of(globalKey.currentState.context)
+                                  Navigator.of(globalKey!.currentState!.context)
                                       .pop(),
                               child: Container(
                                   height: AppConfig.verticalBlockSize * 6,
@@ -4893,13 +4898,13 @@ class CustomWidgets {
   }
 
   Widget getSingleButtonForPopup(
-      {Function onTap,
-      Color textColor,
-      Color buttonBackground,
-      String buttonText,
-      double roundedValue}) {
+      {Function? onTap,
+      Color? textColor,
+      Color? buttonBackground,
+      String? buttonText,
+      double? roundedValue}) {
     return InkWell(
-      onTap: onTap,
+      onTap: onTap as void Function()?,
       onDoubleTap: () {},
       child: Container(
         width: double.infinity,
@@ -4992,11 +4997,11 @@ class CustomWidgets {
   }
 
   Widget getShowCase(GlobalKey globalKey,
-      {Widget child, String description, String title, Function onTap}) {
+      {Widget? child, String? description, String? title, Function? onTap}) {
     return Showcase(
-      showcaseBackgroundColor: PlunesColors.GREENCOLOR,
+      // showcaseBackgroundColor: PlunesColors.GREENCOLOR,
       textColor: Colors.white,
-      shapeBorder: CircleBorder(),
+      // shapeBorder: CircleBorder(),
       key: globalKey,
       description: description,
       title: title,
@@ -5241,22 +5246,22 @@ class CustomWidgets {
 //    );
 //  }
 
-  Widget savePriceInCatalogue(RealInsight realInsight, GlobalKey globalKey,
-      DocHosMainInsightBloc docHosMainInsightBloc) {
+  Widget savePriceInCatalogue(RealInsight realInsight, GlobalKey? globalKey,
+      DocHosMainInsightBloc? docHosMainInsightBloc) {
     TextEditingController _priceController = TextEditingController();
-    String error;
+    String? error;
     return StatefulBuilder(builder: (context, newState) {
       return Dialog(
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
         elevation: 0.0,
         child: SingleChildScrollView(
-          child: StreamBuilder<RequestState>(
-              stream: docHosMainInsightBloc
+          child: StreamBuilder<RequestState?>(
+              stream: docHosMainInsightBloc!
                   .updatePriceInCatalogueFromRealInsightStream,
               builder: (context, snapshot) {
                 if (snapshot.data is RequestFailed) {
-                  RequestFailed requestFailed = snapshot.data;
+                  RequestFailed? requestFailed = snapshot.data as RequestFailed?;
                   return getInformativeWidget(
                       globalKey, requestFailed?.failureCause);
                 } else if (snapshot.data is RequestInProgress) {
@@ -5307,8 +5312,8 @@ class CustomWidgets {
                             width: AppConfig.horizontalBlockSize * 15,
                             child: TextField(
                               controller: _priceController,
-                              inputFormatters: [
-                                WhitelistingTextInputFormatter.digitsOnly
+                              inputFormatters: <TextInputFormatter>[
+                                FilteringTextInputFormatter.digitsOnly
                               ],
                               maxLines: 1,
                               autofocus: true,
@@ -5327,7 +5332,7 @@ class CustomWidgets {
                             width: double.infinity,
                             alignment: Alignment.center,
                             padding: EdgeInsets.symmetric(vertical: 3),
-                            child: Text(error,
+                            child: Text(error!,
                                 style:
                                     TextStyle(fontSize: 14, color: Colors.red)),
                           ),
@@ -5347,12 +5352,11 @@ class CustomWidgets {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Expanded(
-                              child: FlatButton(
-                                  highlightColor: Colors.transparent,
-                                  hoverColor: Colors.transparent,
-                                  splashColor: PlunesColors.SPARKLINGGREEN
-                                      .withOpacity(.1),
-                                  focusColor: Colors.transparent,
+                              child: ElevatedButton(
+                                  // highlightColor: Colors.transparent,
+                                  // hoverColor: Colors.transparent,
+                                  // splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                                  // focusColor: Colors.transparent,
                                   onPressed: () {
                                     Navigator.pop(context,
                                         false); // showDialog() returns false
@@ -5377,14 +5381,13 @@ class CustomWidgets {
                               width: 0.5,
                             ),
                             Expanded(
-                              child: FlatButton(
-                                  highlightColor: Colors.transparent,
-                                  hoverColor: Colors.transparent,
-                                  splashColor: PlunesColors.SPARKLINGGREEN
-                                      .withOpacity(.1),
-                                  focusColor: Colors.transparent,
+                              child: ElevatedButton(
+                                  // highlightColor: Colors.transparent,
+                                  // hoverColor: Colors.transparent,
+                                  // splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                                  // focusColor: Colors.transparent,
                                   onPressed: () {
-                                    double value = double.tryParse(
+                                    double? value = double.tryParse(
                                         _priceController.text.trim());
                                     if (value == null ||
                                         value == 0 ||
@@ -5427,7 +5430,7 @@ class CustomWidgets {
   }
 
   Widget getInformativePopup(
-      {GlobalKey<ScaffoldState> globalKey, String message}) {
+      {GlobalKey<ScaffoldState>? globalKey, String? message}) {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       elevation: 0.0,
@@ -5465,13 +5468,13 @@ class CustomWidgets {
                 borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(16),
                     bottomRight: Radius.circular(16)),
-                child: FlatButton(
-                    highlightColor: Colors.transparent,
-                    hoverColor: Colors.transparent,
-                    splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
-                    focusColor: Colors.transparent,
+                child: ElevatedButton(
+                    // highlightColor: Colors.transparent,
+                    // hoverColor: Colors.transparent,
+                    // splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                    // focusColor: Colors.transparent,
                     onPressed: () =>
-                        Navigator.of(globalKey.currentState.context).pop(),
+                        Navigator.of(globalKey!.currentState!.context).pop(),
                     child: Container(
                         height: AppConfig.verticalBlockSize * 6,
                         width: double.infinity,
@@ -5493,7 +5496,7 @@ class CustomWidgets {
   }
 
   Widget getInvoiceSuccessPopup(
-      {GlobalKey<ScaffoldState> globalKey, String message, String pdfUrl}) {
+      {GlobalKey<ScaffoldState>? globalKey, String? message, String? pdfUrl}) {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       elevation: 0.0,
@@ -5536,14 +5539,13 @@ class CustomWidgets {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Expanded(
-                      child: FlatButton(
-                          highlightColor: Colors.transparent,
-                          hoverColor: Colors.transparent,
-                          splashColor:
-                              PlunesColors.SPARKLINGGREEN.withOpacity(.1),
-                          focusColor: Colors.transparent,
+                      child: ElevatedButton(
+                          // highlightColor: Colors.transparent,
+                          // hoverColor: Colors.transparent,
+                          // splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                          // focusColor: Colors.transparent,
                           onPressed: () {
-                            Navigator.of(globalKey.currentState.context).pop();
+                            Navigator.of(globalKey!.currentState!.context).pop();
                           },
                           child: Container(
                               width: double.infinity,
@@ -5564,17 +5566,16 @@ class CustomWidgets {
                       width: 0.5,
                     ),
                     Expanded(
-                      child: FlatButton(
-                          highlightColor: Colors.transparent,
-                          hoverColor: Colors.transparent,
-                          splashColor:
-                              PlunesColors.SPARKLINGGREEN.withOpacity(.1),
-                          focusColor: Colors.transparent,
+                      child: ElevatedButton(
+                          // highlightColor: Colors.transparent,
+                          // hoverColor: Colors.transparent,
+                          // splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                          // focusColor: Colors.transparent,
                           onPressed: () {
                             if (pdfUrl != null) {
                               LauncherUtil.launchUrl(pdfUrl);
                             }
-                            Navigator.of(globalKey.currentState.context).pop();
+                            Navigator.of(globalKey!.currentState!.context).pop();
                           },
                           child: Container(
                               width: double.infinity,
@@ -5602,7 +5603,7 @@ class CustomWidgets {
 
   Widget paymentStatusPopup(
       String text, String message, String icon, BuildContext context,
-      {String bookingId}) {
+      {String? bookingId}) {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       elevation: 0.0,
@@ -5655,11 +5656,11 @@ class CustomWidgets {
                 borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(16),
                     bottomRight: Radius.circular(16)),
-                child: FlatButton(
-                    highlightColor: Colors.transparent,
-                    hoverColor: Colors.transparent,
-                    splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
-                    focusColor: Colors.transparent,
+                child: ElevatedButton(
+                    // highlightColor: Colors.transparent,
+                    // hoverColor: Colors.transparent,
+                    // splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                    // focusColor: Colors.transparent,
                     onPressed: () {
                       if (bookingId != null && bookingId.isNotEmpty) {
                         Navigator.push(
@@ -5693,8 +5694,91 @@ class CustomWidgets {
     );
   }
 
+  Widget bookingFailedPopup(
+      String text, String message, String icon, BuildContext context,
+      {String? bookingId}) {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+      elevation: 0.0,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.symmetric(
+                  horizontal: AppConfig.horizontalBlockSize * 5,
+                  vertical: AppConfig.verticalBlockSize * 1.5),
+              child: Text(
+                text ?? plunesStrings.somethingWentWrong,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: PlunesColors.BLACKCOLOR,
+                    fontSize: AppConfig.mediumFont,
+                    fontWeight: FontWeight.w600),
+              ),
+            ),
+            Container(
+              // margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
+              height: AppConfig.verticalBlockSize * 10,
+              child: Image.asset(icon),
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                  left: AppConfig.horizontalBlockSize * 5,
+                  right: AppConfig.horizontalBlockSize * 5,
+                  top: AppConfig.verticalBlockSize * 1.5,
+                  bottom: AppConfig.verticalBlockSize * 2.5),
+              child: Text(
+                message ?? plunesStrings.somethingWentWrong,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: PlunesColors.BLACKCOLOR,
+                    fontSize: AppConfig.mediumFont,
+                    fontWeight: FontWeight.w600),
+              ),
+            ),
+            Container(
+              height: 0.5,
+              width: double.infinity,
+              color: PlunesColors.GREYCOLOR,
+            ),
+            Container(
+              height: AppConfig.verticalBlockSize * 6,
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(16),
+                    bottomRight: Radius.circular(16)),
+                child: ElevatedButton(
+                    // highlightColor: Colors.transparent,
+                    // hoverColor: Colors.transparent,
+                    // splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                    // focusColor: Colors.transparent,
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                        height: AppConfig.verticalBlockSize * 6,
+                        width: double.infinity,
+                        child: Center(
+                          child: Text(
+                            'OK',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: AppConfig.mediumFont,
+                                color: PlunesColors.SPARKLINGGREEN),
+                          ),
+                        ))),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget getVideoPopupForUser(
-      {GlobalKey<ScaffoldState> globalKey, String message}) {
+      {GlobalKey<ScaffoldState>? globalKey, String? message}) {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       elevation: 0.0,
@@ -5737,14 +5821,14 @@ class CustomWidgets {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Expanded(
-                      child: FlatButton(
-                          highlightColor: Colors.transparent,
-                          hoverColor: Colors.transparent,
-                          splashColor:
-                              PlunesColors.SPARKLINGGREEN.withOpacity(.1),
-                          focusColor: Colors.transparent,
+                      child: ElevatedButton(
+                          // highlightColor: Colors.transparent,
+                          // hoverColor: Colors.transparent,
+                          // splashColor:
+                          //     PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                          // focusColor: Colors.transparent,
                           onPressed: () {
-                            Navigator.of(globalKey.currentState.context).pop();
+                            Navigator.of(globalKey!.currentState!.context).pop();
                             return;
                           },
                           child: Container(
@@ -5766,14 +5850,14 @@ class CustomWidgets {
                       width: 0.5,
                     ),
                     Expanded(
-                      child: FlatButton(
-                          highlightColor: Colors.transparent,
-                          hoverColor: Colors.transparent,
-                          splashColor:
-                              PlunesColors.SPARKLINGGREEN.withOpacity(.1),
-                          focusColor: Colors.transparent,
+                      child: ElevatedButton(
+                          // highlightColor: Colors.transparent,
+                          // hoverColor: Colors.transparent,
+                          // splashColor:
+                          //     PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                          // focusColor: Colors.transparent,
                           onPressed: () {
-                            Navigator.of(globalKey.currentState.context)
+                            Navigator.of(globalKey!.currentState!.context)
                                 .pop(PlunesStrings.watch);
                             return;
                           },
@@ -5800,16 +5884,16 @@ class CustomWidgets {
     );
   }
 
-  Widget turnOffNotificationPopup(GlobalKey globalKey, RealInsight realInsight,
+  Widget turnOffNotificationPopup(GlobalKey? globalKey, RealInsight realInsight,
       DocHosMainInsightBloc docHosMainInsightBloc) {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       child: SingleChildScrollView(
-        child: StreamBuilder<RequestState>(
+        child: StreamBuilder<RequestState?>(
             stream: docHosMainInsightBloc.realTimeInsightStopNotificationStream,
             builder: (context, snapshot) {
               if (snapshot.data is RequestFailed) {
-                RequestFailed requestFailed = snapshot.data;
+                RequestFailed? requestFailed = snapshot.data as RequestFailed?;
                 return getInformativeWidget(
                     globalKey, requestFailed?.failureCause);
               } else if (snapshot.data is RequestInProgress) {
@@ -5878,16 +5962,16 @@ class CustomWidgets {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Expanded(
-                              child: FlatButton(
-                                  highlightColor: Colors.transparent,
-                                  hoverColor: Colors.transparent,
-                                  splashColor: PlunesColors.SPARKLINGGREEN
-                                      .withOpacity(.1),
-                                  focusColor: Colors.transparent,
+                              child: ElevatedButton(
+                                  // highlightColor: Colors.transparent,
+                                  // hoverColor: Colors.transparent,
+                                  // splashColor: PlunesColors.SPARKLINGGREEN
+                                  //     .withOpacity(.1),
+                                  // focusColor: Colors.transparent,
                                   onPressed: () {
                                     docHosMainInsightBloc
                                         .stopNotificationsForSuggestedInsight(
-                                            realInsight.serviceId);
+                                            realInsight.serviceId!);
                                     return;
                                   },
                                   child: Container(
@@ -5910,14 +5994,14 @@ class CustomWidgets {
                               width: 0.5,
                             ),
                             Expanded(
-                              child: FlatButton(
-                                  highlightColor: Colors.transparent,
-                                  hoverColor: Colors.transparent,
-                                  splashColor: PlunesColors.SPARKLINGGREEN
-                                      .withOpacity(.1),
-                                  focusColor: Colors.transparent,
+                              child: ElevatedButton(
+                                  // highlightColor: Colors.transparent,
+                                  // hoverColor: Colors.transparent,
+                                  // splashColor: PlunesColors.SPARKLINGGREEN
+                                  //     .withOpacity(.1),
+                                  // focusColor: Colors.transparent,
                                   onPressed: () {
-                                    Navigator.of(globalKey.currentState.context)
+                                    Navigator.of(globalKey!.currentState!.context)
                                         .pop();
                                     return;
                                   },
@@ -5947,7 +6031,7 @@ class CustomWidgets {
     );
   }
 
-  Widget getInformativeWidget(GlobalKey globalKey, String message) {
+  Widget getInformativeWidget(GlobalKey? globalKey, String? message) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -5981,13 +6065,13 @@ class CustomWidgets {
             borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(16),
                 bottomRight: Radius.circular(16)),
-            child: FlatButton(
-                highlightColor: Colors.transparent,
-                hoverColor: Colors.transparent,
-                splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
-                focusColor: Colors.transparent,
+            child: ElevatedButton(
+                // highlightColor: Colors.transparent,
+                // hoverColor: Colors.transparent,
+                // splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                // focusColor: Colors.transparent,
                 onPressed: () =>
-                    Navigator.of(globalKey.currentState.context).pop(),
+                    Navigator.of(globalKey!.currentState!.context).pop(),
                 child: Container(
                     height: AppConfig.verticalBlockSize * 6,
                     width: double.infinity,
@@ -6007,7 +6091,8 @@ class CustomWidgets {
   }
 
   Widget getUpiBasedPaymentOptionView(InitPaymentResponse initPaymentResponse,
-      List<ApplicationMeta> availableUpiApps, GlobalKey globalKey) {
+      List<dynamic> availableUpiApps, GlobalKey? globalKey) {
+      // List<ApplicationMeta> availableUpiApps, GlobalKey globalKey) {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       backgroundColor: Color(CommonMethods.getColorHexFromStr("#FFFFFF")),
@@ -6057,7 +6142,7 @@ class CustomWidgets {
                                   horizontal:
                                       AppConfig.horizontalBlockSize * 2.5,
                                   vertical: AppConfig.verticalBlockSize * 1),
-                              padding: EdgeInsets.all(6.0),
+                              padding: const EdgeInsets.all(6.0),
                               decoration: BoxDecoration(
                                   color: Color(CommonMethods.getColorHexFromStr(
                                       "#F9F9F9")),
@@ -6093,7 +6178,7 @@ class CustomWidgets {
                                 onTap: () {
                                   Map<String, dynamic> result = Map();
                                   result[PlunesStrings.payUpi] = it;
-                                  Navigator.of(globalKey.currentState.context)
+                                  Navigator.of(globalKey!.currentState!.context)
                                       .pop(result);
                                 },
                               ),
@@ -6109,7 +6194,7 @@ class CustomWidgets {
                 onTap: () {
                   Map<String, String> result = Map();
                   result[PlunesStrings.payOnWeb] = PlunesStrings.payOnWeb;
-                  Navigator.of(globalKey.currentState.context).pop(result);
+                  Navigator.of(globalKey!.currentState!.context).pop(result);
                 },
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
@@ -6134,7 +6219,7 @@ class CustomWidgets {
     );
   }
 
-  Widget showAddToCartSuccessPopup(GlobalKey globalKey, String message) {
+  Widget showAddToCartSuccessPopup(GlobalKey? globalKey, String message) {
     return Dialog(
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
@@ -6155,7 +6240,7 @@ class CustomWidgets {
                 child: Text(
                   message ?? PlunesStrings.successfullyAddedToCart,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: PlunesColors.BLACKCOLOR,
                       fontSize: 16,
                       fontWeight: FontWeight.normal),
@@ -6172,13 +6257,13 @@ class CustomWidgets {
                   borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(16),
                       bottomRight: Radius.circular(16)),
-                  child: FlatButton(
-                      highlightColor: Colors.transparent,
-                      hoverColor: Colors.transparent,
-                      splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
-                      focusColor: Colors.transparent,
+                  child: ElevatedButton(
+                      // highlightColor: Colors.transparent,
+                      // hoverColor: Colors.transparent,
+                      // splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                      // focusColor: Colors.transparent,
                       onPressed: () =>
-                          Navigator.of(globalKey.currentState.context)
+                          Navigator.of(globalKey!.currentState!.context)
                               .pop(true),
                       child: Container(
                           height: AppConfig.verticalBlockSize * 6,
@@ -6201,8 +6286,8 @@ class CustomWidgets {
 
   Widget openCartPaymentBillPopup(
       List<BookingIds> bookingIds, GlobalKey globalKey, num price,
-      {num credits}) {
-    bool useCredits = false;
+      {num? credits}) {
+    bool? useCredits = false;
     return Dialog(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(16.0))),
@@ -6236,9 +6321,8 @@ class CustomWidgets {
                                         Container(
                                           child: Text(
                                             CommonMethods.getStringInCamelCase(
-                                                bookingIds[index]
-                                                    ?.service
-                                                    ?.name),
+                                                bookingIds[index].service
+                                                    ?.name)!,
                                             maxLines: 2,
                                             overflow: TextOverflow.ellipsis,
                                             style: TextStyle(
@@ -6252,10 +6336,10 @@ class CustomWidgets {
                                               top: AppConfig.verticalBlockSize *
                                                   2.0),
                                           child: Text(
-                                            "${bookingIds[index]?.serviceName ?? PlunesStrings.NA}",
+                                            "${bookingIds[index].serviceName ?? PlunesStrings.NA}",
                                             maxLines: 2,
                                             overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                                 color: PlunesColors.BLACKCOLOR,
                                                 fontWeight: FontWeight.normal,
                                                 fontSize: 14),
@@ -6287,7 +6371,7 @@ class CustomWidgets {
                           ],
                         );
                       },
-                      itemCount: bookingIds?.length ?? 0,
+                      itemCount: bookingIds.length ?? 0,
                     ),
                     (credits != null && credits > 0)
                         ? Container(
@@ -6314,7 +6398,7 @@ class CustomWidgets {
                                       Expanded(child: Container()),
                                       Container(
                                         child: Text(
-                                          "${credits?.toStringAsFixed(1)}",
+                                          "${credits.toStringAsFixed(1)}",
                                           style: TextStyle(
                                               color: PlunesColors.BLACKCOLOR,
                                               fontWeight: FontWeight.w500,
@@ -6361,7 +6445,7 @@ class CustomWidgets {
                       child: Text(
                         "Subtotal (${bookingIds.length ?? 0} ${(bookingIds.length == 1) ? "item" : "items"}): ",
                         maxLines: 2,
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontWeight: FontWeight.normal,
                             color: PlunesColors.BLACKCOLOR,
                             fontSize: 20),
@@ -6394,14 +6478,13 @@ class CustomWidgets {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Expanded(
-                        child: FlatButton(
-                            highlightColor: Colors.transparent,
-                            hoverColor: Colors.transparent,
-                            splashColor:
-                                PlunesColors.SPARKLINGGREEN.withOpacity(.1),
-                            focusColor: Colors.transparent,
+                        child: ElevatedButton(
+                            // highlightColor: Colors.transparent,
+                            // hoverColor: Colors.transparent,
+                            // splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                            // focusColor: Colors.transparent,
                             onPressed: () {
-                              Navigator.of(globalKey.currentState.context)
+                              Navigator.of(globalKey.currentState!.context)
                                   .pop();
                               return;
                             },
@@ -6424,14 +6507,13 @@ class CustomWidgets {
                         width: 0.5,
                       ),
                       Expanded(
-                        child: FlatButton(
-                            highlightColor: Colors.transparent,
-                            hoverColor: Colors.transparent,
-                            splashColor:
-                                PlunesColors.SPARKLINGGREEN.withOpacity(.1),
-                            focusColor: Colors.transparent,
+                        child: ElevatedButton(
+                            // highlightColor: Colors.transparent,
+                            // hoverColor: Colors.transparent,
+                            // splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                            // focusColor: Colors.transparent,
                             onPressed: () {
-                              Navigator.of(globalKey.currentState.context)
+                              Navigator.of(globalKey.currentState!.context)
                                   .pop(useCredits);
                               return;
                             },

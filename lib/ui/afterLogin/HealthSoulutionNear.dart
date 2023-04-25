@@ -25,11 +25,14 @@ class HealthSolutionNear extends BaseActivity {
   _HealthSolutionNearState createState() => _HealthSolutionNearState();
 }
 
-class _HealthSolutionNearState extends BaseState<HealthSolutionNear> {
-  List<dynamic> healthSolDataList = new List();
-  ConsultationTestProcedureBloc _consultationTestProcedureBloc;
-  List<TestAndProcedureResponseModel> _testAndProcedures;
-  String _failureCause;
+// class _HealthSolutionNearState extends BaseState<HealthSolutionNear> {
+class _HealthSolutionNearState extends State<HealthSolutionNear> {
+  final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+
+  List<dynamic> healthSolDataList = [];
+  ConsultationTestProcedureBloc? _consultationTestProcedureBloc;
+  List<TestAndProcedureResponseModel>? _testAndProcedures;
+  String? _failureCause;
 
   final _pageController = PageController();
   final _currentPageNotifier = ValueNotifier<int>(0);
@@ -73,7 +76,7 @@ class _HealthSolutionNearState extends BaseState<HealthSolutionNear> {
   }
 
   _getDetails() {
-    _consultationTestProcedureBloc.getDetails(true);
+    _consultationTestProcedureBloc!.getDetails(true);
   }
 
   onTap(TestAndProcedureResponseModel testAndProcedure) {
@@ -94,32 +97,31 @@ class _HealthSolutionNearState extends BaseState<HealthSolutionNear> {
           return CustomWidgets().getProgressIndicator();
         }
         if (snapShot.data is RequestSuccess) {
-          RequestSuccess _requestSuccessObject = snapShot.data;
+          RequestSuccess _requestSuccessObject = snapShot.data as RequestSuccess;
           _testAndProcedures = [];
           _testAndProcedures = _requestSuccessObject.response;
-          if (_testAndProcedures.isEmpty) {
+          if (_testAndProcedures!.isEmpty) {
             _failureCause = PlunesStrings.proceduresNotAvailable;
           }
         } else if (snapShot.data is RequestFailed) {
-          RequestFailed _requestFailed = snapShot.data;
+          RequestFailed _requestFailed = snapShot.data as RequestFailed;
           _failureCause = _requestFailed.failureCause;
         }
-        return _testAndProcedures == null || _testAndProcedures.isEmpty
+        return _testAndProcedures == null || _testAndProcedures!.isEmpty
             ? CustomWidgets().errorWidget(_failureCause,
                 onTap: () => _getDetails(), isSizeLess: true)
             : _showItems();
       },
-      stream: _consultationTestProcedureBloc.baseStream,
+      stream: _consultationTestProcedureBloc!.baseStream,
       initialData: RequestInProgress(),
     );
   }
-
   @override
   Widget build(BuildContext context) {
     CommonMethods.globalContext = context;
     return Scaffold(
       key: scaffoldKey,
-      appBar: widget.getAppBar(context, plunesStrings.availUpTo, true),
+      appBar: widget.getAppBar(context, plunesStrings.availUpTo, true) as PreferredSizeWidget?,
       backgroundColor: PlunesColors.WHITECOLOR,
       body: _getBody(),
     );
@@ -529,7 +531,7 @@ class _HealthSolutionNearState extends BaseState<HealthSolutionNear> {
                       color: PlunesColors.WHITECOLOR,
                       margin: EdgeInsets.all(8),
                       child: InkWell(
-                        onTap: () => onTap(_testAndProcedures[index]),
+                        onTap: () => onTap(_testAndProcedures![index]),
                         child: Container(
                           padding: EdgeInsets.all(8.0),
                           decoration: BoxDecoration(
@@ -546,7 +548,7 @@ class _HealthSolutionNearState extends BaseState<HealthSolutionNear> {
                                 child: Container(
                                   padding: EdgeInsets.all(8),
                                   child: CustomWidgets().getImageFromUrl(
-                                    "https://specialities.s3.ap-south-1.amazonaws.com/${_testAndProcedures[index].sId}.png",
+                                    "https://specialities.s3.ap-south-1.amazonaws.com/${_testAndProcedures![index].sId}.png",
                                     boxFit: BoxFit.fitHeight,
                                   ),
                                 ),
@@ -554,7 +556,7 @@ class _HealthSolutionNearState extends BaseState<HealthSolutionNear> {
                               Expanded(
                                 flex: 1,
                                 child: widget.createTextViews(
-                                    _testAndProcedures[index].sId,
+                                    _testAndProcedures![index].sId!,
                                     AppConfig.smallFont,
                                     colorsFile.black0,
                                     TextAlign.center,

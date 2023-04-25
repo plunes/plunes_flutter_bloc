@@ -4,12 +4,12 @@ import 'package:plunes/requester/request_states.dart';
 import 'package:rxdart/rxdart.dart';
 
 class AppointmentBloc extends BlocBase {
-  final _appointmentProvider = PublishSubject<RequestState>();
+  final _appointmentProvider = PublishSubject<RequestState?>();
 
-  Observable<RequestState> get appointmentStream =>
+  Stream<RequestState?> get appointmentStream =>
       _appointmentProvider.stream;
 
-  addStateInAppointmentStream(RequestState state) {
+  addStateInAppointmentStream(RequestState? state) {
     super.addStateInGenericStream(_appointmentProvider, state);
   }
 

@@ -1,11 +1,11 @@
 import 'package:plunes/models/solution_models/solution_model.dart';
 
 class SearchedDocResults {
-  bool success;
-  DocHosSolution solution;
-  CatalogueData catalogueData;
-  String msg;
-  String title;
+  bool? success;
+  DocHosSolution? solution;
+  CatalogueData? catalogueData;
+  String? msg;
+  String? title;
 
   SearchedDocResults(
       {this.success, this.solution, this.catalogueData, this.msg, this.title});
@@ -26,24 +26,24 @@ class SearchedDocResults {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['success'] = this.success;
     if (this.solution != null) {
-      data['solution'] = this.solution.toJson();
+      data['solution'] = this.solution!.toJson();
     }
     return data;
   }
 }
 
 class DocHosSolution {
-  bool booked, showAdditionalFacilities;
-  String sId;
-  String serviceId;
-  String userId;
-  String name;
-  String imageUrl;
-  int createdTime, expirationTimer, expiredAt;
-  List<Services> services;
-  int iV;
-  bool shouldNegotiate;
-  List<ServiceChildren> serviceChildren;
+  bool? booked, showAdditionalFacilities;
+  String? sId;
+  String? serviceId;
+  String? userId;
+  String? name;
+  String? imageUrl;
+  int? createdTime, expirationTimer, expiredAt;
+  List<Services>? services;
+  int? iV;
+  bool? shouldNegotiate;
+  List<ServiceChildren>? serviceChildren;
 
   DocHosSolution(
       {this.booked,
@@ -71,15 +71,15 @@ class DocHosSolution {
     imageUrl = json['imageUrl'];
     createdTime = json['createdAt'];
     if (json['services'] != null) {
-      services = new List<Services>();
+      services = [];
       json['services'].forEach((v) {
-        services.add(new Services.fromJson(v));
+        services!.add(new Services.fromJson(v));
       });
     }
     if (json['serviceChildren'] != null) {
-      serviceChildren = new List<ServiceChildren>();
+      serviceChildren = [];
       json['serviceChildren'].forEach((v) {
-        serviceChildren.add(new ServiceChildren.fromJson(v));
+        serviceChildren!.add(new ServiceChildren.fromJson(v));
       });
     }
     iV = json['__v'];
@@ -99,7 +99,7 @@ class DocHosSolution {
     data['imageUrl'] = this.imageUrl;
     data['createdAt'] = this.createdTime;
     if (this.services != null) {
-      data['services'] = this.services.map((v) => v.toJson()).toList();
+      data['services'] = this.services!.map((v) => v.toJson()).toList();
     }
     data['__v'] = this.iV;
     return data;
@@ -107,23 +107,23 @@ class DocHosSolution {
 }
 
 class Services {
-  List<num> price;
-  List<num> newPrice;
-  List<String> category;
-  List<num> paymentOptions;
-  List<Doctors> doctors;
-  List<TimeSlots> timeSlots;
-  List<String> professionalPhotos;
-  List<Map<String, dynamic>> specialOffers;
+  List<num>? price;
+  List<num>? newPrice;
+  List<String>? category;
+  List<num>? paymentOptions;
+  List<Doctors>? doctors;
+  List<TimeSlots>? timeSlots;
+  List<String>? professionalPhotos;
+  List<Map<String, dynamic>>? specialOffers;
 
   @override
   String toString() {
     return 'Services{price: $price, newPrice: $newPrice, category: $category, paymentOptions: $paymentOptions, timeSlots: $timeSlots, sId: $sId, professionalId: $professionalId, name: $name, imageUrl: $imageUrl, discount: $discount, latitude: $latitude, longitude: $longitude, distance: $distance, homeCollection: $homeCollection, recommendation: $recommendation, bookIn: $bookIn, rating: $rating, negotiating: $negotiating}';
   }
 
-  String userType;
-  int experience;
-  String sId;
+  String? userType;
+  int? experience;
+  String? sId;
 
   @override
   bool operator ==(Object other) =>
@@ -132,23 +132,23 @@ class Services {
 
   @override
   int get hashCode => sId.hashCode;
-  String professionalId;
-  String name;
-  String imageUrl;
-  String address;
-  num discount;
-  num latitude;
-  num longitude;
-  num distance;
-  bool homeCollection,
+  String? professionalId;
+  String? name;
+  String? imageUrl;
+  String? address;
+  num? discount;
+  num? latitude;
+  num? longitude;
+  num? distance;
+  bool? homeCollection,
       isExpanded = false,
       insuranceAvailable,
       priceUpdated,
       hasPrice;
-  num recommendation;
-  num bookIn;
-  num rating;
-  bool negotiating, zestMoney;
+  num? recommendation;
+  num? bookIn;
+  num? rating;
+  bool? negotiating, zestMoney;
 
   Services(
       {this.price,
@@ -192,15 +192,15 @@ class Services {
     newPrice = json['newPrice']?.cast<num>();
     category = json['category']?.cast<String>();
     if (json['timeSlots'] != null) {
-      timeSlots = new List<TimeSlots>();
+      timeSlots = [];
       json['timeSlots'].forEach((v) {
-        timeSlots.add(new TimeSlots.fromJson(v));
+        timeSlots!.add(new TimeSlots.fromJson(v));
       });
     }
     if (json['doctors'] != null) {
-      doctors = new List<Doctors>();
+      doctors = [];
       json['doctors'].forEach((v) {
-        doctors.add(new Doctors.fromJson(v));
+        doctors!.add(new Doctors.fromJson(v));
       });
     }
     sId = json['_id'];
@@ -231,13 +231,13 @@ class Services {
     insuranceAvailable = json['insuranceAvailable'];
     if (json["addOn"] != null && json["addOn"].isNotEmpty) {
       Map<String, dynamic> addOn = {"Add On": json["addOn"]};
-      specialOffers.add(addOn);
+      specialOffers!.add(addOn);
     }
     if (json["specialOffer"] != null && json["specialOffer"].isNotEmpty) {
-      specialOffers.add({"Special Offer": json["specialOffer"]});
+      specialOffers!.add({"Special Offer": json["specialOffer"]});
     }
     if (json["technique"] != null && json["technique"].isNotEmpty) {
-      specialOffers.add({"Technique": json["technique"]});
+      specialOffers!.add({"Technique": json["technique"]});
     }
     priceUpdated = json['priceUpdated'];
   }
@@ -248,7 +248,7 @@ class Services {
     data['newPrice'] = this.newPrice;
     data['category'] = this.category;
     if (this.timeSlots != null) {
-      data['timeSlots'] = this.timeSlots.map((v) => v.toJson()).toList();
+      data['timeSlots'] = this.timeSlots!.map((v) => v.toJson()).toList();
     }
     data['_id'] = this.sId;
     data['professionalId'] = this.professionalId;
@@ -271,9 +271,9 @@ class Services {
 }
 
 class TimeSlots {
-  List<String> slots, slotArray;
-  String day;
-  bool closed;
+  List<String?>? slots, slotArray;
+  String? day;
+  bool? closed;
 
   @override
   String toString() {
@@ -299,20 +299,20 @@ class TimeSlots {
 }
 
 class Doctors {
-  String professionalId;
-  String name;
-  String imageUrl;
-  List<num> price;
-  bool homeCollection;
-  num discount;
-  num experience;
-  List<num> newPrice;
+  String? professionalId;
+  String? name;
+  String? imageUrl;
+  List<num>? price;
+  bool? homeCollection;
+  num? discount;
+  num? experience;
+  List<num>? newPrice;
 
   // List<String> category;
-  List<TimeSlots> timeSlots;
-  bool negotiating, zestMoney;
-  num bookIn;
-  num rating;
+  List<TimeSlots>? timeSlots;
+  bool? negotiating, zestMoney;
+  num? bookIn;
+  num? rating;
 
   Doctors(
       {this.professionalId,
@@ -347,9 +347,9 @@ class Doctors {
     negotiating = json['negotiating'];
     zestMoney = json['zestMoney'];
     if (json['timeSlots'] != null) {
-      timeSlots = new List<TimeSlots>();
+      timeSlots = [];
       json['timeSlots'].forEach((v) {
-        timeSlots.add(new TimeSlots.fromJson(v));
+        timeSlots!.add(new TimeSlots.fromJson(v));
       });
     }
   }
@@ -366,7 +366,7 @@ class Doctors {
     data['newPrice'] = this.newPrice;
     // data['category'] = this.category;
     if (this.timeSlots != null) {
-      data['timeSlots'] = this.timeSlots.map((v) => v.toJson()).toList();
+      data['timeSlots'] = this.timeSlots!.map((v) => v.toJson()).toList();
     }
     return data;
   }

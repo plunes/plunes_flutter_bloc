@@ -1,8 +1,8 @@
 class MediaContentPlunes {
-  bool success;
-  int count;
-  List<MediaData> data;
-  String exploreDocTitle, exploreCustomerTitle;
+  bool? success;
+  int? count;
+  List<MediaData>? data;
+  String? exploreDocTitle, exploreCustomerTitle;
 
   MediaContentPlunes(
       {this.success,
@@ -17,9 +17,9 @@ class MediaContentPlunes {
     exploreCustomerTitle = json['exploreCustomerTitle'];
     exploreDocTitle = json['exploreDocTitle'];
     if (json['data'] != null) {
-      data = new List<MediaData>();
+      data = [];
       json['data'].forEach((v) {
-        data.add(new MediaData.fromJson(v));
+        data!.add(new MediaData.fromJson(v));
       });
     }
   }
@@ -29,23 +29,23 @@ class MediaContentPlunes {
     data['success'] = this.success;
     data['count'] = this.count;
     if (this.data != null) {
-      data['data'] = this.data.map((v) => v.toJson()).toList();
+      data['data'] = this.data!.map((v) => v.toJson()).toList();
     }
     return data;
   }
 }
 
 class MediaData {
-  String mediaType;
-  String sId;
-  String mediaUrl;
-  String name;
-  String createdAt;
-  String updatedAt;
-  int iV;
-  String service;
-  String testimonial;
-  int indexing;
+  String? mediaType;
+  String? sId;
+  String? mediaUrl;
+  String? name;
+  String? createdAt;
+  String? updatedAt;
+  int? iV;
+  String? service;
+  String? testimonial;
+  int? indexing;
 
   MediaData(
       {this.mediaType,

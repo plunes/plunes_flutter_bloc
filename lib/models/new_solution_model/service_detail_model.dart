@@ -1,7 +1,7 @@
 class ServiceDetailModel {
-  bool success;
-  ServiceDetailData data;
-  String message;
+  bool? success;
+  ServiceDetailData? data;
+  String? message;
 
   ServiceDetailModel({this.success, this.data, this.message});
 
@@ -17,7 +17,7 @@ class ServiceDetailModel {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['success'] = this.success;
     if (this.data != null) {
-      data['data'] = this.data.toJson();
+      data['data'] = this.data!.toJson();
     }
     data['message'] = this.message;
     return data;
@@ -25,17 +25,17 @@ class ServiceDetailModel {
 }
 
 class ServiceDetailData {
-  String speciality;
-  List<ServiceDetailDataModel> services;
+  String? speciality;
+  List<ServiceDetailDataModel>? services;
 
   ServiceDetailData({this.speciality, this.services});
 
   ServiceDetailData.fromJson(Map<String, dynamic> json) {
     speciality = json['speciality'];
     if (json['services'] != null) {
-      services = new List<ServiceDetailDataModel>();
+      services = [];
       json['services'].forEach((v) {
-        services.add(new ServiceDetailDataModel.fromJson(v));
+        services!.add(new ServiceDetailDataModel.fromJson(v));
       });
     }
   }
@@ -44,24 +44,24 @@ class ServiceDetailData {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['speciality'] = this.speciality;
     if (this.services != null) {
-      data['services'] = this.services.map((v) => v.toJson()).toList();
+      data['services'] = this.services!.map((v) => v.toJson()).toList();
     }
     return data;
   }
 }
 
 class ServiceDetailDataModel {
-  String service;
-  String speciality;
-  String specialityId;
-  String serviceId;
-  String dnd;
-  String details;
-  String definitions;
-  String category;
-  String sittings;
-  String duration;
-  bool isExpanded;
+  String? service;
+  String? speciality;
+  String? specialityId;
+  String? serviceId;
+  List<String>? dnd;
+  String? details;
+  String? definitions;
+  String? category;
+  String? sittings;
+  String? duration;
+  bool? isExpanded;
 
   ServiceDetailDataModel(
       {this.service,
@@ -81,7 +81,7 @@ class ServiceDetailDataModel {
     speciality = json['speciality'];
     specialityId = json['specialityId'];
     serviceId = json['serviceId'];
-    dnd = json['dnd'];
+    dnd = json['dnd']?.cast<String>();
     details = json['details'];
     definitions = json['definitions'];
     category = json['category'];

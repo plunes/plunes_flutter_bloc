@@ -83,7 +83,7 @@ class GalleryScreenState extends State<GalleryScreen> {
   Widget build(BuildContext context) {
     final Orientation orientation = MediaQuery.of(context).orientation;
     return Scaffold(
-      appBar: widget.getAppBar(context, '', true),
+      appBar: widget.getAppBar(context, '', true) as PreferredSizeWidget?,
       body: Column(
         children: <Widget>[
           Expanded(
@@ -125,13 +125,13 @@ class Photo {
     this.isFavorite = false,
   });
 
-  final String assetName;
-  final String title;
-  final String caption;
+  final String? assetName;
+  final String? title;
+  final String? caption;
 
   bool isFavorite;
 
-  String get tag => assetName; // Assuming that all asset names are unique.
+  String? get tag => assetName; // Assuming that all asset names are unique.
 
   bool get isValid =>
       assetName != null &&
@@ -141,9 +141,9 @@ class Photo {
 }
 
 class GridPhotoViewer extends StatefulWidget {
-  const GridPhotoViewer({Key key, this.photo}) : super(key: key);
+  const GridPhotoViewer({Key? key, this.photo}) : super(key: key);
 
-  final Photo photo;
+  final Photo? photo;
 
   @override
   _GridPhotoViewerState createState() => _GridPhotoViewerState();
@@ -152,26 +152,26 @@ class GridPhotoViewer extends StatefulWidget {
 class _GridTitleText extends StatelessWidget {
   const _GridTitleText(this.text);
 
-  final String text;
+  final String? text;
 
   @override
   Widget build(BuildContext context) {
     return FittedBox(
       fit: BoxFit.scaleDown,
       alignment: Alignment.centerLeft,
-      child: Text(text),
+      child: Text(text!),
     );
   }
 }
 
 class _GridPhotoViewerState extends State<GridPhotoViewer>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
-  Animation<Offset> _flingAnimation;
+  AnimationController? _controller;
+  late Animation<Offset> _flingAnimation;
   Offset _offset = Offset.zero;
   double _scale = 1.0;
-  Offset _normalizedOffset;
-  double _previousScale;
+  late Offset _normalizedOffset;
+  late double _previousScale;
 
   @override
   void initState() {
@@ -182,14 +182,14 @@ class _GridPhotoViewerState extends State<GridPhotoViewer>
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controller!.dispose();
     super.dispose();
   }
 
   /// The maximum offset value is 0,0. If the size of this renderer's box is w,h
   /// then the minimum offset value is w - _scale * w, h - _scale * h.
   Offset _clampOffset(Offset offset) {
-    final Size size = context.size;
+    final Size size = context.size!;
     final Offset minOffset = Offset(size.width, size.height) * (1.0 - _scale);
     return Offset(
         offset.dx.clamp(minOffset.dx, 0.0), offset.dy.clamp(minOffset.dy, 0.0));
@@ -207,7 +207,7 @@ class _GridPhotoViewerState extends State<GridPhotoViewer>
       _normalizedOffset = (details.focalPoint - _offset) / _scale;
 
       /// The fling animation stops if an input gesture starts.
-      _controller.stop();
+      _controller!.stop();
     });
   }
 
@@ -224,12 +224,12 @@ class _GridPhotoViewerState extends State<GridPhotoViewer>
     final double magnitude = details.velocity.pixelsPerSecond.distance;
     if (magnitude < _kMinFlingVelocity) return;
     final Offset direction = details.velocity.pixelsPerSecond / magnitude;
-    final double distance = (Offset.zero & context.size).shortestSide;
-    _flingAnimation = _controller.drive(Tween<Offset>(
+    final double distance = (Offset.zero & context.size!).shortestSide;
+    _flingAnimation = _controller!.drive(Tween<Offset>(
       begin: _offset,
       end: _clampOffset(_offset + direction * distance),
     ));
-    _controller
+    _controller!
       ..value = 0.0
       ..fling(velocity: magnitude / 1000.0);
   }
@@ -245,13 +245,13 @@ class _GridPhotoViewerState extends State<GridPhotoViewer>
           transform: Matrix4.identity()
             ..translate(_offset.dx, _offset.dy)
             ..scale(_scale),
-          child: widget.photo.assetName.contains('http')
+          child: widget.photo!.assetName!.contains('http')
               ? CustomWidgets().getImageFromUrl(
-                  widget.photo.assetName,
+                  widget.photo!.assetName,
                   boxFit: BoxFit.contain,
                 )
               : Image.asset(
-                  widget.photo.assetName,
+                  widget.photo!.assetName!,
                   fit: BoxFit.contain,
                 ),
         ),
@@ -262,10 +262,10 @@ class _GridPhotoViewerState extends State<GridPhotoViewer>
 
 class GridPhotoItem extends StatelessWidget {
   GridPhotoItem({
-    Key key,
-    @required this.photo,
-    @required this.tileStyle,
-    @required this.onBannerTap,
+    Key? key,
+    required this.photo,
+    required this.tileStyle,
+    required this.onBannerTap,
   })  : assert(photo != null && photo.isValid),
         assert(tileStyle != null),
         assert(onBannerTap != null),
@@ -285,7 +285,7 @@ class GridPhotoItem extends StatelessWidget {
         ),
         body: SizedBox.expand(
           child: Hero(
-            tag: photo.tag,
+            tag: photo.tag!,
             child: GridPhotoViewer(photo: photo),
           ),
         ),
@@ -302,8 +302,8 @@ class GridPhotoItem extends StatelessWidget {
         showPhoto(context);
       },
       child: Hero(
-          key: Key(photo.assetName),
-          tag: photo.tag,
+          key: Key(photo.assetName!),
+          tag: photo.tag!,
           child: Stack(
             children: <Widget>[
               Container(
@@ -319,7 +319,7 @@ class GridPhotoItem extends StatelessWidget {
                         fit: StackFit.expand,
                         children: <Widget>[
                           Image.asset(
-                            photo.assetName,
+                            photo.assetName!,
                             fit: BoxFit.cover,
                           ),
                         ],
@@ -369,7 +369,7 @@ class GridPhotoItem extends StatelessWidget {
         );
     }
     assert(tileStyle != null);
-    return null;
+    return Text("");
   }
 }
 
@@ -384,11 +384,11 @@ class PageSlider extends StatefulWidget {
 }
 
 class _PageSliderState extends State<PageSlider> {
-  PageController _pageController;
+  PageController? _pageController;
 
   @override
   void initState() {
-    _pageController = PageController(initialPage: widget.selectedIndex ?? 0);
+    _pageController = PageController(initialPage: widget.selectedIndex);
     super.initState();
   }
 
@@ -424,7 +424,7 @@ class _PageSliderState extends State<PageSlider> {
                       ),
                     ),
                   ),
-                  top: AppConfig.getMediaQuery().padding.top,
+                  top: AppConfig.getMediaQuery()!.padding.top,
                   left: 5.0,
                 ),
               ],

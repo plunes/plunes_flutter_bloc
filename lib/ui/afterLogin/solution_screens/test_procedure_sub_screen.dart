@@ -1,26 +1,26 @@
 import 'dart:async';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
-import 'package:plunes/repositories/user_repo.dart';
-import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/blocs/solution_blocs/search_solution_bloc.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
+import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
+import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/enter_facility_details_scr.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/solution_show_price_screen.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/view_solutions_screen.dart';
-import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart';
 
 // ignore: must_be_immutable
 class TestProcedureCatalogueScreen extends BaseActivity {
-  final bool isProcedure;
-  final String specialityId;
-  final String title;
+  final bool? isProcedure;
+  final String? specialityId;
+  final String? title;
 
   TestProcedureCatalogueScreen(
       {this.isProcedure, this.specialityId, this.title});
@@ -29,20 +29,21 @@ class TestProcedureCatalogueScreen extends BaseActivity {
   _TestProcedureSubScreenState createState() => _TestProcedureSubScreenState();
 }
 
-class _TestProcedureSubScreenState
-    extends BaseState<TestProcedureCatalogueScreen> {
-  List<CatalogueData> _searchedCatalogueList;
-  List<CatalogueData> _defaultCatalogueList;
-  Function onViewMoreTap;
-  TextEditingController _searchController;
-  Timer _debounce;
-  SearchSolutionBloc _searchSolutionBloc;
+// class _TestProcedureSubScreenState extends BaseState<TestProcedureCatalogueScreen> {
+class _TestProcedureSubScreenState extends State<TestProcedureCatalogueScreen> {
+final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  List<CatalogueData>? _searchedCatalogueList;
+  List<CatalogueData>? _defaultCatalogueList;
+  Function? onViewMoreTap;
+  TextEditingController? _searchController;
+  Timer? _debounce;
+  SearchSolutionBloc? _searchSolutionBloc;
   int _pageIndexForSearchedCatalogues = SearchSolutionBloc.initialIndex,
       _pageIndexForDefaultCatalogueList = SearchSolutionBloc.initialIndex;
-  StreamController _searchStreamController;
-  bool _endReachedForSearchedList, _endReachedForDefaultList;
-  String _failureCause;
-  bool _isFetchingInitialData,
+  StreamController? _searchStreamController;
+  bool? _endReachedForSearchedList, _endReachedForDefaultList;
+  String? _failureCause;
+  bool? _isFetchingInitialData,
       _isAlreadyFetchingDefaultData,
       _isAlreadyFetchingSearchedData;
 
@@ -74,7 +75,7 @@ class _TestProcedureSubScreenState
       if (result is RequestSuccess) {
         _defaultCatalogueList = [];
         _defaultCatalogueList = result.response;
-        if (_defaultCatalogueList.isEmpty) {
+        if (_defaultCatalogueList!.isEmpty) {
           _failureCause = PlunesStrings.serviceNotAvailable;
         } else {
           _pageIndexForDefaultCatalogueList++;
@@ -88,17 +89,52 @@ class _TestProcedureSubScreenState
   }
 
   Future<RequestState> _getDefaultCatalogueList() {
-    return _searchSolutionBloc.getCataloguesForTestAndProcedures(
-        "", widget.specialityId, widget.isProcedure,
+    return _searchSolutionBloc!.getCataloguesForTestAndProcedures(
+        "", widget.specialityId, widget.isProcedure!,
         pageIndex: _pageIndexForDefaultCatalogueList);
   }
 
   _getSearchedCatalogueList() {
-    _searchSolutionBloc.getCataloguesForTestAndProcedures(
-        _searchController.text.trim().toString(),
+    _searchSolutionBloc!.getCataloguesForTestAndProcedures(
+        _searchController!.text.trim().toString(),
         widget.specialityId,
-        widget.isProcedure,
-        pageIndex: _pageIndexForSearchedCatalogues);
+        widget.isProcedure!,
+        pageIndex: _pageIndexForSearchedCatalogues).then((requestState) {
+
+
+
+      if (requestState is RequestSuccess) {
+        RequestSuccess _requestSuccessObject = requestState as RequestSuccess;
+        if (_requestSuccessObject.requestCode ==
+            SearchSolutionBloc.initialIndex) {
+          _pageIndexForDefaultCatalogueList = SearchSolutionBloc.initialIndex;
+          _defaultCatalogueList = [];
+          if (_requestSuccessObject.response.isEmpty) {
+            _failureCause = PlunesStrings.serviceNotAvailable;
+          }
+        }
+        if (_requestSuccessObject.requestCode !=
+            SearchSolutionBloc.initialIndex &&
+            _requestSuccessObject.response.isEmpty) {
+          _endReachedForDefaultList = true;
+        } else {
+          _endReachedForDefaultList = false;
+          Set _allItems = _defaultCatalogueList!.toSet();
+          _allItems.addAll(_requestSuccessObject.response);
+          _defaultCatalogueList = [];
+          _defaultCatalogueList = _allItems.toList(growable: true) as List<CatalogueData>?;
+        }
+        _pageIndexForDefaultCatalogueList++;
+        _searchSolutionBloc!.addIntoDefaultStream(null);
+      } else if (requestState is RequestFailed) {
+        RequestFailed _requestFailedObject = requestState as RequestFailed;
+        _failureCause = _requestFailedObject.failureCause;
+        _pageIndexForDefaultCatalogueList = SearchSolutionBloc.initialIndex;
+        _searchSolutionBloc!.addIntoDefaultStream(null);
+      }
+
+
+    });
   }
 
   @override
@@ -121,16 +157,16 @@ class _TestProcedureSubScreenState
           key: scaffoldKey,
           resizeToAvoidBottomInset: false,
           appBar:
-              widget.getAppBar(context, widget.title ?? PlunesStrings.NA, true),
+              widget.getAppBar(context, widget.title ?? PlunesStrings.NA, true) as PreferredSizeWidget?,
           body: Builder(builder: (context) {
             return Container(
               color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
               padding: CustomWidgets().getDefaultPaddingForScreensVertical(2),
               width: double.infinity,
-              child: _isFetchingInitialData
+              child: _isFetchingInitialData!
                   ? CustomWidgets().getProgressIndicator()
                   : _defaultCatalogueList == null ||
-                          _defaultCatalogueList.isEmpty
+                          _defaultCatalogueList!.isEmpty
                       ? CustomWidgets().errorWidget(_failureCause,
                           onTap: () => _getInitialList())
                       : _showBody(),
@@ -153,7 +189,7 @@ class _TestProcedureSubScreenState
                   searchController: _searchController),
             );
           },
-          stream: _searchStreamController.stream,
+          stream: _searchStreamController!.stream,
         ),
 //        widget.getSpacer(
 //            AppConfig.verticalBlockSize * 1, AppConfig.verticalBlockSize * 1),
@@ -163,24 +199,24 @@ class _TestProcedureSubScreenState
             child: StreamBuilder(
           builder: (context, snapShot) {
             print(
-                "will show searched list ${(_searchController != null && _searchController.text != null && _searchController.text.trim().isNotEmpty)}");
+                "will show searched list ${(_searchController != null && _searchController!.text != null && _searchController!.text.trim().isNotEmpty)}");
             return (_searchController != null &&
-                    _searchController.text != null &&
-                    _searchController.text.trim().isNotEmpty)
+                    _searchController!.text != null &&
+                    _searchController!.text.trim().isNotEmpty)
                 ? _streamBuilderForSearchedList()
                 : _streamBuilderForDefaultList();
           },
-          stream: _searchStreamController.stream,
+          stream: _searchStreamController!.stream,
         ))
       ],
     );
   }
 
   Widget _streamBuilderForSearchedList() {
-    return StreamBuilder<RequestState>(
+    return StreamBuilder<RequestState?>(
       builder: (context, snapShot) {
         if (snapShot.data is RequestSuccess) {
-          RequestSuccess _requestSuccessObject = snapShot.data;
+          RequestSuccess _requestSuccessObject = snapShot.data as RequestSuccess;
           if (_requestSuccessObject.requestCode ==
               SearchSolutionBloc.initialIndex) {
             _pageIndexForSearchedCatalogues = SearchSolutionBloc.initialIndex;
@@ -195,20 +231,20 @@ class _TestProcedureSubScreenState
             _endReachedForSearchedList = true;
           } else {
             _endReachedForSearchedList = false;
-            Set _allItems = _searchedCatalogueList.toSet();
+            Set _allItems = _searchedCatalogueList!.toSet();
             _allItems.addAll(_requestSuccessObject.response);
             _searchedCatalogueList = [];
-            _searchedCatalogueList = _allItems.toList(growable: true);
+            _searchedCatalogueList = _allItems.toList(growable: true) as List<CatalogueData>?;
           }
           _pageIndexForSearchedCatalogues++;
-          _searchSolutionBloc.addIntoSearchedStream(null);
+          _searchSolutionBloc!.addIntoSearchedStream(null);
         } else if (snapShot.data is RequestFailed) {
-          RequestFailed _requestFailedObject = snapShot.data;
+          RequestFailed _requestFailedObject = snapShot.data as RequestFailed;
           _failureCause = _requestFailedObject.failureCause;
           _pageIndexForSearchedCatalogues = SearchSolutionBloc.initialIndex;
-          _searchSolutionBloc.addIntoSearchedStream(null);
+          _searchSolutionBloc!.addIntoSearchedStream(null);
         }
-        return _searchedCatalogueList == null || _searchedCatalogueList.isEmpty
+        return _searchedCatalogueList == null || _searchedCatalogueList!.isEmpty
             ? snapShot.data is RequestInProgress &&
                     _pageIndexForSearchedCatalogues ==
                         SearchSolutionBloc.initialIndex
@@ -231,43 +267,44 @@ class _TestProcedureSubScreenState
                 ],
               );
       },
-      stream: _searchSolutionBloc.getSearchCatalogueStream(),
+      stream: _searchSolutionBloc!.getSearchCatalogueStream(),
     );
   }
 
   Widget _streamBuilderForDefaultList() {
-    return StreamBuilder<RequestState>(
-      builder: (context, snapShot) {
-        if (snapShot.data is RequestSuccess) {
-          RequestSuccess _requestSuccessObject = snapShot.data;
-          if (_requestSuccessObject.requestCode ==
-              SearchSolutionBloc.initialIndex) {
-            _pageIndexForDefaultCatalogueList = SearchSolutionBloc.initialIndex;
-            _defaultCatalogueList = [];
-            if (_requestSuccessObject.response.isEmpty) {
-              _failureCause = PlunesStrings.serviceNotAvailable;
-            }
-          }
-          if (_requestSuccessObject.requestCode !=
-                  SearchSolutionBloc.initialIndex &&
-              _requestSuccessObject.response.isEmpty) {
-            _endReachedForDefaultList = true;
-          } else {
-            _endReachedForDefaultList = false;
-            Set _allItems = _defaultCatalogueList.toSet();
-            _allItems.addAll(_requestSuccessObject.response);
-            _defaultCatalogueList = [];
-            _defaultCatalogueList = _allItems.toList(growable: true);
-          }
-          _pageIndexForDefaultCatalogueList++;
-          _searchSolutionBloc.addIntoDefaultStream(null);
-        } else if (snapShot.data is RequestFailed) {
-          RequestFailed _requestFailedObject = snapShot.data;
-          _failureCause = _requestFailedObject.failureCause;
-          _pageIndexForDefaultCatalogueList = SearchSolutionBloc.initialIndex;
-          _searchSolutionBloc.addIntoDefaultStream(null);
-        }
-        return _defaultCatalogueList == null || _defaultCatalogueList.isEmpty
+    // return
+    //   StreamBuilder<RequestState?>(
+    //   builder: (context, snapShot) {
+        // if (snapShot.data is RequestSuccess) {
+        //   RequestSuccess _requestSuccessObject = snapShot.data as RequestSuccess;
+        //   if (_requestSuccessObject.requestCode ==
+        //       SearchSolutionBloc.initialIndex) {
+        //     _pageIndexForDefaultCatalogueList = SearchSolutionBloc.initialIndex;
+        //     _defaultCatalogueList = [];
+        //     if (_requestSuccessObject.response.isEmpty) {
+        //       _failureCause = PlunesStrings.serviceNotAvailable;
+        //     }
+        //   }
+        //   if (_requestSuccessObject.requestCode !=
+        //           SearchSolutionBloc.initialIndex &&
+        //       _requestSuccessObject.response.isEmpty) {
+        //     _endReachedForDefaultList = true;
+        //   } else {
+        //     _endReachedForDefaultList = false;
+        //     Set _allItems = _defaultCatalogueList!.toSet();
+        //     _allItems.addAll(_requestSuccessObject.response);
+        //     _defaultCatalogueList = [];
+        //     _defaultCatalogueList = _allItems.toList(growable: true) as List<CatalogueData>?;
+        //   }
+        //   _pageIndexForDefaultCatalogueList++;
+        //   _searchSolutionBloc!.addIntoDefaultStream(null);
+        // } else if (snapShot.data is RequestFailed) {
+        //   RequestFailed _requestFailedObject = snapShot.data as RequestFailed;
+        //   _failureCause = _requestFailedObject.failureCause;
+        //   _pageIndexForDefaultCatalogueList = SearchSolutionBloc.initialIndex;
+        //   _searchSolutionBloc!.addIntoDefaultStream(null);
+        // }
+        return _defaultCatalogueList == null || _defaultCatalogueList!.isEmpty
             ? CustomWidgets().errorWidget(_failureCause,
                 onTap: () => _getSearchedCatalogueList())
             : Column(
@@ -276,17 +313,17 @@ class _TestProcedureSubScreenState
                     child: _showDefaultItems(),
                     flex: 4,
                   ),
-                  snapShot.data is RequestInProgress
-                      ? Expanded(
-                          child: CustomWidgets().getProgressIndicator(),
-                          flex: 1,
-                        )
-                      : Container()
+                  // snapShot.data is RequestInProgress
+                  //     ? Expanded(
+                  //         child: CustomWidgets().getProgressIndicator(),
+                  //         flex: 1,
+                  //       ) :
+                  Container()
                 ],
               );
-      },
-      stream: _searchSolutionBloc.getDefaultCatalogueStream(),
-    );
+      // },
+      // stream: _searchSolutionBloc!.getDefaultCatalogueStream(),
+    // );
   }
 
   _onSolutionItemTap(CatalogueData catalogueData) async {
@@ -295,12 +332,12 @@ class _TestProcedureSubScreenState
     if (catalogueData.solutionExpiredAt != null &&
         catalogueData.solutionExpiredAt != 0) {
       var solExpireTime =
-          DateTime.fromMillisecondsSinceEpoch(catalogueData.solutionExpiredAt);
+          DateTime.fromMillisecondsSinceEpoch(catalogueData.solutionExpiredAt!);
       var diff = nowTime.difference(solExpireTime);
       if (diff.inSeconds < 5) {
         ///when price discovered and solution is active
         if (catalogueData.priceDiscovered != null &&
-            catalogueData.priceDiscovered) {
+            catalogueData.priceDiscovered!) {
           await Navigator.push(
               context,
               MaterialPageRoute(
@@ -346,66 +383,70 @@ class _TestProcedureSubScreenState
   }
 
   _onSearch() {
-    _searchStreamController.add(null);
-    if (_debounce?.isActive ?? false) _debounce.cancel();
+    _searchStreamController!.add(null);
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
     if (_searchController != null &&
-        _searchController.text != null &&
-        _searchController.text.trim().isNotEmpty) {
-      _searchSolutionBloc.addIntoSearchedStream(RequestInProgress());
+        _searchController!.text != null &&
+        _searchController!.text.trim().isNotEmpty) {
+      _searchSolutionBloc!.addIntoSearchedStream(RequestInProgress());
       _debounce = Timer(const Duration(milliseconds: 500), () {
         _getSearchedCatalogueList();
       });
     } else {
       _searchedCatalogueList = [];
       _pageIndexForSearchedCatalogues = SearchSolutionBloc.initialIndex;
-      _searchSolutionBloc.addIntoSearchedStream(null);
+      _searchSolutionBloc!.addIntoSearchedStream(null);
     }
   }
 
   Widget _showSearchedItems() {
-    return NotificationListener<ScrollNotification>(
-      onNotification: (scrollState) {
-        if (scrollState is ScrollEndNotification &&
-            scrollState.metrics.extentAfter == 0 &&
-            _searchController.text.trim().isNotEmpty &&
-            !_endReachedForSearchedList) {
-          if (_isAlreadyFetchingSearchedData == null) {
-            _isAlreadyFetchingSearchedData = false;
-          }
-          if (_isAlreadyFetchingSearchedData) return;
-          _isAlreadyFetchingSearchedData = true;
-          Future.delayed(Duration(milliseconds: 1000), () {
-            _isAlreadyFetchingSearchedData = false;
-          });
-          _searchSolutionBloc.addIntoSearchedStream(RequestInProgress());
-          _getSearchedCatalogueList();
-        }
-        return;
-      },
-      child: _renderList(_searchedCatalogueList),
-    );
+    return
+      // NotificationListener<ScrollNotification>(
+      // onNotification: (scrollState) {
+      //   if (scrollState is ScrollEndNotification &&
+      //       scrollState.metrics.extentAfter == 0 &&
+      //       _searchController!.text.trim().isNotEmpty &&
+      //       !_endReachedForSearchedList!) {
+      //     if (_isAlreadyFetchingSearchedData == null) {
+      //       _isAlreadyFetchingSearchedData = false;
+      //     }
+      //     if (_isAlreadyFetchingSearchedData!) return;
+      //     _isAlreadyFetchingSearchedData = true;
+      //     Future.delayed(Duration(milliseconds: 1000), () {
+      //       _isAlreadyFetchingSearchedData = false;
+      //     });
+      //     _searchSolutionBloc!.addIntoSearchedStream(RequestInProgress());
+      //     _getSearchedCatalogueList();
+      //   }
+      //   return;
+      // } as bool Function(ScrollNotification)?,
+      // child:
+      _renderList(_searchedCatalogueList!);
+    // );
   }
 
   Widget _showDefaultItems() {
-    return NotificationListener<ScrollNotification>(
-      onNotification: (scrollState) {
-        if (scrollState is ScrollEndNotification &&
-            scrollState.metrics.extentAfter == 0 &&
-            !_endReachedForDefaultList) {
-          if (_isAlreadyFetchingDefaultData == null) {
-            _isAlreadyFetchingDefaultData = false;
-          }
-          if (_isAlreadyFetchingDefaultData) return;
-          _isAlreadyFetchingDefaultData = true;
-          Future.delayed(Duration(milliseconds: 1000), () {
-            _isAlreadyFetchingDefaultData = false;
-          });
-          _searchSolutionBloc.addIntoDefaultStream(RequestInProgress());
-          _getDefaultCatalogueList();
-        }
-        return;
-      },
-      child: _renderList(_defaultCatalogueList),
+    return
+      // NotificationListener<ScrollNotification>(
+      // onNotification: (scrollState) {
+      //   if (scrollState is ScrollEndNotification &&
+      //       scrollState.metrics.extentAfter == 0 &&
+      //       !_endReachedForDefaultList!) {
+      //     if (_isAlreadyFetchingDefaultData == null) {
+      //       _isAlreadyFetchingDefaultData = false;
+      //     }
+      //     if (_isAlreadyFetchingDefaultData!) return;
+      //     _isAlreadyFetchingDefaultData = true;
+      //     Future.delayed(Duration(milliseconds: 1000), () {
+      //       _isAlreadyFetchingDefaultData = false;
+      //     });
+      //     _searchSolutionBloc!.addIntoDefaultStream(RequestInProgress());
+      //     _getDefaultCatalogueList();
+      //   }
+      //   return;
+      // } as bool Function(ScrollNotification),
+      // child:
+      _renderList(_defaultCatalogueList!
     );
   }
 

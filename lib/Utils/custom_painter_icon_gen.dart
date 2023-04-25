@@ -1,8 +1,9 @@
 import 'dart:async';
-import 'dart:ui' as ui;
-import 'dart:typed_data';
 import 'dart:io';
-import 'package:connectivity/connectivity.dart';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
+
+// import 'package:connectivity/connectivity.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -95,7 +96,7 @@ class IconGenerator {
 
     // Convert image to bytes
     final ByteData byteData =
-        await markerAsImage.toByteData(format: ui.ImageByteFormat.png);
+        await (markerAsImage.toByteData(format: ui.ImageByteFormat.png) as FutureOr<ByteData>);
     final Uint8List uint8List = byteData.buffer.asUint8List();
     return BitmapDescriptor.fromBytes(uint8List);
   }
@@ -146,20 +147,20 @@ class IconGenerator {
   Future<bool> _checkInternetConnectivity() async {
     String connectionStatus;
     bool isConnected = false;
-    final Connectivity _connectivity = Connectivity();
-    try {
-      connectionStatus = (await _connectivity.checkConnectivity()).toString();
-      if (await _connectivity.checkConnectivity() == ConnectivityResult.mobile)
-        isConnected = true;
-      else if (await _connectivity.checkConnectivity() ==
-          ConnectivityResult.wifi)
-        isConnected = true;
-      else if (await _connectivity.checkConnectivity() ==
-          ConnectivityResult.none) isConnected = false;
-    } on PlatformException catch (e) {
-      print("===internet==not connected" + e.toString());
-      connectionStatus = 'Failed to get connectivity.';
-    }
+    // final Connectivity _connectivity = Connectivity();
+    // try {
+    //   connectionStatus = (await _connectivity.checkConnectivity()).toString();
+    //   if (await _connectivity.checkConnectivity() == ConnectivityResult.mobile)
+    //     isConnected = true;
+    //   else if (await _connectivity.checkConnectivity() ==
+    //       ConnectivityResult.wifi)
+    //     isConnected = true;
+    //   else if (await _connectivity.checkConnectivity() ==
+    //       ConnectivityResult.none) isConnected = false;
+    // } on PlatformException catch (e) {
+    //   print("===internet==not connected" + e.toString());
+    //   connectionStatus = 'Failed to get connectivity.';
+    // }
     return isConnected;
   }
 
@@ -168,7 +169,7 @@ class IconGenerator {
     ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
         targetWidth: width);
     ui.FrameInfo fi = await codec.getNextFrame();
-    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!
         .buffer
         .asUint8List();
   }

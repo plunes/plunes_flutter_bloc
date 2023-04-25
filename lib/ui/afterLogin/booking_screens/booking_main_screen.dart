@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
+import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -30,25 +32,23 @@ import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
-import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:plunes/ui/afterLogin/appointment_screens/appointment_main_screen.dart';
 import 'package:plunes/ui/afterLogin/booking_screens/booking_payment_option_popup.dart';
 import 'package:plunes/ui/afterLogin/cart_screens/add_to_cart_main_screen.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart' as latest;
 import 'package:plunes/ui/afterLogin/profile_screens/profile_screen.dart';
 // import 'package:upi_pay/upi_pay.dart';
 
 // ignore: must_be_immutable
 class BookingMainScreen extends BaseActivity {
-  final List<TimeSlots> timeSlots;
-  final String price, searchedSolutionServiceId, profId, docId;
-  final num bookInPrice;
-  final DocHosSolution docHosSolution;
+  final List<TimeSlots>? timeSlots;
+  final String? price, searchedSolutionServiceId, profId, docId;
+  final num? bookInPrice;
+  final DocHosSolution? docHosSolution;
   final String screenName = "BookingMainScreen";
-  final int serviceIndex;
-  final Services service;
-  final String serviceName;
-  final AppointmentModel appointmentModel;
+  final int? serviceIndex;
+  final Services? service;
+  final String? serviceName;
+  final AppointmentModel? appointmentModel;
 
   BookingMainScreen(
       {this.price,
@@ -67,50 +67,53 @@ class BookingMainScreen extends BaseActivity {
   _BookingMainScreenState createState() => _BookingMainScreenState();
 }
 
-class _BookingMainScreenState extends BaseState<BookingMainScreen>
+// class _BookingMainScreenState extends BaseState<BookingMainScreen>
+//     with TickerProviderStateMixin, ImagePickerListener {
+class _BookingMainScreenState extends State<BookingMainScreen>
     with TickerProviderStateMixin, ImagePickerListener {
-  DateTime _currentDate, _selectedDate, _tempSelectedDateTime;
-  int _selectedPaymentType,
+  final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  DateTime? _currentDate, _selectedDate, _tempSelectedDateTime;
+  int? _selectedPaymentType,
       _paymentTypeCash = 0,
-      _paymentTypeCoupon = 1,
-      _cartCount = 0;
-  String _appointmentTime,
+      _paymentTypeCoupon = 1;
+  int _cartCount = 0;
+  String? _appointmentTime,
       _firstSlotTime,
       _secondSlotTime,
       _selectedTimeSlot,
       _notSelectedEntry,
       _userFailureCause;
-  bool _isFetchingDocHosInfo,
+  bool? _isFetchingDocHosInfo,
       _fetchingInsuranceList,
       _isFetchingUserInfo,
       _shouldUseCredit,
       _hasScrolledOnce,
       _hasGotSize;
-  LoginPost _docProfileInfo, _userProfileInfo;
-  InsuranceModel _insuranceModel;
-  List<InsuranceProvider> _searchedItemList;
-  BookingBloc _bookingBloc;
-  List<String> _slotArray;
+  LoginPost? _docProfileInfo, _userProfileInfo;
+  InsuranceModel? _insuranceModel;
+  List<InsuranceProvider>? _searchedItemList;
+  BookingBloc? _bookingBloc;
+  List<String?>? _slotArray;
   double _widgetSize = 0;
-  ScrollController _scrollController;
-  GlobalKey _selectedTimeSlotKey;
-  StreamController _showHideMapController;
+  ScrollController? _scrollController;
+  GlobalKey? _selectedTimeSlotKey;
+  StreamController? _showHideMapController;
   Completer<GoogleMapController> _googleMapController = Completer();
-  GoogleMapController _mapController;
+  GoogleMapController? _mapController;
   bool _webViewOpened = false;
-  String _imageUrl, _docUrl;
+  String? _imageUrl, _docUrl;
 
   // List<ApplicationMeta> _availableUpiApps;
-  TextEditingController _patientNameController,
+  TextEditingController? _patientNameController,
       _ageController,
       _serviceNameController,
       _policyNumberController,
       _policySearchController;
-  CartMainBloc _cartMainBloc;
-  String _gender;
-  InsuranceProvider _insuranceProvider;
-  ImagePickerHandler _imagePicker;
-  AnimationController _animationController;
+  CartMainBloc? _cartMainBloc;
+  String? _gender;
+  InsuranceProvider? _insuranceProvider;
+  ImagePickerHandler? _imagePicker;
+  AnimationController? _animationController;
 
   int _selectedIndex = 0;
   List<Widget> _tabs = [
@@ -134,7 +137,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
     ),
   ];
 
-  String _insuranceFileUrl;
+  String? _insuranceFileUrl;
+  bool _isProcessing = false;
 
   @override
   void initState() {
@@ -162,8 +166,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
     _bookingBloc = BookingBloc();
     _currentDate = DateTime.now();
     _selectedDate = _currentDate;
-    _patientNameController.text = UserManager().getUserDetails().name;
-    _serviceNameController.text = widget.serviceName ?? "";
+    _patientNameController!.text = UserManager().getUserDetails().name!;
+    _serviceNameController!.text = widget.serviceName ?? "";
     _getDetails();
 //    _getInstalledUpiApps();
     super.initState();
@@ -173,7 +177,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
     _animationController = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 500));
     _imagePicker = ImagePickerHandler(this, _animationController, false);
-    _imagePicker.init();
+    _imagePicker!.init();
   }
 
   bool _isAndroid() {
@@ -205,15 +209,15 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
 
   void _getSlotsInfo(String dateAsString) {
     _selectedTimeSlot = PlunesStrings.noSlot;
-    widget.timeSlots.forEach((slot) {
-      if (slot.day.toLowerCase().contains(dateAsString.toLowerCase())) {
-        if (!slot.closed &&
+    widget.timeSlots!.forEach((slot) {
+      if (slot.day!.toLowerCase().contains(dateAsString.toLowerCase())) {
+        if (!slot.closed! &&
             slot.slotArray != null &&
-            slot.slotArray.isNotEmpty) {
+            slot.slotArray!.isNotEmpty) {
           _slotArray = slot.slotArray;
-          slot.slotArray.forEach((element) {
+          slot.slotArray!.forEach((element) {
             if (_selectedTimeSlot == PlunesStrings.noSlot) {
-              _checkSelectedSlot(element);
+              _checkSelectedSlot(element!);
             }
           });
         }
@@ -230,27 +234,26 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
         child: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle.dark,
           child: Scaffold(
-            backgroundColor: PlunesColors.WHITECOLOR,
-            key: scaffoldKey,
-            appBar: _getAppBar(),
+              backgroundColor: PlunesColors.WHITECOLOR,
+              key: scaffoldKey,
+              appBar: _getAppBar(),
             body: Builder(builder: (context) {
               return Container(
-                  child: (_isFetchingDocHosInfo ||
-                          _isFetchingUserInfo ||
-                          _fetchingInsuranceList)
+                  child: (_isFetchingDocHosInfo! ||
+                      _isFetchingUserInfo! ||
+                      _fetchingInsuranceList!)
                       ? CustomWidgets().getProgressIndicator()
                       : (_docProfileInfo == null ||
-                              _docProfileInfo.user == null ||
-                              _userProfileInfo == null ||
-                              _userProfileInfo.user == null)
-                          ? CustomWidgets().errorWidget(
-                              _userFailureCause ?? "Unable to get data",
-                              onTap: () => _getDetails(),
-                              isSizeLess: true)
-                          : _getBody());
+                      _docProfileInfo!.user == null ||
+                      _userProfileInfo == null ||
+                      _userProfileInfo!.user == null)
+                      ? CustomWidgets().errorWidget(
+                      _userFailureCause ?? "Unable to get data",
+                      onTap: () => _getDetails(),
+                      isSizeLess: true)
+                      : _getBody());
             }),
-          ),
-        ));
+          )));
   }
 
   Widget _getBody() {
@@ -275,8 +278,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
                     width: double.infinity,
                   ),
                   (_insuranceModel == null ||
-                          _insuranceModel.data == null ||
-                          _insuranceModel.data.isEmpty)
+                          _insuranceModel!.data == null ||
+                          _insuranceModel!.data!.isEmpty)
                       ? _getPatientDetailWidget()
                       : _getInsuranceTabBar(),
                   _getDatePicker(),
@@ -401,10 +404,10 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
         InkWell(
           onTap: () => _goToProfilePage(),
           onDoubleTap: () {},
-          child: (_docProfileInfo.user != null &&
-                  _docProfileInfo.user.imageUrl != null &&
-                  _docProfileInfo.user.imageUrl.isNotEmpty &&
-                  _docProfileInfo.user.imageUrl.contains("http"))
+          child: (null != _docProfileInfo!.user &&
+                  _docProfileInfo!.user!.imageUrl != null &&
+                  _docProfileInfo!.user!.imageUrl!.isNotEmpty &&
+                  _docProfileInfo!.user!.imageUrl!.contains("http"))
               ? CircleAvatar(
                   backgroundColor: Colors.transparent,
                   child: Container(
@@ -412,9 +415,9 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
                     width: 45,
                     child: ClipOval(
                         child: CustomWidgets().getImageFromUrl(
-                            _docProfileInfo.user?.imageUrl,
+                            _docProfileInfo!.user?.imageUrl,
                             boxFit: BoxFit.fill,
-                            placeHolderPath: (_docProfileInfo.user.userType
+                            placeHolderPath: (_docProfileInfo!.user!.userType!
                                         .toLowerCase() ==
                                     Constants.doctor.toString().toLowerCase())
                                 ? PlunesImages.doc_placeholder
@@ -423,7 +426,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
                   radius: 23.5,
                 )
               : CustomWidgets().getBackImageView(
-                  _docProfileInfo.user?.name ?? PlunesStrings.NA,
+                  _docProfileInfo!.user?.name ?? PlunesStrings.NA,
                   width: 45,
                   height: 45),
         ),
@@ -466,7 +469,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
                                 color: PlunesColors.GREENCOLOR,
                                 size: AppConfig.largeFont),
                             Text(
-                              _docProfileInfo.user?.rating
+                              _docProfileInfo!.user?.rating
                                       ?.toStringAsFixed(1) ??
                                   PlunesStrings.NA,
                               style: TextStyle(
@@ -488,17 +491,17 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
                 ],
               ),
               _getDoctorDetails(),
-              (_docProfileInfo.user.latitude == null ||
-                      _docProfileInfo.user.latitude.isEmpty ||
-                      _docProfileInfo.user.latitude == null ||
-                      _docProfileInfo.user.latitude.isEmpty)
+              (_docProfileInfo!.user!.latitude == null ||
+                      _docProfileInfo!.user!.latitude!.isEmpty ||
+                      _docProfileInfo!.user!.latitude == null ||
+                      _docProfileInfo!.user!.latitude!.isEmpty)
                   ? Container()
                   : InkWell(
                       onTap: () => _getDirections(),
                       child: Column(
                         children: <Widget>[
                           StreamBuilder(
-                              stream: _showHideMapController.stream,
+                              stream: _showHideMapController!.stream,
                               builder: (context, snapshot) {
                                 if (_webViewOpened != null && _webViewOpened) {
                                   return Container();
@@ -563,20 +566,21 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
   }
 
   void _getDirections() {
-    (_docProfileInfo.user.latitude == null ||
-            _docProfileInfo.user.latitude.isEmpty ||
-            _docProfileInfo.user.latitude == null ||
-            _docProfileInfo.user.latitude.isEmpty)
+    (_docProfileInfo!.user!.latitude == null ||
+            _docProfileInfo!.user!.latitude!.isEmpty ||
+            _docProfileInfo!.user!.latitude == null ||
+            _docProfileInfo!.user!.latitude!.isEmpty)
         ? _showInSnackBar(PlunesStrings.locationNotAvailable)
-        : LauncherUtil.openMap(double.tryParse(_docProfileInfo.user.latitude),
-            double.tryParse(_docProfileInfo.user.longitude));
+        : LauncherUtil.openMap(
+            double.tryParse(_docProfileInfo!.user!.latitude!),
+            double.tryParse(_docProfileInfo!.user!.longitude!));
   }
 
   Widget _getDatePicker() {
     return Container(
       width: double.infinity,
       child: DatePicker(
-        _currentDate,
+        _currentDate!,
         width: AppConfig.horizontalBlockSize * 15.5,
         height: AppConfig.verticalBlockSize * 12.5,
         daysCount: 100,
@@ -689,9 +693,9 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
       color: PlunesColors.GREYCOLOR,
     );
     return (_userProfileInfo == null ||
-            _userProfileInfo.user == null ||
-            _userProfileInfo.user.credits == null ||
-            _userProfileInfo.user.credits == "0")
+            _userProfileInfo!.user == null ||
+            _userProfileInfo!.user!.credits == null ||
+            _userProfileInfo!.user!.credits == "0")
         ? Container(
             margin: EdgeInsets.only(
                 top: AppConfig.verticalBlockSize * 3,
@@ -730,7 +734,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
                         right: AppConfig.horizontalBlockSize * 2),
                   ),
                   Text(
-                    double.tryParse(_userProfileInfo.user.credits)
+                    double.tryParse(_userProfileInfo!.user!.credits!)!
                         .toStringAsFixed(1),
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
@@ -744,7 +748,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
               ),
               InkWell(
                 onTap: () {
-                  _shouldUseCredit = !_shouldUseCredit;
+                  _shouldUseCredit = !_shouldUseCredit!;
                   _setState();
                 },
                 child: Padding(
@@ -753,7 +757,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Image.asset(
-                        _shouldUseCredit
+                        _shouldUseCredit!
                             ? plunesImages.checkIcon
                             : plunesImages.unCheckIcon,
                         height: 20,
@@ -811,7 +815,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
                       child: Column(
                         children: [
                           Text("\u20B9 ${_calcPriceToShow()}",
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w600,
                                   color: PlunesColors.BLACKCOLOR)),
@@ -826,101 +830,104 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
                     ),
                   ),
                   Expanded(
-                    child: StreamBuilder<RequestState>(
-                        stream: _cartMainBloc.baseStream,
-                        builder: (context, snapshot) {
-                          if (snapshot.data != null &&
-                              snapshot.data is RequestInProgress) {
-                            return CustomWidgets().getProgressIndicator();
-                          }
-                          if (snapshot.data != null &&
-                              snapshot.data is RequestSuccess) {
-                            RequestSuccess success = snapshot.data;
-                            String message = success.response.toString();
-                            _cartCount++;
-                            Future.delayed(Duration(milliseconds: 20))
-                                .then((value) async {
-                              _setState();
-                              showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return CustomWidgets()
-                                        .showAddToCartSuccessPopup(
-                                            scaffoldKey, message);
-                                  }).then((value) {
-                                if (value != null) {
-                                  _openCartScreen();
-                                }
+                      child:
+                          // StreamBuilder<RequestState>(
+                          //     stream: _cartMainBloc!.baseStream,
+                          //     builder: (context, snapshot) {
+                          //       if (snapshot.data != null &&
+                          //           snapshot.data is RequestInProgress) {
+                          //         return CustomWidgets().getProgressIndicator();
+                          //       }
+                          //       if (snapshot.data != null &&
+                          //           snapshot.data is RequestSuccess) {
+                          //         RequestSuccess success = snapshot.data as RequestSuccess;
+                          //         String message = success.response.toString();
+                          //         (_cartCount!)+1;
+                          //         Future.delayed(Duration(milliseconds: 20))
+                          //             .then((value) async {
+                          //           _setState();
+                          //           showDialog(context: context,
+                          //               builder: (context) {
+                          //                 return CustomWidgets()
+                          //                     .showAddToCartSuccessPopup(
+                          //                         scaffoldKey, message);
+                          //               }).then((value) {
+                          //             if (value != null) {
+                          //               _openCartScreen();
+                          //             }
+                          //           });
+                          //         });
+                          //         _cartMainBloc!.addIntoStream(null);
+                          //       }
+                          //       if (snapshot.data != null &&
+                          //           snapshot.data is RequestFailed) {
+                          //         RequestFailed? requestFailed = snapshot.data as RequestFailed?;
+                          //         Future.delayed(Duration(milliseconds: 20))
+                          //             .then((value) async {
+                          //           _showInSnackBar(requestFailed!.failureCause);
+                          //         });
+                          //         _cartMainBloc!.addIntoStream(null);
+                          //       }
+                          //       return
+                          Container(
+                    margin: EdgeInsets.only(
+                        right: AppConfig.horizontalBlockSize * 2.5),
+                    child: InkWell(
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      focusColor: Colors.transparent,
+                      onTap: () {
+                        if (_selectedDate != null &&
+                            _selectedTimeSlot != null &&
+                            _selectedTimeSlot != PlunesStrings.noSlot) {
+                          if (_hasFilledDetails() &&
+                              _checkIfInsuranceFilled()) {
+                            print("asdfasdfasd2323 f");
+
+                            var paymentSelector = PaymentSelector(
+                                isInPercent: true,
+                                paymentUnit: widget
+                                        .service!.paymentOptions?.last
+                                        ?.toString() ??
+                                    "100");
+                            if (_insuranceProvider != null &&
+                                _selectedIndex == 0) {
+                              print("asdfasd fas asdfasdf");
+
+                              _showProfessionalRegistrationSuccessPopup(() {
+                                _initPayment(paymentSelector,
+                                    isAddToCart: true);
                               });
-                            });
-                            _cartMainBloc.addIntoStream(null);
+                            } else {
+                              print("asdfasdfasdf");
+                              _initPayment(paymentSelector, isAddToCart: true);
+                            }
                           }
-                          if (snapshot.data != null &&
-                              snapshot.data is RequestFailed) {
-                            RequestFailed requestFailed = snapshot.data;
-                            Future.delayed(Duration(milliseconds: 20))
-                                .then((value) async {
-                              _showInSnackBar(requestFailed.failureCause);
-                            });
-                            _cartMainBloc.addIntoStream(null);
-                          }
-                          return Container(
-                            margin: EdgeInsets.only(
-                                right: AppConfig.horizontalBlockSize * 2.5),
-                            child: InkWell(
-                              splashColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              hoverColor: Colors.transparent,
-                              focusColor: Colors.transparent,
-                              onTap: () {
-                                if (_selectedDate != null &&
-                                    _selectedTimeSlot != null &&
-                                    _selectedTimeSlot != PlunesStrings.noSlot) {
-                                  if (_hasFilledDetails() &&
-                                      _checkIfInsuranceFilled()) {
-                                    var paymentSelector = PaymentSelector(
-                                        isInPercent: true,
-                                        paymentUnit: widget
-                                                .service.paymentOptions?.last
-                                                ?.toString() ??
-                                            "100");
-                                    if (_insuranceProvider != null &&
-                                        _selectedIndex == 0) {
-                                      _showProfessionalRegistrationSuccessPopup(
-                                          () {
-                                        _initPayment(paymentSelector,
-                                            isAddToCart: true);
-                                      });
-                                    } else {
-                                      _initPayment(paymentSelector,
-                                          isAddToCart: true);
-                                    }
-                                  }
-                                } else {
-                                  _showInSnackBar(
-                                      PlunesStrings.pleaseSelectValidSlot);
-                                }
-                                return;
-                              },
-                              onDoubleTap: () {},
-                              child: CustomWidgets().getRoundedButton(
-                                  PlunesStrings.bookLater,
-                                  8,
-                                  Color(CommonMethods.getColorHexFromStr(
-                                      "#25B281")),
-                                  AppConfig.horizontalBlockSize * 3,
-                                  AppConfig.verticalBlockSize * 1,
-                                  PlunesColors.WHITECOLOR,
-                                  borderColor: PlunesColors.SPARKLINGGREEN,
-                                  hasBorder: true),
-                            ),
-                          );
-                        }),
-                  )
+                        } else {
+                          print("asdfasdfasd2as dfas 323 f");
+
+                          _showInSnackBar(PlunesStrings.pleaseSelectValidSlot);
+                        }
+                        return;
+                      },
+                      onDoubleTap: () {},
+                      child: CustomWidgets().getRoundedButton(
+                          PlunesStrings.bookLater,
+                          8,
+                          Color(CommonMethods.getColorHexFromStr("#25B281")),
+                          AppConfig.horizontalBlockSize * 3,
+                          AppConfig.verticalBlockSize * 1,
+                          PlunesColors.WHITECOLOR,
+                          borderColor: PlunesColors.SPARKLINGGREEN,
+                          hasBorder: true),
+                    ),
+                  )),
+                  //   )
                 ],
               )
-            : StreamBuilder<Object>(
-                stream: _bookingBloc.rescheduleAppointmentStream,
+            : StreamBuilder<Object?>(
+                stream: _bookingBloc!.rescheduleAppointmentStream,
                 builder: (context, snapshot) {
                   if (snapshot.data != null &&
                       snapshot.data is RequestInProgress) {
@@ -928,20 +935,21 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
                   }
                   if (snapshot.data != null &&
                       snapshot.data is RequestSuccess) {
-                    Future.delayed(Duration(milliseconds: 20))
+                    Future.delayed(const Duration(milliseconds: 20))
                         .then((value) async {
                       _showInSnackBar(PlunesStrings.rescheduledSuccessMessage,
                           shouldPop: true);
                     });
                   }
                   if (snapshot.data != null && snapshot.data is RequestFailed) {
-                    RequestFailed requestFailed = snapshot.data;
+                    RequestFailed? requestFailed =
+                        snapshot.data as RequestFailed?;
                     Future.delayed(Duration(milliseconds: 20))
                         .then((value) async {
-                      _showInSnackBar(requestFailed.failureCause ??
+                      _showInSnackBar(requestFailed!.failureCause ??
                           PlunesStrings.rescheduledFailedMessage);
                     });
-                    _bookingBloc.addStateInRescheduledProvider(null);
+                    _bookingBloc!.addStateInRescheduledProvider(null);
                   }
                   return InkWell(
                     splashColor: Colors.transparent,
@@ -1017,7 +1025,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
                     margin: EdgeInsets.symmetric(
                         vertical: AppConfig.verticalBlockSize * 1.8,
                         horizontal: AppConfig.horizontalBlockSize * 2.5),
-                    child: Text(
+                    child: const Text(
                       "By clicking on Add To Cart you agree to book your procedure via Insurance",
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.black, fontSize: 16),
@@ -1039,12 +1047,11 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Expanded(
-                            child: FlatButton(
-                                highlightColor: Colors.transparent,
-                                hoverColor: Colors.transparent,
-                                splashColor:
-                                    PlunesColors.SPARKLINGGREEN.withOpacity(.1),
-                                focusColor: Colors.transparent,
+                            child: ElevatedButton(
+                                // highlightColor: Colors.transparent,
+                                // hoverColor: Colors.transparent,
+                                // splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                                // focusColor: Colors.transparent,
                                 onPressed: () {
                                   Navigator.pop(context);
                                   return;
@@ -1068,12 +1075,11 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
                             width: 0.5,
                           ),
                           Expanded(
-                            child: FlatButton(
-                                highlightColor: Colors.transparent,
-                                hoverColor: Colors.transparent,
-                                splashColor:
-                                    PlunesColors.SPARKLINGGREEN.withOpacity(.1),
-                                focusColor: Colors.transparent,
+                            child: ElevatedButton(
+                                // highlightColor: Colors.transparent,
+                                // hoverColor: Colors.transparent,
+                                // splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                                // focusColor: Colors.transparent,
                                 onPressed: () {
                                   if (submit != null) {
                                     Navigator.pop(context);
@@ -1307,32 +1313,36 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
 
   void _getDocHosInfo() async {
     _isFetchingDocHosInfo = true;
-    RequestState requestState =
-        await UserBloc().getUserProfile(widget.profId, isGenUser: false);
-    if (requestState is RequestSuccess) {
-      _docProfileInfo = requestState.response;
-    } else if (requestState is RequestFailed) {
-      _userFailureCause = requestState.failureCause;
-    }
-    _isFetchingDocHosInfo = false;
-    _setState();
+    await UserBloc()
+        .getUserProfile(widget.profId, isGenUser: false)
+        .then((requestState) {
+      if (requestState is RequestSuccess) {
+        _docProfileInfo = requestState.response;
+      } else if (requestState is RequestFailed) {
+        _userFailureCause = requestState.failureCause;
+      }
+      _isFetchingDocHosInfo = false;
+      _setState();
+    });
   }
 
   void _getUserInfo() async {
-    RequestState requestState =
-        await UserBloc().getUserProfile(UserManager().getUserDetails().uid);
-    if (requestState is RequestSuccess) {
-      _userProfileInfo = requestState.response;
-      if (_userProfileInfo != null || _userProfileInfo.user != null) {
-        if (_userProfileInfo.user.cartCount != null) {
-          _cartCount = _userProfileInfo.user.cartCount;
+    await UserBloc()
+        .getUserProfile(UserManager().getUserDetails().uid)
+        .then((requestState) {
+      if (requestState is RequestSuccess) {
+        _userProfileInfo = requestState.response;
+        if (_userProfileInfo != null || _userProfileInfo!.user != null) {
+          if (_userProfileInfo!.user!.cartCount != null) {
+            _cartCount = _userProfileInfo!.user!.cartCount!;
+          }
         }
+      } else if (requestState is RequestFailed) {
+        _userFailureCause = requestState.failureCause;
       }
-    } else if (requestState is RequestFailed) {
-      _userFailureCause = requestState.failureCause;
-    }
-    _isFetchingUserInfo = false;
-    _setState();
+      _isFetchingUserInfo = false;
+      _setState();
+    });
   }
 
   ///payment methods
@@ -1346,28 +1356,28 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
     }
     InitPayment _initPayment = InitPayment(
         appointmentTime:
-            _selectedDate.toUtc().millisecondsSinceEpoch.toString(),
+            _selectedDate!.toUtc().millisecondsSinceEpoch.toString(),
         percentage: zestMoney
             ? "100"
-            : paymentSelector.isInPercent
+            : paymentSelector.isInPercent!
                 ? paymentSelector.paymentUnit
                 : null,
         price_pos: widget.serviceIndex,
         //negotiate prev id
-        docHosServiceId: widget.docHosSolution.serviceId,
+        docHosServiceId: widget.docHosSolution!.serviceId,
         //Services[0].id
         service_id: widget.searchedSolutionServiceId,
         doctorId: widget.docId,
         //DocHosSolution's _id
-        sol_id: widget.docHosSolution.sId,
+        sol_id: widget.docHosSolution!.sId,
         time_slot: _selectedTimeSlot,
         professional_id: widget.profId,
         creditsUsed: _shouldUseCredit,
         user_id: UserManager().getUserDetails().uid,
         couponName: "",
-        patientAge: _ageController.text.trim(),
+        patientAge: _ageController!.text.trim(),
         patientMobileNumber: UserManager().getUserDetails().mobileNumber,
-        patientName: _patientNameController.text.trim(),
+        patientName: _patientNameController!.text.trim(),
         patientSex: _gender,
         haveInsurance: (_insuranceProvider != null && _selectedIndex == 0),
         insuranceDetail: (_insuranceProvider != null && _selectedIndex == 0)
@@ -1376,11 +1386,11 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
                 insuranceImage: _imageUrl,
                 insuranceDoc: _docUrl,
                 insurancePartner: _insuranceProvider?.insurancePartner,
-                policyNumber: _policyNumberController.text.trim())
+                policyNumber: _policyNumberController!.text.trim())
             : null,
         bookIn: zestMoney
             ? null
-            : !(paymentSelector.isInPercent)
+            : !paymentSelector.isInPercent!
                 ? paymentSelector.paymentUnit
                 : null);
     if (isAddToCart) {
@@ -1388,15 +1398,15 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
       return;
     }
 //    print("initiate payment ${_initPayment.initiatePaymentToJson()}");
-    RequestState _requestState = await _bookingBloc.initPayment(_initPayment);
+    RequestState _requestState = await _bookingBloc!.initPayment(_initPayment);
     if (_requestState is RequestSuccess) {
       InitPaymentResponse _initPaymentResponse = _requestState.response;
-      if (_initPaymentResponse.success) {
+      if (_initPaymentResponse.success!) {
         if (zestMoney) {
           _processZestMoneyQueries(_initPayment, _initPaymentResponse);
           return;
         }
-        if (_initPaymentResponse.status.contains("Confirmed")) {
+        if (_initPaymentResponse.status!.contains("Confirmed")) {
           AnalyticsProvider().registerEvent(AnalyticsKeys.inAppPurchaseKey);
           showDialog(
               context: context,
@@ -1449,15 +1459,15 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
 
   _doPaymentRelatedQueries() async {
     if (widget.appointmentModel != null) {
-      _bookingBloc.rescheduleAppointment(
-          widget.appointmentModel.bookingId,
-          _selectedDate.toUtc().millisecondsSinceEpoch.toString(),
+      _bookingBloc!.rescheduleAppointment(
+          widget.appointmentModel!.bookingId,
+          _selectedDate!.toUtc().millisecondsSinceEpoch.toString(),
           _selectedTimeSlot);
       return;
     }
-    if (widget.service.newPrice != null &&
-        widget.service.newPrice.isNotEmpty != null &&
-        widget.service.newPrice.first < 5000) {
+    if (widget.service!.newPrice != null &&
+        widget.service!.newPrice!.isNotEmpty != null &&
+        widget.service!.newPrice!.first < 5000) {
       _initPayment(PaymentSelector(isInPercent: true, paymentUnit: "100"));
       return;
     }
@@ -1477,7 +1487,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
   }
 
   ///payment methods end
-  _showErrorMessage(String message) {
+  _showErrorMessage(String? message) {
     _showInSnackBar(message);
   }
 
@@ -1486,7 +1496,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
       if (widget.bookInPrice != null) {
         return "${widget.bookInPrice}";
       } else {
-        num price = widget?.service?.newPrice[0]?.toDouble() ?? 0;
+        num price = widget?.service?.newPrice![0]?.toDouble() ?? 0;
         num percentage = widget?.service?.paymentOptions?.last ?? 0;
         var finalPrice = (price * percentage) / 100;
         return finalPrice == null
@@ -1499,15 +1509,14 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
   }
 
   _goToProfilePage() {
-    if (_docProfileInfo.user.userType != null &&
-        _docProfileInfo.user.uid != null) {
+    if (_docProfileInfo!.user!.userType != null &&
+        _docProfileInfo!.user!.uid != null) {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => DoctorInfo(
-                    _docProfileInfo.user.uid,
-                    isDoc: (_docProfileInfo.user.userType.toLowerCase() ==
-                        Constants.doctor.toString().toLowerCase()),
+              builder: (context) => DoctorInfo(_docProfileInfo!.user!.uid,
+                  isDoc: (_docProfileInfo!.user!.userType!.toLowerCase() ==
+                      Constants.doctor.toString().toLowerCase()),
                   isAlreadyInBookingProcess: true)));
     }
   }
@@ -1590,8 +1599,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
                 children: <Widget>[
                   InkWell(
                     onTap: () {
-                      _scrollController
-                          .jumpTo(_scrollController.position.minScrollExtent);
+                      _scrollController!
+                          .jumpTo(_scrollController!.position.minScrollExtent);
                       return;
                     },
                     child: Padding(
@@ -1616,22 +1625,22 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
                           mainAxisSpacing: 8,
                           crossAxisSpacing: 8),
                       itemBuilder: (_, index) {
-                        if (!_hasScrolledOnce) {
+                        if (!_hasScrolledOnce!) {
                           _hasScrolledOnce = true;
                           _doScroll();
                         }
                         return InkWell(
-                          key: (index == 0 && !_hasGotSize)
+                          key: (index == 0 && !_hasGotSize!)
                               ? _selectedTimeSlotKey
                               : null,
                           onTap: () {
-                            _checkSelectedSlot(_slotArray[index],
+                            _checkSelectedSlot(_slotArray![index]!,
                                 shouldShowPopup: true);
                             _setState();
                             return;
                           },
-                          child: _getTimeBoxWidget(_slotArray[index],
-                              _slotArray[index] == _selectedTimeSlot),
+                          child: _getTimeBoxWidget(_slotArray![index],
+                              _slotArray![index] == _selectedTimeSlot),
                         );
                       },
                       itemCount: _slotArray?.length ?? 0,
@@ -1639,8 +1648,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
                   ),
                   InkWell(
                     onTap: () {
-                      _scrollController
-                          .jumpTo(_scrollController.position.maxScrollExtent);
+                      _scrollController!
+                          .jumpTo(_scrollController!.position.maxScrollExtent);
                       return;
                     },
                     child: Padding(
@@ -1659,7 +1668,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
   }
 
   Widget getProfileInfoView(
-      double height, double width, String icon, String title, String value) {
+      double height, double width, String icon, String title, String? value) {
     if (value == null || value.trim().isEmpty) {
       return Container();
     }
@@ -1682,7 +1691,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
                     text: title ?? _getEmptyString(),
                     style: TextStyle(
                         color: PlunesColors.GREYCOLOR,
-                        fontSize: AppConfig.smallFont + 2,
+                        fontSize: AppConfig.smallFont! + 2,
                         fontWeight: FontWeight.normal),
                     children: <InlineSpan>[
                       TextSpan(
@@ -1706,10 +1715,10 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
   }
 
   _showMapview() {
-    return (_docProfileInfo.user?.latitude == null ||
-            _docProfileInfo.user.latitude.isEmpty ||
-            _docProfileInfo.user.latitude == null ||
-            _docProfileInfo.user.latitude.isEmpty)
+    return (_docProfileInfo!.user?.latitude == null ||
+            _docProfileInfo!.user!.latitude!.isEmpty ||
+            _docProfileInfo!.user!.latitude == null ||
+            _docProfileInfo!.user!.latitude!.isEmpty)
         ? Container()
         : Stack(children: <Widget>[
             Positioned(
@@ -1730,11 +1739,12 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
                       initialCameraPosition: CameraPosition(
                           target: LatLng(
                               double.parse(
-                                  _docProfileInfo.user.latitude ?? "0.0"),
+                                  _docProfileInfo!.user!.latitude ?? "0.0"),
                               double.parse(
-                                  _docProfileInfo.user.longitude ?? "0.0")),
+                                  _docProfileInfo!.user!.longitude ?? "0.0")),
                           zoom: 10),
                       mapType: MapType.terrain,
+                      indoorViewEnabled: false,
                       zoomControlsEnabled: false,
                     ),
                   ),
@@ -1750,26 +1760,34 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
       child: Column(
         children: <Widget>[
           getProfileInfoView(16, 16, plunesImages.expertiseIcon,
-              plunesStrings.areaExpertise, _docProfileInfo.user?.speciality),
+              plunesStrings.areaExpertise, _docProfileInfo!.user?.speciality),
           SizedBox(
             height: 8,
           ),
-          (_docProfileInfo.user == null ||
-                  _docProfileInfo.user.experience == null ||
-                  _docProfileInfo.user.experience == "0")
+          (_docProfileInfo!.user == null ||
+                  _docProfileInfo!.user!.experience == null ||
+                  _docProfileInfo!.user!.experience == "0")
               ? Container()
-              : getProfileInfoView(16, 16, plunesImages.clockIcon,
-                  plunesStrings.expOfPractice, _docProfileInfo.user.experience),
+              : getProfileInfoView(
+                  16,
+                  16,
+                  plunesImages.clockIcon,
+                  plunesStrings.expOfPractice,
+                  _docProfileInfo!.user!.experience),
           SizedBox(
             height: 8,
           ),
           getProfileInfoView(16, 16, plunesImages.practisingIcon,
-              plunesStrings.practising, _docProfileInfo.user?.practising),
+              plunesStrings.practising, _docProfileInfo!.user?.practising),
           SizedBox(
             height: 8,
           ),
-          getProfileInfoView(16, 16, plunesImages.eduIcon,
-              plunesStrings.qualification, _docProfileInfo.user?.qualification),
+          getProfileInfoView(
+              16,
+              16,
+              plunesImages.eduIcon,
+              plunesStrings.qualification,
+              _docProfileInfo!.user?.qualification),
           SizedBox(
             height: 8,
           ),
@@ -1778,7 +1796,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
     );
   }
 
-  Widget _getTimeBoxWidget(String time, bool isSelected) {
+  Widget _getTimeBoxWidget(String? time, bool isSelected) {
     bool _isSlotTimeExpire = _isSlotTimeExpired(time);
     double opacity = 1.0;
     if (_isSlotTimeExpire) {
@@ -1808,7 +1826,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
             // Color(CommonMethods.getColorHexFromStr("#9C9C9C"))
             //         .withOpacity(opacity),
             fontWeight: FontWeight.normal,
-            fontSize: AppConfig.smallFont - 1),
+            fontSize: AppConfig.smallFont! - 1),
       ),
     );
   }
@@ -1831,18 +1849,18 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
         _shouldDecreaseDay = true;
       }
       List<String> lastTimeOfBooking =
-          _slotArray[_slotArray.length - 1].split(":");
+          _slotArray![_slotArray!.length - 1]!.split(":");
       int _pmTimeLastSlot = 0;
-      if (_slotArray[_slotArray.length - 1].contains("PM") &&
+      if (_slotArray![_slotArray!.length - 1]!.contains("PM") &&
           lastTimeOfBooking.first != "12") {
         _pmTimeLastSlot = 12;
         lastTimeOfBooking.first =
             "${_pmTimeLastSlot + int.parse(lastTimeOfBooking.first)}";
       }
       if (_selectedDate != null &&
-          (_selectedDate.year == _currentDateTime.year &&
-              _selectedDate.month == _currentDateTime.month &&
-              _selectedDate.day == _currentDateTime.day)) {
+          (_selectedDate!.year == _currentDateTime.year &&
+              _selectedDate!.month == _currentDateTime.month &&
+              _selectedDate!.day == _currentDateTime.day)) {
         List<String> _currentTimeOfBooking =
             DateUtil.getTimeWithAmAndPmFormat(_currentDateTime).split(":");
         int _pmSlotForCurrentTime = 0;
@@ -1857,9 +1875,9 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
             _currentDateTime.year,
             _currentDateTime.month,
             _currentDateTime.day,
-            int.tryParse(_currentTimeOfBooking.first),
+            int.tryParse(_currentTimeOfBooking.first)!,
             int.tryParse(_currentTimeOfBooking[1]
-                .substring(0, _currentTimeOfBooking[1].indexOf(" "))));
+                .substring(0, _currentTimeOfBooking[1].indexOf(" ")))!);
 //        print("$lastTimeOfBooking lastTimeOfBooking hello $splitTime");
         var _selectedDateTime = DateTime(
             _currentDateTime.year,
@@ -1867,15 +1885,16 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
             _shouldDecreaseDay
                 ? _currentDateTime.day - 1
                 : _currentDateTime.day,
-            int.tryParse(splitTime.first),
-            int.tryParse(splitTime[1].substring(0, splitTime[1].indexOf(" "))));
+            int.tryParse(splitTime.first)!,
+            int.tryParse(
+                splitTime[1].substring(0, splitTime[1].indexOf(" ")))!);
         var _todayLatBookingDateTime = DateTime(
             _currentDateTime.year,
             _currentDateTime.month,
             _currentDateTime.day,
-            int.tryParse(lastTimeOfBooking.first),
+            int.tryParse(lastTimeOfBooking.first)!,
             int.tryParse(lastTimeOfBooking[1]
-                .substring(0, lastTimeOfBooking[1].indexOf(" "))));
+                .substring(0, lastTimeOfBooking[1].indexOf(" ")))!);
 //        print(
 //            "_selectedDateTime $_selectedDateTime  _currentDateTime $_currentDateTime _todayLatBookingDateTime $_todayLatBookingDateTime");
 //        print(
@@ -1886,12 +1905,12 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
             _selectedDateTime.isBefore(_todayLatBookingDateTime)) {
           _selectedTimeSlot = selectedTime;
           _selectedDate = DateTime(
-              _selectedDate.year,
-              _selectedDate.month,
-              _selectedDate.day,
-              (int.tryParse(splitTime.first)),
+              _selectedDate!.year,
+              _selectedDate!.month,
+              _selectedDate!.day,
+              int.tryParse(splitTime.first)!,
               int.tryParse(
-                  splitTime[1].substring(0, splitTime[1].indexOf(" "))));
+                  splitTime[1].substring(0, splitTime[1].indexOf(" ")))!);
 //          print("valid");
         } else if ((_selectedDateTime.isBefore(_todayLatBookingDateTime) ||
                 (_selectedDateTime.difference(_todayLatBookingDateTime))
@@ -1900,12 +1919,12 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
             (_selectedDateTime.isAfter(_currentDateTime))) {
           _selectedTimeSlot = selectedTime;
           _selectedDate = DateTime(
-              _selectedDate.year,
-              _selectedDate.month,
-              _selectedDate.day,
-              (int.tryParse(splitTime.first)),
+              _selectedDate!.year,
+              _selectedDate!.month,
+              _selectedDate!.day,
+              int.tryParse(splitTime.first)!,
               int.tryParse(
-                  splitTime[1].substring(0, splitTime[1].indexOf(" "))));
+                  splitTime[1].substring(0, splitTime[1].indexOf(" ")))!);
 //          print("valid");
         } else {
           if (shouldShowPopup) {
@@ -1917,18 +1936,19 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
 //        print("else part");
         _selectedTimeSlot = selectedTime;
         _selectedDate = DateTime(
-            _selectedDate.year,
-            _selectedDate.month,
-            _selectedDate.day,
-            (int.tryParse(splitTime.first)),
-            int.tryParse(splitTime[1].substring(0, splitTime[1].indexOf(" "))));
+            _selectedDate!.year,
+            _selectedDate!.month,
+            _selectedDate!.day,
+            int.tryParse(splitTime.first)!,
+            int.tryParse(
+                splitTime[1].substring(0, splitTime[1].indexOf(" ")))!);
       }
     } catch (e, s) {
 //      print("error hai $s");
     }
   }
 
-  void _showInSnackBar(String message, {bool shouldPop = false}) {
+  void _showInSnackBar(String? message, {bool shouldPop = false}) {
     showDialog(
         context: context,
         builder: (context) {
@@ -1941,15 +1961,15 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
     });
   }
 
-  bool _isSlotTimeExpired(String time) {
+  bool _isSlotTimeExpired(String? time) {
     bool isSlotTimeExpired = true;
     try {
       var _currentDateTime = DateTime.now();
       if (_selectedDate != null &&
-          (_selectedDate.year == _currentDateTime.year &&
-              _selectedDate.month == _currentDateTime.month &&
-              _selectedDate.day == _currentDateTime.day)) {
-        List<String> splitTime = time.split(":");
+          (_selectedDate!.year == _currentDateTime.year &&
+              _selectedDate!.month == _currentDateTime.month &&
+              _selectedDate!.day == _currentDateTime.day)) {
+        List<String> splitTime = time!.split(":");
         int _pmTime = 0;
         bool _shouldDecreaseDay = false;
         if (time.contains("PM") && splitTime.first != "12") {
@@ -1961,9 +1981,9 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
           _shouldDecreaseDay = true;
         }
         List<String> lastTimeOfBooking =
-            _slotArray[_slotArray.length - 1].split(":");
+            _slotArray![_slotArray!.length - 1]!.split(":");
         int _pmTimeLastSlot = 0;
-        if (_slotArray[_slotArray.length - 1].contains("PM") &&
+        if (_slotArray![_slotArray!.length - 1]!.contains("PM") &&
             lastTimeOfBooking.first != "12") {
           _pmTimeLastSlot = 12;
           lastTimeOfBooking.first =
@@ -1983,17 +2003,18 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
             _currentDateTime.year,
             _currentDateTime.month,
             _currentDateTime.day,
-            int.tryParse(_currentTimeOfBooking.first),
+            int.tryParse(_currentTimeOfBooking.first)!,
             int.tryParse(_currentTimeOfBooking[1]
-                .substring(0, _currentTimeOfBooking[1].indexOf(" "))));
+                .substring(0, _currentTimeOfBooking[1].indexOf(" ")))!);
         var _selectedDateTime = DateTime(
             _currentDateTime.year,
             _currentDateTime.month,
             _shouldDecreaseDay
                 ? _currentDateTime.day - 1
                 : _currentDateTime.day,
-            int.tryParse(splitTime.first),
-            int.tryParse(splitTime[1].substring(0, splitTime[1].indexOf(" "))));
+            int.tryParse(splitTime.first)!,
+            int.tryParse(
+                splitTime[1].substring(0, splitTime[1].indexOf(" ")))!);
         if (_selectedDateTime.isAfter(_currentDateTime) ||
             (_selectedDateTime.difference(_currentDateTime)).inMinutes == 0) {
           isSlotTimeExpired = false;
@@ -2012,16 +2033,16 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
         _selectedTimeSlot != PlunesStrings.noSlot)) {
       Future.delayed(Duration(milliseconds: 500)).then((value) {
         if (_slotArray != null &&
-            _slotArray.isNotEmpty &&
-            _slotArray.contains(_selectedTimeSlot)) {
-          if (!_hasGotSize) {
+            _slotArray!.isNotEmpty &&
+            _slotArray!.contains(_selectedTimeSlot)) {
+          if (!_hasGotSize!) {
             _hasGotSize = true;
-            var _context = _selectedTimeSlotKey.currentContext;
-            _widgetSize = _context.size.height;
+            var _context = _selectedTimeSlotKey!.currentContext!;
+            _widgetSize = _context.size!.height;
           }
-          int index = _slotArray.indexOf(_selectedTimeSlot);
+          int index = _slotArray!.indexOf(_selectedTimeSlot);
           if (index != null && index >= 0) {
-            _scrollController.animateTo(_widgetSize * index.toDouble(),
+            _scrollController!.animateTo(_widgetSize * index.toDouble(),
                 duration: Duration(milliseconds: 50), curve: Curves.easeInOut);
           }
         }
@@ -2031,15 +2052,15 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
 
   void _processZestMoneyQueries(
       InitPayment initPayment, InitPaymentResponse initPaymentResponse) {
-    _bookingBloc.processZestMoney(initPaymentResponse).then((value) {
+    _bookingBloc!.processZestMoney(initPaymentResponse).then((value) {
       {
         if (value is RequestSuccess) {
-          ZestMoneyResponseModel zestMoneyResponseModel = value.response;
+          ZestMoneyResponseModel? zestMoneyResponseModel = value.response;
           if (zestMoneyResponseModel != null &&
               zestMoneyResponseModel.success != null &&
-              zestMoneyResponseModel.success &&
+              zestMoneyResponseModel.success! &&
               zestMoneyResponseModel.data != null &&
-              zestMoneyResponseModel.data.trim().isNotEmpty) {
+              zestMoneyResponseModel.data!.trim().isNotEmpty) {
             _openWebViewWithDynamicUrl(
                 zestMoneyResponseModel, initPaymentResponse);
             return;
@@ -2065,7 +2086,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
       _toogleWebViewValue(false);
       if (val == null) {
         AnalyticsProvider().registerEvent(AnalyticsKeys.beginCheckoutKey);
-        _bookingBloc.cancelPayment(initPaymentResponse.id);
+        _bookingBloc!.cancelPayment(initPaymentResponse.id);
         return;
       }
       if (val.toString().contains("success")) {
@@ -2107,7 +2128,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
       _toogleWebViewValue(false);
       if (val == null) {
         AnalyticsProvider().registerEvent(AnalyticsKeys.beginCheckoutKey);
-        _bookingBloc.cancelPayment(_initPaymentResponse.id);
+        _bookingBloc!.cancelPayment(_initPaymentResponse.id);
         return;
       }
       if (val.toString().contains("success")) {
@@ -2138,7 +2159,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
   // }
 
   Widget _getPatientDetailsFillUpView() {
-    return (_userProfileInfo == null || _userProfileInfo.user == null)
+    return (_userProfileInfo == null || _userProfileInfo!.user == null)
         ? Container()
         : Column(
             children: <Widget>[
@@ -2227,11 +2248,11 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
                                       FilteringTextInputFormatter.digitsOnly
                                     ],
                                     maxLength: 3,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         color: PlunesColors.BLACKCOLOR,
                                         fontSize: 15,
                                         fontWeight: FontWeight.normal),
-                                    decoration: InputDecoration(
+                                    decoration: const InputDecoration(
                                         border: InputBorder.none,
                                         counterText: "",
                                         labelText: "Enter age",
@@ -2280,7 +2301,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
                                           color: PlunesColors.GREYCOLOR,
                                           fontSize: 13),
                                     ),
-                                    onChanged: (String gender) {
+                                    onChanged: (String? gender) {
                                       _gender = gender;
                                       _setState();
                                     },
@@ -2319,7 +2340,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
         child: Card(
             color: Colors.white,
             elevation: 3.0,
-            margin: EdgeInsets.only(top: AppConfig.getMediaQuery().padding.top),
+            margin:
+                EdgeInsets.only(top: AppConfig.getMediaQuery()!.padding.top),
             child: ListTile(
               leading: Container(
                   padding: EdgeInsets.all(5),
@@ -2373,7 +2395,44 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
   }
 
   void _addToCart(InitPayment _initPayment) {
-    _cartMainBloc.addItemToCart(_initPayment.initiatePaymentToJson());
+    _isProcessing = true;
+    _setState();
+    _cartMainBloc!
+        .addItemToCart(_initPayment.initiatePaymentToJson())
+        .then((requestState) {
+      _isProcessing = false;
+
+      if (requestState is RequestSuccess) {
+        String message = requestState.response.toString();
+        _cartCount =  (_cartCount!)+1;
+                print("_cartCount_cartCount");
+                print(_cartCount);
+                Future.delayed(Duration(milliseconds: 20))
+                    .then((value) async {
+                  _setState();
+                  showDialog(context: context,
+                      builder: (context) {
+                        return CustomWidgets()
+                            .showAddToCartSuccessPopup(
+                                scaffoldKey, message);
+                      }).then((value) {
+                    if (value != null) {
+                      _openCartScreen();
+                    }
+                  });
+                });
+      } else if (requestState is RequestInProgress) {
+        return CustomWidgets().getProgressIndicator();
+
+      } else if (requestState is RequestFailed) {
+        Future.delayed(Duration(milliseconds: 20))
+                    .then((value) async {
+                  _showInSnackBar(requestState!.failureCause);
+                });
+      }
+
+      _setState();
+    });
   }
 
   bool _hasFilledDetails() {
@@ -2381,17 +2440,17 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
       return true;
     }
     bool _hasFilledDetails = true;
-    String _message;
-    if (_patientNameController.text.trim().isEmpty ||
-        _patientNameController.text.trim().length < 2) {
+    String? _message;
+    if (_patientNameController!.text.trim().isEmpty ||
+        _patientNameController!.text.trim().length < 2) {
       _hasFilledDetails = false;
       _message = PlunesStrings.nameMustBeGreaterThanTwoChar;
-    } else if (_ageController.text.trim().isEmpty ||
-        _ageController.text.trim() == "0" ||
-        int.tryParse(_ageController.text) < 0) {
+    } else if (_ageController!.text.trim().isEmpty ||
+        _ageController!.text.trim() == "0" ||
+        int.tryParse(_ageController!.text)! < 0) {
       _hasFilledDetails = false;
       _message = PlunesStrings.enterValidAge;
-    } else if (_gender == null || _gender.isEmpty) {
+    } else if (_gender == null || _gender!.isEmpty) {
       _hasFilledDetails = false;
       _message = PlunesStrings.pleaseSelectYourGender;
     }
@@ -2671,30 +2730,40 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
       child: InkWell(
         onTap: () {
           try {
-            _imagePicker
+            _imagePicker!
                 .pickFile(context, fileType: FileType.any)
                 .then((value) {
+                  print("data_response1:$value");
+                  print("data_response2:${value!.files}");
+                  print("data_response3:${value!.paths}");
+
               if (value != null &&
-                  value.path != null &&
-                  value.path.trim().isNotEmpty &&
-                  value.path.contains(".")) {
-                // print("path ${value.path}");
-                String _fileExtension = value.path.split(".")?.last;
+                  value.paths != null &&
+                  value.paths.toString().trim().isNotEmpty &&
+                  value.paths.toString().contains(".")) {
+                print("path______${value.paths}");
+                String _fileExtension = value.paths.toString().replaceAll("[", "").replaceAll("]", "").split(".")!.last;
+
+                print("path______:${_fileExtension}");
                 if (_fileExtension != null &&
                     (_fileExtension.toLowerCase() ==
                         Constants.pdfExtension.toLowerCase())) {
-                  _uploadInsuranceFile(value,
+                  _uploadInsuranceFile(File(value.paths[0]!), false,
                       fileType: Constants.policyKey.toString());
                 } else {
                   _showMessagePopup(PlunesStrings.selectValidDocWarningText);
                 }
               } else {
+                print("path______else:${value}");
+
                 _showMessagePopup(PlunesStrings.selectValidDocWarningText);
               }
             }).then((error) {
               print(error);
-            });
+              print("path______error:${error}");
+            } as Future<void> Function(Null));
           } catch (e) {
+            print("path______errore:${e.toString()}");
             print(e);
           }
         },
@@ -2717,8 +2786,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
                 child: Text(
                   "Upload Report",
                   textAlign: TextAlign.center,
-                  style:
-                      TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 12),
+                  style: const TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 12),
                 ),
               )
             ],
@@ -2799,16 +2867,16 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
                   if (text != null &&
                       text.trim().isNotEmpty &&
                       _insuranceModel != null &&
-                      _insuranceModel.data != null &&
-                      _insuranceModel.data.isNotEmpty) {
+                      _insuranceModel!.data != null &&
+                      _insuranceModel!.data!.isNotEmpty) {
                     _searchedItemList = [];
-                    _insuranceModel.data.forEach((element) {
+                    _insuranceModel!.data!.forEach((element) {
                       if (element.insurancePartner != null &&
-                          element.insurancePartner.trim().isNotEmpty &&
-                          element.insurancePartner
+                          element.insurancePartner!.trim().isNotEmpty &&
+                          element.insurancePartner!
                               .toLowerCase()
                               .contains(text.trim().toLowerCase())) {
-                        _searchedItemList.add(element);
+                        _searchedItemList!.add(element);
                       }
                     });
                     _setState();
@@ -2840,7 +2908,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
                         child: Icon(Icons.edit),
                       ),
                       onTap: () {
-                        _policySearchController.text = "";
+                        _policySearchController!.text = "";
                         _insuranceProvider = null;
                         _searchedItemList = [];
                         _setState();
@@ -2877,13 +2945,13 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
               maxHeight: AppConfig.verticalBlockSize * 35,
               minHeight: AppConfig.verticalBlockSize * 0.5,
             ),
-            child: _getILISTWidget((_policySearchController.text
+            child: _getILISTWidget((_policySearchController!.text
                         .trim()
                         .isNotEmpty &&
                     _insuranceProvider == null &&
-                    (_searchedItemList == null || _searchedItemList.isEmpty))
+                    (_searchedItemList == null || _searchedItemList!.isEmpty))
                 ? _list
-                : (_searchedItemList != null && _searchedItemList.isNotEmpty)
+                : (_searchedItemList != null && _searchedItemList!.isNotEmpty)
                     ? _searchedItemList
                     : _insuranceModel?.data),
           );
@@ -2891,21 +2959,23 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
 
   void _getInsuranceList() async {
     _fetchingInsuranceList = true;
-    RequestState requestState =
-        await UserBloc().getInsuranceList(widget.profId);
-    if (requestState is RequestSuccess) {
-      _insuranceModel = requestState.response;
-    } else if (requestState is RequestFailed) {
-      // _userFailureCause = requestState.failureCause;
-    }
-    _fetchingInsuranceList = false;
-    _setState();
+    await UserBloc().getInsuranceList(widget.profId).then((requestState) {
+      if (requestState is RequestSuccess) {
+        print("insurance_model_success-->RequestSuccess");
+        _insuranceModel = requestState.response;
+      } else if (requestState is RequestFailed) {
+        print("insurance_model_success-->RequestFailed");
+        _userFailureCause = requestState.failureCause;
+      }
+      _fetchingInsuranceList = false;
+      _setState();
+    });
   }
 
-  void _uploadInsuranceFile(File file, {String fileType}) {
+  void _uploadInsuranceFile(File file, bool isImage, {String? fileType}) {
     _isFetchingDocHosInfo = true;
     _setState();
-    UserBloc().uploadInsuranceFile(file, fileType: fileType).then((value) {
+    UserBloc().uploadInsuranceFile(file, isImage, fileType: fileType).then((value) {
       _isFetchingDocHosInfo = false;
       _setState();
       if (value is RequestSuccess) {
@@ -2987,7 +3057,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
 
   ScrollController _scrollControllerForScrollBar = ScrollController();
 
-  Widget _getILISTWidget(List<InsuranceProvider> list) {
+  Widget _getILISTWidget(List<InsuranceProvider>? list) {
     return Scrollbar(
       isAlwaysShown: true,
       controller: _scrollControllerForScrollBar,
@@ -2998,15 +3068,15 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
           return InkWell(
             onDoubleTap: () {},
             onTap: () {
-              _insuranceProvider = list[index];
-              _policySearchController.text =
+              _insuranceProvider = list![index];
+              _policySearchController!.text =
                   _insuranceProvider?.insurancePartner ?? "";
               _setState();
             },
             child: Padding(
               padding: const EdgeInsets.all(5.0),
               child: Text(
-                "${list[index]?.insurancePartner ?? ""}",
+                "${list![index]?.insurancePartner ?? ""}",
                 style: TextStyle(fontSize: 15, color: PlunesColors.BLACKCOLOR),
               ),
             ),
@@ -3018,9 +3088,9 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
   }
 
   @override
-  fetchImageCallBack(File _image) {
+  fetchImageCallBack(_image) {
     if (_image != null && _image.path != null) {
-      _uploadInsuranceFile(_image, fileType: Constants.cardKey.toString());
+      _uploadInsuranceFile(_image, true, fileType: Constants.cardKey.toString());
     }
   }
 
@@ -3028,15 +3098,15 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
     if (widget.appointmentModel != null) {
       return true;
     } else if (_insuranceModel != null &&
-        _insuranceModel.data != null &&
-        _insuranceModel.data.isNotEmpty &&
+        _insuranceModel!.data != null &&
+        _insuranceModel!.data!.isNotEmpty &&
         _selectedIndex == 0) {
       bool _hasFilledDetails = true;
-      String _message;
+      String? _message;
       if (_insuranceProvider == null) {
         _hasFilledDetails = false;
         _message = "Please select your policy provider";
-      } else if (_policyNumberController.text.trim().isEmpty) {
+      } else if (_policyNumberController!.text.trim().isEmpty) {
         _hasFilledDetails = false;
         _message = "Please fill your policy number";
       }
@@ -3051,17 +3121,18 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
 }
 
 class PaymentSuccess extends StatefulWidget {
-  final String referenceID;
-  final String bookingId;
+  final String? referenceID;
+  final String? bookingId;
 
-  PaymentSuccess({Key key, this.referenceID, this.bookingId}) : super(key: key);
+  PaymentSuccess({Key? key, this.referenceID, this.bookingId})
+      : super(key: key);
 
   @override
   _PaymentSuccessState createState() => _PaymentSuccessState(referenceID);
 }
 
 class _PaymentSuccessState extends State<PaymentSuccess> {
-  final String bookingId;
+  final String? bookingId;
 
   _PaymentSuccessState(this.bookingId);
 
@@ -3100,7 +3171,7 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
             isDefaultAction: true,
             child: new Text("OK"),
             onPressed: () {
-              if (widget.bookingId != null && widget.bookingId.isNotEmpty) {
+              if (widget.bookingId != null && widget.bookingId!.isNotEmpty) {
                 Navigator.push(
                         context,
                         MaterialPageRoute(

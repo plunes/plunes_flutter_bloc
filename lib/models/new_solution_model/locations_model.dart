@@ -3,11 +3,11 @@ import 'package:plunes/models/doc_hos_models/common_models/facility_collection_m
 import 'package:plunes/models/solution_models/solution_model.dart';
 
 class LocationAndServiceModel {
-  bool success;
-  List<PopularCities> popularCities, otherLocations;
-  List<CatalogueData> popularServices, otherServices;
-  String message;
-  List<Facility> facilities;
+  bool? success;
+  List<PopularCities>? popularCities, otherLocations;
+  List<CatalogueData>? popularServices, otherServices;
+  String? message;
+  List<Facility>? facilities;
 
   LocationAndServiceModel(
       {this.success, this.popularCities, this.popularServices, this.message});
@@ -15,33 +15,33 @@ class LocationAndServiceModel {
   LocationAndServiceModel.fromJson(Map<String, dynamic> json) {
     success = json['success'];
     if (json['popularCities'] != null) {
-      popularCities = new List<PopularCities>();
+      popularCities = [];
       json['popularCities'].forEach((v) {
-        popularCities.add(new PopularCities.fromJson(v));
+        popularCities!.add(new PopularCities.fromJson(v));
       });
     }
     if (json['otherLocations'] != null) {
-      otherLocations = new List<PopularCities>();
+      otherLocations = [];
       json['otherLocations'].forEach((v) {
-        otherLocations.add(new PopularCities.fromJson(v));
+        otherLocations!.add(new PopularCities.fromJson(v));
       });
     }
     if (json['popularServices'] != null) {
-      popularServices = new List<CatalogueData>();
+      popularServices = [];
       json['popularServices'].forEach((v) {
-        popularServices.add(new CatalogueData.fromJson(v));
+        popularServices!.add(new CatalogueData.fromJson(v));
       });
     }
     if (json['otherServices'] != null) {
-      otherServices = new List<CatalogueData>();
+      otherServices = [];
       json['otherServices'].forEach((v) {
-        otherServices.add(new CatalogueData.fromJson(v));
+        otherServices!.add(new CatalogueData.fromJson(v));
       });
     }
     if (json['topFacilities'] != null) {
-      facilities = new List<Facility>();
+      facilities = [];
       json['topFacilities'].forEach((v) {
-        facilities.add(new Facility.fromJson(v));
+        facilities!.add(new Facility.fromJson(v));
       });
     }
     message = json['message'];
@@ -52,11 +52,11 @@ class LocationAndServiceModel {
     data['success'] = this.success;
     if (this.popularCities != null) {
       data['popularCities'] =
-          this.popularCities.map((v) => v.toJson()).toList();
+          this.popularCities!.map((v) => v.toJson()).toList();
     }
     if (this.popularServices != null) {
       data['popularServices'] =
-          this.popularServices.map((v) => v.toJson()).toList();
+          this.popularServices!.map((v) => v.toJson()).toList();
     }
     data['message'] = this.message;
     return data;
@@ -64,11 +64,11 @@ class LocationAndServiceModel {
 }
 
 class PopularCities {
-  Location location;
-  String sId;
-  String locality;
-  int iV;
-  String imageUrl;
+  Location? location;
+  String? sId;
+  String? locality;
+  int? iV;
+  String? imageUrl;
 
   PopularCities(
       {this.location, this.sId, this.locality, this.iV, this.imageUrl});
@@ -86,7 +86,7 @@ class PopularCities {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     if (this.location != null) {
-      data['location'] = this.location.toJson();
+      data['location'] = this.location!.toJson();
     }
     data['_id'] = this.sId;
     data['locality'] = this.locality;

@@ -5,12 +5,12 @@ import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/models/Models.dart';
 
 class SelectSpecialization extends StatefulWidget {
-  final List<SpecialityModel> spec;
-  final List selectedItemId, selectedItemData;
-  final String from;
+  final List<SpecialityModel>? spec;
+  final List? selectedItemId, selectedItemData;
+  final String? from;
 
   SelectSpecialization(
-      {Key key,
+      {Key? key,
       this.spec,
       this.from,
       this.selectedItemId,
@@ -25,17 +25,17 @@ class SelectSpecializationState extends State<SelectSpecialization> {
   final _searchController = TextEditingController();
   String teamName = '';
   bool icons = true;
-  List<dynamic> _selectedItemId = List();
-  List<dynamic> _selectedData = List();
+  List<dynamic>? _selectedItemId = [];
+  List<dynamic>? _selectedData = [];
 
-  List<SpecialityModel> specialization_filter_lists = new List();
-  List<bool> select = new List();
+  List<SpecialityModel> specialization_filter_lists = [];
+  List<bool> select = [];
   bool show_err_msg = false;
 
   @override
   void initState() {
     super.initState();
-    specialization_filter_lists.addAll(widget.spec);
+    specialization_filter_lists.addAll(widget.spec!);
     _selectedItemId = widget.selectedItemId;
     _selectedData = widget.selectedItemData;
   }
@@ -57,12 +57,12 @@ class SelectSpecializationState extends State<SelectSpecialization> {
                 onChanged: (text) {
                   setState(() {
                     specialization_filter_lists.clear();
-                    for (int i = 0; i < widget.spec.length; i++) {
-                      if (widget.spec[i].speciality
+                    for (int i = 0; i < widget.spec!.length; i++) {
+                      if (widget.spec![i].speciality
                           .toString()
                           .toLowerCase()
                           .contains(text)) {
-                        specialization_filter_lists.add(widget.spec[i]);
+                        specialization_filter_lists.add(widget.spec![i]);
                       }
                     }
                     if (text.length > 0) {
@@ -83,7 +83,7 @@ class SelectSpecializationState extends State<SelectSpecialization> {
                   setState(() {
                     _searchController.text = "";
                     icons = true;
-                    specialization_filter_lists.addAll(widget.spec);
+                    specialization_filter_lists.addAll(widget.spec!);
                   });
                 },
                 child: icons
@@ -154,9 +154,9 @@ class SelectSpecializationState extends State<SelectSpecialization> {
                     child: ListView.builder(
                       shrinkWrap: true,
                       itemBuilder: (BuildContext context, index) {
-                        int removePosition = _selectedItemId
+                        int removePosition = _selectedItemId!
                             .indexOf(specialization_filter_lists[index].id);
-                        return FlatButton(
+                        return ElevatedButton(
                           onPressed: () {
                             handleSelectionProcess(index, removePosition);
                           },
@@ -173,9 +173,9 @@ class SelectSpecializationState extends State<SelectSpecialization> {
                                         bottom: 8.0, top: 8.0),
                                     child: Text(
                                       specialization_filter_lists[index]
-                                          .speciality,
+                                          .speciality!,
                                       style: TextStyle(
-                                          color: _selectedItemId.indexOf(
+                                          color: _selectedItemId!.indexOf(
                                                       specialization_filter_lists[
                                                               index]
                                                           .id) >
@@ -188,7 +188,7 @@ class SelectSpecializationState extends State<SelectSpecialization> {
                                       ? Container(
                                           width: 20,
                                           child: Checkbox(
-                                              value: _selectedItemId.indexOf(
+                                              value: _selectedItemId!.indexOf(
                                                           specialization_filter_lists[
                                                                   index]
                                                               .id) >
@@ -288,9 +288,9 @@ class SelectSpecializationState extends State<SelectSpecialization> {
                 : Expanded(
                     child: ListView.builder(
                       itemBuilder: (BuildContext context, index) {
-                        int removePosition = _selectedItemId
+                        int removePosition = _selectedItemId!
                             .indexOf(specialization_filter_lists[index].id);
-                        return FlatButton(
+                        return ElevatedButton(
                           onPressed: () {
                             handleSelectionProcess(index, removePosition);
                           },
@@ -307,9 +307,9 @@ class SelectSpecializationState extends State<SelectSpecialization> {
                                         bottom: 8.0, top: 8.0),
                                     child: Text(
                                       specialization_filter_lists[index]
-                                          .speciality,
+                                          .speciality!,
                                       style: TextStyle(
-                                          color: _selectedItemId.indexOf(
+                                          color: _selectedItemId!.indexOf(
                                                       specialization_filter_lists[
                                                               index]
                                                           .id) >
@@ -322,7 +322,7 @@ class SelectSpecializationState extends State<SelectSpecialization> {
                                       ? Container(
                                           width: 20,
                                           child: Checkbox(
-                                              value: _selectedItemId.indexOf(
+                                              value: _selectedItemId!.indexOf(
                                                           specialization_filter_lists[
                                                                   index]
                                                               .id) >
@@ -369,29 +369,29 @@ class SelectSpecializationState extends State<SelectSpecialization> {
   void handleSelectionProcess(int index, int removePosition) {
     if (widget.from != null) {
       if (removePosition > -1) {
-        _selectedData.remove(specialization_filter_lists[index].speciality);
-        _selectedItemId.remove(specialization_filter_lists[index].id);
+        _selectedData!.remove(specialization_filter_lists[index].speciality);
+        _selectedItemId!.remove(specialization_filter_lists[index].id);
         show_err_msg = false;
       } else {
-        if (widget.from == Constants.doctor && _selectedItemId.length > 4) {
+        if (widget.from == Constants.doctor && _selectedItemId!.length > 4) {
           show_err_msg = true;
         } else {
           show_err_msg = false;
-          _selectedData.add(specialization_filter_lists[index].speciality);
-          _selectedItemId.add(specialization_filter_lists[index].id);
+          _selectedData!.add(specialization_filter_lists[index].speciality);
+          _selectedItemId!.add(specialization_filter_lists[index].id);
         }
       }
     } else {
-      if (_selectedItemId.contains(specialization_filter_lists[index].id)) {
-        _selectedData.remove(specialization_filter_lists[index].speciality);
-        _selectedItemId.remove(specialization_filter_lists[index].id);
+      if (_selectedItemId!.contains(specialization_filter_lists[index].id)) {
+        _selectedData!.remove(specialization_filter_lists[index].speciality);
+        _selectedItemId!.remove(specialization_filter_lists[index].id);
       } else {
-        if (_selectedItemId.length > 0) {
-          _selectedItemId.clear();
-          _selectedData.clear();
+        if (_selectedItemId!.length > 0) {
+          _selectedItemId!.clear();
+          _selectedData!.clear();
         }
-        _selectedData.add(specialization_filter_lists[index].speciality);
-        _selectedItemId.add(specialization_filter_lists[index].id);
+        _selectedData!.add(specialization_filter_lists[index].speciality);
+        _selectedItemId!.add(specialization_filter_lists[index].id);
       }
       Navigator.of(context)
           .pop({'SelectedId': _selectedItemId, 'SelectedData': _selectedData});

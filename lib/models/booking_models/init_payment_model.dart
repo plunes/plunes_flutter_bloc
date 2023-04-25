@@ -1,23 +1,23 @@
 class InitPayment {
-  String professional_id;
-  String sol_id;
-  String service_id;
-  String time_slot;
-  String appointmentTime;
-  String percentage;
-  int price_pos;
-  bool creditsUsed;
-  String docHosServiceId;
-  String user_id;
-  String couponName,
+  String? professional_id;
+  String? sol_id;
+  String? service_id;
+  String? time_slot;
+  String? appointmentTime;
+  String? percentage;
+  int? price_pos;
+  bool? creditsUsed;
+  String? docHosServiceId;
+  String? user_id;
+  String? couponName,
       bookIn,
       doctorId,
       patientName,
       patientMobileNumber,
       patientAge,
       patientSex;
-  bool haveInsurance;
-  InsuranceDetail insuranceDetail;
+  bool? haveInsurance;
+  InsuranceDetail? insuranceDetail;
 
   InitPayment(
       {this.docHosServiceId,
@@ -43,7 +43,7 @@ class InitPayment {
   Map<String, dynamic> initiatePaymentToJson() {
     Map<String, dynamic> body = {
       "solutionServiceId":
-          sol_id + "|" + service_id + "|" + price_pos.toString(),
+          sol_id! + "|" + service_id! + "|" + price_pos.toString(),
       "serviceId": docHosServiceId,
       "paymentPercent": percentage,
       "timeSlot": time_slot,
@@ -66,8 +66,8 @@ class InitPayment {
 }
 
 class BookingInstallment {
-  String bookingId, paymentPercent;
-  bool creditsUsed, zestMoney;
+  String? bookingId, paymentPercent;
+  bool? creditsUsed, zestMoney;
 
   BookingInstallment(
       {this.bookingId, this.creditsUsed, this.paymentPercent, this.zestMoney});
@@ -83,9 +83,9 @@ class BookingInstallment {
 }
 
 class ZestMoneyResponseModel {
-  bool success;
-  String data;
-  String msg;
+  bool? success;
+  String? data;
+  String? msg;
 
   ZestMoneyResponseModel({this.success, this.data, this.msg});
 
@@ -105,11 +105,11 @@ class ZestMoneyResponseModel {
 }
 
 class InsuranceDetail {
-  String insuranceId;
-  String policyNumber;
-  String insuranceImage;
-  String insuranceDoc;
-  String insurancePartner;
+  String? insuranceId;
+  String? policyNumber;
+  String? insuranceImage;
+  String? insuranceDoc;
+  String? insurancePartner;
 
   InsuranceDetail(
       {this.insurancePartner,

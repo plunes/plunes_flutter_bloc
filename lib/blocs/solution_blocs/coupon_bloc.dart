@@ -4,9 +4,9 @@ import 'package:plunes/requester/request_states.dart';
 import 'package:rxdart/rxdart.dart';
 
 class CouponBloc extends BlocBase {
-  final _couponTextStreamProvider = PublishSubject<RequestState>();
+  final _couponTextStreamProvider = PublishSubject<RequestState?>();
 
-  Observable<RequestState> get couponTextStream =>
+  Stream<RequestState?> get couponTextStream =>
       _couponTextStreamProvider.stream;
 
   Future<RequestState> sendCouponDetails(String couponDetail) async {
@@ -29,7 +29,7 @@ class CouponBloc extends BlocBase {
     return result;
   }
 
-  void addIntoCouponTextProviderStream(RequestState state) {
+  void addIntoCouponTextProviderStream(RequestState? state) {
     addStateInGenericStream(_couponTextStreamProvider, state);
   }
 }

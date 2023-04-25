@@ -14,9 +14,9 @@ import 'package:plunes/ui/afterLogin/profile_screens/profile_screen.dart';
 
 // ignore: must_be_immutable
 class BookConsultationScreen extends BaseActivity {
-  List<DoctorsData> docList;
-  String profId;
-  bool isAlreadyInBookingProcess;
+  List<DoctorsData>? docList;
+  String? profId;
+  bool? isAlreadyInBookingProcess;
 
   BookConsultationScreen(this.docList, this.profId,
       {this.isAlreadyInBookingProcess});
@@ -25,13 +25,15 @@ class BookConsultationScreen extends BaseActivity {
   _TestBookingScreenState createState() => _TestBookingScreenState();
 }
 
-class _TestBookingScreenState extends BaseState<BookConsultationScreen> {
-  TextEditingController _textController;
+// class _TestBookingScreenState extends BaseState<BookConsultationScreen> {
+class _TestBookingScreenState extends State<BookConsultationScreen> {
+final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  TextEditingController? _textController;
   List<DocServiceData> _serviceNameList = [];
-  String _selectedService;
-  StreamController _streamConForDocTiming;
+  String? _selectedService;
+  StreamController? _streamConForDocTiming;
   int _totalCount = 0;
-  Timer _timerForEverySecond;
+  Timer? _timerForEverySecond;
 
   _onTextClear() {
     if (mounted) {
@@ -57,7 +59,7 @@ class _TestBookingScreenState extends BaseState<BookConsultationScreen> {
     _timerForEverySecond = Timer.periodic(Duration(seconds: 10), (timer) {
       _timerForEverySecond = timer;
       if (mounted) {
-        _streamConForDocTiming.add(null);
+        _streamConForDocTiming!.add(null);
       } else if (timer != null && timer.isActive) {
         timer.cancel();
       }
@@ -78,7 +80,7 @@ class _TestBookingScreenState extends BaseState<BookConsultationScreen> {
       top: false,
       child: Scaffold(
           key: scaffoldKey,
-          appBar: widget.getAppBar(context, "Book Consultation", true),
+          appBar: widget.getAppBar(context, "Book Consultation", true) as PreferredSizeWidget?,
           body: _getBodyWidget()),
     );
   }
@@ -99,7 +101,7 @@ class _TestBookingScreenState extends BaseState<BookConsultationScreen> {
                       .getSearchBarForTestConsProcedureScreens(_textController,
                           "Search consultation", () => _onTextClear()),
                 ),
-                _textController.text.trim().isNotEmpty
+                _textController!.text.trim().isNotEmpty
                     ? Container()
                     : _getListOfNumberOfDoctorAvailableForSpecificService(),
               ],
@@ -110,20 +112,20 @@ class _TestBookingScreenState extends BaseState<BookConsultationScreen> {
               shrinkWrap: true,
               padding: EdgeInsets.zero,
               itemBuilder: (context, index) {
-                if (_textController.text.trim().isNotEmpty &&
-                    widget.docList[index].department
+                if (_textController!.text.trim().isNotEmpty &&
+                    widget.docList![index].department!
                         .trim()
                         .toLowerCase()
-                        .contains(_textController.text.trim().toLowerCase())) {
+                        .contains(_textController!.text.trim().toLowerCase())) {
                   return _showConsWidget(index);
                 }
-                if (widget.docList[index].department.trim().toLowerCase() ==
+                if (widget.docList![index].department!.trim().toLowerCase() ==
                         _selectedService &&
-                    _textController.text.trim().isEmpty) {
+                    _textController!.text.trim().isEmpty) {
                   return _showConsWidget(index);
                 }
                 _totalCount++;
-                return _totalCount == widget.docList.length
+                return _totalCount == widget.docList!.length
                     ? Container(
                         height: AppConfig.verticalBlockSize * 70,
                         child: Center(
@@ -131,7 +133,7 @@ class _TestBookingScreenState extends BaseState<BookConsultationScreen> {
                                 CustomWidgets().errorWidget("No match found!")))
                     : Container();
               },
-              itemCount: widget.docList.length ?? 0,
+              itemCount: widget.docList!.length ?? 0,
             ),
           ),
         ],
@@ -146,27 +148,27 @@ class _TestBookingScreenState extends BaseState<BookConsultationScreen> {
       highlightColor: Colors.transparent,
       onDoubleTap: () {},
       onTap: () {
-        if (widget.docList[index].id != null &&
-            widget.docList[index].id.trim().isNotEmpty) {
+        if (widget.docList![index].id != null &&
+            widget.docList![index].id!.trim().isNotEmpty) {
           Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => DoctorInfo(
                         widget.profId,
                         isDoc: true,
-                        docId: widget.docList[index].id,
+                        docId: widget.docList![index].id,
                         openEnterDetailScreen: () =>
-                            _openConsScreen(widget.docList[index]),
+                            _openConsScreen(widget.docList![index]),
                         isAlreadyInBookingProcess:
                             widget.isAlreadyInBookingProcess,
                       )));
         }
       },
-      child: StreamBuilder<Object>(
-          stream: _streamConForDocTiming.stream,
+      child: StreamBuilder<Object?>(
+          stream: _streamConForDocTiming!.stream,
           builder: (context, snapshot) {
-            return CommonWidgets().getConsultationWidget(widget.docList, index,
-                () => _openConsScreen(widget.docList[index]));
+            return CommonWidgets().getConsultationWidget(widget.docList!, index,
+                () => _openConsScreen(widget.docList![index]));
           }),
     );
   }
@@ -175,15 +177,15 @@ class _TestBookingScreenState extends BaseState<BookConsultationScreen> {
     if (widget.isAlreadyInBookingProcess != null) {
       return;
     }
-    num servicePrice = 0;
+    num? servicePrice = 0;
     if (doctorsData != null &&
         doctorsData.specialities != null &&
-        doctorsData.specialities.isNotEmpty &&
-        doctorsData.specialities.first.services != null &&
-        doctorsData.specialities.first.services.isNotEmpty &&
-        doctorsData.specialities.first.services.first.price != null &&
-        doctorsData.specialities.first.services.first.price > 0) {
-      servicePrice = doctorsData.specialities.first.services.first.price;
+        doctorsData.specialities!.isNotEmpty &&
+        doctorsData.specialities!.first.services != null &&
+        doctorsData.specialities!.first.services.isNotEmpty &&
+        doctorsData.specialities!.first.services.first.price != null &&
+        doctorsData.specialities!.first.services.first.price! > 0) {
+      servicePrice = doctorsData.specialities!.first.services.first.price;
     }
     Navigator.push(
         context,
@@ -191,17 +193,17 @@ class _TestBookingScreenState extends BaseState<BookConsultationScreen> {
             builder: (context) => EnterAdditionalUserDetailScr(
                 CatalogueData(
                   serviceId:
-                      doctorsData?.specialities?.first?.services?.first?.id,
-                  speciality: doctorsData?.specialities?.first?.speciality,
-                  specialityId: doctorsData?.specialities?.first?.id,
+                      doctorsData.specialities?.first.services.first.id,
+                  speciality: doctorsData.specialities?.first.speciality,
+                  specialityId: doctorsData.specialities?.first.id,
                   service: doctorsData
-                      ?.specialities?.first?.services?.first?.service,
+                      .specialities?.first.services.first.service,
                   family: doctorsData
-                      ?.specialities?.first?.services?.first?.service,
+                      .specialities?.first.services.first.service,
                   category: doctorsData
-                      ?.specialities?.first?.services?.first?.category,
+                      .specialities?.first.services.first.category,
                   details: doctorsData
-                      ?.specialities?.first?.services?.first?.details,
+                      .specialities?.first.services.first.details,
                   isFromProfileScreen: true,
                   profId: widget.profId,
                   doctorId: doctorsData.id,
@@ -240,13 +242,13 @@ class _TestBookingScreenState extends BaseState<BookConsultationScreen> {
                   border: Border.all(
                       color:
                           Color(CommonMethods.getColorHexFromStr("#70707057"))),
-                  color: _serviceNameList[index].isSelected
+                  color: _serviceNameList[index].isSelected!
                       ? Color(CommonMethods.getColorHexFromStr("#25B281"))
                       : Color(CommonMethods.getColorHexFromStr("#FAFBFD"))),
               child: Text(
                 _serviceNameList[index].serviceName ?? "",
                 style: TextStyle(
-                    color: _serviceNameList[index].isSelected
+                    color: _serviceNameList[index].isSelected!
                         ? PlunesColors.WHITECOLOR
                         : Color(CommonMethods.getColorHexFromStr("#303030")),
                     fontSize: 12),
@@ -254,25 +256,25 @@ class _TestBookingScreenState extends BaseState<BookConsultationScreen> {
             ),
           );
         },
-        itemCount: _serviceNameList?.length ?? 0,
+        itemCount: _serviceNameList.length ?? 0,
       ),
     );
   }
 
   void _initServiceList() {
-    if (widget.docList == null || widget.docList.isEmpty) {
+    if (widget.docList == null || widget.docList!.isEmpty) {
       return;
     }
     _serviceNameList = [];
-    widget.docList.forEach((element) {
+    widget.docList!.forEach((element) {
       if (element.designation != null &&
-          element.designation.trim().isNotEmpty) {
+          element.designation!.trim().isNotEmpty) {
         DocServiceData _docInfo = DocServiceData(
-            serviceName: element.department.trim().toLowerCase(),
+            serviceName: element.department!.trim().toLowerCase(),
             numOfDocs: 1,
             isSelected: false);
         if (_serviceNameList.contains(_docInfo)) {
-          _serviceNameList[_serviceNameList.indexOf(_docInfo)].numOfDocs++;
+          _serviceNameList[_serviceNameList.indexOf(_docInfo)].numOfDocs!+1;
         } else {
           _serviceNameList.add(_docInfo);
         }
@@ -294,7 +296,7 @@ class _TestBookingScreenState extends BaseState<BookConsultationScreen> {
 }
 
 class DocServiceData {
-  String serviceName;
+  String? serviceName;
 
   @override
   bool operator ==(Object other) =>
@@ -305,8 +307,8 @@ class DocServiceData {
 
   @override
   int get hashCode => serviceName.hashCode;
-  bool isSelected;
-  int numOfDocs;
+  bool? isSelected;
+  int? numOfDocs;
 
   DocServiceData({this.serviceName, this.isSelected, this.numOfDocs});
 }

@@ -7,7 +7,7 @@ import 'package:plunes/res/Http_constants.dart';
 import 'package:plunes/resources/network/Urls.dart';
 
 class ConsultationTestProcedureRepo {
-  static ConsultationTestProcedureRepo _instance;
+  static ConsultationTestProcedureRepo? _instance;
 
   ConsultationTestProcedureRepo._init();
 
@@ -15,7 +15,7 @@ class ConsultationTestProcedureRepo {
     if (_instance == null) {
       _instance = ConsultationTestProcedureRepo._init();
     }
-    return _instance;
+    return _instance!;
   }
 
   Future<RequestState> getConsultations() async {
@@ -23,11 +23,11 @@ class ConsultationTestProcedureRepo {
         requestType: HttpRequestMethods.HTTP_GET,
         queryParameter: {"userId": UserManager().getUserDetails().uid},
         url: Urls.GET_CONSULTATION_API);
-    if (serverResponse.isRequestSucceed) {
+    if (serverResponse!.isRequestSucceed!) {
       List<CatalogueData> _solutions = [];
-      if (serverResponse.response.data != null &&
-          serverResponse.response.data["data"] != null) {
-        Iterable _items = serverResponse.response.data["data"];
+      if (serverResponse.response!.data != null &&
+          serverResponse.response!.data["data"] != null) {
+        Iterable _items = serverResponse.response!.data["data"];
         _solutions = _items
             .map((item) => CatalogueData.fromJson(item))
             .toList(growable: true);
@@ -42,11 +42,11 @@ class ConsultationTestProcedureRepo {
     var serverResponse = await DioRequester().requestMethod(
         requestType: HttpRequestMethods.HTTP_GET,
         url: isProcedure ? Urls.GET_PROCEDURES_API : Urls.GET_TESTS_API);
-    if (serverResponse.isRequestSucceed) {
+    if (serverResponse!.isRequestSucceed!) {
       List<TestAndProcedureResponseModel> _solutions = [];
-      if (serverResponse.response.data != null &&
-          serverResponse.response.data["data"] != null) {
-        Iterable _items = serverResponse.response.data["data"];
+      if (serverResponse.response!.data != null &&
+          serverResponse.response!.data["data"] != null) {
+        Iterable _items = serverResponse.response!.data["data"];
         _solutions = _items
             .map((item) => TestAndProcedureResponseModel.fromJson(item))
             .toList(growable: true);

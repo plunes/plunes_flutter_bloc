@@ -2,10 +2,10 @@ import 'package:plunes/models/new_solution_model/medical_file_upload_response_mo
 import 'package:plunes/models/solution_models/solution_model.dart';
 
 class RealTimeInsightsResponse {
-  bool success;
-  List<RealInsight> data;
-  int timer;
-  String preferredTime, maximumTime;
+  bool? success;
+  List<RealInsight>? data;
+  int? timer;
+  String? preferredTime, maximumTime;
 
   RealTimeInsightsResponse({this.success, this.data, this.timer});
 
@@ -15,9 +15,9 @@ class RealTimeInsightsResponse {
     maximumTime = json['maximumTime'];
     preferredTime = json["preferredTime"];
     if (json['data'] != null) {
-      data = new List<RealInsight>();
+      data = [];
       json['data'].forEach((v) {
-        data.add(new RealInsight.fromJson(v));
+        data!.add(new RealInsight.fromJson(v));
       });
     }
   }
@@ -26,19 +26,19 @@ class RealTimeInsightsResponse {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['success'] = this.success;
     if (this.data != null) {
-      data['data'] = this.data.map((v) => v.toJson()).toList();
+      data['data'] = this.data!.map((v) => v.toJson()).toList();
     }
     return data;
   }
 }
 
 class RealInsight {
-  String solutionId;
-  String serviceId;
-  String userName;
-  String profName, centerLocation;
-  String serviceName, expirationMessage, imageUrl, professionalId;
-  bool negotiating,
+  String? solutionId;
+  String? serviceId;
+  String? userName;
+  String? profName, centerLocation;
+  String? serviceName, expirationMessage, imageUrl, professionalId;
+  bool? negotiating,
       expired,
       booked,
       professionalBooked,
@@ -46,21 +46,21 @@ class RealInsight {
       isCardOpened,
       hasUserReport,
       isPrice;
-  int timeRemaining, expirationTimer;
-  num userPrice, compRate, distance, recommendation, min, max;
-  int createdAt, expiredAt;
-  List<DataPoint> dataPoints;
-  List<Map<String, dynamic>> specialOffers;
-  String category;
-  List<ServiceChildren> serviceChildren;
+  int? timeRemaining, expirationTimer;
+  num? userPrice, compRate, distance, recommendation, min, max;
+  int? createdAt, expiredAt;
+  List<DataPoint>? dataPoints;
+  List<Map<String, dynamic>>? specialOffers;
+  String? category;
+  List<ServiceChildren>? serviceChildren;
 
   @override
   String toString() {
     return 'RealInsight{solutionId: $solutionId, serviceId: $serviceId, userName: $userName, profName: $profName, centerLocation: $centerLocation, serviceName: $serviceName, expirationMessage: $expirationMessage, negotiating: $negotiating, expired: $expired, timeRemaining: $timeRemaining, userPrice: $userPrice, createdAt: $createdAt, suggested: $suggested, booked: $booked, professionalBooked: $professionalBooked, dataPoints: $dataPoints, compRate: $compRate, distance: $distance, recommendation $recommendation}';
   }
 
-  bool suggested;
-  UserReport userReport;
+  bool? suggested;
+  UserReport? userReport;
 
   RealInsight(
       {this.solutionId,
@@ -120,13 +120,13 @@ class RealInsight {
     if (json['dataPoints'] != null) {
       dataPoints = [];
       json['dataPoints'].forEach((v) {
-        dataPoints.add(new DataPoint.fromJson(v));
+        dataPoints!.add(new DataPoint.fromJson(v));
       });
     }
     if (json['serviceChildren'] != null) {
-      serviceChildren = new List<ServiceChildren>();
+      serviceChildren = [];
       json['serviceChildren'].forEach((v) {
-        serviceChildren.add(new ServiceChildren.fromJson(v));
+        serviceChildren!.add(new ServiceChildren.fromJson(v));
       });
     }
     compRate = json['competitionRate'];
@@ -141,7 +141,7 @@ class RealInsight {
     }
     specialOffers = [];
     if (json["specialOffers"] != null && json["specialOffers"].isNotEmpty) {
-      Iterable iterable = json["specialOffers"];
+      Iterable? iterable = json["specialOffers"];
       if (iterable != null && iterable.isNotEmpty) {
         iterable.forEach((element) {
           if (element != null) {
@@ -149,7 +149,7 @@ class RealInsight {
             if (mapItem != null && mapItem.isNotEmpty) {
               mapItem.forEach((key, value) {
                 if (value != null && value.toString().trim().isNotEmpty) {
-                  specialOffers.add({key: value});
+                  specialOffers!.add({key: value});
                 }
               });
             }
@@ -181,7 +181,7 @@ class RealInsight {
 
 class DataPoint {
 //  String id;
-  num x, y;
+  num? x, y;
 
   @override
   String toString() {
@@ -198,15 +198,15 @@ class DataPoint {
 }
 
 class UserReport {
-  String reportType;
-  bool treatedPreviously, haveInsurance;
-  String id;
-  List<String> reportUrl, imageUrl;
-  List<UploadedReportUrl> videoUrl;
-  int createdAt;
-  String serviceId;
-  String userId;
-  String description, additionalDetails;
+  String? reportType;
+  bool? treatedPreviously, haveInsurance;
+  String? id;
+  List<String>? reportUrl, imageUrl;
+  List<UploadedReportUrl>? videoUrl;
+  int? createdAt;
+  String? serviceId;
+  String? userId;
+  String? description, additionalDetails;
 
   UserReport(
       {this.imageUrl,
@@ -233,7 +233,7 @@ class UserReport {
         if (element != null &&
             element["imageUrl"] != null &&
             element["imageUrl"].toString().isNotEmpty) {
-          imageUrl.add(element["imageUrl"].toString());
+          imageUrl!.add(element["imageUrl"].toString());
         }
       });
     }
@@ -243,14 +243,14 @@ class UserReport {
         if (element != null &&
             element["reportUrl"] != null &&
             element["reportUrl"].toString().isNotEmpty) {
-          reportUrl.add(element["reportUrl"].toString());
+          reportUrl!.add(element["reportUrl"].toString());
         }
       });
     }
     if (json["videoUrl"] != null && json["videoUrl"].isNotEmpty) {
       videoUrl = [];
       json['videoUrl'].forEach((element) {
-        videoUrl.add(UploadedReportUrl.fromJson(element));
+        videoUrl!.add(UploadedReportUrl.fromJson(element));
       });
     }
     createdAt = json['createdAt'];
@@ -262,9 +262,9 @@ class UserReport {
 }
 
 class UserReportOuterModel {
-  bool success;
-  UserReportModel data;
-  String message;
+  bool? success;
+  UserReportModel? data;
+  String? message;
 
   UserReportOuterModel({this.success, this.data, this.message});
 
@@ -280,7 +280,7 @@ class UserReportOuterModel {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['success'] = this.success;
     if (this.data != null) {
-      data['data'] = this.data.toJson();
+      data['data'] = this.data!.toJson();
     }
     data['message'] = this.message;
     return data;
@@ -288,19 +288,19 @@ class UserReportOuterModel {
 }
 
 class UserReportModel {
-  String reportType;
-  bool treatedPreviously;
-  bool insurance;
-  String sId;
-  List<VideoUrl> videoUrl;
-  List<ImageUrl> imageUrl;
-  List<ReportUrl> reportUrl;
-  int createdAt;
-  String serviceId;
-  String userId;
-  String description;
-  String additionalDetails;
-  int iV;
+  String? reportType;
+  bool? treatedPreviously;
+  bool? insurance;
+  String? sId;
+  List<VideoUrl>? videoUrl;
+  List<ImageUrl>? imageUrl;
+  List<ReportUrl>? reportUrl;
+  int? createdAt;
+  String? serviceId;
+  String? userId;
+  String? description;
+  String? additionalDetails;
+  int? iV;
 
   UserReportModel(
       {this.reportType,
@@ -323,21 +323,21 @@ class UserReportModel {
     insurance = json['insurance'];
     sId = json['_id'];
     if (json['videoUrl'] != null) {
-      videoUrl = new List<VideoUrl>();
+      videoUrl = [];
       json['videoUrl'].forEach((v) {
-        videoUrl.add(new VideoUrl.fromJson(v));
+        videoUrl!.add(new VideoUrl.fromJson(v));
       });
     }
     if (json['imageUrl'] != null) {
-      imageUrl = new List<ImageUrl>();
+      imageUrl = [];
       json['imageUrl'].forEach((v) {
-        imageUrl.add(new ImageUrl.fromJson(v));
+        imageUrl!.add(new ImageUrl.fromJson(v));
       });
     }
     if (json['reportUrl'] != null) {
-      reportUrl = new List<ReportUrl>();
+      reportUrl = [];
       json['reportUrl'].forEach((v) {
-        reportUrl.add(new ReportUrl.fromJson(v));
+        reportUrl!.add(new ReportUrl.fromJson(v));
       });
     }
     createdAt = json['createdAt'];
@@ -355,13 +355,13 @@ class UserReportModel {
     data['insurance'] = this.insurance;
     data['_id'] = this.sId;
     if (this.videoUrl != null) {
-      data['videoUrl'] = this.videoUrl.map((v) => v.toJson()).toList();
+      data['videoUrl'] = this.videoUrl!.map((v) => v.toJson()).toList();
     }
     if (this.imageUrl != null) {
-      data['imageUrl'] = this.imageUrl.map((v) => v.toJson()).toList();
+      data['imageUrl'] = this.imageUrl!.map((v) => v.toJson()).toList();
     }
     if (this.reportUrl != null) {
-      data['reportUrl'] = this.reportUrl.map((v) => v.toJson()).toList();
+      data['reportUrl'] = this.reportUrl!.map((v) => v.toJson()).toList();
     }
     data['createdAt'] = this.createdAt;
     data['serviceId'] = this.serviceId;
@@ -374,9 +374,9 @@ class UserReportModel {
 }
 
 class VideoUrl {
-  String sId;
-  String videoUrl;
-  String thumbnail;
+  String? sId;
+  String? videoUrl;
+  String? thumbnail;
 
   VideoUrl({this.sId, this.videoUrl, this.thumbnail});
 
@@ -396,8 +396,8 @@ class VideoUrl {
 }
 
 class ImageUrl {
-  String sId;
-  String imageUrl;
+  String? sId;
+  String? imageUrl;
 
   ImageUrl({this.sId, this.imageUrl});
 
@@ -415,8 +415,8 @@ class ImageUrl {
 }
 
 class ReportUrl {
-  String sId;
-  String reportUrl;
+  String? sId;
+  String? reportUrl;
 
   ReportUrl({this.sId, this.reportUrl});
 

@@ -1,8 +1,8 @@
 class NewSpecialityModel {
-  bool success;
-  int size;
-  List<SpecData> data;
-  String message;
+  bool? success;
+  int? size;
+  List<SpecData>? data;
+  String? message;
 
   NewSpecialityModel({this.success, this.size, this.data, this.message});
 
@@ -10,9 +10,9 @@ class NewSpecialityModel {
     success = json['success'];
     size = json['size'];
     if (json['data'] != null) {
-      data = new List<SpecData>();
+      data = [];
       json['data'].forEach((v) {
-        data.add(new SpecData.fromJson(v));
+        data!.add(new SpecData.fromJson(v));
       });
     }
     message = json['message'];
@@ -23,7 +23,7 @@ class NewSpecialityModel {
     data['success'] = this.success;
     data['size'] = this.size;
     if (this.data != null) {
-      data['data'] = this.data.map((v) => v.toJson()).toList();
+      data['data'] = this.data!.map((v) => v.toJson()).toList();
     }
     data['message'] = this.message;
     return data;
@@ -31,12 +31,12 @@ class NewSpecialityModel {
 }
 
 class SpecData {
-  String sId;
-  List<Families> families;
-  String speciality;
-  String specialityId;
-  String definition;
-  String specailizationImage, specialityIconImage;
+  String? sId;
+  List<Families>? families;
+  String? speciality;
+  String? specialityId;
+  String? definition;
+  String? specailizationImage, specialityIconImage;
 
   SpecData(
       {this.sId,
@@ -50,9 +50,9 @@ class SpecData {
   SpecData.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
     if (json['families'] != null) {
-      families = new List<Families>();
+      families = [];
       json['families'].forEach((v) {
-        families.add(new Families.fromJson(v));
+        families!.add(new Families.fromJson(v));
       });
     }
     speciality = json['speciality'];
@@ -66,7 +66,7 @@ class SpecData {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['_id'] = this.sId;
     if (this.families != null) {
-      data['families'] = this.families.map((v) => v.toJson()).toList();
+      data['families'] = this.families!.map((v) => v.toJson()).toList();
     }
     data['speciality'] = this.speciality;
     data['specialityId'] = this.specialityId;
@@ -77,9 +77,9 @@ class SpecData {
 }
 
 class Families {
-  String sId;
-  String familyId;
-  String familyName;
+  String? sId;
+  String? familyId;
+  String? familyName;
 
   Families({this.sId, this.familyId, this.familyName});
 

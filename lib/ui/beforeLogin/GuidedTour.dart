@@ -31,22 +31,22 @@ class GuidedTourState extends State<GuidedTour> {
         context, MaterialPageRoute(builder: (context) => EnterPhoneScreen()));
   }
 
-  PageController _pageController;
-  StreamController _pageStream;
-  VideoPlayerController _firstVideoController,
+  PageController? _pageController;
+  StreamController? _pageStream;
+  VideoPlayerController? _firstVideoController,
       _secondVideoController,
       _thirdVideoController,
       _forthVideoController;
-  bool _isProcessing,
-      _isProcessingSecondVideo,
-      _isProcessingThirdVideo,
-      _isProcessingForthVideo;
+  bool _isProcessing=false,
+      _isProcessingSecondVideo=false,
+      _isProcessingThirdVideo=false,
+      _isProcessingForthVideo=false;
 
   _setState() {
     if (mounted) setState(() {});
   }
 
-  double _currentPage = 0.0;
+  double? _currentPage = 0.0;
 
   @override
   void initState() {
@@ -56,8 +56,8 @@ class GuidedTourState extends State<GuidedTour> {
     _initSecondVideoController();
     _initThirdVideoController();
     _initForthVideoController();
-    _pageController.addListener(() {
-      _currentPage = _pageController.page;
+    _pageController!.addListener(() {
+      _currentPage = _pageController!.page;
       _pageStream?.add(null);
     });
     super.initState();
@@ -82,10 +82,10 @@ class GuidedTourState extends State<GuidedTour> {
         child: WillPopScope(
           onWillPop: () async => false,
           child: new IntroSlider(
-              slides: CommonMethods.addSlideImages(),
-              colorDoneBtn: Color(hexColorCode.defaultGreen),
-              colorActiveDot: Color(hexColorCode.defaultGreen),
-              colorDot: Color(hexColorCode.white1),
+              // slides: CommonMethods.addSlideImages(),
+              // colorDoneBtn: Color(hexColorCode.defaultGreen),
+              // colorActiveDot: Color(hexColorCode.defaultGreen),
+              // colorDot: Color(hexColorCode.white1),
               onDonePress: this._onDonePress),
         ));
   }
@@ -114,7 +114,7 @@ class GuidedTourState extends State<GuidedTour> {
 
   Widget _getButtons() {
     return Container(
-      child: StreamBuilder<Object>(
+      child: StreamBuilder<Object?>(
           stream: _pageStream?.stream,
           builder: (context, snapshot) {
             return Row(
@@ -130,17 +130,17 @@ class GuidedTourState extends State<GuidedTour> {
                     splashColor: Colors.transparent,
                     onTap: () async {
                       if ((_pageController == null ||
-                          _pageController.page == null ||
-                          _pageController.page.toInt() == 0)) {
+                          _pageController!.page == null ||
+                          _pageController!.page!.toInt() == 0)) {
                         return;
                       }
                       // _setState();
-                      _pageController
+                      _pageController!
                           .previousPage(
                               duration: Duration(milliseconds: 500),
                               curve: Curves.easeInOut)
                           .then((value) {
-                        _pageStream.add(null);
+                        _pageStream!.add(null);
                       });
                     },
                     onDoubleTap: () {},
@@ -173,17 +173,17 @@ class GuidedTourState extends State<GuidedTour> {
                     hoverColor: Colors.transparent,
                     splashColor: Colors.transparent,
                     onTap: () async {
-                      if (_pageController.page.toInt() == 3) {
+                      if (_pageController!.page!.toInt() == 3) {
                         _onDonePress();
                       } else {
                         // _setState();
-                        _pageController
+                        _pageController!
                             .nextPage(
                                 duration: Duration(milliseconds: 500),
                                 curve: Curves.easeInOut)
                             .then((value) {
                           // _initVideo();
-                          _pageStream.add(null);
+                          _pageStream!.add(null);
                         });
                       }
                     },
@@ -223,25 +223,25 @@ class GuidedTourState extends State<GuidedTour> {
           await _pauseVideo();
           if (pageIndex == 0) {
             if (_firstVideoController != null &&
-                _firstVideoController.value.initialized) {
+                _firstVideoController!.value.isInitialized) {
               _firstVideoController?.seekTo(Duration(seconds: 0));
               _firstVideoController?.play();
             }
           } else if (pageIndex == 1) {
             if (_secondVideoController != null &&
-                _secondVideoController.value.initialized) {
+                _secondVideoController!.value.isInitialized) {
               _secondVideoController?.seekTo(Duration(seconds: 0));
               _secondVideoController?.play();
             }
           } else if (pageIndex == 2) {
             if (_thirdVideoController != null &&
-                _thirdVideoController.value.initialized) {
+                _thirdVideoController!.value.isInitialized) {
               _thirdVideoController?.seekTo(Duration(seconds: 0));
               _thirdVideoController?.play();
             }
           } else if (pageIndex == 3) {
             if (_forthVideoController != null &&
-                _forthVideoController.value.initialized) {
+                _forthVideoController!.value.isInitialized) {
               _forthVideoController?.seekTo(Duration(seconds: 0));
               _forthVideoController?.play();
             }
@@ -441,10 +441,10 @@ class GuidedTourState extends State<GuidedTour> {
       height: 300,
       width: double.infinity,
       child: Center(
-        child: (!(_isProcessing) && _firstVideoController.value.initialized)
+        child: (!(_isProcessing) && _firstVideoController!.value.isInitialized)
             ? AspectRatio(
-                aspectRatio: _firstVideoController.value.aspectRatio,
-                child: VideoPlayer(_firstVideoController),
+                aspectRatio: _firstVideoController!.value.aspectRatio,
+                child: VideoPlayer(_firstVideoController!),
               )
             : CustomWidgets().getProgressIndicator(),
       ),
@@ -457,10 +457,10 @@ class GuidedTourState extends State<GuidedTour> {
       width: double.infinity,
       child: Center(
         child: (!(_isProcessingSecondVideo) &&
-                _secondVideoController.value.initialized)
+                _secondVideoController!.value.isInitialized)
             ? AspectRatio(
-                aspectRatio: _secondVideoController.value.aspectRatio,
-                child: VideoPlayer(_secondVideoController),
+                aspectRatio: _secondVideoController!.value.aspectRatio,
+                child: VideoPlayer(_secondVideoController!),
               )
             : CustomWidgets().getProgressIndicator(),
       ),
@@ -473,10 +473,10 @@ class GuidedTourState extends State<GuidedTour> {
       width: double.infinity,
       child: Center(
         child: (!(_isProcessingThirdVideo) &&
-                _thirdVideoController.value.initialized)
+                _thirdVideoController!.value.isInitialized)
             ? AspectRatio(
-                aspectRatio: _thirdVideoController.value.aspectRatio,
-                child: VideoPlayer(_thirdVideoController),
+                aspectRatio: _thirdVideoController!.value.aspectRatio,
+                child: VideoPlayer(_thirdVideoController!),
               )
             : CustomWidgets().getProgressIndicator(),
       ),
@@ -489,10 +489,10 @@ class GuidedTourState extends State<GuidedTour> {
       width: double.infinity,
       child: Center(
         child: (!(_isProcessingForthVideo) &&
-                _forthVideoController.value.initialized)
+                _forthVideoController!.value.isInitialized)
             ? AspectRatio(
-                aspectRatio: _forthVideoController.value.aspectRatio,
-                child: VideoPlayer(_forthVideoController),
+                aspectRatio: _forthVideoController!.value.aspectRatio,
+                child: VideoPlayer(_forthVideoController!),
               )
             : CustomWidgets().getProgressIndicator(),
       ),
@@ -500,7 +500,7 @@ class GuidedTourState extends State<GuidedTour> {
   }
 
   Widget _getDotIndicator({bool isFirstCard = false}) {
-    return StreamBuilder<Object>(
+    return StreamBuilder<Object?>(
         stream: _pageStream?.stream,
         builder: (context, snapshot) {
           return Container(
@@ -517,7 +517,7 @@ class GuidedTourState extends State<GuidedTour> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(3.0))),
               dotsCount: 4,
-              position: _currentPage,
+              position: _currentPage!,
             ),
           );
         });
@@ -539,7 +539,7 @@ class GuidedTourState extends State<GuidedTour> {
   //                           : PlunesImages.thirdTutorialVideo;
   //       _firstVideoController = VideoPlayerController.asset(videoName)
   //         ..initialize().then((_) {
-  //           // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+  //           // Ensure the first frame is shown after the video is isInitialized, even before the play button has been pressed.
   //           _isProcessing = false;
   //           _firstVideoController.play();
   //           _setState();
@@ -561,9 +561,9 @@ class GuidedTourState extends State<GuidedTour> {
     _firstVideoController =
         VideoPlayerController.asset(PlunesImages.firstTutorialVideo)
           ..initialize().then((_) {
-            // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+            // Ensure the first frame is shown after the video is isInitialized, even before the play button has been pressed.
             _isProcessing = false;
-            _firstVideoController.play();
+            _firstVideoController!.play();
             _setState();
           });
     _firstVideoController?.setLooping(false);
@@ -574,7 +574,7 @@ class GuidedTourState extends State<GuidedTour> {
     _secondVideoController =
         VideoPlayerController.asset(PlunesImages.secondTutorialVideo)
           ..initialize().then((_) {
-            // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+            // Ensure the first frame is shown after the video is isInitialized, even before the play button has been pressed.
             _isProcessingSecondVideo = false;
             // _firstVideoController.play();
             _setState();
@@ -587,7 +587,7 @@ class GuidedTourState extends State<GuidedTour> {
     _thirdVideoController =
         VideoPlayerController.asset(PlunesImages.forthTutorialVideo)
           ..initialize().then((_) {
-            // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+            // Ensure the first frame is shown after the video is isInitialized, even before the play button has been pressed.
             _isProcessingThirdVideo = false;
             // _firstVideoController.play();
             _setState();
@@ -600,7 +600,7 @@ class GuidedTourState extends State<GuidedTour> {
     _forthVideoController =
         VideoPlayerController.asset(PlunesImages.thirdTutorialVideo)
           ..initialize().then((_) {
-            // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+            // Ensure the first frame is shown after the video is isInitialized, even before the play button has been pressed.
             _isProcessingForthVideo = false;
             // _firstVideoController.play();
             _setState();

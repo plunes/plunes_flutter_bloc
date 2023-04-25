@@ -1,9 +1,9 @@
 import 'package:plunes/models/Models.dart';
 
 class TopFacilityModel {
-  bool success;
-  List<TopFacility> data;
-  String msg;
+  bool? success;
+  List<TopFacility>? data;
+  String? msg;
 
   TopFacilityModel({this.success, this.data, this.msg});
 
@@ -11,9 +11,9 @@ class TopFacilityModel {
     success = json['success'];
     msg = json['msg'];
     if (json['data'] != null) {
-      data = new List<TopFacility>();
+      data = [];
       json['data'].forEach((v) {
-        data.add(new TopFacility.fromJson(v));
+        data!.add(new TopFacility.fromJson(v));
       });
     }
   }
@@ -22,25 +22,25 @@ class TopFacilityModel {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['success'] = this.success;
     if (this.data != null) {
-      data['data'] = this.data.map((v) => v.toJson()).toList();
+      data['data'] = this.data!.map((v) => v.toJson()).toList();
     }
     return data;
   }
 }
 
 class TopFacility {
-  String professionalId;
-  String name;
-  String userType;
-  String address, locality, accreditationImage, hospitalType;
-  String imageUrl;
-  String biography;
-  List<AchievementsData> achievements;
-  int experience, doctorCount;
-  double rating, distance, dotsPositionForTopFacility = 0.0;
-  List<Centre> centres;
-  List<String> specialities, accreditationList;
-  bool insuranceAvailable;
+  String? professionalId;
+  String? name;
+  String? userType;
+  String? address, locality, accreditationImage, hospitalType;
+  String? imageUrl;
+  String? biography;
+  List<AchievementsData>? achievements;
+  int? experience, doctorCount;
+  double? rating, distance, dotsPositionForTopFacility = 0.0;
+  List<Centre>? centres;
+  List<String>? specialities, accreditationList;
+  bool? insuranceAvailable;
 
   TopFacility(
       {this.professionalId,
@@ -75,9 +75,9 @@ class TopFacility {
     imageUrl = json['imageUrl'];
     biography = json['biography'];
     if (json['achievements'] != null) {
-      achievements = new List<AchievementsData>();
+      achievements = [];
       json['achievements'].forEach((v) {
-        achievements.add(new AchievementsData.fromJson(v));
+        achievements!.add(new AchievementsData.fromJson(v));
       });
     }
     centres = json['centers'] != null

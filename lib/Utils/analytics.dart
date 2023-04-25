@@ -3,26 +3,26 @@ import 'package:plunes/firebase/FirebaseNotification.dart';
 class AnalyticsProvider {
   AnalyticsProvider._init();
 
-  static AnalyticsProvider _instance;
+  static AnalyticsProvider? _instance;
 
   factory AnalyticsProvider() {
     if (_instance == null) {
       _instance = AnalyticsProvider._init();
     }
-    return _instance;
+    return _instance!;
   }
 
   void registerEvent(final String eventName) {
     return;
     try {
       FirebaseNotification()
-          .getAnalyticsInstance()
+          .getAnalyticsInstance()!
           .logEvent(name: eventName)
           .then((value) {
 //        print("fir== ana done");
       });
       FirebaseNotification()
-          .getFbInstance()
+          .getFbInstance()!
           .logEvent(name: eventName)
           .then((value) {
 //        print("face== ana done");

@@ -8,8 +8,8 @@ import 'package:readmore/readmore.dart';
 
 // ignore: must_be_immutable
 class KnowYourProcedureCard extends BaseActivity {
-  KnowYourProcedureModel knowYourProcedureModel;
-  String title;
+  KnowYourProcedureModel? knowYourProcedureModel;
+  String? title;
 
   KnowYourProcedureCard(this.knowYourProcedureModel, this.title);
 
@@ -18,7 +18,7 @@ class KnowYourProcedureCard extends BaseActivity {
 }
 
 class _KnowYourProcedureCardState extends State<KnowYourProcedureCard> {
-  KnowYourProcedureModel _knowYourProcedureModel;
+  KnowYourProcedureModel? _knowYourProcedureModel;
 
   @override
   void initState() {
@@ -31,7 +31,7 @@ class _KnowYourProcedureCardState extends State<KnowYourProcedureCard> {
     return SafeArea(
       child: Scaffold(
         appBar: widget.getAppBar(
-            context, widget?.title ?? "Know your procedure", true),
+            context, widget?.title ?? "Know your procedure", true) as PreferredSizeWidget?,
         body: _getBody(),
       ),
       top: false,
@@ -58,9 +58,9 @@ class _KnowYourProcedureCardState extends State<KnowYourProcedureCard> {
   List<Widget> _getProcedureAlteredList() {
     List<Widget> list = [];
     for (int index = 0;
-        index < _knowYourProcedureModel?.data?.length ?? 0;
+        index < _knowYourProcedureModel!.data!.length ?? 0 as bool;
         index++) {
-      var data = _knowYourProcedureModel.data[index];
+      var data = _knowYourProcedureModel!.data![index];
       list.add(_proceduresCard(data.familyImage ?? "", data.familyName ?? "",
           data.details ?? "", data));
     }

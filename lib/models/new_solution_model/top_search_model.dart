@@ -1,16 +1,16 @@
 class TopSearchOuterModel {
-  bool success;
-  List<TopSearchData> data;
-  String message;
+  bool? success;
+  List<TopSearchData>? data;
+  String? message;
 
   TopSearchOuterModel({this.success, this.data, this.message});
 
   TopSearchOuterModel.fromJson(Map<String, dynamic> json) {
     success = json['success'];
     if (json['data'] != null) {
-      data = new List<TopSearchData>();
+      data = [];
       json['data'].forEach((v) {
-        data.add(new TopSearchData.fromJson(v));
+        data!.add(new TopSearchData.fromJson(v));
       });
     }
     message = json['message'];
@@ -20,7 +20,7 @@ class TopSearchOuterModel {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['success'] = this.success;
     if (this.data != null) {
-      data['data'] = this.data.map((v) => v.toJson()).toList();
+      data['data'] = this.data!.map((v) => v.toJson()).toList();
     }
     data['message'] = this.message;
     return data;
@@ -28,22 +28,22 @@ class TopSearchOuterModel {
 }
 
 class TopSearchData {
-  String sId;
-  String speciality;
-  String specialityId;
-  String serviceId;
-  String service;
-  String duration;
-  String sittings;
-  List<String> dnd;
-  String tags;
-  String definition;
-  String searchTags;
-  String category;
-  int serviceRank;
-  int iV;
-  String specializationImage;
-  bool topSearch;
+  String? sId;
+  String? speciality;
+  String? specialityId;
+  String? serviceId;
+  String? service;
+  String? duration;
+  String? sittings;
+  List<String>? dnd;
+  String? tags;
+  String? definition;
+  String? searchTags;
+  String? category;
+  int? serviceRank;
+  int? iV;
+  String? specializationImage;
+  bool? topSearch;
 
   TopSearchData(
       {this.sId,
@@ -75,7 +75,7 @@ class TopSearchData {
       dnd = [];
       json['dnd'].forEach((e) {
         if (e != null) {
-          dnd.add(e?.toString());
+          dnd!.add(e.toString());
         }
       });
     }

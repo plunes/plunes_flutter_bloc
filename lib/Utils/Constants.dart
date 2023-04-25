@@ -10,7 +10,7 @@ class Constants {
   static const int homeScreenNumber = 0;
   static const int activityScreenNumber = 2;
   static const int notificationScreenNumber = 4;
-  static String DEVICE_TOKEN = "device_token";
+  static String? DEVICE_TOKEN = "device_token";
   static const String profile = 'Profile';
   static const String POST = 'Post';
   static const String PUT = 'Put';

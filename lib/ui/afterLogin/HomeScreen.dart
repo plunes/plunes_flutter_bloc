@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
@@ -8,38 +10,32 @@ import 'package:plunes/Utils/Preferences.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/Utils/event_bus.dart';
-import 'package:plunes/Utils/location_util.dart';
 import 'package:plunes/Utils/youtube_player.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/bloc.dart';
 import 'package:plunes/blocs/cart_bloc/cart_main_bloc.dart';
 import 'package:plunes/blocs/notification_repo/notification_bloc.dart';
 import 'package:plunes/firebase/FirebaseNotification.dart';
-import 'package:plunes/models/booking_models/appointment_model.dart';
 import 'package:plunes/repositories/new_solution_repo/solution_home_page_repo.dart';
 import 'package:plunes/repositories/user_repo.dart';
-import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
 import 'package:plunes/ui/afterLogin/AvailabilitySelectionScreen.dart';
-import 'package:plunes/ui/afterLogin/cart_screens/add_to_cart_main_screen.dart';
 import 'package:plunes/ui/afterLogin/doc_hos_screen/hosptal_overview_screen.dart';
-import 'package:plunes/ui/afterLogin/explore_screens/explore_main_screen.dart';
 import 'package:plunes/ui/afterLogin/explore_screens/new_explore_screen.dart';
 import 'package:plunes/ui/afterLogin/fill_coupon.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/new_home_scr.dart';
 import 'package:plunes/ui/afterLogin/payment/manage_payment.dart';
-import 'package:plunes/ui/afterLogin/solution_screens/bidding_main_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/previous_activity_screen.dart';
+import 'package:toast/toast.dart';
 
 import 'AboutUs.dart';
 import 'EditProfileScreen.dart';
 import 'HealthSoulutionNear.dart';
 import 'HelpScreen.dart';
 import 'NotificationScreen.dart';
-import 'PlockrMainScreen.dart';
 import 'ReferScreen.dart';
 import 'SettingsScreen.dart';
 import 'appointment_screens/appointment_main_screen.dart';
@@ -53,9 +49,9 @@ import 'appointment_screens/appointment_main_screen.dart';
 // ignore: must_be_immutable
 class HomeScreen extends BaseActivity {
   static const tag = '/homescreen';
-  final int screenNo;
+  final int? screenNo;
 
-  HomeScreen({Key key, this.screenNo}) : super(key: key);
+  HomeScreen({Key? key, this.screenNo}) : super(key: key);
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -68,42 +64,45 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
       globalWidth,
       _userType = '',
       from = '',
-      _userName = '',
+      _userName = '' as String?,
       _imageUrl,
       specialities = '',
       _selectedIndex = 0,
       count = 0,
       screen;
-  bool _showBadge = false, progress = false, isSelected = false;
+  bool? _showBadge = false, progress = false, isSelected = false;
   final List<Widget> _widgetOptionsForUser = [
-    NewSolutionHomePage(() => _scaffoldKey.currentState.openDrawer()),
-    NewExploreScreen(() => _scaffoldKey.currentState.openDrawer()),
-    PreviousActivity(() => _scaffoldKey.currentState.openDrawer()),
+    NewSolutionHomePage(() => _scaffoldKey.currentState!.openDrawer()),
+    NewExploreScreen(() => _scaffoldKey.currentState!.openDrawer()),
+    PreviousActivity(() => _scaffoldKey.currentState!.openDrawer()),
 //    PlockrMainScreen(),
-    NotificationScreen(() => _scaffoldKey.currentState.openDrawer()),
+    NotificationScreen(() => _scaffoldKey.currentState!.openDrawer()),
   ];
   final List<Widget> _widgetOptionsForDoctor = [
     HospitalDoctorOverviewScreen(),
 //    PlockrMainScreen(),
-    NotificationScreen(() => _scaffoldKey.currentState.openDrawer()),
+    NotificationScreen(() => _scaffoldKey.currentState!.openDrawer()),
 //    ProfileScreen()
   ];
   final List<Widget> _widgetOptionsHospital = [
     HospitalDoctorOverviewScreen(),
-    NotificationScreen(() => _scaffoldKey.currentState.openDrawer()),
+    NotificationScreen(() => _scaffoldKey.currentState!.openDrawer()),
 //    ProfileScreen()
   ];
-  Preferences preferences;
-  List<String> selectedPositions = new List();
-  CartMainBloc _cartBloc;
+  late Preferences preferences;
+  List<String>? selectedPositions = [];
+  CartMainBloc? _cartBloc;
 
   @override
   void initState() {
+    ToastContext().init(context);
     _cartBloc = CartMainBloc();
     initialize();
     _getNotifications();
     _getCartCount();
-    super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      _hasLocationPermission();
+    });
   }
 
   @override
@@ -157,12 +156,12 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
                           : _selectedIndex == 2
                               ? PlunesStrings.previousActivities
                               : plunesStrings.notifications),
-                  isSelected,
+                  isSelected!,
                   selectedPositions,
                   from,
                   this,
-                  isSolutionPageSelected:
-                      (_selectedIndex == 0 && _userType == Constants.user)),
+                  isSolutionPageSelected: (_selectedIndex == 0 &&
+                      _userType == Constants.user)) as PreferredSizeWidget?,
           drawer: getDrawerView(),
           body: GestureDetector(
               onTap: () => CommonMethods.hideSoftKeyboard(), child: bodyView()),
@@ -236,7 +235,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
   BottomNavigationBarItem bottomNavigationBarItemForDoctor(
       String title, String icon, String activeIcon) {
     return BottomNavigationBarItem(
-        icon: (_showBadge && title == plunesStrings.notification)
+        icon: (_showBadge! && title == plunesStrings.notification)
             ? badgeIconWidget(icon, 32, 32)
             : (title == plunesStrings.notification)
                 ? widget.getAssetIconWidget(icon, 32, 32, BoxFit.contain)
@@ -244,11 +243,76 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
         activeIcon: (title == plunesStrings.notification)
             ? widget.getAssetIconWidget(activeIcon, 32, 32, BoxFit.contain)
             : widget.getAssetIconWidget(activeIcon, 32, 26, BoxFit.contain),
-        title: widget.createTextWithoutColor(
-            title, 11.0, TextAlign.center, FontWeight.normal));
+        // title: widget.createTextWithoutColor(
+        //     title, 11.0, TextAlign.center, FontWeight.normal),
+        label: title);
   }
 
   Widget getBottomNavigationViewForGeneralUser() {
+    return Container(
+      padding: EdgeInsets.all(8),
+      child: GNav(
+          rippleColor: Colors.grey[800]!,
+          // tab button ripple color when pressed
+          hoverColor: Colors.grey[700]!,
+          // tab button hover color
+          haptic: true,
+          // haptic feedback
+          tabBorderRadius: 15,
+          // tabActiveBorder: Border.all(color: Colors.black, width: 1), // tab button border
+          //tabBorder: Border.all(color: Colors.grey, width: 1), // tab button border
+          // tabShadow: [BoxShadow(color: Colors.grey.withOpacity(0.5), blurRadius: 8)], // tab button shadow
+          curve: Curves.easeOutExpo,
+          // tab animation curves
+          duration: const Duration(milliseconds: 900),
+          // tab animation duration
+          gap: 8,
+          // the tab button gap between icon and text
+          color: Colors.grey[500],
+          // unselected icon color
+          activeColor: Colors.white,
+          // selected icon and text color
+          iconSize: 24,
+          textSize: 4,
+
+          // tab button icon size
+          tabBackgroundColor: PlunesColors.GREENCOLOR,
+          // selected tab background color
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+          // navigation bar padding
+          tabs: [
+            GButton(
+                icon: Icons.home,
+                text: 'HOME',
+                onPressed: () {
+                  _onItemTapped(0);
+                }),
+            GButton(
+              icon: Icons.search,
+              text: 'EXPLORE',
+              onPressed: () {
+                _onItemTapped(1);
+              },
+            ),
+            GButton(
+              icon: Icons.access_time,
+              text: 'ACTIVITY',
+              onPressed: () {
+                _onItemTapped(2);
+              },
+            ),
+            GButton(
+              icon: Icons.notifications_none,
+              text: 'NOTIFY',
+              onPressed: () {
+                _onItemTapped(3);
+              },
+            )
+          ]),
+    );
+  }
+
+  Widget getBottomNavigationViewForGeneralUser1() {
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
       backgroundColor: Colors.white,
@@ -282,14 +346,15 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
       String title, String icon, String activeIcon) {
     double iconSize = 32;
     return BottomNavigationBarItem(
-        icon: (_showBadge && title == plunesStrings.notification)
+        icon: (_showBadge! && title == plunesStrings.notification)
             ? badgeIconWidget(icon, 32, 32)
             : widget.getAssetIconWidget(
                 icon, iconSize, iconSize, BoxFit.contain),
         activeIcon: widget.getAssetIconWidget(
             activeIcon, iconSize, iconSize, BoxFit.contain),
-        title: widget.createTextWithoutColor(
-            title, 11.0, TextAlign.center, FontWeight.normal));
+        // title: widget.createTextWithoutColor(
+        //     title, 11.0, TextAlign.center, FontWeight.normal),
+        label: title);
   }
 
   Widget bodyView() {
@@ -354,7 +419,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
                 data['isSelected'] != null ? data['isSelected'] : false;
             selectedPositions = data['selectedItemList'] != null
                 ? data['selectedItemList']
-                : new List();
+                : [];
           } else {
             isSelected = false;
             from = '';
@@ -364,6 +429,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
   }
 
   void _onItemTapped(int index) {
+    print("-----index:$index");
     setState(() {
       _selectedIndex = index;
       if (index == 2)
@@ -491,7 +557,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
                                     widget.createTextViews(
-                                        _userName,
+                                        _userName!,
                                         18,
                                         colorsFile.black0,
                                         TextAlign.left,
@@ -515,11 +581,11 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
                       getListTile(2, plunesStrings.appointments,
                           plunesImages.appointmentIcon),
                       (_userType != Constants.user &&
-                              !(UserManager().getUserDetails().isCentre))
+                              !UserManager().getUserDetails().isCentre!)
                           ? widget.getDividerRow(context, 0, 0, 70.0)
                           : Container(),
                       (_userType != Constants.user &&
-                              !(UserManager().getUserDetails().isCentre))
+                              !UserManager().getUserDetails().isCentre!)
                           ? getListTile(4, plunesStrings.managePayment,
                               plunesImages.walletIcon)
                           : Container(),
@@ -555,7 +621,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
                                 Navigator.pushNamed(
                                         context, HealthSolutionNear.tag)
                                     .then((value) {
-                                  EventProvider().getSessionEventBus().fire(
+                                  EventProvider().getSessionEventBus()!.fire(
                                       ScreenRefresher(
                                           screenName: HealthSolutionNear.tag));
                                 });
@@ -639,7 +705,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
                     experience: user.experience)));
         getSharedPreferencesData();
         EventProvider()
-            .getSessionEventBus()
+            .getSessionEventBus()!
             .fire(ScreenRefresher(screenName: EditProfileScreen.tag));
         break;
       case 1:
@@ -656,7 +722,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
         await Navigator.popAndPushNamed(context, SettingScreen.tag);
         getSharedPreferencesData();
         EventProvider()
-            .getSessionEventBus()
+            .getSessionEventBus()!
             .fire(ScreenRefresher(screenName: EditProfileScreen.tag));
         break;
       case 4:
@@ -673,7 +739,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
             MaterialPageRoute(
                 builder: (context) => AboutUs(userType: _userType)));
         EventProvider()
-            .getSessionEventBus()
+            .getSessionEventBus()!
             .fire(ScreenRefresher(screenName: AboutUs.tag));
 //        Navigator.popAndPushNamed(context, AboutUs.tag);
         break;
@@ -692,8 +758,8 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
   }
 
   void closeDrawer() {
-    if (_scaffoldKey.currentState.isDrawerOpen)
-      _scaffoldKey.currentState.openEndDrawer();
+    if (_scaffoldKey.currentState!.isDrawerOpen)
+      _scaffoldKey.currentState!.openEndDrawer();
   }
 
   @override
@@ -783,8 +849,74 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
   void _getCartCount() {
     Future.delayed(Duration(milliseconds: 401)).then((value) {
       if (_userType != null && _userType == Constants.user) {
-        _cartBloc.getCartCount();
+        _cartBloc!.getCartCount();
       }
     });
   }
+
+  Future<bool> _hasLocationPermission() async {
+    bool hasStoragePermission = false;
+    var status = await Permission.location.status;
+
+    if (status.isGranted || status.isLimited) {
+      print("statuses[Permission.storage]---isLimited");
+      hasStoragePermission = true;
+    } else if(status.isPermanentlyDenied || status.isDenied) {
+      Map<Permission, PermissionStatus> statuses = await [
+        Permission.location,
+      ].request();
+      print("statuses[Permission.storage]--isPermanentlyDenied");
+      print(statuses[Permission.location]);
+
+      if(statuses[Permission.location]!.isPermanentlyDenied){
+        _handleOpenSettings(Permission.location, hasStoragePermission);
+        print("statuses[Permission.storage]---else--------------");
+      }
+      print("statuses[Permission.storage]---else,,,,,,");
+
+      hasStoragePermission = false;
+    } else {
+      print("statuses[Permission.storage]---else");
+      hasStoragePermission = false;
+    }
+    return hasStoragePermission;
+  }
+
+  Future<void> _handleOpenSettings(var permission, bool hasStoragePermission) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Location permission"),
+          content: const Text("For better experience please Allow location permission"),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("Settings"),
+              onPressed: () {
+                Navigator.of(context).pop();
+                openAppSettings();
+
+                // Declare _hasOpenedNotificationsSettings = false && _hasOpenedLocationSettings = false
+                // at the top of your class
+
+                if (permission == Permission.notification) {
+                  hasStoragePermission = true;
+                }
+                if (permission == Permission.locationWhenInUse) {
+                  hasStoragePermission = true;
+                }
+              },
+            ),
+            TextButton(
+              child: const Text("Cancel"),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
 }

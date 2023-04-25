@@ -7,11 +7,14 @@ import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/ui/afterLogin/new_common_widgets/common_widgets.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/enter_facility_details_scr.dart';
 
+import '../../../models/new_solution_model/new_hos_facility_model.dart';
+
 // ignore: must_be_immutable
 class BookProcedureScreen extends BaseActivity {
-  List<ServiceCategory> procedures;
-  String profId;
-  bool isAlreadyInBookingProcess;
+  List<NewServiceCategory>? procedures;
+  // List<ServiceCategory>? procedures;
+  String? profId;
+  bool? isAlreadyInBookingProcess;
 
   BookProcedureScreen(this.procedures, this.profId,
       {this.isAlreadyInBookingProcess});
@@ -20,8 +23,10 @@ class BookProcedureScreen extends BaseActivity {
   _TestBookingScreenState createState() => _TestBookingScreenState();
 }
 
-class _TestBookingScreenState extends BaseState<BookProcedureScreen> {
-  TextEditingController _textController;
+// class _TestBookingScreenState extends BaseState<BookProcedureScreen> {
+class _TestBookingScreenState extends State<BookProcedureScreen> {
+final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  TextEditingController? _textController;
   int _totalCount = 0;
 
   _onTextClear() {
@@ -55,7 +60,7 @@ class _TestBookingScreenState extends BaseState<BookProcedureScreen> {
       top: false,
       child: Scaffold(
           key: scaffoldKey,
-          appBar: widget.getAppBar(context, "Book Procedure", true),
+          appBar: widget.getAppBar(context, "Book Procedure", true) as PreferredSizeWidget?,
           body: _getBodyWidget()),
     );
   }
@@ -75,26 +80,26 @@ class _TestBookingScreenState extends BaseState<BookProcedureScreen> {
               shrinkWrap: true,
               padding: EdgeInsets.zero,
               itemBuilder: (context, index) {
-                if (_textController.text.trim().isNotEmpty &&
-                    widget.procedures[index].serviceName
+                if (_textController!.text.trim().isNotEmpty &&
+                    widget.procedures![index].serviceName!
                         .toLowerCase()
-                        .contains(_textController.text.trim().toLowerCase())) {
-                  return CommonWidgets().getBookProcedureWidget(
-                      widget.procedures,
+                        .contains(_textController!.text.trim().toLowerCase())) {
+                  return CommonWidgets().getBookProcedureWidgetNew(
+                      widget.procedures!,
                       index,
-                      () => _calcTestDataAndOpenAdditionalDetailScr(
-                          widget.procedures[index]),
+                      () => _calcTestDataAndOpenAdditionalDetailScrNew(
+                          widget.procedures![index]),
                       isFromIndividualScreen: true);
-                } else if (_textController.text.trim().isEmpty) {
-                  return CommonWidgets().getBookProcedureWidget(
-                      widget.procedures,
+                } else if (_textController!.text.trim().isEmpty) {
+                  return CommonWidgets().getBookProcedureWidgetNew(
+                      widget.procedures!,
                       index,
-                      () => _calcTestDataAndOpenAdditionalDetailScr(
-                          widget.procedures[index]),
+                      () => _calcTestDataAndOpenAdditionalDetailScrNew(
+                          widget.procedures![index]),
                       isFromIndividualScreen: true);
                 } else {
                   _totalCount++;
-                  return _totalCount == widget.procedures.length
+                  return _totalCount == widget.procedures!.length
                       ? Container(
                           height: AppConfig.verticalBlockSize * 70,
                           child: Center(
@@ -103,7 +108,7 @@ class _TestBookingScreenState extends BaseState<BookProcedureScreen> {
                       : Container();
                 }
               },
-              itemCount: widget.procedures.length,
+              itemCount: widget.procedures!.length,
             ),
           ),
         ],
@@ -115,12 +120,40 @@ class _TestBookingScreenState extends BaseState<BookProcedureScreen> {
     if (widget.isAlreadyInBookingProcess != null) {
       return;
     }
-    num servicePrice = 0;
+    num? servicePrice = 0;
     if (serviceCategory != null &&
         serviceCategory.price != null &&
-        serviceCategory.price.isNotEmpty &&
-        serviceCategory.price.first > 0) {
-      servicePrice = serviceCategory.price.first;
+        serviceCategory.price!.isNotEmpty &&
+        serviceCategory.price!.first! > 0) {
+      servicePrice = serviceCategory.price!.first;
+    }
+    var data = CatalogueData(
+      category: serviceCategory.category,
+      serviceId: serviceCategory.serviceId,
+      service: serviceCategory.service,
+      speciality: serviceCategory.speciality,
+      specialityId: serviceCategory.specialityId,
+      family: serviceCategory.service,
+      isFromProfileScreen: true,
+      profId: widget.profId,
+      servicePrice: servicePrice,
+    );
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => EnterAdditionalUserDetailScr(data, "")));
+  }
+
+  _calcTestDataAndOpenAdditionalDetailScrNew(NewServiceCategory serviceCategory) {
+    if (widget.isAlreadyInBookingProcess != null) {
+      return;
+    }
+    num? servicePrice = 0;
+    if (serviceCategory != null &&
+        serviceCategory.price != null &&
+        serviceCategory.price!.isNotEmpty &&
+        serviceCategory.price!.first! > 0) {
+      servicePrice = serviceCategory.price!.first;
     }
     var data = CatalogueData(
       category: serviceCategory.category,

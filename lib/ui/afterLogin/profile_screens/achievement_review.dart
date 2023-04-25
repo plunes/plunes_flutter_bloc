@@ -26,16 +26,17 @@ class AchievementAndReview extends BaseActivity {
   _AchievementAndReviewState createState() => _AchievementAndReviewState();
 }
 
-class _AchievementAndReviewState extends BaseState<AchievementAndReview>
-    with TickerProviderStateMixin {
-  TabController _tabController;
-  User _user;
-  UserBloc _userBloc;
-  List<RateAndReview> _rateAndReviewList = [];
-  String _failureCause;
+// class _AchievementAndReviewState extends BaseState<AchievementAndReview> with TickerProviderStateMixin {
+class _AchievementAndReviewState extends State<AchievementAndReview> with TickerProviderStateMixin {
+final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  TabController? _tabController;
+  User? _user;
+  late UserBloc _userBloc;
+  List<RateAndReview>? _rateAndReviewList = [];
+  String? _failureCause;
   bool _hasHitOnce = false;
-  StreamController _streamController;
-  Timer _timer;
+  StreamController? _streamController;
+  Timer? _timer;
 
   @override
   void initState() {
@@ -107,8 +108,8 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
 //          height: AppConfig.verticalBlockSize * 20,
 //          child:
         (_user == null ||
-                _user.achievements == null ||
-                _user.achievements.isEmpty)
+                _user!.achievements == null ||
+                _user!.achievements!.isEmpty)
             ? Container()
 //        _getEmptyView("No achievements found")
             : _getAchievementListView(
@@ -133,7 +134,7 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
 //                      _user.achievements.isEmpty)
 //                  ? _getEmptyView("No achievements found")
 //                  : _getAchievementListView(),
-        StreamBuilder<RequestState>(
+        StreamBuilder<RequestState?>(
             stream: _userBloc.rateAndReviewStream,
             builder: (context, snapshot) {
               if (_hasHitOnce == null || !_hasHitOnce) {
@@ -143,18 +144,18 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
               if (snapshot.data is RequestInProgress) {
                 return CustomWidgets().getProgressIndicator();
               } else if (snapshot.data is RequestSuccess) {
-                RequestSuccess _requestSuccess = snapshot.data;
+                RequestSuccess _requestSuccess = snapshot.data as RequestSuccess;
                 _rateAndReviewList = _requestSuccess.response;
 
                 _userBloc.addStateInReviewStream(null);
               } else if (snapshot.data is RequestFailed) {
-                RequestFailed _requestFailed = snapshot.data;
+                RequestFailed _requestFailed = snapshot.data as RequestFailed;
                 _failureCause = _requestFailed.failureCause;
                 _userBloc.addStateInReviewStream(null);
               }
               return (_failureCause != null ||
                       _rateAndReviewList == null ||
-                      _rateAndReviewList.isEmpty)
+                      _rateAndReviewList!.isEmpty)
                   ? Container()
 //              _getEmptyView(_failureCause ?? "No reviews found")
                   : _getReviewsListView(
@@ -222,7 +223,7 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
                       // _user.achievements.length > 3
                       //     ? 3
                       //     :
-                      _user.achievements.length ?? 0,
+                      _user!.achievements!.length ?? 0,
                   scrollDirection: Axis.horizontal,
 //                  physics: NeverScrollableScrollPhysics(),
                 ),
@@ -285,7 +286,7 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
 //              _rateAndReviewList.length,
             ),
           ),
-          _rateAndReviewList.length > 1
+          _rateAndReviewList!.length > 1
               ? InkWell(
                   onTap: () {
                     showDialog(
@@ -327,10 +328,10 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
     return InkWell(
       onTap: () {
         List<Photo> photos = [];
-        _user.achievements.forEach((element) {
-          if (_user.achievements[index] == null ||
-              _user.achievements[index].imageUrl.isEmpty ||
-              !(_user.achievements[index].imageUrl.contains("http"))) {
+        _user!.achievements!.forEach((element) {
+          if (_user!.achievements![index] == null ||
+              _user!.achievements![index].imageUrl!.isEmpty ||
+              !(_user!.achievements![index].imageUrl!.contains("http"))) {
             photos.add(Photo(assetName: plunesImages.achievementIcon));
           } else {
             photos.add(Photo(assetName: element.imageUrl));
@@ -400,9 +401,9 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
                 child: ClipRRect(
                   borderRadius: BorderRadius.all(
                       Radius.circular(AppConfig.horizontalBlockSize * 2)),
-                  child: (_user.achievements[index] == null ||
-                          _user.achievements[index].imageUrl.isEmpty &&
-                              !(_user.achievements[index].imageUrl
+                  child: (_user!.achievements![index] == null ||
+                          _user!.achievements![index].imageUrl!.isEmpty &&
+                              !(_user!.achievements![index].imageUrl!
                                   .contains("http")))
                       ? Container(
                           margin: EdgeInsets.symmetric(
@@ -412,7 +413,7 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
                             plunesImages.achievementIcon,
                           ))
                       : CustomWidgets().getImageFromUrl(
-                          _user.achievements[index].imageUrl,
+                          _user!.achievements![index].imageUrl,
                           boxFit: BoxFit.fill,
                           placeHolderPath:
                               PlunesImages.achievement_placeholder),
@@ -478,11 +479,11 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              (_rateAndReviewList[index].userImage == null ||
-                      _rateAndReviewList[index].userImage.isEmpty ||
-                      !_rateAndReviewList[index].userImage.contains("http"))
+              (_rateAndReviewList![index].userImage == null ||
+                      _rateAndReviewList![index].userImage!.isEmpty ||
+                      !_rateAndReviewList![index].userImage!.contains("http"))
                   ? CustomWidgets().getBackImageView(
-                      _rateAndReviewList[index].userName,
+                      _rateAndReviewList![index].userName,
                       width: 50,
                       height: 50)
                   : CircleAvatar(
@@ -491,7 +492,7 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
                         width: 50,
                         child: ClipOval(
                             child: CustomWidgets().getImageFromUrl(
-                                _rateAndReviewList[index].userImage,
+                                _rateAndReviewList![index].userImage,
                                 boxFit: BoxFit.fill)),
                       ),
                       radius: 25,
@@ -507,7 +508,7 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
                       Padding(
                         padding: const EdgeInsets.all(5.0),
                         child: Text(
-                          _rateAndReviewList[index]?.userName ??
+                          _rateAndReviewList![index]?.userName ??
                               PlunesStrings.NA,
                           style: TextStyle(
                               color: PlunesColors.BLACKCOLOR, fontSize: 16),
@@ -516,7 +517,7 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
                       Padding(
                         padding: const EdgeInsets.only(left: 5.0),
                         child: CustomWidgets().showRatingBar(
-                            _rateAndReviewList[index].rating?.toDouble() ??
+                            _rateAndReviewList![index].rating?.toDouble() ??
                                 1.0),
                       )
                     ],
@@ -528,12 +529,12 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
                 child: Padding(
                   padding:
                       EdgeInsets.only(left: AppConfig.horizontalBlockSize * 2),
-                  child: StreamBuilder<Object>(
-                      stream: _streamController.stream,
+                  child: StreamBuilder<Object?>(
+                      stream: _streamController!.stream,
                       builder: (context, snapshot) {
                         return Text(
                           DateUtil.getDuration(
-                                  _rateAndReviewList[index].createdAt ?? 0) ??
+                                  _rateAndReviewList![index].createdAt ?? 0) ??
                               PlunesStrings.NA,
                           style: TextStyle(fontSize: AppConfig.smallFont),
                         );
@@ -553,7 +554,7 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
 //            height: AppConfig.verticalBlockSize * 13,
             width: double.infinity,
             child: Text(
-              _rateAndReviewList[index].description ?? PlunesStrings.NA,
+              _rateAndReviewList![index].description ?? PlunesStrings.NA,
               textAlign: TextAlign.start,
               maxLines: 4,
               overflow: TextOverflow.ellipsis,
@@ -590,6 +591,6 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
   }
 
   void _getReviews() {
-    _userBloc.getRateAndReviews(_user.uid);
+    _userBloc.getRateAndReviews(_user!.uid);
   }
 }

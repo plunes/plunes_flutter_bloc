@@ -9,7 +9,7 @@ import 'package:plunes/res/Http_constants.dart';
 import 'package:plunes/resources/network/Urls.dart';
 
 class DocHosMainRepo {
-  static DocHosMainRepo _instance;
+  static DocHosMainRepo? _instance;
 
   DocHosMainRepo._init();
 
@@ -17,7 +17,7 @@ class DocHosMainRepo {
     if (_instance == null) {
       _instance = DocHosMainRepo._init();
     }
-    return _instance;
+    return _instance!;
   }
 
   Future<RequestState> getRealTimeInsights() async {
@@ -26,16 +26,16 @@ class DocHosMainRepo {
       requestType: HttpRequestMethods.HTTP_GET,
       headerIncluded: true,
     );
-    if (result.isRequestSucceed) {
+    if (result!.isRequestSucceed!) {
       RealTimeInsightsResponse _realTimeInsightsResponse =
-          RealTimeInsightsResponse.fromJson(result.response.data);
+          RealTimeInsightsResponse.fromJson(result.response!.data);
       return RequestSuccess(response: _realTimeInsightsResponse);
     } else {
       return RequestFailed(failureCause: result.failureCause);
     }
   }
 
-  Future<RequestState> getActionableInsights({String userId}) async {
+  Future<RequestState> getActionableInsights({String? userId}) async {
     String url = Urls.GET_ACTIONABLE_INSIGHTS_URL;
     if (userId != null) {
       url = url + "?professionalId=$userId";
@@ -45,9 +45,9 @@ class DocHosMainRepo {
       requestType: HttpRequestMethods.HTTP_GET,
       headerIncluded: true,
     );
-    if (result.isRequestSucceed) {
+    if (result!.isRequestSucceed!) {
       ActionableInsightResponseModel _actionableInsightsResponse =
-          ActionableInsightResponseModel.fromJson(result.response.data);
+          ActionableInsightResponseModel.fromJson(result.response!.data);
       return RequestSuccess(response: _actionableInsightsResponse);
     } else {
       return RequestFailed(failureCause: result.failureCause);
@@ -55,7 +55,7 @@ class DocHosMainRepo {
   }
 
   Future<RequestState> getTotalBusinessEarnedAndLoss(int days,
-      {String userId}) async {
+      {String? userId}) async {
     Map<String, dynamic> _queryData = {"days": days};
     if (userId != null) {
       _queryData["professionalId"] = userId;
@@ -66,9 +66,9 @@ class DocHosMainRepo {
       queryParameter: _queryData,
       headerIncluded: true,
     );
-    if (result.isRequestSucceed) {
+    if (result!.isRequestSucceed!) {
       TotalBusinessEarnedModel _totalBusinessEarndAndLossResponse =
-          TotalBusinessEarnedModel.fromJson(result.response.data);
+          TotalBusinessEarnedModel.fromJson(result.response!.data);
       return RequestSuccess(response: _totalBusinessEarndAndLossResponse);
     } else {
       return RequestFailed(failureCause: result.failureCause);
@@ -76,14 +76,14 @@ class DocHosMainRepo {
   }
 
   Future<RequestState> updateRealTimeInsightPrice(
-      num price, String solutionId, String serviceId,
+      num? price, String? solutionId, String? serviceId,
       {bool isSuggestive = false,
-      num packagePrice,
-      num offeredPrice,
-      RealInsight realInsight,
-      String addOnText,
-      String specialOfferText,
-      String techniqueText}) async {
+      num? packagePrice,
+      num? offeredPrice,
+      RealInsight? realInsight,
+      String? addOnText,
+      String? specialOfferText,
+      String? techniqueText}) async {
     Map<String, dynamic> postData;
     if (isSuggestive) {
       postData = {
@@ -111,7 +111,7 @@ class DocHosMainRepo {
       postData: postData,
       headerIncluded: true,
     );
-    if (result.isRequestSucceed) {
+    if (result!.isRequestSucceed!) {
       return RequestSuccess(response: result.isRequestSucceed);
     } else {
       return RequestFailed(failureCause: result.failureCause);
@@ -119,9 +119,9 @@ class DocHosMainRepo {
   }
 
   Future<RequestState> updateActionableInsightPrice(
-      num price, String serviceId, String specialityId,
-      {String centreId}) async {
-    Map<String, dynamic> queryParam;
+      num price, String? serviceId, String? specialityId,
+      {String? centreId}) async {
+    Map<String, dynamic>? queryParam;
     if (centreId != null && centreId.isNotEmpty) {
       queryParam = {};
       queryParam["professionalId"] = centreId;
@@ -137,7 +137,7 @@ class DocHosMainRepo {
       queryParameter: queryParam,
       headerIncluded: true,
     );
-    if (result.isRequestSucceed) {
+    if (result!.isRequestSucceed!) {
       return RequestSuccess(response: "");
     } else {
       return RequestFailed(failureCause: result.failureCause);
@@ -152,7 +152,7 @@ class DocHosMainRepo {
         url: (UserManager().getUserDetails().userType != Constants.user)
             ? Urls.HELP_QUERY_URL_FOR_DOC_HOS
             : Urls.HELP_QUERY_URL_FOR_USER);
-    if (result.isRequestSucceed) {
+    if (result!.isRequestSucceed!) {
       return RequestSuccess(response: result.isRequestSucceed);
     } else {
       return RequestFailed(failureCause: result.failureCause);
@@ -165,7 +165,7 @@ class DocHosMainRepo {
         requestType: HttpRequestMethods.HTTP_PUT,
         headerIncluded: true,
         url: Urls.SERVICE_NOTIFICATION_DISABLE_URL + serviceId);
-    if (result.isRequestSucceed) {
+    if (result!.isRequestSucceed!) {
       return RequestSuccess(response: result.isRequestSucceed);
     } else {
       return RequestFailed(failureCause: result.failureCause);
@@ -173,7 +173,7 @@ class DocHosMainRepo {
   }
 
   Future<RequestState> updatePriceInCatalogueFromRealInsight(
-      String serviceId, num price, String profId) async {
+      String? serviceId, num price, String? profId) async {
     var result = await DioRequester().requestMethod(
         requestType: HttpRequestMethods.HTTP_PUT,
         headerIncluded: true,
@@ -183,7 +183,7 @@ class DocHosMainRepo {
           "professionalId": profId
         },
         url: Urls.UPDATE_PRICE_IN_CATALOGUE_FROM_REAL_INSIGHT);
-    if (result.isRequestSucceed) {
+    if (result!.isRequestSucceed!) {
       return RequestSuccess(response: result.isRequestSucceed);
     } else {
       return RequestFailed(failureCause: result.failureCause);

@@ -15,11 +15,11 @@ class NotificationRepo {
             : Urls.GET_NOTIFICATIONS_URL,
         requestType: HttpRequestMethods.HTTP_GET,
         headerIncluded: true);
-    if (result.isRequestSucceed) {
-      AllNotificationsPost _allNotificationPost;
+    if (result!.isRequestSucceed!) {
+      AllNotificationsPost? _allNotificationPost;
       try {
         _allNotificationPost =
-            AllNotificationsPost.fromJson(result.response.data);
+            AllNotificationsPost.fromJson(result.response!.data);
       } catch (e) {
         print("error occur NotificationRepo");
       }
@@ -43,7 +43,7 @@ class NotificationRepo {
             : Urls.SET_NOTIFICATION_COUNT_ZERO,
         requestType: HttpRequestMethods.HTTP_PUT,
         headerIncluded: true);
-    if (result.isRequestSucceed) {
+    if (result!.isRequestSucceed!) {
       return RequestSuccess(response: true);
     } else {
       return RequestFailed(failureCause: result.failureCause);
@@ -58,7 +58,7 @@ class NotificationRepo {
           "deleteNotification": [post.id]
         },
         headerIncluded: true);
-    if (result.isRequestSucceed) {
+    if (result!.isRequestSucceed!) {
       return RequestSuccess(response: true);
     } else {
       return RequestFailed(failureCause: result.failureCause);

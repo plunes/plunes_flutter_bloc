@@ -1,8 +1,8 @@
 class KnowYourProcedureModel {
-  bool success;
-  int size;
-  List<ProcedureData> data;
-  String message;
+  bool? success;
+  int? size;
+  List<ProcedureData>? data;
+  String? message;
 
   KnowYourProcedureModel({this.success, this.size, this.data, this.message});
 
@@ -10,9 +10,9 @@ class KnowYourProcedureModel {
     success = json['success'];
     size = json['size'];
     if (json['data'] != null) {
-      data = new List<ProcedureData>();
+      data = [];
       json['data'].forEach((v) {
-        data.add(new ProcedureData.fromJson(v));
+        data!.add(new ProcedureData.fromJson(v));
       });
     }
     message = json['message'];
@@ -23,7 +23,7 @@ class KnowYourProcedureModel {
     data['success'] = this.success;
     data['size'] = this.size;
     if (this.data != null) {
-      data['data'] = this.data.map((v) => v.toJson()).toList();
+      data['data'] = this.data!.map((v) => v.toJson()).toList();
     }
     data['message'] = this.message;
     return data;
@@ -31,25 +31,25 @@ class KnowYourProcedureModel {
 }
 
 class ProcedureData {
-  List<String> signs;
-  List<String> symptoms;
-  List<String> testimonials;
-  List<String> dnd;
-  String sId;
-  List<Services> services;
-  String speciality;
-  String specialityId;
-  String familyName;
-  int iV;
-  String familyImage;
-  String details;
-  String duration;
-  List<FAQ> fAQ;
-  String category;
-  String tags;
-  String sittings;
-  String defination;
-  String moreInfo;
+  List<String>? signs;
+  List<String>? symptoms;
+  List<String>? testimonials;
+  List<String>? dnd;
+  String? sId;
+  List<Services>? services;
+  String? speciality;
+  String? specialityId;
+  String? familyName;
+  int? iV;
+  String? familyImage;
+  String? details;
+  String? duration;
+  List<FAQ>? fAQ;
+  String? category;
+  String? tags;
+  String? sittings;
+  String? defination;
+  String? moreInfo;
 
   ProcedureData(
       {this.signs,
@@ -79,9 +79,9 @@ class ProcedureData {
     dnd = json['dnd'].cast<String>();
     sId = json['_id'];
     if (json['services'] != null) {
-      services = new List<Services>();
+      services = [];
       json['services'].forEach((v) {
-        services.add(new Services.fromJson(v));
+        services!.add(new Services.fromJson(v));
       });
     }
     speciality = json['speciality'];
@@ -92,9 +92,9 @@ class ProcedureData {
     details = json['details'];
     duration = json['duration'];
     if (json['FAQ'] != null) {
-      fAQ = new List<FAQ>();
+      fAQ = [];
       json['FAQ'].forEach((v) {
-        fAQ.add(new FAQ.fromJson(v));
+        fAQ!.add(new FAQ.fromJson(v));
       });
     }
     category = json['category'];
@@ -112,7 +112,7 @@ class ProcedureData {
     data['dnd'] = this.dnd;
     data['_id'] = this.sId;
     if (this.services != null) {
-      data['services'] = this.services.map((v) => v.toJson()).toList();
+      data['services'] = this.services!.map((v) => v.toJson()).toList();
     }
     data['speciality'] = this.speciality;
     data['specialityId'] = this.specialityId;
@@ -122,7 +122,7 @@ class ProcedureData {
     data['details'] = this.details;
     data['duration'] = this.duration;
     if (this.fAQ != null) {
-      data['FAQ'] = this.fAQ.map((v) => v.toJson()).toList();
+      data['FAQ'] = this.fAQ!.map((v) => v.toJson()).toList();
     }
     data['category'] = this.category;
     data['tags'] = this.tags;
@@ -134,9 +134,9 @@ class ProcedureData {
 }
 
 class Services {
-  String sId;
-  String service;
-  String serviceId;
+  String? sId;
+  String? service;
+  String? serviceId;
 
   Services({this.sId, this.service, this.serviceId});
 
@@ -156,9 +156,9 @@ class Services {
 }
 
 class FAQ {
-  String sId;
-  String q;
-  String a;
+  String? sId;
+  String? q;
+  String? a;
 
   FAQ({this.sId, this.q, this.a});
 

@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:geocoder/geocoder.dart';
+import 'package:geocoding/geocoding.dart';
+// import 'package:geocoder_location/geocoder.dart';
+// import 'package:geocoder/geocoder.dart';
 import 'package:location/location.dart' as loc;
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
@@ -36,7 +38,7 @@ typedef PasswordCallback = void Function(bool flag);
 // ignore: must_be_immutable
 class Registration extends BaseActivity {
   static const tag = "/registration";
-  final String phone;
+  final String? phone;
 
   Registration({this.phone});
 
@@ -72,11 +74,11 @@ class _RegistrationState extends State<Registration>
   final aboutController = new TextEditingController();
   final fullAddressController = new TextEditingController();
 
-  List<DropdownMenuItem<String>> _dropDownMenuItems;
-  List<dynamic> _selectedItemId = List(),
-      _doctorsList = List(),
-      _selectedSpecializationData = List();
-  String _userType, _latitude, _longitude, gender = plunesStrings.male;
+  List<DropdownMenuItem<String>>? _dropDownMenuItems;
+  List<dynamic>? _selectedItemId = [],
+      _doctorsList = [],
+      _selectedSpecializationData = [];
+  String? _userType, _latitude, _longitude, gender = plunesStrings.male;
   bool isExperienceValid = true,
       _passwordVisible = true,
       progress = false,
@@ -99,13 +101,13 @@ class _RegistrationState extends State<Registration>
       expFocusNode = new FocusNode();
   int data = 1, male = 0, female = 1;
   var image;
-  UserBloc _userBloc;
-  String _failureCause;
-  bool _isProcessing;
-  Preferences _preferenceObj;
-  BuildContext _context;
-  TabController _tabController;
-  int _previousTabIndex;
+  UserBloc? _userBloc;
+  String? _failureCause;
+  late bool _isProcessing;
+  late Preferences _preferenceObj;
+  BuildContext? _context;
+  TabController? _tabController;
+  int? _previousTabIndex;
 
   @override
   void initState() {
@@ -131,7 +133,7 @@ class _RegistrationState extends State<Registration>
     doc_availability_from.text = "00:00 AM";
     doc_availability_to.text = "00:00 PM";
     if (CommonMethods.catalogueLists == null ||
-        CommonMethods.catalogueLists.isEmpty) {
+        CommonMethods.catalogueLists!.isEmpty) {
       _isProcessing = true;
       _getSpecialities();
     }
@@ -144,15 +146,15 @@ class _RegistrationState extends State<Registration>
     _longitude = _preferenceObj.getPreferenceString(Constants.LONGITUDE);
     if (_latitude == null ||
         _longitude == null ||
-        _latitude.isEmpty ||
-        _longitude.isEmpty ||
+        _latitude!.isEmpty ||
+        _longitude!.isEmpty ||
         _latitude == "0.0" ||
         _longitude == "0.0") {
       await Future.delayed(Duration(milliseconds: 400));
       var latLong = await LocationUtil().getCurrentLatLong(_context);
       if (latLong != null) {
-        _latitude = latLong.latitude?.toString();
-        _longitude = latLong.longitude?.toString();
+        _latitude = latLong.latitude.toString();
+        _longitude = latLong.longitude.toString();
       }
     }
     _setLocationData();
@@ -298,8 +300,8 @@ class _RegistrationState extends State<Registration>
       if (val != '' && val != null) {
         _selectedItemId = [];
         _selectedSpecializationData = [];
-        _selectedItemId.addAll(val['SelectedId']);
-        _selectedSpecializationData.addAll(val['SelectedData']);
+        _selectedItemId!.addAll(val['SelectedId']);
+        _selectedSpecializationData!.addAll(val['SelectedData']);
         _setState();
       }
     });
@@ -624,7 +626,7 @@ class _RegistrationState extends State<Registration>
       if (val == null) {
         return;
       }
-      var addressControllerList = new List();
+      var addressControllerList = [];
       addressControllerList = val.toString().split(":");
       locationController.text = addressControllerList[0] +
           ' ' +
@@ -669,7 +671,7 @@ class _RegistrationState extends State<Registration>
               children: <Widget>[
                 Expanded(
                   child: widget.createTextViews(
-                      _selectedSpecializationData[index],
+                      _selectedSpecializationData![index],
                       18,
                       colorsFile.black0,
                       TextAlign.start,
@@ -691,8 +693,8 @@ class _RegistrationState extends State<Registration>
                   ),
                   onTap: () {
                     setState(() {
-                      _selectedSpecializationData.removeAt(index);
-                      _selectedItemId.removeAt(index);
+                      _selectedSpecializationData!.removeAt(index);
+                      _selectedItemId!.removeAt(index);
                     });
                   },
                 ),
@@ -706,7 +708,7 @@ class _RegistrationState extends State<Registration>
           ],
         );
       },
-      itemCount: _selectedSpecializationData.length,
+      itemCount: _selectedSpecializationData!.length,
       shrinkWrap: true,
       physics: ClampingScrollPhysics(),
     );
@@ -714,7 +716,7 @@ class _RegistrationState extends State<Registration>
 
   _showProfessionalRegistrationSuccessPopup(LoginPost data) async {
     showDialog(
-        context: _context,
+        context: _context!,
         builder: (context) {
           return Dialog(
             shape: RoundedRectangleBorder(
@@ -781,8 +783,8 @@ class _RegistrationState extends State<Registration>
 
   _submitRegistrationRequest() async {
     if (validation()) {
-      List specialistId = new List();
-      for (var item in _selectedItemId)
+      List specialistId = [];
+      for (var item in _selectedItemId!)
         specialistId.add({'specialityId': item});
       Map<String, dynamic> body = {};
       body['name'] = nameController.text;
@@ -794,13 +796,14 @@ class _RegistrationState extends State<Registration>
       body['password'] = passwordController.text;
       if (this._latitude != null &&
           this._longitude != null &&
-          this._latitude.isNotEmpty &&
-          this._longitude.isNotEmpty &&
+          this._latitude!.isNotEmpty &&
+          this._longitude!.isNotEmpty &&
           _userType != Constants.generalUser) {
-        body['location'] = Location(type: 'Point', coordinates: [
-          double.parse(this._longitude),
-          double.parse(this._latitude)
-        ]).toJson();
+
+        // body['location'] = Location('Point', coordinates: [
+        //   double.parse(this._longitude!),
+        //   double.parse(this._latitude!)
+        // ]).toJson();
       }
       body['userType'] =
           _userType == Constants.generalUser ? 'User' : _userType;
@@ -831,13 +834,13 @@ class _RegistrationState extends State<Registration>
       progress = true;
       _setState();
       await Future.delayed(Duration(milliseconds: 50));
-      var result = await _userBloc.signUp(body);
+      var result = await _userBloc!.signUp(body);
       progress = false;
       _setState();
       await Future.delayed(Duration(milliseconds: 50));
       if (result is RequestSuccess) {
         LoginPost data = result.response;
-        if (data.success) {
+        if (data.success!) {
           _setShowCaseStatus();
           AnalyticsProvider().registerEvent(AnalyticsKeys.signUpKey);
           if (_userType != Constants.generalUser) {
@@ -907,10 +910,10 @@ class _RegistrationState extends State<Registration>
     } else if (_isUserType() &&
         (locationController.text.isEmpty ||
             _latitude == null ||
-            _latitude.isEmpty ||
+            _latitude!.isEmpty ||
             _latitude == "0.0" ||
             _longitude == null ||
-            _longitude.isEmpty ||
+            _longitude!.isEmpty ||
             _longitude == "0.0")) {
       errorMessage = PlunesStrings.pleaseSelectALocation;
       return false;
@@ -926,7 +929,7 @@ class _RegistrationState extends State<Registration>
       errorMessage = plunesStrings.errorMsgEnterSpecialization;
       return false;
     } else if ((_isLabType() || _isHospitalType()) &&
-        (_selectedItemId == null || _selectedItemId.isEmpty)) {
+        (_selectedItemId == null || _selectedItemId!.isEmpty)) {
       errorMessage = plunesStrings.errorMsgEnterSpecialization;
       return false;
     } else if (_isDoctorType() && experienceController.text.trim().isEmpty) {
@@ -1163,7 +1166,7 @@ class _RegistrationState extends State<Registration>
       bool fieldFlag,
       String errorMsg,
       {bool hasOutlinedBorder = false}) {
-    if (controller == phoneController) controller.text = widget.phone;
+    if (controller == phoneController) controller.text = widget.phone!;
     return InkWell(
       highlightColor: Colors.transparent,
       focusColor: Colors.transparent,
@@ -1206,18 +1209,21 @@ class _RegistrationState extends State<Registration>
               inputFormatters: (controller != null &&
                       controller == alternatePhoneController)
                   ? <TextInputFormatter>[
-                      WhitelistingTextInputFormatter.digitsOnly
+                    FilteringTextInputFormatter.digitsOnly
+                      // WhitelistingTextInputFormatter.digitsOnly
                     ]
                   : (controller != null &&
                           controller == nameController &&
                           _userType == Constants.generalUser)
-                      ? [WhitelistingTextInputFormatter(RegExp("[a-zA-Z ]"))]
+                      ? [
+                FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ]")),
+              ]
                       : null,
               textInputAction: controller == referralController
                   ? TextInputAction.done
                   : TextInputAction.next,
               onSubmitted: (String value) {
-                setFocus(controller).unfocus();
+                setFocus(controller)!.unfocus();
                 FocusScope.of(context).requestFocus(setTargetFocus(controller));
               },
               onChanged: (text) {
@@ -1268,8 +1274,8 @@ class _RegistrationState extends State<Registration>
     );
   }
 
-  FocusNode setFocus(TextEditingController controller) {
-    FocusNode focusNode;
+  FocusNode? setFocus(TextEditingController controller) {
+    FocusNode? focusNode;
     if (controller == nameController) {
       focusNode = nameFocusNode;
     } else if (controller == phoneController) {
@@ -1288,8 +1294,8 @@ class _RegistrationState extends State<Registration>
     return focusNode;
   }
 
-  FocusNode setTargetFocus(TextEditingController controller) {
-    FocusNode focusNode;
+  FocusNode? setTargetFocus(TextEditingController controller) {
+    FocusNode? focusNode;
     if (controller == nameController) {
       focusNode = emailFocusNode;
     } else if (controller == emailController) {
@@ -1475,10 +1481,10 @@ class _RegistrationState extends State<Registration>
       _isProcessing = true;
       _setState();
     }
-    var result = await _userBloc.getSpeciality();
+    var result = await _userBloc!.getSpeciality();
     if (result is RequestSuccess) {
       if (CommonMethods.catalogueLists == null ||
-          CommonMethods.catalogueLists.isEmpty) {
+          CommonMethods.catalogueLists!.isEmpty) {
         _failureCause = "No Data Available";
       }
     } else if (result is RequestFailed) {
@@ -1497,17 +1503,18 @@ class _RegistrationState extends State<Registration>
   Future _setLocationData() async {
     if (_latitude != null &&
         _longitude != null &&
-        _latitude.isNotEmpty &&
-        _longitude.isNotEmpty &&
+        _latitude!.isNotEmpty &&
+        _longitude!.isNotEmpty &&
         _latitude != "0.0" &&
         _longitude != "0.0") {
-      final coordinates =
-          new Coordinates(double.parse(_latitude), double.parse(_longitude));
-      var addressController =
-          await Geocoder.local.findAddressesFromCoordinates(coordinates);
+      // final coordinates = new Coordinates(double.parse(_latitude!), double.parse(_longitude!));
+      // var addressController = await Geocoder.local.findAddressesFromCoordinates(coordinates);
+      var addressController = await GeocodingPlatform.instance.placemarkFromCoordinates(double.parse(_latitude!), double.parse(_longitude!));
+      // var addressController = await Geocoder.local.findAddressesFromCoordinates(coordinates);
       var addr = addressController.first;
-      String fullAddressController = addr.addressLine;
-      if (mounted) locationController.text = fullAddressController;
+      String? fullAddressController = addr.locality;
+      // String? fullAddressController = addr.addressLine;
+      if (mounted) locationController.text = fullAddressController!;
     }
     _setState();
   }
@@ -1582,7 +1589,7 @@ class _RegistrationState extends State<Registration>
     );
   }
 
-  Widget _getProfileInformationTextWidget({String text}) {
+  Widget _getProfileInformationTextWidget({String? text}) {
     return Container(
       margin: EdgeInsets.only(top: 25, left: 8),
       child: Row(

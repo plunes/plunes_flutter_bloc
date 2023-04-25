@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,7 +22,7 @@ import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/profile_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/enter_procedure_detail_screen.dart';
 import 'package:plunes/ui/commonView/LocationFetch.dart';
-import 'package:searchable_dropdown/searchable_dropdown.dart';
+// import 'package:searchable_dropdown/searchable_dropdown.dart';
 
 // ignore: must_be_immutable
 class ManualBidding extends BaseActivity {
@@ -29,31 +30,33 @@ class ManualBidding extends BaseActivity {
   _ManualBiddingState createState() => _ManualBiddingState();
 }
 
-class _ManualBiddingState extends BaseState<ManualBidding> {
-  TextEditingController _textEditingController, _searchController;
-  List<MoreFacility> _catalogues, _selectedItemList;
-  StreamController _streamController,
+// class _ManualBiddingState extends BaseState<ManualBidding> {
+class _ManualBiddingState extends State<ManualBidding> {
+final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  TextEditingController? _textEditingController, _searchController;
+  List<MoreFacility>? _catalogues, _selectedItemList;
+  StreamController? _streamController,
       _selectUnselectController,
       _queryStreamController;
   int pageIndex = SearchSolutionBloc.initialIndex;
-  bool _endReached, _isProcessing;
-  String _failureCause, _specialityFailureCause;
-  SearchSolutionBloc _searchSolutionBloc;
-  Timer _debounce;
-  LatLng _selectedLoc;
-  String _location = PlunesStrings.enterYourLocation;
-  User _userObj;
-  UserBloc _userBloc;
-  String _specialitySelectedId;
+  bool? _endReached, _isProcessing;
+  String? _failureCause, _specialityFailureCause;
+  SearchSolutionBloc? _searchSolutionBloc;
+  Timer? _debounce;
+  LatLng? _selectedLoc;
+  String? _location = PlunesStrings.enterYourLocation;
+  late User _userObj;
+  late UserBloc _userBloc;
+  String? _specialitySelectedId;
   bool _scrollParent = false;
-  ScrollController _scrollController;
+  ScrollController? _scrollController;
   List<SpecialityModel> _specialityItems = [];
 
-  String _selectedSpeciality;
+  String? _selectedSpeciality;
 
-  String _selectedSpecialityName;
+  String? _selectedSpecialityName;
 
-  String _initialSearchedString;
+  String? _initialSearchedString;
 
   @override
   void initState() {
@@ -63,7 +66,7 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
     _userObj = UserManager().getUserDetails();
     _userBloc = UserBloc();
     if (CommonMethods.catalogueLists == null ||
-        CommonMethods.catalogueLists.isEmpty) {
+        CommonMethods.catalogueLists!.isEmpty) {
       _isProcessing = true;
       _getSpecialities();
     }
@@ -83,22 +86,22 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
 
   _getMoreFacilities() {
     _failureCause = null;
-    _searchSolutionBloc.getFacilitiesForManualBidding(
-        searchQuery: _searchController.text.trim().toString(),
+    _searchSolutionBloc!.getFacilitiesForManualBidding(
+        searchQuery: _searchController!.text.trim().toString(),
         pageIndex: pageIndex,
         latLng: _selectedLoc,
         specialityId: _specialitySelectedId);
   }
 
   void _getSpecialities() async {
-    if (!_isProcessing) {
+    if (!_isProcessing!) {
       _isProcessing = true;
       _setState();
     }
     var result = await _userBloc.getSpeciality();
     if (result is RequestSuccess) {
       if (CommonMethods.catalogueLists == null ||
-          CommonMethods.catalogueLists.isEmpty) {
+          CommonMethods.catalogueLists!.isEmpty) {
         _specialityFailureCause = "No Data Available";
       }
     } else if (result is RequestFailed) {
@@ -127,10 +130,10 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
         // appBar:
         //     widget.getAppBar(context, PlunesStrings.negotiateManually, true),
         body: Builder(builder: (context) {
-          if (_isProcessing) {
+          if (_isProcessing!) {
             return CustomWidgets().getProgressIndicator();
           } else if (_specialityFailureCause != null &&
-              _specialityFailureCause.isNotEmpty) {
+              _specialityFailureCause!.isNotEmpty) {
             return CustomWidgets().errorWidget(_specialityFailureCause,
                 onTap: () => _getSpecialities());
           }
@@ -180,8 +183,8 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
 //                      ),
 //                    ),
 //                  ),
-                  StreamBuilder<Object>(
-                      stream: _searchSolutionBloc.getManualBiddingStream(),
+                  StreamBuilder<Object?>(
+                      stream: _searchSolutionBloc!.getManualBiddingStream(),
                       builder: (context, snapshot) {
                         return _getSpecialityDropDown();
                       }),
@@ -219,27 +222,27 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                       ),
                     ),
                   ),
-                  StreamBuilder<Object>(
-                      stream: _streamController.stream,
+                  StreamBuilder<Object?>(
+                      stream: _streamController!.stream,
                       builder: (context, snapshot) {
                         return _getSearchBar();
                       }),
                   _getSelectedItems(),
-                  StreamBuilder<RequestState>(
-                      stream: _searchSolutionBloc.getManualBiddingStream(),
-                      initialData: (_catalogues == null || _catalogues.isEmpty)
+                  StreamBuilder<RequestState?>(
+                      stream: _searchSolutionBloc!.getManualBiddingStream(),
+                      initialData: (_catalogues == null || _catalogues!.isEmpty)
                           ? RequestInProgress()
                           : null,
                       builder: (context, snapShot) {
                         if (snapShot.data is RequestSuccess) {
-                          RequestSuccess _requestSuccessObject = snapShot.data;
+                          RequestSuccess _requestSuccessObject = snapShot.data as RequestSuccess;
                           if (_requestSuccessObject.requestCode ==
                               SearchSolutionBloc.initialIndex) {
-                            if (_searchController.text.trim().isEmpty) {
+                            if (_searchController!.text.trim().isEmpty) {
                               pageIndex = SearchSolutionBloc.initialIndex;
                               _catalogues = [];
                             } else {
-                              if (_searchController.text.trim().isNotEmpty &&
+                              if (_searchController!.text.trim().isNotEmpty &&
                                   _requestSuccessObject.additionalData !=
                                       null &&
                                   _requestSuccessObject.additionalData
@@ -257,41 +260,41 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                             _endReached = true;
                           } else {
                             _endReached = false;
-                            if (_searchController.text.trim().isEmpty) {
-                              Set _allItems = _catalogues.toSet();
+                            if (_searchController!.text.trim().isEmpty) {
+                              Set _allItems = _catalogues!.toSet();
                               _allItems.addAll(_requestSuccessObject.response);
-                              _catalogues = _allItems.toList(growable: true);
+                              _catalogues = _allItems.toList(growable: true) as List<MoreFacility>?;
                             } else {
-                              if (_searchController.text.trim().isNotEmpty &&
+                              if (_searchController!.text.trim().isNotEmpty &&
                                   _requestSuccessObject.additionalData !=
                                       null &&
                                   _requestSuccessObject.additionalData
                                       .toString()
                                       .trim()
                                       .isNotEmpty) {
-                                Set _allItems = _catalogues.toSet();
+                                Set _allItems = _catalogues!.toSet();
                                 _allItems
                                     .addAll(_requestSuccessObject.response);
-                                _catalogues = _allItems.toList(growable: true);
+                                _catalogues = _allItems.toList(growable: true) as List<MoreFacility>?;
                               }
                             }
                           }
-                          _selectedItemList.forEach((selectedItem) {
-                            if (_catalogues.contains(selectedItem)) {
-                              _catalogues.remove(selectedItem);
+                          _selectedItemList!.forEach((selectedItem) {
+                            if (_catalogues!.contains(selectedItem)) {
+                              _catalogues!.remove(selectedItem);
                             }
                           });
                           pageIndex++;
-                          _searchSolutionBloc
+                          _searchSolutionBloc!
                               .addStateInManualBiddingStream(null);
                         } else if (snapShot.data is RequestFailed) {
-                          RequestFailed _requestFailed = snapShot.data;
+                          RequestFailed _requestFailed = snapShot.data as RequestFailed;
                           pageIndex = SearchSolutionBloc.initialIndex;
                           _failureCause = _requestFailed.failureCause;
-                          _searchSolutionBloc
+                          _searchSolutionBloc!
                               .addStateInManualBiddingStream(null);
                         }
-                        return (_catalogues == null || _catalogues.isEmpty)
+                        return (_catalogues == null || _catalogues!.isEmpty)
                             ? _getDefaultWidget(snapShot)
                             : _showResultsFromBackend(snapShot);
                       }),
@@ -322,7 +325,7 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                     child: TextField(
                   controller: _textEditingController,
                   onChanged: (data) {
-                    _queryStreamController.add(null);
+                    _queryStreamController!.add(null);
                   },
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -367,7 +370,7 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
         onTextClear: () => _onTextClear());
   }
 
-  Widget _showResultsFromBackend(AsyncSnapshot<RequestState> snapShot) {
+  Widget _showResultsFromBackend(AsyncSnapshot<RequestState?> snapShot) {
     return Container(
         constraints: BoxConstraints(
             minHeight: AppConfig.verticalBlockSize * 25,
@@ -382,7 +385,7 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                 onNotification: (scrollState) {
                   if (scrollState is ScrollEndNotification &&
                       scrollState.metrics.extentAfter == 0 &&
-                      !_endReached) {
+                      !_endReached!) {
                     _getMoreFacilities();
                   } else if (scrollState is OverscrollNotification) {
                     _scrollParent = true;
@@ -393,7 +396,7 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                     });
                   }
                   return;
-                },
+                } as bool Function(ScrollNotification)?,
                 child: IgnorePointer(
                   ignoring: _scrollParent,
                   child: ListView.builder(
@@ -402,16 +405,16 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                       return Container(
                         margin: EdgeInsets.only(
                             bottom: (_catalogues != null &&
-                                    _catalogues.isNotEmpty &&
-                                    (index == _catalogues.length - 1))
+                                    _catalogues!.isNotEmpty &&
+                                    (index == _catalogues!.length - 1))
                                 ? AppConfig.verticalBlockSize * 16
                                 : 0),
-                        child: getMoreFacilityWidget(_catalogues, index,
+                        child: getMoreFacilityWidget(_catalogues!, index,
                             onTap: () => _addRemoveFacilities(
-                                _catalogues[index],
+                                _catalogues![index],
                                 shouldAdd: true),
                             onProfileTap: () =>
-                                _viewProfile(_catalogues[index])),
+                                _viewProfile(_catalogues![index])),
                       );
                     },
                     shrinkWrap: true,
@@ -421,7 +424,7 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
               ),
             ),
             (snapShot.data is RequestInProgress &&
-                    (_catalogues != null && _catalogues.isNotEmpty))
+                    (_catalogues != null && _catalogues!.isNotEmpty))
                 ? CustomWidgets().getProgressIndicator()
                 : Container()
           ],
@@ -448,7 +451,7 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
           context,
           MaterialPageRoute(
               builder: (context) => DoctorInfo(service.professionalId,
-                  isDoc: (service.userType.toLowerCase() ==
+                  isDoc: (service.userType!.toLowerCase() ==
                       Constants.doctor.toString().toLowerCase()))));
     }
   }
@@ -456,26 +459,26 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
   _addRemoveFacilities(MoreFacility facility, {bool shouldAdd = false}) {
     if (shouldAdd &&
         _selectedItemList != null &&
-        _selectedItemList.length >= 5) {
+        _selectedItemList!.length >= 5) {
       _showInSnackBar("Can't select more than 5 facilities");
       return;
     }
-    if (_selectedItemList.contains(facility)) {
-      _selectedItemList.remove(facility);
+    if (_selectedItemList!.contains(facility)) {
+      _selectedItemList!.remove(facility);
       if (_catalogues != null &&
-          _catalogues.isNotEmpty &&
-          _searchController.text.trim().isEmpty) {
-        _catalogues.insert(0, facility);
+          _catalogues!.isNotEmpty &&
+          _searchController!.text.trim().isEmpty) {
+        _catalogues!.insert(0, facility);
       }
     } else {
-      _selectedItemList.add(facility);
-      _catalogues.remove(facility);
+      _selectedItemList!.add(facility);
+      _catalogues!.remove(facility);
     }
-    if (_catalogues == null || _catalogues.isEmpty) {
+    if (_catalogues == null || _catalogues!.isEmpty) {
       _failureCause = PlunesStrings.emptyStr;
     }
-    _selectUnselectController.add(null);
-    _searchSolutionBloc.addStateInManualBiddingStream(null);
+    _selectUnselectController!.add(null);
+    _searchSolutionBloc!.addStateInManualBiddingStream(null);
   }
 
   void _showInSnackBar(String message) {
@@ -488,7 +491,7 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
 //    widget.showInSnackBar(message, PlunesColors.BLACKCOLOR, scaffoldKey);
   }
 
-  Widget _getDefaultWidget(AsyncSnapshot<RequestState> snapShot) {
+  Widget _getDefaultWidget(AsyncSnapshot<RequestState?> snapShot) {
     return Container(
       constraints: BoxConstraints(
           minHeight: AppConfig.verticalBlockSize * 30,
@@ -498,11 +501,11 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
       child: Column(
         children: <Widget>[
           (snapShot.data is RequestInProgress &&
-                  (_catalogues == null || _catalogues.isEmpty))
+                  (_catalogues == null || _catalogues!.isEmpty))
               ? Expanded(child: CustomWidgets().getProgressIndicator())
               : Expanded(
                   child: CustomWidgets().errorWidget(
-                      (_failureCause == null || _failureCause.isEmpty)
+                      (_failureCause == null || _failureCause!.isEmpty)
                           ? (_specialitySelectedId != null)
                               ? PlunesStrings.afterFacilitySelectedText
                               : PlunesStrings.facilityNotAvailableMessage
@@ -522,10 +525,10 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
   }
 
   Widget _getSelectedItems() {
-    return StreamBuilder<Object>(
-        stream: _selectUnselectController.stream,
+    return StreamBuilder<Object?>(
+        stream: _selectUnselectController!.stream,
         builder: (context, snapshot) {
-          if (_selectedItemList == null || _selectedItemList.isEmpty) {
+          if (_selectedItemList == null || _selectedItemList!.isEmpty) {
             return Container();
           }
           return Column(
@@ -541,12 +544,12 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                   padding: EdgeInsets.zero,
                   physics: NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
-                    return getMoreFacilityWidget(_selectedItemList, index,
+                    return getMoreFacilityWidget(_selectedItemList!, index,
                         isSelected: true,
                         onTap: () =>
-                            _addRemoveFacilities(_selectedItemList[index]),
+                            _addRemoveFacilities(_selectedItemList![index]),
                         onProfileTap: () =>
-                            _viewProfile(_selectedItemList[index]));
+                            _viewProfile(_selectedItemList![index]));
                   },
                   shrinkWrap: true,
                   itemCount: _selectedItemList?.length ?? 0,
@@ -558,25 +561,25 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
   }
 
   _onSearch() {
-    _streamController.add(null);
-    if (_debounce?.isActive ?? false) _debounce.cancel();
+    _streamController!.add(null);
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () {
       if (_searchController != null &&
-          _searchController.text != null &&
-          _searchController.text.trim().isNotEmpty) {
+          _searchController!.text != null &&
+          _searchController!.text.trim().isNotEmpty) {
         if (_initialSearchedString == null) {
-          _initialSearchedString = _searchController.text.trim();
+          _initialSearchedString = _searchController!.text.trim();
         }
         _catalogues = [];
         _failureCause = null;
-        _searchSolutionBloc.getFacilitiesForManualBidding(
-            searchQuery: _searchController.text.trim().toString(),
+        _searchSolutionBloc!.getFacilitiesForManualBidding(
+            searchQuery: _searchController!.text.trim().toString(),
             pageIndex: SearchSolutionBloc.initialIndex,
             latLng: _selectedLoc,
             specialityId: _specialitySelectedId);
       } else {
         if (_initialSearchedString == null ||
-            _initialSearchedString.trim().isEmpty) {
+            _initialSearchedString!.trim().isEmpty) {
           return;
         }
         _onTextClear();
@@ -585,12 +588,12 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
   }
 
   Widget _getSubmitButton() {
-    if (_selectedItemList == null || _selectedItemList.isEmpty) {
+    if (_selectedItemList == null || _selectedItemList!.isEmpty) {
       return Container();
     }
     return InkWell(
       onTap: () {
-        if (_selectedItemList == null || _selectedItemList.isEmpty) {
+        if (_selectedItemList == null || _selectedItemList!.isEmpty) {
           _showInSnackBar(PlunesStrings.selectFacilityToReceiveBid);
           return;
         }
@@ -677,9 +680,9 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                 builder: (context) => LocationFetch(shouldSaveLocation: false)))
         .then((val) {
       if (val != null) {
-        var addressControllerList = new List();
+        var addressControllerList = [];
         addressControllerList = val.toString().split(":");
-        String addr = addressControllerList[0] +
+        String? addr = addressControllerList[0] +
             ' ' +
             addressControllerList[1] +
             ' ' +
@@ -687,7 +690,7 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
 //                          print("addr is $addr");
         var _latitude = addressControllerList[3];
         var _longitude = addressControllerList[4];
-        String region = addr;
+        String? region = addr;
         if (addressControllerList.length == 6 &&
             addressControllerList[5] != null) {
           region = addressControllerList[5];
@@ -695,7 +698,7 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
         _location = region;
         _setState();
         _selectedLoc =
-            LatLng(double.tryParse(_latitude), double.tryParse(_longitude));
+            LatLng(double.tryParse(_latitude)!, double.tryParse(_longitude)!);
 //        print("_latitude $_latitude");
 //        print("_longitude $_longitude");
         pageIndex = SearchSolutionBloc.initialIndex;
@@ -710,7 +713,7 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
         child: Card(
             color: Colors.white,
             elevation: 3.0,
-            margin: EdgeInsets.only(top: AppConfig.getMediaQuery().padding.top),
+            margin: EdgeInsets.only(top: AppConfig.getMediaQuery()!.padding.top),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
@@ -778,8 +781,8 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
   void _getRegion() {
     if (_userObj.latitude == null ||
         _userObj.longitude == null ||
-        _userObj.latitude.isEmpty ||
-        _userObj.longitude.isEmpty ||
+        _userObj.latitude!.isEmpty ||
+        _userObj.longitude!.isEmpty ||
         _userObj.latitude == '0.0' ||
         _userObj.longitude == '0.0') {
       _location = PlunesStrings.enterYourLocation;
@@ -796,95 +799,96 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
 
   Widget _getSpecialityDropDown() {
     List<DropdownMenuItem<String>> itemList = [];
-    CommonMethods.catalogueLists.toSet().forEach((item) {
-      if (item != null && item.id != null && item.id.isNotEmpty) {
+    CommonMethods.catalogueLists!.toSet().forEach((item) {
+      if (item != null && item.id != null && item.id!.isNotEmpty) {
         itemList.add(DropdownMenuItem(
-            value: item?.speciality ?? PlunesStrings.NA,
+            value: item.speciality ?? PlunesStrings.NA,
             child: Container(
               alignment: Alignment.topLeft,
-              child: Text(
-                item?.speciality ?? PlunesStrings.NA,
+              child: Text(item.speciality ?? PlunesStrings.NA,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 16),
+                style: const TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 16),
               ),
             )));
       }
     });
-    return itemList == null || itemList.isEmpty
-        ? Container()
-        : SearchableDropdown.single(
-            onChanged: (value) {
-//              print("value hai $value");
-              CommonMethods.catalogueLists.toSet().forEach((item) {
-                if (item != null &&
-                    item.id != null &&
-                    item.id.isNotEmpty &&
-                    value != null &&
-                    value.toString().isNotEmpty &&
-                    item.speciality != null &&
-                    item.speciality.isNotEmpty &&
-                    value.toString() == item.speciality) {
-                  _specialitySelectedId = item.id;
-                  _catalogues = [];
-                  pageIndex = SearchSolutionBloc.initialIndex;
-                  _getMoreFacilities();
-                }
-              });
-            },
-            isExpanded: true,
-            isCaseSensitiveSearch: false,
-            onClear: () {
-              _specialitySelectedId = null;
-              _catalogues = [];
-              pageIndex = SearchSolutionBloc.initialIndex;
-              _getMoreFacilities();
-            },
-            hint: Container(
-              width: double.infinity,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Icon(
-                    Icons.close,
-                    color: Colors.transparent,
-                  ),
-                  Text(
-                    PlunesStrings.specialities,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Color(CommonMethods.getColorHexFromStr("#5D5D5D")),
-                      fontSize: 16,
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            selectedValueWidgetFn: (item) {
-              return Container(
-                width: double.infinity,
-                padding: EdgeInsets.only(),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Icon(
-                      Icons.close,
-                      color: Colors.transparent,
-                    ),
-                    Expanded(
-                      child: Text(
-                        item,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-            items: itemList,
-          );
+    return
+      // itemList == null || itemList.isEmpty
+        // ?
+    Container();
+//         : SearchableDropdown.single(
+//             onChanged: (value) {
+// //              print("value hai $value");
+//               CommonMethods.catalogueLists.toSet().forEach((item) {
+//                 if (item != null &&
+//                     item.id != null &&
+//                     item.id.isNotEmpty &&
+//                     value != null &&
+//                     value.toString().isNotEmpty &&
+//                     item.speciality != null &&
+//                     item.speciality.isNotEmpty &&
+//                     value.toString() == item.speciality) {
+//                   _specialitySelectedId = item.id;
+//                   _catalogues = [];
+//                   pageIndex = SearchSolutionBloc.initialIndex;
+//                   _getMoreFacilities();
+//                 }
+//               });
+//             },
+//             isExpanded: true,
+//             isCaseSensitiveSearch: false,
+//             onClear: () {
+//               _specialitySelectedId = null;
+//               _catalogues = [];
+//               pageIndex = SearchSolutionBloc.initialIndex;
+//               _getMoreFacilities();
+//             },
+//             hint: Container(
+//               width: double.infinity,
+//               child: Row(
+//                 mainAxisAlignment: MainAxisAlignment.center,
+//                 crossAxisAlignment: CrossAxisAlignment.center,
+//                 children: <Widget>[
+//                   Icon(
+//                     Icons.close,
+//                     color: Colors.transparent,
+//                   ),
+//                   Text(
+//                     PlunesStrings.specialities,
+//                     textAlign: TextAlign.center,
+//                     style: TextStyle(
+//                       color: Color(CommonMethods.getColorHexFromStr("#5D5D5D")),
+//                       fontSize: 16,
+//                       fontWeight: FontWeight.normal,
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//             ),
+//             selectedValueWidgetFn: (item) {
+//               return Container(
+//                 width: double.infinity,
+//                 padding: EdgeInsets.only(),
+//                 child: Row(
+//                   mainAxisAlignment: MainAxisAlignment.center,
+//                   crossAxisAlignment: CrossAxisAlignment.center,
+//                   children: <Widget>[
+//                     Icon(
+//                       Icons.close,
+//                       color: Colors.transparent,
+//                     ),
+//                     Expanded(
+//                       child: Text(
+//                         item,
+//                         textAlign: TextAlign.center,
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               );
+//             },
+//             items: itemList,
+//           );
   }
 
 //  Widget _getSpecialityDropDown() {
@@ -1001,13 +1005,13 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
   }
 
   Widget searchBar(
-      {@required final TextEditingController searchController,
-      @required final String hintText,
+      {required final TextEditingController? searchController,
+      required final String hintText,
       bool hasFocus = false,
       isRounded = true,
-      FocusNode focusNode,
+      FocusNode? focusNode,
       double searchBarHeight = 6,
-      Function onTextClear}) {
+      Function? onTextClear}) {
     return StatefulBuilder(builder: (context, newState) {
       return Column(
         children: <Widget>[
@@ -1043,7 +1047,7 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                                 CommonMethods.getColorHexFromStr("#5D5D5D")))),
                   ),
                 ),
-                searchController.text.trim().isEmpty
+                searchController!.text.trim().isEmpty
                     ? Image.asset(
                         PlunesImages.searchIcon,
                         color: PlunesColors.BLACKCOLOR,
@@ -1105,7 +1109,7 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
             ),
           ),
           Positioned(
-            child: StreamBuilder<Object>(
+            child: StreamBuilder<Object?>(
                 stream: _selectUnselectController?.stream,
                 builder: (context, snapshot) {
                   return _getSubmitButton();
@@ -1213,12 +1217,12 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                               mainAxisAlignment: MainAxisAlignment.end,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                StreamBuilder<Object>(
-                                    stream: _searchSolutionBloc
+                                StreamBuilder<Object?>(
+                                    stream: _searchSolutionBloc!
                                         .getManualBiddingStream(),
                                     builder: (context, snapshot) {
                                       return Text(
-                                        _getSpecialityName(),
+                                        _getSpecialityName()!,
                                         style: TextStyle(
                                             fontSize: 16,
                                             color: Color(CommonMethods
@@ -1239,8 +1243,8 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                             elevation: 2,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(25.0)),
-                            child: StreamBuilder<Object>(
-                                stream: _streamController.stream,
+                            child: StreamBuilder<Object?>(
+                                stream: _streamController!.stream,
                                 builder: (context, snapshot) {
                                   return Container(
                                     decoration: BoxDecoration(
@@ -1308,13 +1312,13 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                                                                     "#717171")))),
                                                   ),
                                                 ),
-                                                _searchController.text
+                                                _searchController!.text
                                                         .trim()
                                                         .isEmpty
                                                     ? Container()
                                                     : InkWell(
                                                         onTap: () {
-                                                          _searchController
+                                                          _searchController!
                                                               .text = "";
                                                           newState(() {});
                                                           _onTextClear();
@@ -1352,21 +1356,21 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
   }
 
   Widget _getUnselectedFacilities() {
-    return StreamBuilder<RequestState>(
-        stream: _searchSolutionBloc.getManualBiddingStream(),
-        initialData: (_catalogues == null || _catalogues.isEmpty)
+    return StreamBuilder<RequestState?>(
+        stream: _searchSolutionBloc!.getManualBiddingStream(),
+        initialData: (_catalogues == null || _catalogues!.isEmpty)
             ? RequestInProgress()
             : null,
         builder: (context, snapShot) {
           if (snapShot.data is RequestSuccess) {
-            RequestSuccess _requestSuccessObject = snapShot.data;
+            RequestSuccess _requestSuccessObject = snapShot.data as RequestSuccess;
             if (_requestSuccessObject.requestCode ==
                 SearchSolutionBloc.initialIndex) {
-              if (_searchController.text.trim().isEmpty) {
+              if (_searchController!.text.trim().isEmpty) {
                 pageIndex = SearchSolutionBloc.initialIndex;
                 _catalogues = [];
               } else {
-                if (_searchController.text.trim().isNotEmpty &&
+                if (_searchController!.text.trim().isNotEmpty &&
                     _requestSuccessObject.additionalData != null &&
                     _requestSuccessObject.additionalData
                         .toString()
@@ -1383,44 +1387,44 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
               _endReached = true;
             } else {
               _endReached = false;
-              if (_searchController.text.trim().isEmpty) {
-                Set _allItems = _catalogues.toSet();
+              if (_searchController!.text.trim().isEmpty) {
+                Set _allItems = _catalogues!.toSet();
                 _allItems.addAll(_requestSuccessObject.response);
-                _catalogues = _allItems.toList(growable: true);
+                _catalogues = _allItems.toList(growable: true) as List<MoreFacility>?;
               } else {
-                if (_searchController.text.trim().isNotEmpty &&
+                if (_searchController!.text.trim().isNotEmpty &&
                     _requestSuccessObject.additionalData != null &&
                     _requestSuccessObject.additionalData
                         .toString()
                         .trim()
                         .isNotEmpty) {
-                  Set _allItems = _catalogues.toSet();
+                  Set _allItems = _catalogues!.toSet();
                   _allItems.addAll(_requestSuccessObject.response);
-                  _catalogues = _allItems.toList(growable: true);
+                  _catalogues = _allItems.toList(growable: true) as List<MoreFacility>?;
                 }
               }
             }
-            _selectedItemList.forEach((selectedItem) {
-              if (_catalogues.contains(selectedItem)) {
-                _catalogues.remove(selectedItem);
+            _selectedItemList!.forEach((selectedItem) {
+              if (_catalogues!.contains(selectedItem)) {
+                _catalogues!.remove(selectedItem);
               }
             });
             pageIndex++;
-            _searchSolutionBloc.addStateInManualBiddingStream(null);
+            _searchSolutionBloc!.addStateInManualBiddingStream(null);
           } else if (snapShot.data is RequestFailed) {
-            RequestFailed _requestFailed = snapShot.data;
+            RequestFailed _requestFailed = snapShot.data as RequestFailed;
             pageIndex = SearchSolutionBloc.initialIndex;
             _failureCause = _requestFailed.failureCause;
-            _searchSolutionBloc.addStateInManualBiddingStream(null);
+            _searchSolutionBloc!.addStateInManualBiddingStream(null);
           }
-          return (_catalogues == null || _catalogues.isEmpty)
+          return (_catalogues == null || _catalogues!.isEmpty)
               ? _getDefaultWidget(snapShot)
               : _showResultsFromBackend(snapShot);
         });
   }
 
   Widget getMoreFacilityWidget(List<MoreFacility> catalogues, int index,
-      {bool isSelected = false, Function onTap, Function onProfileTap}) {
+      {bool isSelected = false, Function? onTap, Function? onProfileTap}) {
     Widget _widget = _getCardWidget(catalogues, index,
         isSelected: isSelected, onTap: onTap, onProfileTap: onProfileTap);
     return Card(
@@ -1462,7 +1466,7 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                             },
                             onDoubleTap: () {},
                             child: CustomWidgets().getImageFromUrl(
-                                catalogues[index]?.imageUrl ?? "",
+                                catalogues[index].imageUrl ?? "",
                                 boxFit: BoxFit.cover,
                                 placeHolderPath: PlunesImages.doc_placeholder),
                           ),
@@ -1481,7 +1485,7 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
   }
 
   Widget _getCardWidget(List<MoreFacility> catalogues, int index,
-      {bool isSelected = false, Function onTap, Function onProfileTap}) {
+      {bool isSelected = false, Function? onTap, Function? onProfileTap}) {
     return Container(
       margin: EdgeInsets.all(10),
       child: Row(
@@ -1595,7 +1599,7 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             (catalogues[index].experience != null &&
-                                    catalogues[index].experience > 0)
+                                    catalogues[index].experience! > 0)
                                 ? Padding(
                                     padding: EdgeInsets.only(
                                         top: AppConfig.verticalBlockSize * 2.5),
@@ -1619,7 +1623,7 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                                               top: AppConfig.verticalBlockSize *
                                                   .3),
                                           child: Text(
-                                            "${catalogues[index].experience.toStringAsFixed(0)} ${catalogues[index].experience == 1 ? "Year" : "Years"}",
+                                            "${catalogues[index].experience!.toStringAsFixed(0)} ${catalogues[index].experience == 1 ? "Year" : "Years"}",
                                             style: TextStyle(
                                                 color: PlunesColors.BLACKCOLOR,
                                                 fontSize: 16,
@@ -1774,23 +1778,23 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
       return _specialityItems;
     }
     _specialityItems = [];
-    CommonMethods.catalogueLists.forEach((element) {
+    CommonMethods.catalogueLists!.forEach((element) {
       if (element.speciality != null &&
-          element.speciality.trim().isNotEmpty &&
+          element.speciality!.trim().isNotEmpty &&
           element.id != null &&
-          element.id.trim().isNotEmpty) {
+          element.id!.trim().isNotEmpty) {
         _specialityItems.add(element);
       }
     });
     return _specialityItems;
   }
 
-  String _getSpecialityName() {
+  String? _getSpecialityName() {
     if (_selectedSpecialityName == null) {
       return "Speciality";
     } else {
-      return _selectedSpecialityName.length > 8
-          ? _selectedSpecialityName.substring(0, 8)
+      return _selectedSpecialityName!.length > 8
+          ? _selectedSpecialityName!.substring(0, 8)
           : _selectedSpecialityName;
     }
   }

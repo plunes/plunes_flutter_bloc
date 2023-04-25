@@ -1,3 +1,4 @@
+import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,6 +17,7 @@ import 'package:plunes/ui/afterLogin/payment/manage_payment.dart';
 import 'package:plunes/ui/beforeLogin/EnterPhoneScreen.dart';
 import 'package:plunes/ui/beforeLogin/GuidedTour.dart';
 import 'package:plunes/ui/beforeLogin/Registration.dart';
+
 import 'firebase/FirebaseNotification.dart';
 import 'res/ColorsFile.dart';
 import 'res/FontFile.dart';
@@ -25,13 +27,12 @@ import 'ui/afterLogin/HomeScreen.dart';
 import 'ui/afterLogin/PlockrMainScreen.dart';
 import 'ui/afterLogin/ReferScreen.dart';
 import 'ui/afterLogin/SecuritySettings.dart';
+import 'ui/afterLogin/appointment_screens/appointment_main_screen.dart';
 import 'ui/beforeLogin/ChangePassword.dart';
 import 'ui/beforeLogin/CheckOTP.dart';
 import 'ui/beforeLogin/ForgotPassword.dart';
 import 'ui/beforeLogin/Login.dart';
 import 'ui/beforeLogin/SplashScreen.dart';
-import 'ui/afterLogin/appointment_screens/appointment_main_screen.dart';
-import 'package:facebook_app_events/facebook_app_events.dart';
 
 /*
  * Created by - Plunes Technologies .
@@ -47,7 +48,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final GlobalKey<NavigatorState> _navKey = new GlobalKey<NavigatorState>();
-  static final FirebaseAnalytics analytics = FirebaseAnalytics();
+  static final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   static final facebookAppEvents = FacebookAppEvents();
   final FirebaseAnalyticsObserver observer =
       FirebaseAnalyticsObserver(analytics: analytics);
@@ -55,8 +56,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    FirebaseNotification()
-        .init(context, _scaffoldKey, _navKey, facebookAppEvents, analytics);
+    // FirebaseNotification().init(context, _scaffoldKey, _navKey, facebookAppEvents, analytics);
   }
 
   ///Below method having all the routes of the application.
@@ -75,7 +75,7 @@ class _MyAppState extends State<MyApp> {
             Color(CommonMethods.getColorHexFromStr(colorsFile.lightGreen)),
         indicatorColor: Color(hexColorCode.defaultGreen),
         primaryColor: Color(hexColorCode.defaultGreen),
-        cursorColor: Color(hexColorCode.defaultGreen),
+        // cursorColor: Color(hexColorCode.defaultGreen),
         appBarTheme: AppBarTheme(
           brightness: Brightness.dark,
           actionsIconTheme: IconThemeData(

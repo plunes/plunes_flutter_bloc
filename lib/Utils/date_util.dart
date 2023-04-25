@@ -6,7 +6,7 @@ class DateUtil {
   static final String ONE_MONTH_AGO = " month ago";
   static final String ONE_YEAR_AGO = " years ago";
 
-  static String getTimeWithAmAndPmFormat(DateTime date) {
+  static String getTimeWithAmAndPmFormat(DateTime? date) {
     if (date == null) return PlunesStrings.NA;
     var _dateFormat = DateFormat.jm();
     try {
@@ -16,7 +16,7 @@ class DateUtil {
     }
   }
 
-  static String getDayAsString(DateTime date) {
+  static String getDayAsString(DateTime? date) {
     if (date == null) return PlunesStrings.NA;
     var _dateFormat = DateFormat.E();
     try {
@@ -46,7 +46,7 @@ class DateUtil {
     }
   }
 
-  static String getDuration(int timeStamp) {
+  static String getDuration(int? timeStamp) {
     if (timeStamp == null || timeStamp == 0) {
       return PlunesStrings.NA;
     }

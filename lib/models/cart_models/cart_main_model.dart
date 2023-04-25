@@ -2,11 +2,11 @@ import 'package:plunes/models/booking_models/appointment_model.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 
 class CartOuterModel {
-  bool success;
-  CartItem data;
-  int subTotal;
-  String msg;
-  num credits;
+  bool? success;
+  CartItem? data;
+  int? subTotal;
+  String? msg;
+  num? credits;
 
   CartOuterModel(
       {this.success, this.data, this.subTotal, this.msg, this.credits});
@@ -24,7 +24,7 @@ class CartOuterModel {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['success'] = this.success;
     if (this.data != null) {
-      data['data'] = this.data.toJson();
+      data['data'] = this.data!.toJson();
     }
     data['subTotal'] = this.subTotal;
     data['msg'] = this.msg;
@@ -33,15 +33,15 @@ class CartOuterModel {
 }
 
 class CartItem {
-  List<BookingIds> bookingIds;
-  List<num> paymentOptions;
-  List<PaymentStatus> paymentStatus;
-  String sId;
-  String userId;
-  int iV;
-  String createdAt, cartId;
-  String updatedAt;
-  bool zestMoney;
+  List<BookingIds>? bookingIds;
+  List<num>? paymentOptions;
+  List<PaymentStatus>? paymentStatus;
+  String? sId;
+  String? userId;
+  int? iV;
+  String? createdAt, cartId;
+  String? updatedAt;
+  bool? zestMoney;
 
   CartItem(
       {this.bookingIds,
@@ -57,16 +57,16 @@ class CartItem {
 
   CartItem.fromJson(Map<String, dynamic> json) {
     if (json['bookingIds'] != null) {
-      bookingIds = new List<BookingIds>();
+      bookingIds = [];
       json['bookingIds'].forEach((v) {
-        bookingIds.add(new BookingIds.fromJson(v));
+        bookingIds!.add(new BookingIds.fromJson(v));
       });
     }
     if (json['paymentOptions'] != null && json['paymentOptions'].isNotEmpty) {
       paymentOptions = json['paymentOptions'].cast<num>();
     }
     if (json['paymentProgress'] != null) {
-      Iterable _items = json['paymentProgress'];
+      Iterable? _items = json['paymentProgress'];
       paymentStatus = [];
       if (_items != null && _items.isNotEmpty) {
         paymentStatus = _items
@@ -86,7 +86,7 @@ class CartItem {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     if (this.bookingIds != null) {
-      data['bookingIds'] = this.bookingIds.map((v) => v.toJson()).toList();
+      data['bookingIds'] = this.bookingIds!.map((v) => v.toJson()).toList();
     }
     data['paymentOptions'] = this.paymentOptions;
     data['_id'] = this.sId;
@@ -100,14 +100,15 @@ class CartItem {
 }
 
 class BookingIds {
-  Service service;
-  String sId;
-  String professionalId;
-  String appointmentTime;
-  String patientAge;
-  String patientName;
-  String patientSex;
-  String serviceName;
+  Service? service;
+  String? sId;
+  String? professionalId;
+  String? appointmentTime;
+  String? patientAge;
+  String? patientName;
+  String? patientSex;
+  String? serviceName;
+  bool? haveInsurance;
 
   BookingIds(
       {this.service,
@@ -117,7 +118,8 @@ class BookingIds {
       this.patientAge,
       this.patientName,
       this.patientSex,
-      this.serviceName});
+      this.serviceName,
+      this.haveInsurance});
 
   BookingIds.fromJson(Map<String, dynamic> json) {
     service =
@@ -129,12 +131,13 @@ class BookingIds {
     patientName = json['patientName'];
     patientSex = json['patientSex'];
     serviceName = json['serviceName'];
+    haveInsurance = json['haveInsurance'] ?? false;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     if (this.service != null) {
-      data['service'] = this.service.toJson();
+      data['service'] = this.service!.toJson();
     }
     data['_id'] = this.sId;
     data['professionalId'] = this.professionalId;
@@ -143,17 +146,18 @@ class BookingIds {
     data['patientName'] = this.patientName;
     data['patientSex'] = this.patientSex;
     data['serviceName'] = this.serviceName;
+    data['haveInsurance'] = this.haveInsurance;
     return data;
   }
 }
 
 class Service {
-  List<num> newPrice;
-  List<TimeSlots> timeSlots;
-  String name, imageUrl, userType;
-  double distance;
-  double rating;
-  int expirationTimer, expiredAt;
+  List<num>? newPrice;
+  List<TimeSlots>? timeSlots;
+  String? name, imageUrl, userType;
+  double? distance;
+  double? rating;
+  int? expirationTimer, expiredAt;
 
   Service(
       {this.newPrice,
@@ -169,9 +173,9 @@ class Service {
   Service.fromJson(Map<String, dynamic> json) {
     newPrice = json['newPrice'].cast<num>();
     if (json['timeSlots'] != null) {
-      timeSlots = new List<TimeSlots>();
+      timeSlots = [];
       json['timeSlots'].forEach((v) {
-        timeSlots.add(new TimeSlots.fromJson(v));
+        timeSlots!.add(new TimeSlots.fromJson(v));
       });
     }
     name = json['name'];
@@ -187,7 +191,7 @@ class Service {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['newPrice'] = this.newPrice;
     if (this.timeSlots != null) {
-      data['timeSlots'] = this.timeSlots.map((v) => v.toJson()).toList();
+      data['timeSlots'] = this.timeSlots!.map((v) => v.toJson()).toList();
     }
     data['name'] = this.name;
     data['distance'] = this.distance;

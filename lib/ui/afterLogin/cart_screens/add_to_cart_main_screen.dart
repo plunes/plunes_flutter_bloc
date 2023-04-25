@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
@@ -28,15 +29,17 @@ import 'package:plunes/ui/afterLogin/HomeScreen.dart';
 import 'package:plunes/ui/afterLogin/booking_screens/booking_payment_option_popup.dart';
 import 'package:plunes/ui/afterLogin/cart_screens/cart_proceed_screen.dart';
 import 'package:plunes/ui/afterLogin/cart_screens/patient_details_edit_popup_screen.dart';
-import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
-import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/profile_screen.dart';
-import 'package:upi_pay/upi_pay.dart';
+
+import '../../../blocs/user_bloc.dart';
+import '../../../models/Models.dart';
+import '../../../repositories/user_repo.dart';
+// import 'package:upi_pay/upi_pay.dart';
 
 // ignore: must_be_immutable
 class AddToCartMainScreen extends BaseActivity {
-  bool hasAppBar;
-  Function exploreMore;
+  bool? hasAppBar;
+  Function? exploreMore;
 
   AddToCartMainScreen({this.hasAppBar, this.exploreMore});
 
@@ -44,18 +47,22 @@ class AddToCartMainScreen extends BaseActivity {
   _AddToCartMainScreenState createState() => _AddToCartMainScreenState();
 }
 
-class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
-  CartOuterModel _cartOuterModel;
-  CartMainBloc _cartMainBloc;
-  String _failureCause;
-  StreamController _timerStream;
-  Timer _timer;
+// class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
+class _AddToCartMainScreenState extends State<AddToCartMainScreen> {
+  final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  CartOuterModel? _cartOuterModel;
+  CartMainBloc? _cartMainBloc;
+  String? _failureCause;
+  StreamController? _timerStream;
+  Timer? _timer;
 
-  List<ApplicationMeta> _availableUpiApps;
-  BookingBloc _bookingBloc;
-  ManagePaymentBloc _managePaymentBloc;
-  bool _isProcessing, _isScreenRefresherStared;
-  bool _hasItemOnScreen;
+  List<dynamic>? _availableUpiApps;
+
+  // List<ApplicationMeta> _availableUpiApps;
+  BookingBloc? _bookingBloc;
+  late ManagePaymentBloc _managePaymentBloc;
+  bool? _isProcessing, _isScreenRefresherStared;
+  late bool _hasItemOnScreen;
 
   @override
   void initState() {
@@ -71,31 +78,32 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
       _timer = timer;
       if (mounted) {
         _checkScreenAgainstSolutionExpirationTime();
-        _timerStream.add(null);
+        _timerStream!.add(null);
       }
     });
-    EventProvider().getSessionEventBus().on<ScreenRefresher>().listen((event) {
+    EventProvider().getSessionEventBus()!.on<ScreenRefresher>().listen((event) {
       if (event != null &&
           event.screenName == FirebaseNotification.cartScreenName &&
           mounted) {
         _getCartItems();
       }
     });
+    _getUserInfo(false);
     _getCartItems();
     _getInstalledUpiApps();
     super.initState();
   }
 
   _checkScreenAgainstSolutionExpirationTime() {
-    if (_isScreenRefresherStared != null && _isScreenRefresherStared) {
+    if (_isScreenRefresherStared != null && _isScreenRefresherStared!) {
       bool hasItemOnScreen = false;
       if (_cartOuterModel == null ||
-          _cartOuterModel.data == null ||
-          _cartOuterModel.data.bookingIds == null ||
-          _cartOuterModel.data.bookingIds.isEmpty) {
+          _cartOuterModel!.data == null ||
+          _cartOuterModel!.data!.bookingIds == null ||
+          _cartOuterModel!.data!.bookingIds!.isEmpty) {
         return;
       }
-      _cartOuterModel.data.bookingIds.forEach((element) {
+      _cartOuterModel!.data!.bookingIds!.forEach((element) {
         if (!_appointmentTimeExpired(element)) {
           hasItemOnScreen = true;
         }
@@ -111,9 +119,9 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
   }
 
   _getInstalledUpiApps() async {
-    if (_isAndroid()) {
-      _availableUpiApps = await UpiPay.getInstalledUpiApplications();
-    }
+    // if (_isAndroid()) {
+    //   _availableUpiApps = await UpiPay.getInstalledUpiApplications();
+    // }
   }
 
   bool _isAndroid() {
@@ -135,13 +143,14 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-          appBar: (widget.hasAppBar != null && widget.hasAppBar)
+          appBar: (widget.hasAppBar != null && widget.hasAppBar!)
               ? widget.getAppBar(context, PlunesStrings.myCart, true)
+                  as PreferredSizeWidget?
               : null,
-          body: _isProcessing
+          body: _isProcessing!
               ? CustomWidgets().getProgressIndicator()
-              : StreamBuilder<RequestState>(
-                  stream: _cartMainBloc.cartMainStream,
+              : StreamBuilder<RequestState?>(
+                  stream: _cartMainBloc!.cartMainStream,
                   initialData:
                       _cartOuterModel == null ? RequestInProgress() : null,
                   builder: (context, snapshot) {
@@ -151,15 +160,17 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                     }
                     if (snapshot.data != null &&
                         snapshot.data is RequestSuccess) {
-                      RequestSuccess requestSuccess = snapshot.data;
+                      RequestSuccess requestSuccess =
+                          snapshot.data as RequestSuccess;
                       _cartOuterModel = requestSuccess.response;
-                      _cartMainBloc.addStateInCartMainStream(null);
+                      _cartMainBloc!.addStateInCartMainStream(null);
                     }
                     if (snapshot.data != null &&
                         snapshot.data is RequestFailed) {
-                      RequestFailed requestFailed = snapshot.data;
+                      RequestFailed requestFailed =
+                          snapshot.data as RequestFailed;
                       _failureCause = requestFailed.failureCause;
-                      _cartMainBloc.addStateInCartMainStream(null);
+                      _cartMainBloc!.addStateInCartMainStream(null);
                     }
                     return (_failureCause != null || (!_hasItemOnScreen))
                         ? CustomWidgets().errorWidget(_failureCause,
@@ -196,21 +207,27 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
   }
 
   Widget _getMainView() {
-    return Column(children: <Widget>[
+    return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
       Expanded(child: _getCartListView()),
-      StreamBuilder<Object>(
-          stream: _timerStream.stream,
+      StreamBuilder<Object?>(
+          stream: _timerStream!.stream,
           builder: (context, snapshot) {
             double price = 0;
             int itemCount = 0;
             List<BookingIds> _bookingIds = [];
-            if (_cartOuterModel.data.bookingIds != null &&
-                _cartOuterModel.data.bookingIds.isNotEmpty) {
-              _cartOuterModel.data.bookingIds.forEach((element) {
+            if (null != _cartOuterModel &&
+                null != _cartOuterModel!.data &&
+                _cartOuterModel!.data!.bookingIds != null &&
+                _cartOuterModel!.data!.bookingIds!.isNotEmpty) {
+              _cartOuterModel!.data!.bookingIds!.forEach((element) {
                 bool _isSolutionExpired = _solutionExpired(element);
                 // print("isEss $_isSolutionExpired");
                 if (!_isSolutionExpired) {
-                  price = price + element?.service?.newPrice?.first ?? 0;
+                  if (element.haveInsurance!) {
+                    price = price + 0;
+                  } else {
+                    price = price + element.service!.newPrice!.first ?? 0;
+                  }
                   _bookingIds.add(element);
                   itemCount++;
                 }
@@ -225,18 +242,21 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
     return ListView.builder(
       shrinkWrap: true,
       itemBuilder: (context, index) {
-        return StreamBuilder<Object>(
-            stream: _timerStream.stream,
+        return StreamBuilder<Object?>(
+            stream: _timerStream!.stream,
             builder: (context, snapshot) {
-              return getCartCard(index, _cartOuterModel.data.bookingIds[index],
-                  _cartOuterModel.data.bookingIds.length - 1);
+              return getCartCard(
+                  index,
+                  _cartOuterModel!.data!.bookingIds![index],
+                  _cartOuterModel!.data!.bookingIds!.length - 1);
             });
       },
       itemCount: (_cartOuterModel != null &&
-              _cartOuterModel.data != null &&
-              _cartOuterModel.data.bookingIds != null &&
-              _cartOuterModel.data.bookingIds.isNotEmpty)
-          ? (_cartOuterModel.data.bookingIds.length)
+              _cartOuterModel!.data != null &&
+              _cartOuterModel!.data!.bookingIds != null &&
+              _cartOuterModel!.data!.bookingIds!.isNotEmpty &&
+              _cartCount! > 0)
+          ? (_cartOuterModel!.data!.bookingIds!.length)
           : 0,
     );
   }
@@ -303,27 +323,29 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                         hasBorder: true),
                   ),
                 ),
-                Container(
-                  margin: EdgeInsets.only(
-                      top: AppConfig.verticalBlockSize * 2,
-                      left: AppConfig.horizontalBlockSize * 3),
-                  child: InkWell(
-                    onTap: () {
-                      _checkCreditAvailableAndPay(bookingIds, price);
-                      return;
-                    },
-                    onDoubleTap: () {},
-                    child: CustomWidgets().getRoundedButton(
-                        PlunesStrings.continueText,
-                        AppConfig.horizontalBlockSize * 8,
-                        PlunesColors.GREENCOLOR,
-                        AppConfig.horizontalBlockSize * 3,
-                        AppConfig.verticalBlockSize * 1,
-                        PlunesColors.WHITECOLOR,
-                        borderColor: PlunesColors.SPARKLINGGREEN,
-                        hasBorder: true),
-                  ),
-                ),
+                _isProcessingBooking
+                    ? CustomWidgets().getProgressIndicator()
+                    : Container(
+                        margin: EdgeInsets.only(
+                            top: AppConfig.verticalBlockSize * 2,
+                            left: AppConfig.horizontalBlockSize * 3),
+                        child: InkWell(
+                          onTap: () {
+                            _checkCreditAvailableAndPay(bookingIds, price);
+                            return;
+                          },
+                          onDoubleTap: () {},
+                          child: CustomWidgets().getRoundedButton(
+                              PlunesStrings.continueText,
+                              AppConfig.horizontalBlockSize * 8,
+                              PlunesColors.GREENCOLOR,
+                              AppConfig.horizontalBlockSize * 3,
+                              AppConfig.verticalBlockSize * 1,
+                              PlunesColors.WHITECOLOR,
+                              borderColor: PlunesColors.SPARKLINGGREEN,
+                              hasBorder: true),
+                        ),
+                      ),
               ],
             )
           ],
@@ -334,7 +356,7 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
 
   Widget getCartCard(int index, final BookingIds bookingIds, int totalItems) {
     Future.delayed(Duration(milliseconds: 20)).then((value) {
-      if (_isScreenRefresherStared != null && !(_isScreenRefresherStared)) {
+      if (_isScreenRefresherStared != null && !_isScreenRefresherStared!) {
         _isScreenRefresherStared = true;
       }
     });
@@ -377,14 +399,14 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                                 borderRadius: BorderRadius.circular(16.0),
                                 color: Colors.transparent),
                             child: (bookingIds.service != null &&
-                                    bookingIds.service.imageUrl != null &&
-                                    bookingIds.service.imageUrl.isNotEmpty &&
-                                    bookingIds.service.imageUrl
+                                    bookingIds.service!.imageUrl != null &&
+                                    bookingIds.service!.imageUrl!.isNotEmpty &&
+                                    bookingIds.service!.imageUrl!
                                         .contains("https"))
                                 ? ClipRRect(
                                     borderRadius: BorderRadius.circular(16),
                                     child: CustomWidgets().getImageFromUrl(
-                                        bookingIds.service.imageUrl,
+                                        bookingIds.service!.imageUrl,
                                         boxFit: BoxFit.cover),
                                   )
                                 : Container(
@@ -404,13 +426,13 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                                     child: Text(
                                         ("name" != ''
                                                 ? CommonMethods.getInitialName(
-                                                    bookingIds.service?.name)
+                                                    bookingIds.service!.name!)
                                                 : '')
                                             .toUpperCase(),
                                         style: TextStyle(
                                             color: Colors.white,
                                             fontSize:
-                                                AppConfig.extraLargeFont - 4,
+                                                AppConfig.extraLargeFont! - 4,
                                             fontWeight: FontWeight.bold)),
                                   ),
                           ),
@@ -427,7 +449,7 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                                   textAlign: TextAlign.left,
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       color: PlunesColors.BLACKCOLOR,
                                       fontSize: 16),
                                 ),
@@ -439,7 +461,7 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                                     textAlign: TextAlign.left,
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         color: PlunesColors.BLACKCOLOR,
                                         fontSize: 15),
                                   ),
@@ -461,7 +483,7 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                                         textAlign: TextAlign.left,
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             color: PlunesColors.GREYCOLOR,
                                             fontSize: 10),
                                       ),
@@ -490,7 +512,7 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                                     Text(
                                       "${bookingIds.service?.rating?.toStringAsFixed(1) ?? 4.0}" ??
                                           PlunesStrings.NA,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           color: PlunesColors.BLACKCOLOR,
                                           fontSize: 17,
                                           fontWeight: FontWeight.w500),
@@ -501,9 +523,10 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                                   margin: EdgeInsets.only(
                                       top: AppConfig.verticalBlockSize * 2),
                                   child: Text(
-                                      "\u20B9 ${bookingIds.service?.newPrice?.first?.toStringAsFixed(2) ?? 0}",
+                                      // "\u20B9 ${bookingIds.service?.newPrice?.first?.toStringAsFixed(2) ?? 0}",
+                                      "\u20B9 ${!bookingIds.haveInsurance! ? '${bookingIds.service?.newPrice?.first?.toStringAsFixed(2) ?? 0}' : '0'}",
                                       textAlign: TextAlign.left,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontWeight: FontWeight.w500,
                                           color: PlunesColors.BLACKCOLOR,
                                           fontSize: 17)),
@@ -537,11 +560,11 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                             children: <Widget>[
                               Text(
                                 CommonMethods.getStringInCamelCase(
-                                    bookingIds.patientName),
+                                    bookingIds.patientName)!,
                                 textAlign: TextAlign.left,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
+                                style: const TextStyle(
                                     color: PlunesColors.BLACKCOLOR,
                                     fontSize: 15),
                               ),
@@ -551,13 +574,14 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                                 child: Text(
                                   (bookingIds.service != null &&
                                           bookingIds.appointmentTime != null &&
-                                          bookingIds.appointmentTime.isNotEmpty)
-                                      ? "${DateUtil.getDateFormat(DateTime.fromMillisecondsSinceEpoch(int.tryParse(bookingIds.appointmentTime)))}, ${DateUtil.getTimeWithAmAndPmFormat(DateTime.fromMillisecondsSinceEpoch(int.tryParse(bookingIds.appointmentTime)))}"
+                                          bookingIds
+                                              .appointmentTime!.isNotEmpty)
+                                      ? "${DateUtil.getDateFormat(DateTime.fromMillisecondsSinceEpoch(int.tryParse(bookingIds.appointmentTime!)!))}, ${DateUtil.getTimeWithAmAndPmFormat(DateTime.fromMillisecondsSinceEpoch(int.tryParse(bookingIds.appointmentTime!)!))}"
                                       : PlunesStrings.NA,
                                   textAlign: TextAlign.left,
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       color: PlunesColors.BLACKCOLOR,
                                       fontSize: 15),
                                 ),
@@ -568,76 +592,72 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                         Expanded(
                           child: Container(
                             alignment: Alignment.topRight,
-                            child: StreamBuilder<RequestState>(
-                                stream: _cartMainBloc.deleteItemStream,
-                                builder: (context, snapshot) {
-                                  if (snapshot.data is RequestInProgress) {
-                                    RequestInProgress _requestInProgress =
-                                        snapshot.data;
-                                    if (_requestInProgress.data != null &&
-                                        _requestInProgress.data.toString() ==
-                                            bookingIds.sId)
-                                      return Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: <Widget>[
-                                          CustomWidgets()
-                                              .getProgressIndicator(),
-                                        ],
-                                      );
-                                  }
-                                  if (snapshot.data != null &&
-                                      snapshot.data is RequestSuccess) {
+                            child: InkWell(
+                              onTap: () {
+                                _cartMainBloc!
+                                    .deleteCartItem(bookingIds.sId!)
+                                    .then((requestState) {
+                                  if (requestState != null &&
+                                      requestState is RequestSuccess) {
                                     RequestSuccess _requestSuccess =
-                                        snapshot.data;
+                                        requestState as RequestSuccess;
+
                                     if (_requestSuccess.response != null &&
                                         _requestSuccess.response.toString() ==
                                             bookingIds.sId) {
+                                      print("empty------>iiiiiff");
+                                      print(
+                                          _requestSuccess.response.toString());
+                                      print(_cartOuterModel!
+                                          .data!.bookingIds!.length);
+
                                       Future.delayed(Duration(milliseconds: 10))
                                           .then((value) {
                                         _showMessages(_requestSuccess
                                                 .additionalData ??
                                             PlunesStrings.deleteSuccessfully);
                                         _getCartItems();
+                                        _getUserInfo(true);
                                       });
-                                      _cartMainBloc
-                                          .addStateInDeleteCartItemStream(null);
+                                    } else {
+                                      print("empty------>");
+                                      print(
+                                          _requestSuccess.response.toString());
+                                      print(_cartOuterModel!
+                                          .data!.bookingIds!.length);
                                     }
                                   }
-                                  if (snapshot.data != null &&
-                                      snapshot.data is RequestFailed) {
-                                    RequestFailed requestFailed = snapshot.data;
+                                  if (requestState != null &&
+                                      requestState is RequestFailed) {
+                                    RequestFailed requestFailed =
+                                        requestState as RequestFailed;
+
                                     if (requestFailed.response != null &&
                                         requestFailed.response.toString() ==
                                             bookingIds.sId) {
-                                      Future.delayed(Duration(milliseconds: 10))
+                                      Future.delayed(
+                                              const Duration(milliseconds: 10))
                                           .then((value) {
                                         _showMessages(
                                             requestFailed.failureCause ??
                                                 "Unable to delete item");
                                       });
-                                      _cartMainBloc
-                                          .addStateInDeleteCartItemStream(null);
+                                      // _cartMainBloc!.addStateInDeleteCartItemStream(null);
                                     }
                                   }
-                                  return InkWell(
-                                    onTap: () {
-                                      _cartMainBloc
-                                          .deleteCartItem(bookingIds.sId);
-                                      return;
-                                    },
-                                    onDoubleTap: () {},
-                                    child: Container(
-                                      margin: EdgeInsets.all(2.5),
-                                      height: AppConfig.verticalBlockSize * 4,
-                                      width: AppConfig.horizontalBlockSize * 6,
-                                      child: Image.asset(
-                                        PlunesImages.binImage,
-                                        color: PlunesColors.BLACKCOLOR,
-                                      ),
-                                    ),
-                                  );
-                                }),
+                                });
+                              },
+                              onDoubleTap: () {},
+                              child: Container(
+                                margin: EdgeInsets.all(2.5),
+                                height: AppConfig.verticalBlockSize * 4,
+                                width: AppConfig.horizontalBlockSize * 6,
+                                child: Image.asset(
+                                  PlunesImages.binImage,
+                                  color: PlunesColors.BLACKCOLOR,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                         Padding(
@@ -805,12 +825,53 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
     //     });
   }
 
-  void _getCartItems() {
-    _failureCause = null;
-    _cartMainBloc.getCartItems();
+  int? _cartCount = 0;
+
+  void _getUserInfo(bool isBackPress) async {
+    await UserBloc()
+        .getUserProfile(UserManager().getUserDetails().uid)
+        .then((requestState) {
+      if (requestState is RequestSuccess) {
+        LoginPost? _userProfileInfo = requestState.response;
+        if (_userProfileInfo != null || _userProfileInfo!.user != null) {
+          if (_userProfileInfo.user!.cartCount != null) {
+            _cartCount = _userProfileInfo.user!.cartCount;
+            if (_cartCount == 0) {
+              if (isBackPress) {
+                Navigator.pop(context, false);
+                Navigator.pop(context, false);
+              }
+              print("empty ------ cart");
+            }
+            print("empty ------ cart-->$_cartCount");
+          }
+        }
+      } else if (requestState is RequestFailed) {}
+      _setState();
+    });
   }
 
-  void _showMessages(String message) {
+  void _getCartItems() {
+    _failureCause = null;
+    _cartMainBloc!.getCartItems().then((requestState) {
+      if (requestState is RequestSuccess) {
+        var item = requestState.response;
+        _cartOuterModel = item;
+        print("requestState.response");
+        print(requestState.response);
+        print(_cartOuterModel!.data!.bookingIds!.length);
+        print(requestState.response);
+
+        _setState();
+
+        // var data = requestState!.response.toString()
+        // _cartOuterModel = data.
+
+      }
+    });
+  }
+
+  void _showMessages(String? message) {
     showDialog(
         context: context,
         builder: (context) {
@@ -824,20 +885,20 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
     //     "${bookingIds.service.expirationTimer} solution expired time ${DateTime.fromMillisecondsSinceEpoch(bookingIds.service.expirationTimer)}");
     bool _solutionExpired = false;
     if (bookingIds.service != null &&
-        bookingIds.service.expiredAt != null &&
-        bookingIds.service.expiredAt > 0) {
+        bookingIds.service!.expiredAt != null &&
+        bookingIds.service!.expiredAt! > 0) {
       var duration = DateTime.now().difference(
-          DateTime.fromMillisecondsSinceEpoch(bookingIds.service.expiredAt));
+          DateTime.fromMillisecondsSinceEpoch(bookingIds.service!.expiredAt!));
       // print("duration ${duration.inSeconds}");
       if (duration.inSeconds > 1) {
         _solutionExpired = true;
       }
     } else if (bookingIds.service != null &&
-        bookingIds.service.expirationTimer != null &&
-        bookingIds.service.expirationTimer > 0) {
+        bookingIds.service!.expirationTimer != null &&
+        bookingIds.service!.expirationTimer! > 0) {
       var duration = DateTime.now().difference(
           DateTime.fromMillisecondsSinceEpoch(
-              bookingIds.service.expirationTimer));
+              bookingIds.service!.expirationTimer!));
       if (duration.inHours >= 1) {
         _solutionExpired = true;
       }
@@ -859,10 +920,10 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
     //   }
     // } else
     if (bookingIds.appointmentTime != null &&
-        bookingIds.appointmentTime.isNotEmpty) {
+        bookingIds.appointmentTime!.isNotEmpty) {
       var duration = DateTime.now().difference(
           DateTime.fromMillisecondsSinceEpoch(
-              int.tryParse(bookingIds.appointmentTime)));
+              int.tryParse(bookingIds.appointmentTime!)!));
       if (duration.inSeconds > 1) {
         _appointmentTimeExpired = true;
       }
@@ -871,40 +932,41 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
   }
 
   Widget _getNegotiateButton(BookingIds bookingIds) {
-    return StreamBuilder<RequestState>(
-        stream: _cartMainBloc.reGenerateCartItemStream,
+    return StreamBuilder<RequestState?>(
+        stream: _cartMainBloc!.reGenerateCartItemStream,
         builder: (context, snapshot) {
           if (snapshot.data is RequestInProgress) {
-            RequestInProgress _requestInProgress = snapshot.data;
+            RequestInProgress _requestInProgress =
+                snapshot.data as RequestInProgress;
             if (_requestInProgress.data != null &&
                 _requestInProgress.data.toString() == bookingIds.sId)
               return CustomWidgets().getProgressIndicator();
           }
           if (snapshot.data != null && snapshot.data is RequestSuccess) {
-            RequestSuccess _requestSuccess = snapshot.data;
+            RequestSuccess _requestSuccess = snapshot.data as RequestSuccess;
             if (_requestSuccess.response != null &&
                 _requestSuccess.response.toString() == bookingIds.sId) {
               Future.delayed(Duration(milliseconds: 10)).then((value) {
                 _showMessages("Booking retained successfully!");
                 _getCartItems();
               });
-              _cartMainBloc.addStateInReGenerateCartItemStream(null);
+              _cartMainBloc!.addStateInReGenerateCartItemStream(null);
             }
           }
           if (snapshot.data != null && snapshot.data is RequestFailed) {
-            RequestFailed requestFailed = snapshot.data;
+            RequestFailed requestFailed = snapshot.data as RequestFailed;
             if (requestFailed.response != null &&
                 requestFailed.response.toString() == bookingIds.sId) {
               Future.delayed(Duration(milliseconds: 10)).then((value) {
                 _showMessages(
                     requestFailed.failureCause ?? "Unable to discover");
               });
-              _cartMainBloc.addStateInReGenerateCartItemStream(null);
+              _cartMainBloc!.addStateInReGenerateCartItemStream(null);
             }
           }
           return InkWell(
             onTap: () {
-              _cartMainBloc.reGenerateCartItem(bookingIds.sId);
+              _cartMainBloc!.reGenerateCartItem(bookingIds.sId!);
             },
             onDoubleTap: () {},
             child: CustomWidgets().getRoundedButton(
@@ -922,13 +984,13 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
 
   _viewProfile(final BookingIds booking) {
     if (booking.service != null &&
-        booking.service.userType != null &&
+        booking.service!.userType != null &&
         booking.professionalId != null) {
       Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) => DoctorInfo(booking.professionalId,
-                  isDoc: (booking.service.userType.toLowerCase() ==
+                  isDoc: (booking.service!.userType!.toLowerCase() ==
                       Constants.doctor.toString().toLowerCase()),
                   isAlreadyInBookingProcess: true)));
       // Widget route;
@@ -943,6 +1005,8 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
   }
 
   void _checkCreditAvailableAndPay(List<BookingIds> bookingIds, double price) {
+    print("price_price:$price");
+    print(price);
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -954,8 +1018,9 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                 )))
       ..then((value) {
         if (value != null) {
+          print("valuevaluevalue:$value");
           bool _value = value;
-          _queryPayment(_value);
+          _queryPayment(_value, price: price);
         }
       });
     return;
@@ -974,7 +1039,7 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
   }
 
   void _doExplore() {
-    if (widget.hasAppBar != null && widget.hasAppBar) {
+    if (widget.hasAppBar != null && widget.hasAppBar!) {
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
@@ -984,20 +1049,77 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
     }
   }
 
-  void _queryPayment(bool credits) async {
-    await showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) => PopupChoose(
-              services: Services(
-                  paymentOptions: _cartOuterModel?.data?.paymentOptions ?? [],
-                  zestMoney: _cartOuterModel?.data?.zestMoney ?? false),
-            )).then((returnedValue) {
-      if (returnedValue != null) {
-//        print("selected payment percenatge $returnedValue");
-        _initPayment(returnedValue, credits);
+  var _isProcessingBooking = false;
+
+  getBookingData(var bookingId) async {
+    _isProcessingBooking = true;
+    _cartMainBloc!.getBookingDoneViaInsurance(bookingId).then((value) {
+      _isProcessingBooking = false;
+      RequestState _requestStateIns = value;
+      print("getBookingDoneViaInsurance_Resonse_Screen : ${value}");
+
+      if (_requestStateIns is RequestSuccess) {
+        print("getBookingDoneViaInsurance_Resonse_Screen_done : ${value}");
+        showDialog(
+                context: context,
+                builder: (BuildContext context) => CustomWidgets()
+                    .paymentStatusPopup("", "Booking successfully done.",
+                        plunesImages.checkIcon, context, bookingId: "id"))
+            .then((value) {
+          _popWhenSuccess();
+        });
+      } else if (_requestStateIns is RequestFailed) {
+        print("getBookingDoneViaInsurance_RequestFailed : ${value}");
+
+        showDialog(
+            context: context,
+            builder: (BuildContext context) => CustomWidgets()
+                .bookingFailedPopup("", "Booking failed",
+                    plunesImages.bookingLostEmoji_, context,
+                    bookingId: "id")).then((value) {});
+      } else {
+        print("getBookingDoneViaInsurance_Resonse_else : ${value}");
       }
     });
+
+    _isProcessingBooking = false;
+  }
+
+  void _queryPayment(bool credits, {double price = 0}) async {
+    if (price == 0) {
+      _cartMainBloc!
+          .payCartItemBill(credits, _cartOuterModel?.data?.sId, null, false)
+          .then((response) {
+        RequestState _requestState = response;
+
+        if (_requestState is RequestSuccess) {
+          InitPaymentResponse _initPaymentResponse = _requestState.response;
+          getBookingData(_initPaymentResponse.id);
+        } else if (_requestState is RequestFailed) {
+          print("_requestState.response33:${_requestState.response}");
+
+          _showMessages(_requestState.failureCause);
+        } else {
+          print("_requestState.response44:}");
+        }
+      });
+    } else {
+      print("selected payment percenatge $price else");
+
+      await showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) => PopupChoose(
+                services: Services(
+                    paymentOptions: _cartOuterModel?.data?.paymentOptions ?? [],
+                    zestMoney: _cartOuterModel?.data?.zestMoney ?? false),
+              )).then((returnedValue) {
+        if (returnedValue != null) {
+//        print("selected payment percenatge $returnedValue");
+          _initPayment(returnedValue, credits);
+        }
+      });
+    }
   }
 
   void _initPayment(PaymentSelector paymentSelector, bool credits) {
@@ -1005,19 +1127,24 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
     if (paymentSelector.paymentUnit == PlunesStrings.zestMoney) {
       zestMoney = true;
     }
-    _cartMainBloc
+    _cartMainBloc!
         .payCartItemBill(credits, _cartOuterModel?.data?.sId,
-            paymentSelector?.paymentUnit, zestMoney)
+            paymentSelector.paymentUnit, zestMoney)
         .then((response) {
       RequestState _requestState = response;
+
+      print("_requestState.response:${response}");
+
       if (_requestState is RequestSuccess) {
         InitPaymentResponse _initPaymentResponse = _requestState.response;
-        if (_initPaymentResponse.success) {
+        print("_requestState.response2:${_requestState.response}");
+
+        if (_initPaymentResponse.success!) {
           if (zestMoney) {
             _processZestMoneyQueries(_initPaymentResponse);
             return;
           }
-          if (_initPaymentResponse.status.contains("Confirmed")) {
+          if (_initPaymentResponse.status!.contains("Confirmed")) {
             AnalyticsProvider().registerEvent(AnalyticsKeys.inAppPurchaseKey);
             showDialog(
                     context: context,
@@ -1028,18 +1155,18 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
               _popWhenSuccess();
             });
           } else {
-            if (_availableUpiApps != null && _availableUpiApps.isNotEmpty) {
+            if (_availableUpiApps != null && _availableUpiApps!.isNotEmpty) {
               showDialog(
                   context: context,
                   builder: (BuildContext context) {
                     return CustomWidgets().getUpiBasedPaymentOptionView(
-                        _initPaymentResponse, _availableUpiApps, scaffoldKey);
+                        _initPaymentResponse, _availableUpiApps!, scaffoldKey);
                   }).then((value) {
                 if (value != null) {
                   Map result = value;
                   if (result.containsKey(PlunesStrings.payUpi)) {
-                    ApplicationMeta applicationMeta =
-                        result[PlunesStrings.payUpi];
+                    // ApplicationMeta applicationMeta =
+                    dynamic applicationMeta = result[PlunesStrings.payUpi];
                     _isProcessing = true;
                     _setState();
                     _managePaymentBloc
@@ -1049,14 +1176,14 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                       _setState();
                       if (upiServerValue is RequestSuccess) {
                         RequestSuccess requestSuccess = upiServerValue;
-                        UpiModel upiResponse = requestSuccess.response;
+                        UpiModel? upiResponse = requestSuccess.response;
                         if (upiResponse == null ||
                             (upiResponse.msg != null &&
-                                upiResponse.msg.trim().isNotEmpty) ||
+                                upiResponse.msg!.trim().isNotEmpty) ||
                             !UpiUtil().isValidUpiAddress(
                                 upiResponse.receiverUpiAddress)) {
-                          _showMessages((upiResponse.msg != null &&
-                                  upiResponse.msg.trim().isNotEmpty)
+                          _showMessages((upiResponse!.msg != null &&
+                                  upiResponse.msg!.trim().isNotEmpty)
                               ? upiResponse.msg
                               : PlunesStrings.invalidPaymentDetails);
                           return;
@@ -1066,7 +1193,7 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                                 upiResponse)
                             .then((value) {
                           if (value != null) {
-                            _checkIfUpiPaymentSuccessOrNot(value, upiResponse);
+                            //   _checkIfUpiPaymentSuccessOrNot(value, upiResponse);
                           } else {
                             _showMessages("Payment Failed");
                           }
@@ -1094,22 +1221,28 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
   }
 
   void _checkIfUpiPaymentSuccessOrNot(
-      UpiTransactionResponse value, UpiModel upiResponse) {
+      // UpiTransactionResponse value, UpiModel upiResponse) {
+      dynamic value,
+      UpiModel upiResponse) {
     print(value?.toString());
-    String status = value.status != null
-        ? value.status == UpiTransactionStatus.success
-            ? UpiUtil.success
-            : value.status == UpiTransactionStatus.failure
-                ? UpiUtil.failure
-                : value.status == UpiTransactionStatus.submitted
-                    ? UpiUtil.submitted
-                    : UpiUtil.submitted
-        : null;
+    // String status = value.status != null
+    //     ? value.status == UpiTransactionStatus.success
+    //         ? UpiUtil.success
+    //         : value.status == UpiTransactionStatus.failure
+    //             ? UpiUtil.failure
+    //             : value.status == UpiTransactionStatus.submitted
+    //                 ? UpiUtil.submitted
+    //                 : UpiUtil.submitted
+    //     : null;
     _isProcessing = true;
     _setState();
     _managePaymentBloc
         .sendUpiPaymentResponse(
-            upiResponse.bookingId, status, value?.txnId, value?.responseCode)
+            // upiResponse.bookingId, status, value?.txnId, value?.responseCode)
+            upiResponse.bookingId,
+            "status",
+            value?.txnId,
+            value?.responseCode)
         .then((paymentServerResponse) {
       _isProcessing = false;
       _setState();
@@ -1134,15 +1267,15 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
   }
 
   void _processZestMoneyQueries(InitPaymentResponse initPaymentResponse) {
-    _bookingBloc.processZestMoney(initPaymentResponse).then((value) {
+    _bookingBloc!.processZestMoney(initPaymentResponse).then((value) {
       {
         if (value is RequestSuccess) {
-          ZestMoneyResponseModel zestMoneyResponseModel = value.response;
+          ZestMoneyResponseModel? zestMoneyResponseModel = value.response;
           if (zestMoneyResponseModel != null &&
               zestMoneyResponseModel.success != null &&
-              zestMoneyResponseModel.success &&
+              zestMoneyResponseModel.success! &&
               zestMoneyResponseModel.data != null &&
-              zestMoneyResponseModel.data.trim().isNotEmpty) {
+              zestMoneyResponseModel.data!.trim().isNotEmpty) {
             _openWebViewWithDynamicUrl(
                 zestMoneyResponseModel, initPaymentResponse);
             return;
@@ -1166,7 +1299,7 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
         .then((val) {
       if (val == null) {
         AnalyticsProvider().registerEvent(AnalyticsKeys.beginCheckoutKey);
-        _bookingBloc.cancelPayment(initPaymentResponse.id);
+        _bookingBloc!.cancelPayment(initPaymentResponse.id);
         return;
       }
       if (val.toString().contains("success")) {
@@ -1201,7 +1334,7 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
         .then((val) {
       if (val == null) {
         AnalyticsProvider().registerEvent(AnalyticsKeys.beginCheckoutKey);
-        _bookingBloc.cancelPayment(_initPaymentResponse.id);
+        _bookingBloc!.cancelPayment(_initPaymentResponse.id);
         return;
       }
       if (val.toString().contains("success")) {
@@ -1234,7 +1367,7 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
   }
 
   void _popWhenSuccess() {
-    if (widget.hasAppBar != null && widget.hasAppBar) {
+    if (widget.hasAppBar != null && widget.hasAppBar!) {
       Navigator.pop(context, "pop");
     }
   }

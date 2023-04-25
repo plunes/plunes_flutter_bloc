@@ -15,7 +15,7 @@ import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/network/Urls.dart';
 
 class SearchedSolutionRepo {
-  static SearchedSolutionRepo _instance;
+  static SearchedSolutionRepo? _instance;
 
   SearchedSolutionRepo._init();
 
@@ -23,7 +23,7 @@ class SearchedSolutionRepo {
     if (_instance == null) {
       _instance = SearchedSolutionRepo._init();
     }
-    return _instance;
+    return _instance!;
   }
 
   Future<RequestState> getSearchedSolution(String searchedString, int index,
@@ -39,11 +39,11 @@ class SearchedSolutionRepo {
           "userId": UserManager().getUserDetails().uid
         },
         url: Urls.SEARCH_SOLUTION_API);
-    if (serverResponse.isRequestSucceed) {
+    if (serverResponse!.isRequestSucceed!) {
       List<CatalogueData> _solutions = [];
-      if (serverResponse.response.data != null &&
-          serverResponse.response.data['data'] != null) {
-        Iterable _items = serverResponse.response.data['data'];
+      if (serverResponse.response!.data != null &&
+          serverResponse.response!.data['data'] != null) {
+        Iterable _items = serverResponse.response!.data['data'];
         _solutions = _items
             .map((item) => CatalogueData.fromJson(item))
             .toList(growable: true);
@@ -62,11 +62,11 @@ class SearchedSolutionRepo {
           "userId": UserManager().getUserDetails().uid
         },
         url: Urls.SEARCH_FACILITY_API);
-    if (serverResponse.isRequestSucceed) {
+    if (serverResponse!.isRequestSucceed!) {
       List<Facility> _solutions = [];
-      if (serverResponse.response.data != null &&
-          serverResponse.response.data['data'] != null) {
-        Iterable _items = serverResponse.response.data['data'];
+      if (serverResponse.response!.data != null &&
+          serverResponse.response!.data['data'] != null) {
+        Iterable _items = serverResponse.response!.data['data'];
         _solutions = _items
             .map((item) => Facility.fromJson(item))
             .toList(growable: true);
@@ -80,9 +80,17 @@ class SearchedSolutionRepo {
 
   Future<RequestState> getCataloguesForTestAndProcedures(
       final String searchedString,
-      final String specId,
+      final String? specId,
       int pageIndex,
       bool isProcedure) async {
+
+
+    print("expression:$searchedString");
+    print("type:${isProcedure ? "procedures" : "tests"}");
+    print("specialityId:$specId");
+    print("page:$pageIndex");
+    print("userId:${UserManager().getUserDetails().uid}");
+
     var serverResponse = await DioRequester().requestMethod(
         requestType: HttpRequestMethods.HTTP_POST,
         postData: {
@@ -93,11 +101,11 @@ class SearchedSolutionRepo {
           "userId": UserManager().getUserDetails().uid
         },
         url: Urls.GET_TEST_AND_PROCEDURES_CATALOGUE_API);
-    if (serverResponse.isRequestSucceed) {
+    if (serverResponse!.isRequestSucceed!) {
       List<CatalogueData> _solutions = [];
-      if (serverResponse.response.data != null &&
-          serverResponse.response.data["data"] != null) {
-        Iterable _items = serverResponse.response.data["data"];
+      if (serverResponse.response!.data != null &&
+          serverResponse.response!.data["data"] != null) {
+        Iterable _items = serverResponse.response!.data["data"];
         _solutions = _items
             .map((item) => CatalogueData.fromJson(item))
             .toList(growable: true);
@@ -109,18 +117,18 @@ class SearchedSolutionRepo {
   }
 
   Future<RequestState> getDocHosSolution(final CatalogueData catalogueData,
-      {final String searchQuery, final String userReportId}) async {
+      {final String? searchQuery, final String? userReportId}) async {
     User _user = UserManager().getUserDetails();
-    double lat;
-    double long;
+    double? lat;
+    double? long;
     try {
-      if (_user.latitude != null && _user.latitude.isNotEmpty) {
-        lat = double.tryParse(_user.latitude);
+      if (_user.latitude != null && _user.latitude!.isNotEmpty) {
+        lat = double.tryParse(_user.latitude!);
       } else {
         lat = 0.0;
       }
-      if (_user.latitude != null && _user.latitude.isNotEmpty) {
-        long = double.tryParse(_user.longitude);
+      if (_user.latitude != null && _user.latitude!.isNotEmpty) {
+        long = double.tryParse(_user.longitude!);
       } else {
         long = 0.0;
       }
@@ -129,18 +137,18 @@ class SearchedSolutionRepo {
     }
     Map<String, dynamic> queryParams;
     if (catalogueData.isFromNotification != null &&
-        catalogueData.isFromNotification) {
+        catalogueData.isFromNotification!) {
       queryParams = {
         "solutionId": catalogueData.solutionId,
         "notification": catalogueData.isFromNotification,
       };
     } else if (catalogueData.isFromProfileScreen != null &&
-        catalogueData.isFromProfileScreen) {
-      String _loc = "";
+        catalogueData.isFromProfileScreen!) {
+      String? _loc = "";
       if (lat != null && long != null && lat != 0.0 && long != 0.0) {
-        _loc = await LocationUtil().getAddressFromLatLong(
+        _loc = await (LocationUtil().getAddressFromLatLong(
             lat.toString(), long.toString(),
-            needFullLocation: true);
+            needFullLocation: true) as Future<String?>);
       }
       queryParams = {
         "serviceId": catalogueData.serviceId,
@@ -153,47 +161,83 @@ class SearchedSolutionRepo {
         "geoLocationName": _loc == PlunesStrings.enterYourLocation ? "" : _loc
       };
     } else {
-      String _loc = "";
+      String? _loc = "";
       if (lat != null && long != null && lat != 0.0 && long != 0.0) {
-        _loc = await LocationUtil().getAddressFromLatLong(
+        _loc = await (LocationUtil().getAddressFromLatLong(
             lat.toString(), long.toString(),
-            needFullLocation: true);
+            needFullLocation: true));
       }
+
+      print("_loc ?? tes");
+      print(_loc ?? "tes");
       queryParams = {
         "serviceId": catalogueData.serviceId,
         "userReportId": userReportId,
         "latitude": lat,
         "longitude": long,
         "searchQuery": searchQuery,
-        "geoLocationName": _loc == PlunesStrings.enterYourLocation ? "" : _loc
+        "geoLocationName": _loc ?? ""
       };
     }
+
+    print("queryParamsqueryParams--->");
+    print(queryParams);
+    print(catalogueData.serviceId);
+    print(userReportId);
+    print(lat);
+    print(long);
+    print(searchQuery);
+    print("urllll:-->${catalogueData.isFromProfileScreen != null &&
+        catalogueData.isFromProfileScreen!
+        ? Urls.createSolutionFromProfProfile
+        : Urls.GET_DOC_HOS_API}");
+
     var result = await DioRequester().requestMethod(
         requestType: HttpRequestMethods.HTTP_GET,
         url: (catalogueData.isFromProfileScreen != null &&
-                catalogueData.isFromProfileScreen)
+                catalogueData.isFromProfileScreen!)
             ? Urls.createSolutionFromProfProfile
             : Urls.GET_DOC_HOS_API,
         headerIncluded: true,
         queryParameter: queryParams);
-    if (result.isRequestSucceed) {
-      SearchedDocResults _searchedDocResult =
-          SearchedDocResults.fromJson(result.response.data);
+
+
+
+
+    print("----newurl--->${catalogueData.isFromProfileScreen}");
+    print(queryParams);
+
+    if (result!.isRequestSucceed!) {
+      SearchedDocResults _searchedDocResult = SearchedDocResults.fromJson(result.response!.data);
+      print("----newurl--if->${result.response!.data}");
+
+      try{
+        print("----newurl--if1->${_searchedDocResult.solution!.services!.length}");
+      } catch(e){
+        print("error1-->${e.toString()}");
+      }
+
+      try{
+        print("----newurl--if2->${_searchedDocResult.catalogueData!.familyName}");
+      } catch(e){
+        print("error2-->${e.toString()}");
+      }
       return RequestSuccess(response: _searchedDocResult);
     } else {
+      print("))))-----((((((-----)))))-----(((----newurl--else__error->${result.failureCause}");
       return RequestFailed(failureCause: result.failureCause);
     }
   }
 
   Future<RequestState> getMoreFacilities(DocHosSolution catalogueData,
-      {String searchQuery,
-      int pageIndex,
-      String userTypeFilter,
-      String facilityLocationFilter,
-      String allLocationKey}) async {
+      {String? searchQuery,
+      int? pageIndex,
+      String? userTypeFilter,
+      String? facilityLocationFilter,
+      String? allLocationKey}) async {
     var userDetail = UserManager().getUserDetails();
-    double latitude = double.tryParse(userDetail?.latitude ?? 0.0);
-    double longitude = double.tryParse(userDetail?.longitude ?? 0.0);
+    double? latitude = double.tryParse(userDetail?.latitude ?? 0.0 as String);
+    double? longitude = double.tryParse(userDetail?.longitude ?? 0.0 as String);
     var serverResponse = await DioRequester().requestMethod(
         requestType: HttpRequestMethods.HTTP_POST,
         postData: {
@@ -209,9 +253,9 @@ class SearchedSolutionRepo {
         },
         headerIncluded: true,
         url: Urls.MORE_FACILITIES_URL);
-    if (serverResponse.isRequestSucceed) {
+    if (serverResponse!.isRequestSucceed!) {
       MoreFacilityResponse _facilitiesResponse =
-          MoreFacilityResponse.fromJson(serverResponse.response.data);
+          MoreFacilityResponse.fromJson(serverResponse.response!.data);
       return RequestSuccess(
           response: _facilitiesResponse?.data, requestCode: pageIndex);
     } else {
@@ -221,7 +265,7 @@ class SearchedSolutionRepo {
 
   Future<RequestState> addFacilitiesInSolution(
       DocHosSolution catalogueData, final List<MoreFacility> facilities) async {
-    List<String> _facilityId = [];
+    List<String?> _facilityId = [];
     facilities.forEach((facility) {
       _facilityId.add(facility.sId);
     });
@@ -233,15 +277,15 @@ class SearchedSolutionRepo {
         },
         headerIncluded: true,
         url: Urls.ADD_TO_SOLUTION_URL);
-    if (serverResponse.isRequestSucceed) {
+    if (serverResponse!.isRequestSucceed!) {
       return RequestSuccess();
     } else {
       return RequestFailed(failureCause: serverResponse.failureCause);
     }
   }
 
-  Future<RequestState> getFacilitiesForManualBidding(String searchQuery,
-      int pageIndex, LatLng latLng, String specialityId) async {
+  Future<RequestState> getFacilitiesForManualBidding(String? searchQuery,
+      int? pageIndex, LatLng? latLng, String? specialityId) async {
     var serverResponse = await DioRequester().requestMethod(
         requestType: HttpRequestMethods.HTTP_POST,
         postData: {
@@ -253,9 +297,9 @@ class SearchedSolutionRepo {
         },
         headerIncluded: true,
         url: Urls.GET_FACILITIES_MANUAL_BIDDING);
-    if (serverResponse.isRequestSucceed) {
+    if (serverResponse!.isRequestSucceed!) {
       MoreFacilityResponse _facilitiesResponse =
-          MoreFacilityResponse.fromJson(serverResponse.response.data);
+          MoreFacilityResponse.fromJson(serverResponse.response!.data);
       return RequestSuccess(
           response: _facilitiesResponse?.data,
           requestCode: pageIndex,
@@ -280,7 +324,7 @@ class SearchedSolutionRepo {
         postData: {"facilities": _facilities, "queryDetails": query},
         headerIncluded: true,
         url: Urls.CREATE_MANUAL_BIDDING_URL);
-    if (serverResponse.isRequestSucceed) {
+    if (serverResponse!.isRequestSucceed!) {
       return RequestSuccess();
     } else {
       return RequestFailed(failureCause: serverResponse.failureCause);
@@ -288,7 +332,7 @@ class SearchedSolutionRepo {
   }
 
   Future<RequestState> discoverPrice(
-      String solutionId, String serviceId) async {
+      String? solutionId, String? serviceId) async {
     var result = await DioRequester().requestMethod(
         requestType: HttpRequestMethods.HTTP_POST,
         url: Urls.DISCOVER_PRICE_API,
@@ -298,7 +342,7 @@ class SearchedSolutionRepo {
           "serviceId": serviceId,
           "suggestedInsights": true
         });
-    if (result.isRequestSucceed) {
+    if (result!.isRequestSucceed!) {
       return RequestSuccess(response: true);
     } else {
       return RequestFailed(failureCause: result.failureCause);
@@ -310,25 +354,25 @@ class SearchedSolutionRepo {
         requestType: HttpRequestMethods.HTTP_GET,
         url: Urls.POPULAR_CITIES_AND_SERVICES_URL,
         headerIncluded: true);
-    if (result.isRequestSucceed) {
+    if (result!.isRequestSucceed!) {
       LocationAndServiceModel _locationAndServiceModel =
-          LocationAndServiceModel.fromJson(result.response.data);
+          LocationAndServiceModel.fromJson(result.response!.data);
       return RequestSuccess(response: _locationAndServiceModel);
     } else {
       return RequestFailed(failureCause: result.failureCause);
     }
   }
 
-  Future<RequestState> getCatalogueUsingFamilyId(String familyName) async {
+  Future<RequestState> getCatalogueUsingFamilyId(String? familyName) async {
     var serverResponse = await DioRequester().requestMethod(
         requestType: HttpRequestMethods.HTTP_GET,
         queryParameter: {"familyName": familyName},
         url: Urls.FamilyCatalogueUrl);
-    if (serverResponse.isRequestSucceed) {
+    if (serverResponse!.isRequestSucceed!) {
       List<CatalogueData> _solutions = [];
-      if (serverResponse.response.data != null &&
-          serverResponse.response.data['data'] != null) {
-        Iterable _items = serverResponse.response.data['data'];
+      if (serverResponse.response!.data != null &&
+          serverResponse.response!.data['data'] != null) {
+        Iterable _items = serverResponse.response!.data['data'];
         _solutions = _items
             .map((item) => CatalogueData.fromJson(item))
             .toList(growable: true);

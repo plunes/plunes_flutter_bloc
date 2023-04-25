@@ -1,15 +1,15 @@
 class FacilityHaveModel {
-  bool success;
-  List<FacilityData> data;
+  bool? success;
+  List<FacilityData>? data;
 
   FacilityHaveModel({this.success, this.data});
 
   FacilityHaveModel.fromJson(Map<String, dynamic> json) {
     success = json['success'];
     if (json['data'] != null) {
-      data = new List<FacilityData>();
+      data = [];
       json['data'].forEach((v) {
-        data.add(new FacilityData.fromJson(v));
+        data!.add(new FacilityData.fromJson(v));
       });
     }
   }
@@ -18,21 +18,21 @@ class FacilityHaveModel {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['success'] = this.success;
     if (this.data != null) {
-      data['data'] = this.data.map((v) => v.toJson()).toList();
+      data['data'] = this.data!.map((v) => v.toJson()).toList();
     }
     return data;
   }
 }
 
 class FacilityData {
-  int createdAt;
-  int updateAt;
-  String sId;
-  String sectionType;
-  String title;
-  String titleImage;
-  String subTitle;
-  int indexing;
+  int? createdAt;
+  int? updateAt;
+  String? sId;
+  String? sectionType;
+  String? title;
+  String? titleImage;
+  String? subTitle;
+  int? indexing;
 
   // List<Null> description;
 

@@ -1,16 +1,16 @@
 class ExploreOuterModel {
-  bool success;
-  List<ExploreData> data;
-  String msg;
+  bool? success;
+  List<ExploreData>? data;
+  String? msg;
 
   ExploreOuterModel({this.success, this.data, this.msg});
 
   ExploreOuterModel.fromJson(Map<String, dynamic> json) {
     success = json['success'];
     if (json['data'] != null) {
-      data = new List<ExploreData>();
+      data = [];
       json['data'].forEach((v) {
-        data.add(new ExploreData.fromJson(v));
+        data!.add(new ExploreData.fromJson(v));
       });
     }
     msg = json['msg'];
@@ -20,7 +20,7 @@ class ExploreOuterModel {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['success'] = this.success;
     if (this.data != null) {
-      data['data'] = this.data.map((v) => v.toJson()).toList();
+      data['data'] = this.data!.map((v) => v.toJson()).toList();
     }
     data['msg'] = this.msg;
     return data;
@@ -28,12 +28,12 @@ class ExploreOuterModel {
 }
 
 class ExploreData {
-  Section1 section1;
-  Section3 section2;
-  Section3 section3;
-  Section3 section4;
-  Section3 section5;
-  String sId;
+  Section1? section1;
+  Section3? section2;
+  Section3? section3;
+  Section3? section4;
+  Section3? section5;
+  String? sId;
 
   ExploreData(
       {this.section1,
@@ -65,19 +65,19 @@ class ExploreData {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     if (this.section1 != null) {
-      data['section1'] = this.section1.toJson();
+      data['section1'] = this.section1!.toJson();
     }
     if (this.section2 != null) {
-      data['section2'] = this.section2.toJson();
+      data['section2'] = this.section2!.toJson();
     }
     if (this.section3 != null) {
-      data['section3'] = this.section3.toJson();
+      data['section3'] = this.section3!.toJson();
     }
     if (this.section4 != null) {
-      data['section4'] = this.section4.toJson();
+      data['section4'] = this.section4!.toJson();
     }
     if (this.section5 != null) {
-      data['section5'] = this.section5.toJson();
+      data['section5'] = this.section5!.toJson();
     }
     data['_id'] = this.sId;
     return data;
@@ -85,16 +85,16 @@ class ExploreData {
 }
 
 class Section1 {
-  List<Elements> elements;
-  String heading;
+  List<Elements>? elements;
+  String? heading;
 
   Section1({this.elements, this.heading});
 
   Section1.fromJson(Map<String, dynamic> json) {
     if (json['elements'] != null) {
-      elements = new List<Elements>();
+      elements =[];
       json['elements'].forEach((v) {
-        elements.add(new Elements.fromJson(v));
+        elements!.add(new Elements.fromJson(v));
       });
     }
     heading = json['heading'];
@@ -103,7 +103,7 @@ class Section1 {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     if (this.elements != null) {
-      data['elements'] = this.elements.map((v) => v.toJson()).toList();
+      data['elements'] = this.elements!.map((v) => v.toJson()).toList();
     }
     data['heading'] = this.heading;
     return data;
@@ -111,17 +111,17 @@ class Section1 {
 }
 
 class Section3 {
-  String heading;
-  List<Elements> elements;
+  String? heading;
+  List<Elements>? elements;
 
   Section3({this.heading, this.elements});
 
   Section3.fromJson(Map<String, dynamic> json) {
     heading = json['heading'];
     if (json['elements'] != null) {
-      elements = new List<Elements>();
+      elements = [];
       json['elements'].forEach((v) {
-        elements.add(new Elements.fromJson(v));
+        elements!.add(new Elements.fromJson(v));
       });
     }
   }
@@ -130,19 +130,19 @@ class Section3 {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['heading'] = this.heading;
     if (this.elements != null) {
-      data['elements'] = this.elements.map((v) => v.toJson()).toList();
+      data['elements'] = this.elements!.map((v) => v.toJson()).toList();
     }
     return data;
   }
 }
 
 class Elements {
-  String imgUrl;
-  String name;
-  String subHeading, serviceName;
-  String subHeading1;
-  String subHeading2;
-  String userId, userType;
+  String? imgUrl;
+  String? name;
+  String? subHeading, serviceName;
+  String? subHeading1;
+  String? subHeading2;
+  String? userId, userType;
 
   Elements(
       {this.imgUrl,

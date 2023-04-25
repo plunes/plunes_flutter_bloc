@@ -1,9 +1,9 @@
 import 'package:plunes/models/Models.dart';
 
 class ProfessionDataModel {
-  bool success;
-  int count;
-  List<ProfData> data;
+  bool? success;
+  int? count;
+  List<ProfData>? data;
 
   ProfessionDataModel({this.success, this.count, this.data});
 
@@ -11,9 +11,9 @@ class ProfessionDataModel {
     success = json['succes'];
     count = json['count'];
     if (json['data'] != null) {
-      data = new List<ProfData>();
+      data = [];
       json['data'].forEach((v) {
-        data.add(new ProfData.fromJson(v));
+        data!.add(new ProfData.fromJson(v));
       });
     }
   }
@@ -23,31 +23,32 @@ class ProfessionDataModel {
     data['succes'] = this.success;
     data['count'] = this.count;
     if (this.data != null) {
-      data['data'] = this.data.map((v) => v.toJson()).toList();
+      data['data'] = this.data!.map((v) => v.toJson()).toList();
     }
     return data;
   }
 }
 
 class ProfData {
-  String sId;
-  String userType;
-  String name;
-  String address, centerLocation;
-  String mobileNumber;
-  String biography;
-  String registrationNumber;
+  String? sId;
+  String? userType;
+  String? name;
+  String? address, centerLocation;
+  String? mobileNumber;
+  String? biography;
+  String? registrationNumber;
 
   // GeoLocation geoLocation;
-  String email;
-  String coverImageUrl;
-  String imageUrl;
-  Location location;
-  bool isAdmin;
-  bool isCenter;
-  int level;
-  double rating;
-  num experience;
+  String? email;
+  String? coverImageUrl;
+  String? professionalId;
+  String? imageUrl;
+  Location? location;
+  bool? isAdmin;
+  bool? isCenter;
+  int? level;
+  dynamic rating;
+  num? experience;
 
   ProfData(
       {this.sId,
@@ -60,6 +61,7 @@ class ProfData {
       // this.geoLocation,
       this.email,
       this.coverImageUrl,
+      this.professionalId,
       this.imageUrl,
       this.location,
       this.isAdmin,
@@ -85,6 +87,7 @@ class ProfData {
     }
     email = json['email'];
     coverImageUrl = json['coverImageUrl'];
+    professionalId = json['professionalId'];
     imageUrl = json['imageUrl'];
     // location = json['location'] != null
     //     ? new Location.fromJson(json['location'])
@@ -110,9 +113,10 @@ class ProfData {
     // }
     data['email'] = this.email;
     data['coverImageUrl'] = this.coverImageUrl;
+    data['professionalId'] = this.professionalId;
     data['imageUrl'] = this.imageUrl;
     if (this.location != null) {
-      data['location'] = this.location.toJson();
+      data['location'] = this.location!.toJson();
     }
     data['isAdmin'] = this.isAdmin;
     data['isCenter'] = this.isCenter;

@@ -14,7 +14,7 @@ class UtilityNetItemAdapter extends BaseActivity {
 }
 
 class _ItemCardState extends State<UtilityNetItemAdapter> {
-  BuildContext screenContext;
+  BuildContext? screenContext;
 
   @override
   Widget build(BuildContext context) {

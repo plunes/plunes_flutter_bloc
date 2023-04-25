@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/Preferences.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
-import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/blocs/user_bloc.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
+
 import 'Login.dart';
 
 /*
@@ -23,11 +24,11 @@ import 'Login.dart';
 class ChangePassword extends BaseActivity {
   static const tag = '/changePassword';
 
-  String phone, from, otp;
-  bool isProfessional;
+  String? phone, from, otp;
+  bool? isProfessional;
 
   ChangePassword(
-      {Key key, this.phone, this.from, this.otp, this.isProfessional})
+      {Key? key, this.phone, this.from, this.otp, this.isProfessional})
       : super(key: key);
 
   @override
@@ -48,8 +49,8 @@ class _ChangePasswordState extends State<ChangePassword>
       _isValidNewPassword = true;
   var globalHeight, globalWidth;
   bool progress = false;
-  UserBloc _userBloc;
-  bool _currentPassVisible, _newPassVisible, _rePassVisible;
+  late UserBloc _userBloc;
+  bool? _currentPassVisible, _newPassVisible, _rePassVisible;
 
   @override
   void dispose() {
@@ -79,7 +80,7 @@ class _ChangePasswordState extends State<ChangePassword>
             widget.from == plunesStrings.createPassword
                 ? plunesStrings.createPassword
                 : plunesStrings.changePassword,
-            true),
+            true) as PreferredSizeWidget?,
         backgroundColor: Colors.white,
         body: GestureDetector(
             onTap: () => CommonMethods.hideSoftKeyboard(),
@@ -115,7 +116,7 @@ class _ChangePasswordState extends State<ChangePassword>
                           TextCapitalization.none,
                           _isValidOldPassword,
                           plunesStrings.errorMsgPassword,
-                          obscureText: _currentPassVisible)
+                          obscureText: _currentPassVisible!)
                       : Container(),
                   widget.getSpacer(0.0,
                       widget.from != plunesStrings.createPassword ? 20.0 : 0.0),
@@ -126,7 +127,7 @@ class _ChangePasswordState extends State<ChangePassword>
                       TextCapitalization.none,
                       _isValidPassword,
                       plunesStrings.errorMsgPassword,
-                      obscureText: _newPassVisible),
+                      obscureText: _newPassVisible!),
                   widget.getSpacer(0.0, 20.0),
                   createTextField(
                       newPasswordController,
@@ -135,7 +136,7 @@ class _ChangePasswordState extends State<ChangePassword>
                       TextCapitalization.none,
                       _isValidNewPassword,
                       plunesStrings.errorMsgPassword,
-                      obscureText: _rePassVisible),
+                      obscureText: _rePassVisible!),
                   widget.getSpacer(0.0, 30.0),
                   progress
                       ? SpinKitThreeBounce(
@@ -200,7 +201,7 @@ class _ChangePasswordState extends State<ChangePassword>
             keyboardType: inputType,
             controller: controller,
             onSubmitted: (String value) {
-              setFocus(controller).unfocus();
+              setFocus(controller)!.unfocus();
               if (controller != newPasswordController)
                 FocusScope.of(context).requestFocus(setTargetFocus(controller));
             },
@@ -246,8 +247,8 @@ class _ChangePasswordState extends State<ChangePassword>
                 isObscureText: obscureText)));
   }
 
-  FocusNode setFocus(TextEditingController controller) {
-    FocusNode focusNode;
+  FocusNode? setFocus(TextEditingController controller) {
+    FocusNode? focusNode;
     if (controller == oldPasswordController)
       focusNode = oldPasswordFocusNode;
     else if (controller == passwordController)
@@ -257,8 +258,8 @@ class _ChangePasswordState extends State<ChangePassword>
     return focusNode;
   }
 
-  FocusNode setTargetFocus(TextEditingController controller) {
-    FocusNode focusNode;
+  FocusNode? setTargetFocus(TextEditingController controller) {
+    FocusNode? focusNode;
     if (controller == oldPasswordController) focusNode = passwordFocusNode;
     if (controller == passwordController) focusNode = newPasswordFocusNode;
     return focusNode;
@@ -369,11 +370,11 @@ class _ChangePasswordState extends State<ChangePassword>
         onTap: () {
           setState(() {
             if (passwordController == oldPasswordController) {
-              _currentPassVisible = !_currentPassVisible;
+              _currentPassVisible = !_currentPassVisible!;
             } else if (passwordController == this.passwordController) {
-              _newPassVisible = !_newPassVisible;
+              _newPassVisible = !_newPassVisible!;
             } else if (passwordController == newPasswordController) {
-              _rePassVisible = !_rePassVisible;
+              _rePassVisible = !_rePassVisible!;
             }
           });
         },

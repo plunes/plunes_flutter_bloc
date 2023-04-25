@@ -34,7 +34,7 @@ class _SettingScreenState extends State<SettingScreen> {
     return Scaffold(
         key: _scaffoldKey,
         backgroundColor: Colors.white,
-        appBar: widget.getAppBar(context, plunesStrings.settings, true),
+        appBar: widget.getAppBar(context, plunesStrings.settings, true) as PreferredSizeWidget?,
         body: getBody());
   }
 

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
+import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
@@ -19,7 +19,7 @@ class AchievementItemAdapter extends BaseActivity {
 
 class _ItemCardState extends State<AchievementItemAdapter>
     implements DialogCallBack {
-  BuildContext screenContext;
+  BuildContext? screenContext;
 
   @override
   Widget build(BuildContext context) {

@@ -1,10 +1,9 @@
 import 'dart:async';
-import 'package:flutter/services.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:plunes/Utils/Constants.dart';
-import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_painter_icon_gen.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
@@ -13,37 +12,35 @@ import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart'
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
-import 'package:plunes/res/StringsFile.dart';
-import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
-import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
-import 'dart:ui' as ui;
 import 'package:plunes/ui/afterLogin/profile_screens/profile_screen.dart';
 
 // ignore: must_be_immutable
 class SolutionMap extends BaseActivity {
-  final SearchedDocResults solution;
-  final CatalogueData catalogueData;
+  final SearchedDocResults? solution;
+  final CatalogueData? catalogueData;
 
   SolutionMap(this.solution, this.catalogueData);
 
   _SolutionMapState createState() => _SolutionMapState();
 }
 
-class _SolutionMapState extends BaseState<SolutionMap> {
-  SearchedDocResults _searchedDocResults;
-  User _user;
+// class _SolutionMapState extends BaseState<SolutionMap> {
+class _SolutionMapState extends State<SolutionMap> {
+  final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  SearchedDocResults? _searchedDocResults;
+  late User _user;
   bool _isProcessing = true;
   Set<Marker> _markers = {};
   Completer<GoogleMapController> _googleMapController = Completer();
-  TextEditingController _searchController;
-  FocusNode _focusNode;
-  String _failureCause;
-  List<Widget> _mapWidgets;
+  TextEditingController? _searchController;
+  FocusNode? _focusNode;
+  String? _failureCause;
+  List<Widget>? _mapWidgets;
   List<GlobalKey> _globalKeys = [];
   List<Function> _functions = [];
   List<Services> _customServices = [];
-  IconGenerator _iconGen;
-  BitmapDescriptor hosImage2XGreenBgDesc;
+  late IconGenerator _iconGen;
+  late BitmapDescriptor hosImage2XGreenBgDesc;
 
   @override
   void initState() {
@@ -69,7 +66,7 @@ class _SolutionMapState extends BaseState<SolutionMap> {
     _searchController = TextEditingController();
     _focusNode = FocusNode()
       ..addListener(() {
-        if (_focusNode.hasFocus) {
+        if (_focusNode!.hasFocus) {
           FocusScope.of(context).requestFocus(FocusNode());
           Navigator.pop(context, true);
         }
@@ -90,7 +87,7 @@ class _SolutionMapState extends BaseState<SolutionMap> {
         top: false,
         bottom: false,
         child: Scaffold(
-          appBar: widget.getAppBar(context, "Location", true),
+          appBar: widget.getAppBar(context, "Location", true) as PreferredSizeWidget?,
           body: _failureCause != null
               ? CustomWidgets().errorWidget(_failureCause)
               : Stack(
@@ -134,8 +131,8 @@ class _SolutionMapState extends BaseState<SolutionMap> {
                               },
                               initialCameraPosition: CameraPosition(
                                   target: LatLng(
-                                      double.tryParse(_user.latitude) ?? 0.0,
-                                      double.tryParse(_user.longitude) ?? 0.0),
+                                      double.tryParse(_user.latitude!) ?? 0.0,
+                                      double.tryParse(_user.longitude!) ?? 0.0),
                                   zoom: 10)),
                           flex: 3,
                         ),
@@ -190,35 +187,35 @@ class _SolutionMapState extends BaseState<SolutionMap> {
   void _calculateMapData() async {
     await Future.delayed(Duration(milliseconds: 20));
     if (_searchedDocResults != null &&
-        _searchedDocResults.solution != null &&
-        _searchedDocResults.solution.services != null &&
-        _searchedDocResults.solution.services.isNotEmpty) {
+        _searchedDocResults!.solution != null &&
+        _searchedDocResults!.solution!.services != null &&
+        _searchedDocResults!.solution!.services!.isNotEmpty) {
       _globalKeys = [];
       _mapWidgets = [];
       _functions = [];
       _customServices = [];
       for (int index = 0;
-          index < _searchedDocResults.solution.services.length;
+          index < _searchedDocResults!.solution!.services!.length;
           index++) {
-        if (_searchedDocResults.solution.services[index].doctors != null &&
-            _searchedDocResults.solution.services[index].doctors.isNotEmpty) {
-          _searchedDocResults.solution.services[index].doctors
+        if (_searchedDocResults!.solution!.services![index].doctors != null &&
+            _searchedDocResults!.solution!.services![index].doctors!.isNotEmpty) {
+          _searchedDocResults!.solution!.services![index].doctors!
               .forEach((doctor) {
             var key = GlobalKey();
             _globalKeys.add(key);
             _functions.add(() =>
-                _openProfile(_searchedDocResults.solution.services[index]));
+                _openProfile(_searchedDocResults!.solution!.services![index]));
             Services service = Services(
                 name: doctor?.name ?? "",
-                sId: _searchedDocResults.solution.services[index].sId,
-                latitude: _searchedDocResults.solution.services[index].latitude,
+                sId: _searchedDocResults!.solution!.services![index].sId,
+                latitude: _searchedDocResults!.solution!.services![index].latitude,
                 longitude:
-                    _searchedDocResults.solution.services[index].longitude,
-                professionalPhotos: _searchedDocResults
-                        .solution.services[index].professionalPhotos ??
+                    _searchedDocResults!.solution!.services![index].longitude,
+                professionalPhotos: _searchedDocResults!
+                        .solution!.services![index].professionalPhotos ??
                     [],
                 distance:
-                    _searchedDocResults.solution.services[index].distance);
+                    _searchedDocResults!.solution!.services![index].distance);
             _customServices.add(service);
             // _mapWidgets.add(RepaintBoundary(
             //   child: Container(
@@ -256,8 +253,8 @@ class _SolutionMapState extends BaseState<SolutionMap> {
           var key = GlobalKey();
           _globalKeys.add(key);
           _functions.add(
-              () => _openProfile(_searchedDocResults.solution.services[index]));
-          _customServices.add(_searchedDocResults.solution.services[index]);
+              () => _openProfile(_searchedDocResults!.solution!.services![index]));
+          _customServices.add(_searchedDocResults!.solution!.services![index]);
           // _mapWidgets.add(RepaintBoundary(
           //   child: Container(
           //     child: Column(
@@ -298,16 +295,16 @@ class _SolutionMapState extends BaseState<SolutionMap> {
 
   void _showMapWidgetsAfterDelay() async {
     try {
-      double minZoom = 0;
-      int arrLength = _searchedDocResults.solution.services.length;
+      double? minZoom = 0;
+      int arrLength = _searchedDocResults!.solution!.services!.length;
       for (int index = 0; index < arrLength; index++) {
-        if (_searchedDocResults.solution.services[index].distance != null &&
-            _searchedDocResults.solution.services[index].distance > minZoom) {
-          minZoom = _searchedDocResults.solution.services[index].distance;
+        if (_searchedDocResults!.solution!.services![index].distance != null &&
+            _searchedDocResults!.solution!.services![index].distance! > minZoom!) {
+          minZoom = _searchedDocResults!.solution!.services![index].distance as double?;
         }
       }
       if (minZoom != 0) {
-        _animateMapPosition(minZoom);
+        _animateMapPosition(minZoom!);
       }
       await Future.delayed(Duration(seconds: 1));
       for (int index = 0; index < _globalKeys.length; index++) {
@@ -320,7 +317,7 @@ class _SolutionMapState extends BaseState<SolutionMap> {
         // print("bytes are $bytes");
         await Future.delayed(Duration(milliseconds: 150));
         _markers.add(Marker(
-            markerId: MarkerId(_customServices[index].sId),
+            markerId: MarkerId(_customServices[index].sId!),
             onTap: () => _functions[index](),
             icon: hosImage2XGreenBgDesc,
             position: LatLng(_customServices[index].latitude?.toDouble() ?? 0.0,
@@ -370,8 +367,8 @@ class _SolutionMapState extends BaseState<SolutionMap> {
         var _mapController = await _googleMapController.future;
         _mapController.animateCamera(CameraUpdate.newCameraPosition(
             CameraPosition(
-                target: LatLng(double.parse(_user.latitude),
-                    double.parse(_user.longitude)),
+                target: LatLng(double.parse(_user.latitude!),
+                    double.parse(_user.longitude!)),
                 zoom: minZoom,
                 bearing: 10)));
       }
@@ -386,7 +383,7 @@ class _SolutionMapState extends BaseState<SolutionMap> {
           context,
           MaterialPageRoute(
               builder: (context) => DoctorInfo(service.professionalId,
-                  isDoc: (service.userType.toLowerCase() ==
+                  isDoc: (service.userType!.toLowerCase() ==
                       Constants.doctor.toString().toLowerCase()),
                   isAlreadyInBookingProcess: true)));
     }

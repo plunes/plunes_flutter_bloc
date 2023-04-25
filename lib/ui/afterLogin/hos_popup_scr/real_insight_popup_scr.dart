@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
@@ -16,14 +19,12 @@ import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/GalleryScreen.dart';
 import 'package:plunes/ui/afterLogin/graphs/real_insight_graph.dart';
-import 'dart:math' as math;
 import 'package:syncfusion_flutter_gauges/gauges.dart';
-import 'package:percent_indicator/percent_indicator.dart';
 
 // ignore: must_be_immutable
 class RealInsightPopup extends BaseActivity {
-  RealInsight realInsight;
-  DocHosMainInsightBloc docHosMainInsightBloc;
+  RealInsight? realInsight;
+  DocHosMainInsightBloc? docHosMainInsightBloc;
 
   RealInsightPopup({this.realInsight, this.docHosMainInsightBloc});
 
@@ -31,21 +32,22 @@ class RealInsightPopup extends BaseActivity {
   _RealInsightPopupState createState() => _RealInsightPopupState();
 }
 
-class _RealInsightPopupState extends BaseState<RealInsightPopup> {
-  num sliderVal;
+class _RealInsightPopupState extends State<RealInsightPopup> {
+  final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  late num sliderVal;
   num chancesPercent = 25;
-  num half;
+  num? half;
   TextEditingController _priceController = TextEditingController();
   TextEditingController _offeredPriceController = TextEditingController();
 
   // ScrollController _scrollController = ScrollController();
-  String failureCause;
-  bool shouldShowField = false, _hasPrice;
-  RealInsight _realInsight;
-  DocHosMainInsightBloc _docHosMainInsightBloc;
-  Timer _timer;
+  String? failureCause;
+  bool? shouldShowField = false, _hasPrice;
+  RealInsight? _realInsight;
+  DocHosMainInsightBloc? _docHosMainInsightBloc;
+  Timer? _timer;
   double _topMargin = 0;
-  StreamController _streamForIcon;
+  StreamController? _streamForIcon;
   TextEditingController _techniqueController = TextEditingController();
   TextEditingController _addOnController = TextEditingController();
   TextEditingController _specialOfferController = TextEditingController();
@@ -60,7 +62,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
   }
 
   _init() {
-    if (_realInsight.isPrice != null && !_realInsight.isPrice) {
+    if (_realInsight!.isPrice != null && !_realInsight!.isPrice!) {
       _hasPrice = false;
     } else {
       _hasPrice = true;
@@ -126,7 +128,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
       bottom: false,
       child: Scaffold(
         appBar:
-            widget.getAppBar(context, PlunesStrings.realTimePrediction, true),
+            widget.getAppBar(context, PlunesStrings.realTimePrediction, true) as PreferredSizeWidget?,
         key: scaffoldKey,
         body: Builder(
           builder: (context) {
@@ -148,8 +150,8 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
 
   void _setChancesOfConversion() {
     try {
-      var firstVal = (_realInsight.max - _realInsight.min) / 70;
-      var secVal = (sliderVal - _realInsight.min) / firstVal;
+      var firstVal = (_realInsight!.max! - _realInsight!.min!) / 70;
+      var secVal = (sliderVal - _realInsight!.min!) / firstVal;
       var thirdVal = 70 - secVal;
       chancesPercent = thirdVal?.floor()?.toDouble() ?? 0;
       if (chancesPercent >= 70) {
@@ -160,7 +162,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
     }
   }
 
-  _showSnackBar(String message) {
+  _showSnackBar(String? message) {
     if (mounted)
       showDialog(
           context: context,
@@ -171,8 +173,8 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
   }
 
   Widget _getBody() {
-    return StreamBuilder<RequestState>(
-        stream: _docHosMainInsightBloc.realTimePriceUpdateStream,
+    return StreamBuilder<RequestState?>(
+        stream: _docHosMainInsightBloc!.realTimePriceUpdateStream,
         builder: (context, snapShot) {
           if (snapShot.data is RequestInProgress) {
             return CustomWidgets().getProgressIndicator();
@@ -183,8 +185,8 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
             });
           }
           if (snapShot.data is RequestFailed) {
-            RequestFailed requestFailed = snapShot.data;
-            final String message = requestFailed.failureCause;
+            RequestFailed requestFailed = snapShot.data as RequestFailed;
+            final String? message = requestFailed.failureCause;
             _docHosMainInsightBloc?.updateRealTimeInsightPriceStream(null);
             Future.delayed(Duration(milliseconds: 10)).then((value) {
               _showSnackBar(message);
@@ -199,7 +201,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                   alignment: Alignment.centerLeft,
                   child: Text(
                       CommonMethods.getStringInCamelCase(
-                          _realInsight?.userName),
+                          _realInsight?.userName)!,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -254,8 +256,8 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                 _getSliderWidget(),
                 _getGraphWidget(),
                 _getAddonAndSpecialOfferProviderWidget(),
-                (_realInsight.category != null &&
-                        _realInsight.category.toLowerCase() ==
+                (_realInsight!.category != null &&
+                        _realInsight!.category!.toLowerCase() ==
                             Constants.procedureKey.toLowerCase())
                     ? _getFacilityProvidingOffersWidget()
                     : Container(),
@@ -292,21 +294,21 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
               ],
             ),
           ),
-          (_realInsight.userReport != null &&
-                      _realInsight.userReport.imageUrl != null &&
-                      _realInsight.userReport.imageUrl.isNotEmpty) ||
-                  (_realInsight.userReport != null &&
-                      _realInsight.userReport.reportUrl != null &&
-                      _realInsight.userReport.reportUrl.isNotEmpty)
+          (_realInsight!.userReport != null &&
+                      _realInsight!.userReport!.imageUrl != null &&
+                      _realInsight!.userReport!.imageUrl!.isNotEmpty) ||
+                  (_realInsight!.userReport != null &&
+                      _realInsight!.userReport!.reportUrl != null &&
+                      _realInsight!.userReport!.reportUrl!.isNotEmpty)
               ? Container(
                   margin: EdgeInsets.only(top: 10),
                   height: AppConfig.verticalBlockSize * 25,
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      (_realInsight.userReport != null &&
-                              _realInsight.userReport.imageUrl != null &&
-                              _realInsight.userReport.imageUrl.isNotEmpty)
+                      (_realInsight!.userReport != null &&
+                              _realInsight!.userReport!.imageUrl != null &&
+                              _realInsight!.userReport!.imageUrl!.isNotEmpty)
                           ? Flexible(
                               child: Container(
                               padding: EdgeInsets.only(
@@ -320,7 +322,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                               child: InkWell(
                                 onTap: () {
                                   List<Photo> photos = [];
-                                  _realInsight.userReport.imageUrl
+                                  _realInsight!.userReport!.imageUrl!
                                       .forEach((element) {
                                     if (element == null ||
                                         element.isEmpty ||
@@ -367,8 +369,8 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                                     Radius.circular(12)),
                                                 child: CustomWidgets()
                                                     .getImageFromUrl(
-                                                        _realInsight
-                                                                .userReport
+                                                        _realInsight!
+                                                                .userReport!
                                                                 .imageUrl
                                                                 ?.first ??
                                                             "",
@@ -376,14 +378,14 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                               ),
                                             ),
                                           ),
-                                          _realInsight.userReport.imageUrl
+                                          _realInsight!.userReport!.imageUrl!
                                                       .length >
                                                   1
                                               ? Positioned.fill(
                                                   child: Container(
                                                     alignment: Alignment.center,
                                                     child: Text(
-                                                      "+${_realInsight.userReport.imageUrl.length}",
+                                                      "+${_realInsight!.userReport!.imageUrl!.length}",
                                                       style: TextStyle(
                                                           color: PlunesColors
                                                               .GREYCOLOR,
@@ -400,9 +402,9 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                               ),
                             ))
                           : Container(),
-                      (_realInsight.userReport != null &&
-                              _realInsight.userReport.reportUrl != null &&
-                              _realInsight.userReport.reportUrl.isNotEmpty)
+                      (_realInsight!.userReport != null &&
+                              _realInsight!.userReport!.reportUrl != null &&
+                              _realInsight!.userReport!.reportUrl!.isNotEmpty)
                           ? Flexible(
                               child: Container(
                               padding: EdgeInsets.only(
@@ -415,10 +417,10 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                       "#2D2C3E"))),
                               child: InkWell(
                                 onTap: () {
-                                  if (_realInsight.userReport.reportUrl.first !=
+                                  if (_realInsight!.userReport!.reportUrl!.first !=
                                       null) {
-                                    _launch(_realInsight
-                                        .userReport.reportUrl.first);
+                                    _launch(_realInsight!
+                                        .userReport!.reportUrl!.first);
                                   }
                                 },
                                 onDoubleTap: () {},
@@ -550,9 +552,9 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                (_realInsight.userReport != null &&
-                        _realInsight.userReport.videoUrl != null &&
-                        _realInsight.userReport.videoUrl.isNotEmpty)
+                (_realInsight!.userReport != null &&
+                        _realInsight!.userReport!.videoUrl != null &&
+                        _realInsight!.userReport!.videoUrl!.isNotEmpty)
                     ? Flexible(
                         child: Container(
                         padding: EdgeInsets.only(
@@ -566,14 +568,14 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                           onTap: () {
                             // print(
                             //     "_realInsight.userReport.videoUrl.first.url ${_realInsight.userReport.videoUrl.first.url}");
-                            if (_realInsight.userReport.videoUrl.first.url !=
+                            if (_realInsight!.userReport!.videoUrl!.first.url !=
                                 null) {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => VideoUtil(
-                                          _realInsight
-                                              .userReport.videoUrl.first.url)));
+                                          _realInsight!
+                                              .userReport!.videoUrl!.first.url)));
                             }
                           },
                           onDoubleTap: () {},
@@ -604,8 +606,8 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                               Radius.circular(12)),
                                           child: CustomWidgets()
                                               .getImageFromUrl(
-                                                  _realInsight
-                                                          .userReport
+                                                  _realInsight!
+                                                          .userReport!
                                                           .videoUrl
                                                           ?.first
                                                           ?.thumbnail ??
@@ -631,9 +633,9 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                         ),
                       ))
                     : Container(),
-                (_realInsight.userReport != null &&
-                        _realInsight.userReport.imageUrl != null &&
-                        _realInsight.userReport.imageUrl.isNotEmpty)
+                (_realInsight!.userReport != null &&
+                        _realInsight!.userReport!.imageUrl != null &&
+                        _realInsight!.userReport!.imageUrl!.isNotEmpty)
                     ? Flexible(
                         child: Container(
                         padding: EdgeInsets.only(
@@ -646,7 +648,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                         child: InkWell(
                           onTap: () {
                             List<Photo> photos = [];
-                            _realInsight.userReport.imageUrl.forEach((element) {
+                            _realInsight!.userReport!.imageUrl!.forEach((element) {
                               if (element == null ||
                                   element.isEmpty ||
                                   !(element.contains("http"))) {
@@ -691,19 +693,19 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                               Radius.circular(12)),
                                           child: CustomWidgets()
                                               .getImageFromUrl(
-                                                  _realInsight.userReport
+                                                  _realInsight!.userReport!
                                                           .imageUrl?.first ??
                                                       "",
                                                   boxFit: BoxFit.fill),
                                         ),
                                       ),
                                     ),
-                                    _realInsight.userReport.imageUrl.length > 1
+                                    _realInsight!.userReport!.imageUrl!.length > 1
                                         ? Positioned.fill(
                                             child: Container(
                                               alignment: Alignment.center,
                                               child: Text(
-                                                "+${_realInsight.userReport.imageUrl.length}",
+                                                "+${_realInsight!.userReport!.imageUrl!.length}",
                                                 style: TextStyle(
                                                     color:
                                                         PlunesColors.GREYCOLOR,
@@ -720,9 +722,9 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                         ),
                       ))
                     : Container(),
-                (_realInsight.userReport != null &&
-                        _realInsight.userReport.reportUrl != null &&
-                        _realInsight.userReport.reportUrl.isNotEmpty)
+                (_realInsight!.userReport != null &&
+                        _realInsight!.userReport!.reportUrl != null &&
+                        _realInsight!.userReport!.reportUrl!.isNotEmpty)
                     ? Flexible(
                         child: Container(
                         padding: EdgeInsets.only(
@@ -734,9 +736,9 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                 CommonMethods.getColorHexFromStr("#2D2C3E"))),
                         child: InkWell(
                           onTap: () {
-                            if (_realInsight.userReport.reportUrl.first !=
+                            if (_realInsight!.userReport!.reportUrl!.first !=
                                 null) {
-                              _launch(_realInsight.userReport.reportUrl.first);
+                              _launch(_realInsight!.userReport!.reportUrl!.first);
                             }
                           },
                           onDoubleTap: () {},
@@ -883,7 +885,9 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                     child: TextField(
                       textAlign: TextAlign.left,
                       controller: _priceController,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      inputFormatters: [
+                        // FilteringTextInputFormatter.digitsOnly
+                      ],
                       style: TextStyle(
                           fontSize: 12, color: PlunesColors.WHITECOLOR),
                       decoration: InputDecoration.collapsed(
@@ -942,8 +946,9 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                     child: TextField(
                       textAlign: TextAlign.left,
                       controller: _offeredPriceController,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      style: TextStyle(
+                      inputFormatters: [
+                        // FilteringTextInputFormatter.digitsOnly],
+                      ],style: TextStyle(
                           fontSize: 12, color: PlunesColors.WHITECOLOR),
                       decoration: InputDecoration.collapsed(
                           hintText: "Enter price",
@@ -954,8 +959,8 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                   "#9B9B9B")))),
                     ),
                   ),
-                  (_realInsight.category != null &&
-                          _realInsight.category.toLowerCase() ==
+                  (_realInsight!.category != null &&
+                          _realInsight!.category!.toLowerCase() ==
                               Constants.procedureKey.toLowerCase())
                       ? Container(
                           margin: EdgeInsets.only(
@@ -968,8 +973,8 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                   color: PlunesColors.WHITECOLOR)),
                         )
                       : Container(),
-                  (_realInsight.category != null &&
-                          _realInsight.category.toLowerCase() ==
+                  (_realInsight!.category != null &&
+                          _realInsight!.category!.toLowerCase() ==
                               Constants.procedureKey.toLowerCase())
                       ? Container(
                           margin: EdgeInsets.only(
@@ -1000,8 +1005,8 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                           ),
                         )
                       : Container(),
-                  (_realInsight.category != null &&
-                          _realInsight.category.toLowerCase() ==
+                  (_realInsight!.category != null &&
+                          _realInsight!.category!.toLowerCase() ==
                               Constants.procedureKey.toLowerCase())
                       ? Container(
                           margin: EdgeInsets.only(
@@ -1014,8 +1019,8 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                   color: PlunesColors.WHITECOLOR)),
                         )
                       : Container(),
-                  (_realInsight.category != null &&
-                          _realInsight.category.toLowerCase() ==
+                  (_realInsight!.category != null &&
+                          _realInsight!.category!.toLowerCase() ==
                               Constants.procedureKey.toLowerCase())
                       ? Container(
                           margin: EdgeInsets.only(
@@ -1029,8 +1034,8 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                   color: PlunesColors.WHITECOLOR)),
                         )
                       : Container(),
-                  (_realInsight.category != null &&
-                          _realInsight.category.toLowerCase() ==
+                  (_realInsight!.category != null &&
+                          _realInsight!.category!.toLowerCase() ==
                               Constants.procedureKey.toLowerCase())
                       ? Container(
                           margin: EdgeInsets.only(
@@ -1060,8 +1065,8 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                           ),
                         )
                       : Container(),
-                  (_realInsight.category != null &&
-                          _realInsight.category.toLowerCase() ==
+                  (_realInsight!.category != null &&
+                          _realInsight!.category!.toLowerCase() ==
                               Constants.procedureKey.toLowerCase())
                       ? Container(
                           margin: EdgeInsets.only(
@@ -1074,8 +1079,8 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                   color: PlunesColors.WHITECOLOR)),
                         )
                       : Container(),
-                  (_realInsight.category != null &&
-                          _realInsight.category.toLowerCase() ==
+                  (_realInsight!.category != null &&
+                          _realInsight!.category!.toLowerCase() ==
                               Constants.procedureKey.toLowerCase())
                       ? Container(
                           margin: EdgeInsets.only(
@@ -1141,8 +1146,8 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                         style: TextStyle(
                             fontSize: 16, color: PlunesColors.WHITECOLOR)),
                   ),
-                  (_realInsight.specialOffers == null ||
-                          _realInsight.specialOffers.isEmpty)
+                  (_realInsight!.specialOffers == null ||
+                          _realInsight!.specialOffers!.isEmpty)
                       ? _getAddSpecialOfferEmptyWidget()
                       : ListView.builder(
                           shrinkWrap: true,
@@ -1172,7 +1177,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                   ),
                                   Expanded(
                                     child: Text(
-                                      _realInsight.specialOffers[index]?.values
+                                      _realInsight!.specialOffers![index]?.values
                                               ?.first ??
                                           "",
                                       textAlign: TextAlign.left,
@@ -1185,7 +1190,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                               ),
                             );
                           },
-                          itemCount: _realInsight.specialOffers?.length ?? 0,
+                          itemCount: _realInsight!.specialOffers?.length ?? 0,
                         ),
                 ],
               ),
@@ -1207,24 +1212,24 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
         onTap: () {
           if (_priceController.text.trim().isEmpty ||
               _priceController.text.trim().substring(0) == "0" ||
-              (double.tryParse(_priceController.text.trim()) < 1)) {
+              (double.tryParse(_priceController.text.trim())! < 1)) {
             _showSnackBar('Package price must not be lesser than 1 or empty');
             return;
           } else if (_offeredPriceController.text.trim().isEmpty ||
               _offeredPriceController.text.trim().substring(0) == "0" ||
-              (double.tryParse(_offeredPriceController.text.trim()) < 1)) {
+              (double.tryParse(_offeredPriceController.text.trim())! < 1)) {
             _showSnackBar('Offered price must not be lesser than 1 or empty');
             return;
-          } else if (double.tryParse(_priceController.text.trim()) <
-              double.tryParse(_offeredPriceController.text.trim())) {
+          } else if (double.tryParse(_priceController.text.trim())! <
+              double.tryParse(_offeredPriceController.text.trim())!) {
             _showSnackBar(
                 'Offered price must not be lesser than Package price');
             return;
           }
-          _docHosMainInsightBloc.getUpdateRealTimeInsightPrice(
-              chancesPercent, _realInsight.solutionId, _realInsight.serviceId,
+          _docHosMainInsightBloc!.getUpdateRealTimeInsightPrice(
+              chancesPercent, _realInsight!.solutionId, _realInsight!.serviceId,
               isSuggestive:
-                  (_realInsight.suggested != null && _realInsight.suggested),
+                  (_realInsight!.suggested != null && _realInsight!.suggested!),
               packagePrice: num.tryParse(_priceController.text.trim()),
               realInsight: _realInsight,
               offeredPrice: num.tryParse(_offeredPriceController.text.trim()),
@@ -1285,10 +1290,10 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Text(
-                        ' \u20B9 ${(_realInsight.min)?.toStringAsFixed(0)}',
+                        ' \u20B9 ${(_realInsight!.min)?.toStringAsFixed(0)}',
                         style: TextStyle(
                             color: Colors.white,
-                            fontSize: AppConfig.mediumFont - 1,
+                            fontSize: AppConfig.mediumFont! - 1,
                             fontWeight: FontWeight.w600),
                       ),
                       (half != null && half != 0)
@@ -1300,11 +1305,11 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                   '${half?.toStringAsFixed(1) ?? ""}',
                                   style: TextStyle(
                                       color: Colors.white,
-                                      fontSize: AppConfig.mediumFont - 1,
+                                      fontSize: AppConfig.mediumFont! - 1,
                                       fontWeight: FontWeight.w600),
                                 ),
                                 StreamBuilder<Object>(
-                                    stream: _streamForIcon?.stream,
+                                    stream: _streamForIcon?.stream as Stream<Object>?,
                                     builder: (context, snapshot) {
                                       return Container(
                                         height: 15,
@@ -1325,17 +1330,17 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                   'Recommendation',
                                   style: TextStyle(
                                       color: Colors.white,
-                                      fontSize: AppConfig.mediumFont - 1,
+                                      fontSize: AppConfig.mediumFont! - 1,
                                       fontWeight: FontWeight.w600),
                                 ),
                               ],
                             )
                           : Container(),
                       Text(
-                        ' \u20B9 ${_realInsight.max?.toStringAsFixed(0)}',
+                        ' \u20B9 ${_realInsight!.max?.toStringAsFixed(0)}',
                         style: TextStyle(
                             color: Colors.white,
-                            fontSize: AppConfig.mediumFont - 1,
+                            fontSize: AppConfig.mediumFont! - 1,
                             fontWeight: FontWeight.w600),
                       ),
                     ],
@@ -1405,7 +1410,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                         ])
                   ]),
                 ),
-                (_realInsight.compRate == null || _realInsight.compRate <= 0)
+                (_realInsight!.compRate == null || _realInsight!.compRate! <= 0)
                     ? Container()
                     : Container(
                         padding: EdgeInsets.symmetric(
@@ -1416,13 +1421,13 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                           animation: true,
                           lineHeight: 12.0,
                           animationDuration: 2000,
-                          percent: (_realInsight.compRate != null &&
-                                  _realInsight.compRate != 0)
-                              ? _realInsight.compRate / 100
+                          percent: (_realInsight!.compRate != null &&
+                                  _realInsight!.compRate != 0)
+                              ? _realInsight!.compRate! / 100
                               : 0,
                           linearStrokeCap: LinearStrokeCap.roundAll,
                           center: Text(
-                            "${_realInsight.compRate?.toStringAsFixed(0) ?? 0} %",
+                            "${_realInsight!.compRate?.toStringAsFixed(0) ?? 0} %",
                             style: TextStyle(
                                 color: PlunesColors.BLACKCOLOR, fontSize: 10),
                           ),
@@ -1430,7 +1435,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                               CommonMethods.getColorHexFromStr("#F3CF3D")),
                         ),
                       ),
-                (_realInsight.compRate == null || _realInsight.compRate <= 0)
+                (_realInsight!.compRate == null || _realInsight!.compRate! <= 0)
                     ? Container()
                     : Container(
                         child: Column(
@@ -1443,7 +1448,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                               'Competition Rate',
                               style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: AppConfig.mediumFont - 1,
+                                  fontSize: AppConfig.mediumFont! - 1,
                                   fontWeight: FontWeight.w600),
                             ),
                           ],
@@ -1470,15 +1475,15 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
           borderRadius: BorderRadius.all(Radius.circular(12)),
           color: Color(CommonMethods.getColorHexFromStr("#2D2C3E"))),
       child: (_realInsight != null &&
-              _realInsight.dataPoints != null &&
-              _realInsight.dataPoints.isNotEmpty)
+              _realInsight!.dataPoints != null &&
+              _realInsight!.dataPoints!.isNotEmpty)
           ? Container(
               margin: EdgeInsets.symmetric(
                   horizontal: AppConfig.horizontalBlockSize * 2),
               height: 324,
               width: double.infinity,
               child: StaticallyProvidedTicks.withSampleData(
-                  _realInsight.dataPoints, _realInsight.userPrice),
+                  _realInsight!.dataPoints, _realInsight!.userPrice),
             )
           : Container(),
     );
@@ -1521,17 +1526,17 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
 
   bool _hasMediaData() {
     bool hasMediaData = false;
-    if (_realInsight.userReport != null &&
-        _realInsight.userReport.videoUrl != null &&
-        _realInsight.userReport.videoUrl.isNotEmpty) {
+    if (_realInsight!.userReport != null &&
+        _realInsight!.userReport!.videoUrl != null &&
+        _realInsight!.userReport!.videoUrl!.isNotEmpty) {
       hasMediaData = true;
-    } else if (_realInsight.userReport != null &&
-        _realInsight.userReport.imageUrl != null &&
-        _realInsight.userReport.imageUrl.isNotEmpty) {
+    } else if (_realInsight!.userReport != null &&
+        _realInsight!.userReport!.imageUrl != null &&
+        _realInsight!.userReport!.imageUrl!.isNotEmpty) {
       hasMediaData = true;
-    } else if (_realInsight.userReport != null &&
-        _realInsight.userReport.reportUrl != null &&
-        _realInsight.userReport.reportUrl.isNotEmpty) {
+    } else if (_realInsight!.userReport != null &&
+        _realInsight!.userReport!.reportUrl != null &&
+        _realInsight!.userReport!.reportUrl!.isNotEmpty) {
       hasMediaData = true;
     }
     return hasMediaData;
@@ -1539,21 +1544,21 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
 
   bool _hasTextData() {
     bool hasTextData = false;
-    if (_realInsight.userReport != null &&
-        _realInsight.userReport.additionalDetails != null &&
-        _realInsight.userReport.additionalDetails.trim().isNotEmpty) {
+    if (_realInsight!.userReport != null &&
+        _realInsight!.userReport!.additionalDetails != null &&
+        _realInsight!.userReport!.additionalDetails!.trim().isNotEmpty) {
       hasTextData = true;
-    } else if (_realInsight.userReport != null &&
-        _realInsight.userReport.description != null &&
-        _realInsight.userReport.description.trim().isNotEmpty) {
+    } else if (_realInsight!.userReport != null &&
+        _realInsight!.userReport!.description != null &&
+        _realInsight!.userReport!.description!.trim().isNotEmpty) {
       hasTextData = true;
     }
     return hasTextData;
   }
 
   Widget _getBodyPartsSessionWidget() {
-    if (_realInsight.serviceChildren == null ||
-        _realInsight.serviceChildren.isEmpty) {
+    if (_realInsight!.serviceChildren == null ||
+        _realInsight!.serviceChildren!.isEmpty) {
       return Container();
     }
     return Container(
@@ -1564,13 +1569,13 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
           top: AppConfig.verticalBlockSize * 2),
       child: ListView.builder(
         itemBuilder: (context, index) {
-          var bodyObj = _realInsight.serviceChildren[index];
+          var bodyObj = _realInsight!.serviceChildren![index];
           if ((bodyObj == null ||
                   bodyObj.bodyPart == null ||
-                  bodyObj.bodyPart.trim().isEmpty) &&
+                  bodyObj.bodyPart!.trim().isEmpty) &&
               (bodyObj == null ||
                   bodyObj.sessionGrafts == null ||
-                  bodyObj.sessionGrafts.trim().isEmpty)) {
+                  bodyObj.sessionGrafts!.trim().isEmpty)) {
             return Container();
           }
           return Container(
@@ -1587,7 +1592,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
               children: [
                 (bodyObj != null &&
                         bodyObj.bodyPart != null &&
-                        bodyObj.bodyPart.trim().isNotEmpty)
+                        bodyObj.bodyPart!.trim().isNotEmpty)
                     ? Container(
                         margin: EdgeInsets.only(right: 15),
                         child: Column(
@@ -1614,7 +1619,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                     : Container(),
                 (bodyObj != null &&
                         bodyObj.sessionGrafts != null &&
-                        bodyObj.sessionGrafts.trim().isNotEmpty)
+                        bodyObj.sessionGrafts!.trim().isNotEmpty)
                     ? Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1627,7 +1632,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                           Container(
                             margin: EdgeInsets.only(top: 4),
                             child: Text(
-                              "* " + bodyObj?.sessionGrafts ?? "",
+                              "* " + bodyObj!.sessionGrafts! ?? "",
                               style: TextStyle(
                                   fontSize: 18, color: PlunesColors.BLACKCOLOR),
                             ),
@@ -1641,7 +1646,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
         },
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
-        itemCount: _realInsight.serviceChildren.length,
+        itemCount: _realInsight!.serviceChildren!.length,
       ),
     );
   }
@@ -1666,7 +1671,7 @@ class SliderThumbShape extends SliderComponentShape {
   ///
   /// If no disabledRadius is provided, then it is equal to the
   /// [enabledThumbRadius]
-  final double disabledThumbRadius;
+  final double? disabledThumbRadius;
 
   double get _disabledThumbRadius => disabledThumbRadius ?? enabledThumbRadius;
 
@@ -1697,16 +1702,16 @@ class SliderThumbShape extends SliderComponentShape {
   void paint(
     PaintingContext context,
     Offset center, {
-    Animation<double> activationAnimation,
-    @required Animation<double> enableAnimation,
-    bool isDiscrete,
-    TextPainter labelPainter,
-    RenderBox parentBox,
-    @required SliderThemeData sliderTheme,
-    TextDirection textDirection,
-    double value,
-    double textScaleFactor,
-    Size sizeWithOverflow,
+    required Animation<double> activationAnimation,
+    required Animation<double> enableAnimation,
+    bool? isDiscrete,
+    TextPainter? labelPainter,
+    RenderBox? parentBox,
+    required SliderThemeData sliderTheme,
+    TextDirection? textDirection,
+    double? value,
+    double? textScaleFactor,
+    Size? sizeWithOverflow,
   }) {
     assert(context != null);
     assert(center != null);

@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/ImagePicker/ImagePickerHandler.dart';
 import 'package:plunes/Utils/app_config.dart';
@@ -14,7 +15,7 @@ import 'package:plunes/ui/afterLogin/GalleryScreen.dart';
 
 // ignore: must_be_immutable
 class ChangeProfileScreen extends BaseActivity {
-  final String profileUrl;
+  final String? profileUrl;
 
   ChangeProfileScreen({this.profileUrl});
 
@@ -22,12 +23,13 @@ class ChangeProfileScreen extends BaseActivity {
   _ChangeProfileScreenState createState() => _ChangeProfileScreenState();
 }
 
-class _ChangeProfileScreenState extends BaseState<ChangeProfileScreen>
-    with TickerProviderStateMixin, ImagePickerListener {
-  User _user;
-  AnimationController _animationController;
-  ImagePickerHandler imagePicker;
-  UserBloc _userBloc;
+// class _ChangeProfileScreenState extends BaseState<ChangeProfileScreen> with TickerProviderStateMixin, ImagePickerListener {
+class _ChangeProfileScreenState extends State<ChangeProfileScreen> with TickerProviderStateMixin, ImagePickerListener {
+  final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  late User _user;
+  AnimationController? _animationController;
+  late ImagePickerHandler imagePicker;
+  late UserBloc _userBloc;
 
   @override
   void initState() {
@@ -50,9 +52,9 @@ class _ChangeProfileScreenState extends BaseState<ChangeProfileScreen>
     return SafeArea(
       child: Scaffold(
         key: scaffoldKey,
-        appBar: widget.getAppBar(context, "Edit Profile", true),
+        appBar: widget.getAppBar(context, "Edit Profile", true) as PreferredSizeWidget?,
         body: Builder(builder: (context) {
-          return StreamBuilder<RequestState>(
+          return StreamBuilder<RequestState?>(
               stream: _userBloc.profileStream,
               builder: (context, snapshot) {
                 if (snapshot.data is RequestInProgress) {
@@ -106,7 +108,7 @@ class _ChangeProfileScreenState extends BaseState<ChangeProfileScreen>
   }
 
   @override
-  fetchImageCallBack(File file) {
+  fetchImageCallBack(file) {
     if (file != null) {
       _userBloc.uploadPicture(file).then((value) async {
         await Future.delayed(Duration(milliseconds: 30));
@@ -115,13 +117,13 @@ class _ChangeProfileScreenState extends BaseState<ChangeProfileScreen>
             _showMessage("Profile updated successfully", shouldPop: true);
           });
         } else if (value is RequestFailed) {
-          _showMessage(value?.failureCause);
+          _showMessage(value.failureCause);
         }
       });
     }
   }
 
-  void _showMessage(String message, {bool shouldPop = false}) {
+  void _showMessage(String? message, {bool shouldPop = false}) {
     showDialog(
         context: context,
         builder: (context) {

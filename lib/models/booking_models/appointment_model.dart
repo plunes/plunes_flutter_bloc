@@ -1,9 +1,9 @@
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 
 class AppointmentResponseModel {
-  bool success;
-  List<AppointmentModel> bookings;
-  String msg;
+  bool? success;
+  List<AppointmentModel>? bookings;
+  String? msg;
 
   AppointmentResponseModel({this.success, this.bookings, this.msg});
 
@@ -11,9 +11,9 @@ class AppointmentResponseModel {
     success = json['success'];
     msg = json['msg'];
     if (json['data'] != null && json['data']['bookings'] != null) {
-      bookings = new List<AppointmentModel>();
+      bookings = [];
       json['data']['bookings'].forEach((v) {
-        bookings.add(new AppointmentModel.fromJson(v));
+        bookings!.add(new AppointmentModel.fromJson(v));
       });
     }
   }
@@ -22,46 +22,46 @@ class AppointmentResponseModel {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['success'] = this.success;
     if (this.bookings != null) {
-      data['bookings'] = this.bookings.map((v) => v.toJson()).toList();
+      data['bookings'] = this.bookings!.map((v) => v.toJson()).toList();
     }
     return data;
   }
 }
 
 class AppointmentModel {
-  String professionalId;
-  String solutionServiceId;
-  String professionalName;
-  String professionalAddress;
-  String professionalMobileNumber;
-  String professionalImageUrl;
-  String userName, patientName;
-  String userAddress;
-  String userMobileNumber;
-  String userEmail;
-  UserLocation userLocation;
-  String serviceId;
-  String bookingStatus;
-  String timeSlot;
-  String appointmentTime;
-  String serviceName;
-  bool rescheduled, zestMoney;
-  Services service;
-  List<num> paymentOptions;
-  bool isOpened = false;
-  String lat, long;
-  String paymentPercent;
-  num amountPaid;
-  num amountDue;
-  num amountPaidCredits;
-  String bookingId, centerLocation;
-  String referenceId;
-  bool doctorConfirmation, isCentre;
-  List<PaymentStatus> paymentStatus;
-  String serviceProviderType, alternateNumber, centreNumber, adminHosNumber;
-  num dueBookingAmount, paidBookingAmount, totalAmount;
-  String userImage;
-  InsuranceDetails insuranceDetails;
+  String? professionalId;
+  String? solutionServiceId;
+  String? professionalName;
+  String? professionalAddress;
+  String? professionalMobileNumber;
+  String? professionalImageUrl;
+  String? userName, patientName;
+  String? userAddress;
+  String? userMobileNumber;
+  String? userEmail;
+  UserLocation? userLocation;
+  String? serviceId;
+  String? bookingStatus;
+  String? timeSlot;
+  String? appointmentTime;
+  String? serviceName;
+  bool? rescheduled, zestMoney;
+  Services? service;
+  List<num>? paymentOptions;
+  bool? isOpened = false;
+  String? lat, long;
+  String? paymentPercent;
+  num? amountPaid;
+  num? amountDue;
+  num? amountPaidCredits;
+  String? bookingId, centerLocation;
+  String? referenceId;
+  bool? doctorConfirmation, isCentre;
+  List<PaymentStatus>? paymentStatus;
+  String? serviceProviderType, alternateNumber, centreNumber, adminHosNumber;
+  num? dueBookingAmount, paidBookingAmount, totalAmount;
+  String? userImage;
+  InsuranceDetails? insuranceDetails;
 
   @override
   bool operator ==(Object other) =>
@@ -72,10 +72,10 @@ class AppointmentModel {
 
   @override
   int get hashCode => bookingId.hashCode;
-  String refundReason;
-  String refundStatus;
-  bool visitAgain;
-  String serviceType;
+  String? refundReason;
+  String? refundStatus;
+  bool? visitAgain;
+  String? serviceType;
   static const String confirmedStatus = "Confirmed";
   static const String reservedStatus = "Reserved";
   static const String cancelledStatus = "Cancelled";
@@ -132,12 +132,17 @@ class AppointmentModel {
       this.insuranceDetails});
 
   AppointmentModel.fromJson(Map<String, dynamic> json) {
-    print("json['paymentOptions'] ${json['paymentOptions']}");
+    // print("json['paymentOptions'] ${json['paymentOptions']}");
     professionalId = json['professionalId'];
     solutionServiceId = json['solutionServiceId'];
     serviceId = json['serviceId'];
     professionalName = json['professionalName'];
-    professionalAddress = json['professionalAddress'];
+
+    try {
+      professionalAddress = json['professionalAddress'];
+    } catch (e) {
+      professionalAddress = json['professionalAddress'][0];
+    }
     professionalMobileNumber = json['professionalMobileNumber'];
     professionalImageUrl = json['professionalImageUrl '];
     userName = json['userName'];
@@ -167,7 +172,7 @@ class AppointmentModel {
     referenceId = json['referenceId'];
     doctorConfirmation = json['doctorConfirmation'];
     if (json['paymentProgress'] != null) {
-      Iterable _items = json['paymentProgress'];
+      Iterable? _items = json['paymentProgress'];
       paymentStatus = [];
       if (_items != null && _items.isNotEmpty) {
         paymentStatus = _items
@@ -177,17 +182,30 @@ class AppointmentModel {
     }
     visitAgain = json['visitAgain'];
     serviceType = json['serviceType'];
-    if (json['location'] != null &&
-        json['location']['coordinates'] != null &&
-        json['location']['coordinates'].length == 2) {
-      lat = json['location']['coordinates'][1]?.toString();
-      long = json['location']['coordinates'][0]?.toString();
-    }
+    // if (json['location'] != null && --------------------------------------------------
+    //     json['location']['coordinates'] != null &&
+    //     json['location']['coordinates'].length == 2) {
+    //   lat = json['location']['coordinates'][1]?.toString();
+    //   long = json['location']['coordinates'][0]?.toString();
+    // }
+    lat = "json['location']['coordinates'][1]?.toString()";
+    long =
+        "json['location']['coordinates'][0]?.toString()"; // ----------------------
     serviceProviderType = json['serviceProviderType'];
-    isCentre = json['isCenter'];
+
+    try {
+      isCentre = json['isCenter'];
+    } catch (e) {
+      isCentre = false;
+    }
     alternateNumber = json['alternateNumber'];
     centreNumber = json['centerMobileNumber'];
-    adminHosNumber = json['adminMobileNumber'];
+   // adminHosNumber = json['adminMobileNumber'];
+    try {
+      adminHosNumber = json['adminHosNumber'];
+    } catch (e) {
+      adminHosNumber = json['adminHosNumber'][0];
+    }
     patientName = json['patientName'];
     totalAmount = json['totalAmount'];
     paidBookingAmount = json['paidBookingAmount'];
@@ -196,9 +214,11 @@ class AppointmentModel {
     if (json['paymentOptions'] != null && json['paymentOptions'].isNotEmpty) {
       paymentOptions = json['paymentOptions'].cast<num>();
     }
-    userImage = json["userImageUrl"];
-    if (json["insuranceDetails"] != null) {
-      insuranceDetails = InsuranceDetails.fromJson(json["insuranceDetails"]);
+    userImage = json['userImageUrl'];
+
+    if (json['insuranceDetails'] != null) {
+      insuranceDetails =
+          InsuranceDetails.fromJson(json['insuranceDetails']);
     }
   }
 
@@ -216,7 +236,7 @@ class AppointmentModel {
     data['userEmail'] = this.userEmail;
     data['userMobileNumber'] = this.userMobileNumber;
     if (this.userLocation != null) {
-      data['userLocation'] = this.userLocation.toJson();
+      data['userLocation'] = this.userLocation!.toJson();
     }
     data['serviceId'] = this.serviceId;
     data['bookingStatus'] = this.bookingStatus;
@@ -241,8 +261,8 @@ class AppointmentModel {
 }
 
 class UserLocation {
-  double latitude;
-  double longitude;
+  double? latitude;
+  double? longitude;
 
   UserLocation({this.latitude, this.longitude});
 
@@ -260,15 +280,15 @@ class UserLocation {
 }
 
 class PaymentStatus {
-  String title;
-  String amount;
+  String? title;
+  String? amount;
 
   @override
   String toString() {
     return 'PaymentStatus{title: $title, amount: $amount, status: $status}';
   }
 
-  bool status;
+  bool? status;
 
   PaymentStatus({this.title, this.amount, this.status});
 
@@ -288,18 +308,18 @@ class PaymentStatus {
 }
 
 class LocationAppBarModel {
-  bool hasLocation;
-  String address;
+  bool? hasLocation;
+  String? address;
 
   LocationAppBarModel({this.address, this.hasLocation});
 }
 
 class InsuranceDetails {
-  String insuranceId;
-  String policyNumber;
-  String insuranceCard;
-  String insurancePolicy;
-  String insurancePartner;
+  String? insuranceId;
+  String? policyNumber;
+  String? insuranceCard;
+  String? insurancePolicy;
+  String? insurancePartner;
 
   InsuranceDetails(
       {this.insurancePartner,
@@ -309,9 +329,16 @@ class InsuranceDetails {
       this.insurancePolicy});
 
   InsuranceDetails.fromJson(Map<String, dynamic> json) {
-    insuranceId = json['insuranceId'];
     policyNumber = json['policyNumber'];
-    insuranceCard = json['insuranceCard'];
+    try {
+      insuranceCard = json['insuranceCard'];
+    } catch (e) {
+      if(json['insuranceCard'].toString()=="[]") {
+        insuranceCard = "";
+      } else {
+         insuranceCard = json['insuranceCard'][0];
+      }
+    }
     insurancePolicy = json['insurancePolicy'];
     insurancePartner = json['insurancePartner'];
   }

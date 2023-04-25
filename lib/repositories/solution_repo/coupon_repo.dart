@@ -11,11 +11,11 @@ class CouponRepo {
         url: urls.userBaseUrl,
         headerIncluded: true,
         requestType: HttpRequestMethods.HTTP_PUT);
-    if (result.isRequestSucceed) {
+    if (result!.isRequestSucceed!) {
       if (result.response != null &&
-          result.response.data != null &&
-          result.response.data["success"] != null &&
-          result.response.data["success"]) {
+          result.response!.data != null &&
+          result.response!.data["success"] != null &&
+          result.response!.data["success"]) {
         return RequestSuccess(response: "Coupon applied successfully");
       }
       return RequestFailed(failureCause: result?.response?.data["message"]);
@@ -29,9 +29,9 @@ class CouponRepo {
         url: Urls.GET_COUPON_TEXT_URL,
         headerIncluded: true,
         requestType: HttpRequestMethods.HTTP_GET);
-    if (result.isRequestSucceed) {
+    if (result!.isRequestSucceed!) {
       CouponTextResponseModel couponTextResponseModel =
-          CouponTextResponseModel.fromJson(result.response.data);
+          CouponTextResponseModel.fromJson(result.response!.data);
       return RequestSuccess(response: couponTextResponseModel);
     } else {
       return RequestFailed(failureCause: result.failureCause);

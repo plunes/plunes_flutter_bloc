@@ -1,9 +1,9 @@
 class UpiModel {
-  String amount, msg;
-  String receiverName, bookingId;
-  String receiverUpiAddress;
-  String transactionRef;
-  String merchantCode;
+  String? amount, msg;
+  String? receiverName, bookingId;
+  String? receiverUpiAddress;
+  String? transactionRef;
+  String? merchantCode;
 
   UpiModel(
       {this.amount,

@@ -3,13 +3,13 @@ import 'dart:io';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 
 class CatalogueList {
-  final List<ProcedureList> posts;
-  final bool empty;
+  final List<ProcedureList>? posts;
+  final bool? empty;
 
   CatalogueList({this.posts, this.empty});
 
   factory CatalogueList.fromJson(List<dynamic> parsedJson) {
-    List<ProcedureList> posts = new List<ProcedureList>();
+    List<ProcedureList> posts = [];
     if (parsedJson != null)
       posts = List<ProcedureList>.from(
           parsedJson.map((i) => ProcedureList.fromJson(i)));
@@ -19,7 +19,7 @@ class CatalogueList {
 
 class ProcedureList {
   List<_Services> _services = [];
-  String _speciality, _id;
+  String? _speciality, _id;
 
   List<_Services> get services => _services;
 
@@ -50,10 +50,10 @@ class ProcedureList {
 }
 
 class _Services {
-  String _id, _service, _details, _category, _description;
-  List _categoriesArray;
-  List<num> _nums = [];
-  num price;
+  String? _id, _service, _details, _category, _description;
+  List? _categoriesArray;
+  List<num>? _nums = [];
+  num? price;
 
   get id => _id;
 
@@ -81,8 +81,8 @@ class _Services {
     if (result["price"] != null) {
       try {
         _nums = result["price"].cast<num>();
-        if (_nums != null && _nums.isNotEmpty) {
-          price = _nums.first;
+        if (_nums != null && _nums!.isNotEmpty) {
+          price = _nums!.first;
         }
       } catch (e) {
         price = 0;
@@ -92,14 +92,14 @@ class _Services {
 }
 
 class LoginPost {
-  final bool success;
-  final String message;
-  final String token;
-  User user;
+  final bool? success;
+  final String? message;
+  final String? token;
+  User? user;
 
   LoginPost({this.success, this.token, this.user, this.message});
 
-  factory LoginPost.fromJson(Map<String, dynamic> json) {
+  factory LoginPost.fromJson(Map<String, dynamic>? json) {
     if (json != null && json['success'] != null && json['success']) {
       return LoginPost(
           success: json['success'] != null ? json['success'] : false,
@@ -125,10 +125,10 @@ class LoginPost {
 }
 
 class BankDetails {
-  String accountHolderName;
-  String ifscCode;
-  String accountNumber;
-  String panNumber, bankName;
+  String? accountHolderName;
+  String? ifscCode;
+  String? accountNumber;
+  String? panNumber, bankName;
 
   @override
   String toString() {
@@ -161,7 +161,7 @@ class BankDetails {
 }
 
 class User {
-  String email,
+  String? email,
       name,
       activated,
       userType,
@@ -191,18 +191,20 @@ class User {
       region,
       googleLocation;
 
-  List<ProcedureList> specialities = [];
-  List<TimeSlots> timeSlots = [];
-  List<DoctorsData> doctorsData = [];
-  List<AchievementsData> achievements = [];
-  bool verifiedUser, notificationEnabled, isAdmin, isCentre, referralExpired;
-  BankDetails bankDetails;
-  num rating;
-  int cartCount;
-  bool hasMedia, hasReviews;
-  num distanceFromUser;
-  List<Centre> centres;
-  String patientServed;
+
+  List<InsurancePartners>? insurancePartners;
+  List<ProcedureList>? specialities = [];
+  List<TimeSlots>? timeSlots = [];
+  List<DoctorsData>? doctorsData = [];
+  List<AchievementsData>? achievements = [];
+  bool? verifiedUser, notificationEnabled, isAdmin, isCentre, referralExpired;
+  BankDetails? bankDetails;
+  num? rating;
+  int? cartCount;
+  bool? hasMedia, hasReviews;
+  num? distanceFromUser;
+  List<Centre>? centres;
+  String? patientServed;
 
   User({this.hasMedia,
     this.hasReviews,
@@ -222,6 +224,7 @@ class User {
     this.practising,
     this.college,
     this.biography,
+    this.insurancePartners,
     this.registrationNumber,
     this.qualification,
     this.imageUrl,
@@ -250,8 +253,8 @@ class User {
     this.patientServed});
 
   factory User.fromJson(Map<String, dynamic> json) {
-    num _rating = 4.0;
-    num _distanceFromUser;
+    num? _rating = 4.0;
+    num? _distanceFromUser;
     if (json["rating"] != null &&
         json["rating"].runtimeType == _rating.runtimeType) {
       _rating = json["rating"];
@@ -305,18 +308,17 @@ class User {
         json['userReferralCode'] != null ? json['userReferralCode'] : null,
         coverImageUrl:
         json['coverImageUrl'] != null ? json['coverImageUrl'] : '',
-        specialities: json['specialities'] != null
-            ? List<ProcedureList>.from(
-            json['specialities'].map((i) => ProcedureList.fromJson(i)))
-            : List(),
+        specialities: json['specialities'] != null ? List<ProcedureList>.from(json['specialities'].map((i) => ProcedureList.fromJson(i))) : [],
+        insurancePartners: json['insurancePartners'] != null ? List<InsurancePartners>.from(json['insurancePartners'].map((i) => InsurancePartners.from(i))) : [],
+
         achievements: json['achievements'] != null
             ? List<AchievementsData>.from(
             json['achievements'].map((i) => AchievementsData.fromJson(i)))
-            : List(),
+            : [],
         doctorsData: json['doctors'] != null
             ? List<DoctorsData>.from(
             json['doctors'].map((i) => DoctorsData.fromJson(i)))
-            : List(),
+            : [],
         experience:
         json['experience'] != null ? json['experience'].toString() : '',
         practising: json['practising'] != null ? json['practising'] : '',
@@ -362,11 +364,11 @@ class User {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     if (this.latitude != null &&
         this.longitude != null &&
-        this.latitude.isNotEmpty &&
-        this.longitude.isNotEmpty) {
+        this.latitude!.isNotEmpty &&
+        this.longitude!.isNotEmpty) {
       data['location'] = Location(type: 'Point', coordinates: [
-        double.parse(this.longitude),
-        double.parse(this.latitude)
+        double.parse(this.longitude!),
+        double.parse(this.latitude!)
       ]).toJson();
     }
     data['name'] = this.name;
@@ -383,7 +385,7 @@ class User {
     data['biography'] = this.biography;
     data['googleAddress'] = this.googleLocation;
     if (this.bankDetails != null) {
-      data['bankDetails'] = this.bankDetails.toJson();
+      data['bankDetails'] = this.bankDetails!.toJson();
     }
     if (this.imageUrl != null) {
       data['imageUrl'] = this.imageUrl;
@@ -422,8 +424,8 @@ class User {
 }
 
 class Location {
-  String type;
-  List<double> coordinates;
+  String? type;
+  List<double?>? coordinates;
 
   Location({this.type, this.coordinates});
 
@@ -432,7 +434,7 @@ class Location {
     if (json['coordinates'] != null) {
       coordinates = [];
       json['coordinates'].forEach((element) {
-        coordinates.add(double.tryParse(element.toString()));
+        coordinates!.add(double.tryParse(element.toString()));
       });
     }
     // coordinates = json['coordinates'].cast<num>();
@@ -447,10 +449,10 @@ class Location {
 }
 
 class DoctorsData {
-  List<ProcedureList> specialities = [];
-  List<TimeSlots> timeSlots = [];
-  String id, name, education, designation, department, experience, imageUrl;
-  num rating;
+  List<ProcedureList>? specialities = [];
+  List<TimeSlots>? timeSlots = [];
+  String? id, name, education, designation, department, experience, imageUrl;
+  num? rating;
 
   DoctorsData({this.specialities,
     this.timeSlots,
@@ -464,7 +466,7 @@ class DoctorsData {
     this.rating});
 
   factory DoctorsData.fromJson(Map<String, dynamic> parsedJson) {
-    num _rating = 4.5;
+    num? _rating = 4.5;
     if (parsedJson["rating"] != null) {
       _rating = num.tryParse(parsedJson["rating"].toString());
     }
@@ -490,16 +492,16 @@ class DoctorsData {
 }
 
 class ServicesData {
-  final String serviceId;
-  final List price;
-  final String variance;
+  final String? serviceId;
+  final List? price;
+  final String? variance;
 
   ServicesData({this.serviceId, this.price, this.variance});
 
   factory ServicesData.fromJson(Map<String, dynamic> parsedJson) {
     return new ServicesData(
       serviceId: parsedJson['serviceId'] != null ? parsedJson['serviceId'] : '',
-      price: parsedJson['price'] != null ? parsedJson['price'] : '',
+      price: parsedJson['price'] != null ? parsedJson['price'] : '' as List<dynamic>?,
       variance: parsedJson['variance'] != null
           ? parsedJson['variance'].toString()
           : '',
@@ -508,9 +510,9 @@ class ServicesData {
 }
 
 class AchievementsData {
-  final String title;
-  final String imageUrl;
-  final String achievement;
+  final String? title;
+  final String? imageUrl;
+  final String? achievement;
 
   AchievementsData({this.title, this.imageUrl, this.achievement});
 
@@ -549,10 +551,10 @@ class AchievementsData {
 //}
 
 class AllNotificationsPost {
-  final bool success;
-  final String message;
-  List<PostsData> posts = [];
-  int unreadCount;
+  final bool? success;
+  final String? message;
+  List<PostsData>? posts = [];
+  int? unreadCount;
 
   AllNotificationsPost(
       {this.success, this.message, this.posts, this.unreadCount});
@@ -573,16 +575,16 @@ class AllNotificationsPost {
 }
 
 class PostsData {
-  final String senderImageUrl;
-  final int createdTime;
-  final String notificationType;
-  final String senderUserId;
-  final String id;
-  final String notification;
-  final String senderName;
-  final String notificationId;
-  final String notificationScreen;
-  bool hasSeen, deleted;
+  final String? senderImageUrl;
+  final int? createdTime;
+  final String? notificationType;
+  final String? senderUserId;
+  final String? id;
+  final String? notification;
+  final String? senderName;
+  final String? notificationId;
+  final String? notificationScreen;
+  bool? hasSeen, deleted;
 
   PostsData({this.senderImageUrl,
     this.createdTime,
@@ -650,7 +652,7 @@ class PostsData {
 }
 
 class GetOtpModel {
-  bool success;
+  bool? success;
 
   GetOtpModel({this.success});
 
@@ -666,7 +668,7 @@ class GetOtpModel {
 }
 
 class VerifyOtpResponse {
-  bool success;
+  bool? success;
 
   VerifyOtpResponse({this.success});
 
@@ -682,18 +684,18 @@ class VerifyOtpResponse {
 }
 
 class SpecialityOuterModel {
-  bool success;
-  List<SpecialityModel> data;
-  String msg;
+  bool? success;
+  List<SpecialityModel>? data;
+  String? msg;
 
   SpecialityOuterModel({this.success, this.data, this.msg});
 
   SpecialityOuterModel.fromJson(Map<String, dynamic> json) {
     success = json['success'];
     if (json['data'] != null) {
-      data = new List<SpecialityModel>();
+      data = [];
       json['data'].forEach((v) {
-        data.add(new SpecialityModel.fromJson(v));
+        data!.add(new SpecialityModel.fromJson(v));
       });
     }
     msg = json['msg'];
@@ -703,7 +705,7 @@ class SpecialityOuterModel {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['success'] = this.success;
     if (this.data != null) {
-      data['data'] = this.data.map((v) => v.toJson()).toList();
+      data['data'] = this.data!.map((v) => v.toJson()).toList();
     }
     data['msg'] = this.msg;
     return data;
@@ -711,8 +713,8 @@ class SpecialityOuterModel {
 }
 
 class SpecialityModel {
-  String speciality;
-  String id, specialityImageUrl;
+  String? speciality;
+  String? id, specialityImageUrl;
 
   @override
   bool operator ==(Object other) =>
@@ -727,7 +729,8 @@ class SpecialityModel {
   SpecialityModel({this.speciality, this.id, this.specialityImageUrl});
 
   SpecialityModel.fromJson(Map<String, dynamic> json) {
-    speciality = json['speciality'];
+    speciality = json['speciality'] ?? "";
+    // speciality = "";
     id = json['specialityId'];
     specialityImageUrl = json['specializationImage'];
   }
@@ -741,8 +744,8 @@ class SpecialityModel {
 }
 
 class HttpErrorModel {
-  int statusCode;
-  String error;
+  int? statusCode;
+  String? error;
 
   HttpErrorModel({this.statusCode, this.error});
 
@@ -760,9 +763,9 @@ class HttpErrorModel {
 }
 
 class HelpLineNumberModel {
-  bool success;
-  String number;
-  String msg;
+  bool? success;
+  String? number;
+  String? msg;
 
   HelpLineNumberModel({this.success, this.number, this.msg});
 
@@ -782,9 +785,9 @@ class HelpLineNumberModel {
 }
 
 class CheckLocationResponse {
-  bool success;
-  String msg;
-  List<double> coordinates;
+  bool? success;
+  String? msg;
+  List<double>? coordinates;
 
   CheckLocationResponse({this.success, this.msg, this.coordinates});
 
@@ -805,8 +808,8 @@ class CheckLocationResponse {
 }
 
 class CouponTextResponseModel {
-  bool success;
-  CouponText data;
+  bool? success;
+  CouponText? data;
 
   CouponTextResponseModel({this.success, this.data});
 
@@ -819,14 +822,14 @@ class CouponTextResponseModel {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['success'] = this.success;
     if (this.data != null) {
-      data['data'] = this.data.toJson();
+      data['data'] = this.data!.toJson();
     }
     return data;
   }
 }
 
 class CouponText {
-  String message;
+  String? message;
 
   CouponText({this.message});
 
@@ -842,9 +845,9 @@ class CouponText {
 }
 
 class CentreResponse {
-  bool success;
-  int len;
-  List<CentreData> data;
+  bool? success;
+  int? len;
+  List<CentreData>? data;
 
   CentreResponse({this.success, this.len, this.data});
 
@@ -852,28 +855,28 @@ class CentreResponse {
     success = json['success'];
     len = json['len'];
     if (json['data'] != null) {
-      data = new List<CentreData>();
+      data = [];
       json['data'].forEach((v) {
-        data.add(new CentreData.fromJson(v));
+        data!.add(new CentreData.fromJson(v));
       });
     }
   }
 }
 
 class CentreData {
-  Location location;
-  String imageUrl;
-  bool isCenter;
-  bool isAdmin;
-  String sId;
-  String name;
-  String userType;
-  String email;
-  String centerLocation;
-  String mobileNumber;
-  String adminMobileNumber;
-  String adminRefId;
-  String address;
+  Location? location;
+  String? imageUrl;
+  bool? isCenter;
+  bool? isAdmin;
+  String? sId;
+  String? name;
+  String? userType;
+  String? email;
+  String? centerLocation;
+  String? mobileNumber;
+  String? adminMobileNumber;
+  String? adminRefId;
+  String? address;
 
   CentreData({this.address,
     this.imageUrl,
@@ -905,21 +908,22 @@ class CentreData {
     adminMobileNumber = json['adminMobileNumber'];
     adminRefId = json['adminRefId'];
     address = json['address'];
+
   }
 }
 
 class RateAndReview {
-  String sId;
-  String professionalId;
-  String userId;
-  int iV;
-  String description;
-  num rating;
+  String? sId;
+  String? professionalId;
+  String? userId;
+  int? iV;
+  String? description;
+  num? rating;
   Null title;
-  String userName;
-  String userImage;
+  String? userName;
+  String? userImage;
 
-  int createdAt;
+  int? createdAt;
 
   RateAndReview({this.sId,
     this.professionalId,
@@ -960,8 +964,20 @@ class RateAndReview {
   }
 }
 
+class InsurancePartners {
+  String? id, insuranceId, insurancePartner;
+
+  InsurancePartners(this.id, this.insuranceId, this.insurancePartner);
+
+  InsurancePartners.from(Map<String, dynamic> json) {
+    id = json['_id'];
+    insuranceId = json['insuranceId'];
+    insurancePartner = json['insurancePartner'];
+  }
+}
+
 class Centre {
-  String name, id, address, mobileNumber;
+  String? name, id, address, mobileNumber;
 
   Centre(this.id, this.name, this.address, this.mobileNumber);
 

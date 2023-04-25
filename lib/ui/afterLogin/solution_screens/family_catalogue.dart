@@ -20,11 +20,13 @@ class CatalogueListScreen extends BaseActivity {
   _CatalogueListScreenState createState() => _CatalogueListScreenState();
 }
 
-class _CatalogueListScreenState extends BaseState<CatalogueListScreen> {
-  List<CatalogueData> _catalogues;
-  SearchSolutionBloc _searchSolutionBloc;
-  bool _isProcessing;
-  String _failureCause;
+// class _CatalogueListScreenState extends BaseState<CatalogueListScreen> {
+class _CatalogueListScreenState extends State<CatalogueListScreen> {
+final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  List<CatalogueData>? _catalogues;
+  SearchSolutionBloc? _searchSolutionBloc;
+  bool? _isProcessing;
+  String? _failureCause;
 
   @override
   void initState() {
@@ -48,10 +50,10 @@ class _CatalogueListScreenState extends BaseState<CatalogueListScreen> {
         child: Scaffold(
           key: scaffoldKey,
           appBar: widget.getAppBar(
-              context, widget.catalogueData.familyName ?? "", true),
-          body: _isProcessing
+              context, widget.catalogueData.familyName ?? "", true) as PreferredSizeWidget?,
+          body: _isProcessing!
               ? CustomWidgets().getProgressIndicator()
-              : (_catalogues == null || _catalogues.isEmpty)
+              : (_catalogues == null || _catalogues!.isEmpty)
                   ? CustomWidgets().errorWidget(
                       _failureCause ?? "Catalogue not found!",
                       onTap: () => _getCatalogueUsingFamilyId())
@@ -77,7 +79,7 @@ class _CatalogueListScreenState extends BaseState<CatalogueListScreen> {
             onButtonTap: () => _onSolutionItemTap(index),
             onViewMoreTap: tapRecognizer);
       },
-      itemCount: _catalogues.length ?? 0,
+      itemCount: _catalogues!.length ?? 0,
     );
   }
 
@@ -85,27 +87,27 @@ class _CatalogueListScreenState extends BaseState<CatalogueListScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) => CustomWidgets().buildViewMoreDialog(
-        catalogueData: _catalogues[solution],
+        catalogueData: _catalogues![solution],
       ),
     );
   }
 
   _onSolutionItemTap(int index) async {
     var nowTime = DateTime.now();
-    if (_catalogues[index].solutionExpiredAt != null &&
-        _catalogues[index].solutionExpiredAt != 0) {
+    if (_catalogues![index].solutionExpiredAt != null &&
+        _catalogues![index].solutionExpiredAt != 0) {
       var solExpireTime = DateTime.fromMillisecondsSinceEpoch(
-          _catalogues[index].solutionExpiredAt);
+          _catalogues![index].solutionExpiredAt!);
       var diff = nowTime.difference(solExpireTime);
       if (diff.inSeconds < 5) {
         ///when price discovered and solution is active
-        if (_catalogues[index].priceDiscovered != null &&
-            _catalogues[index].priceDiscovered) {
+        if (_catalogues![index].priceDiscovered != null &&
+            _catalogues![index].priceDiscovered!) {
           await Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => SolutionShowPriceScreen(
-                      catalogueData: _catalogues[index], searchQuery: "")));
+                      catalogueData: _catalogues![index], searchQuery: "")));
           return;
         } else {
           ///when price not discovered but solution is active
@@ -113,7 +115,7 @@ class _CatalogueListScreenState extends BaseState<CatalogueListScreen> {
               context,
               MaterialPageRoute(
                   builder: (context) => ViewSolutionsScreen(
-                      catalogueData: _catalogues[index], searchQuery: "")));
+                      catalogueData: _catalogues![index], searchQuery: "")));
           return;
         }
       }
@@ -133,7 +135,7 @@ class _CatalogueListScreenState extends BaseState<CatalogueListScreen> {
         context,
         MaterialPageRoute(
             builder: (context) => EnterAdditionalUserDetailScr(
-                _catalogues[index], widget.catalogueData.familyName)));
+                _catalogues![index], widget.catalogueData.familyName)));
   }
 
   _setState() {
@@ -141,11 +143,11 @@ class _CatalogueListScreenState extends BaseState<CatalogueListScreen> {
   }
 
   void _getCatalogueUsingFamilyId() {
-    if (_isProcessing == null || !(_isProcessing)) {
+    if (_isProcessing == null || !_isProcessing!) {
       _isProcessing = true;
       _setState();
     }
-    _searchSolutionBloc
+    _searchSolutionBloc!
         .getCatalogueUsingFamilyId(widget.catalogueData.familyName)
         .then((value) {
       if (value is RequestSuccess) {

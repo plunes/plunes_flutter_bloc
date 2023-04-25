@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:plunes/OpenMap.dart';
@@ -29,14 +32,12 @@ import 'package:plunes/ui/afterLogin/new_solution_screen/show_insurance_list_scr
 import 'package:plunes/ui/afterLogin/profile_screens/profile_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/solution_map_screen.dart';
 import 'package:readmore/readmore.dart';
-import 'package:flutter/rendering.dart';
-import 'dart:ui' as ui;
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 // ignore: must_be_immutable
 class SolutionShowPriceScreen extends BaseActivity {
-  final String searchQuery;
-  final CatalogueData catalogueData;
+  final String? searchQuery;
+  final CatalogueData? catalogueData;
 
   SolutionShowPriceScreen({this.catalogueData, this.searchQuery});
 
@@ -45,27 +46,28 @@ class SolutionShowPriceScreen extends BaseActivity {
       _SolutionShowPriceScreenState();
 }
 
-class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
-  IconGenerator _iconGen;
-  BitmapDescriptor hosImage2XGreenBgDesc;
+class _SolutionShowPriceScreenState extends State<SolutionShowPriceScreen> {
+  final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  late IconGenerator _iconGen;
+  late BitmapDescriptor hosImage2XGreenBgDesc;
   Set<Marker> _markers = {};
-  SearchSolutionBloc _searchSolutionBloc;
-  SearchedDocResults _searchedDocResults;
-  List<Widget> _mapWidgets;
+  SearchSolutionBloc? _searchSolutionBloc;
+  SearchedDocResults? _searchedDocResults;
+  List<Widget>? _mapWidgets;
   List<GlobalKey> _globalKeys = [];
   List<Function> _functions = [];
   List<Services> _customServices = [];
-  String _failedMessage;
-  GoogleMapController _mapController;
+  String? _failedMessage;
+  GoogleMapController? _mapController;
   Completer<GoogleMapController> _googleMapController = Completer();
-  User _user;
-  DocHosSolution _solution;
-  StreamController _totalDiscountController;
-  num _gainedDiscount = 0, _gainedDiscountPercentage = 0;
-  Timer _discountCalculationTimer;
-  PremiumBenefitsModel _premiumBenefitsModel;
-  UserBloc _userBloc;
-  bool _isPopUpOpened;
+  late User _user;
+  DocHosSolution? _solution;
+  StreamController? _totalDiscountController;
+  num? _gainedDiscount = 0, _gainedDiscountPercentage = 0;
+  Timer? _discountCalculationTimer;
+  PremiumBenefitsModel? _premiumBenefitsModel;
+  UserBloc? _userBloc;
+  bool? _isPopUpOpened;
 
   void _initScreenNameAfterDelay() async {
     Future.delayed(Duration(seconds: 1)).then((value) {
@@ -84,7 +86,7 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
     _markers = {};
     _iconGen = IconGenerator();
     _searchSolutionBloc = SearchSolutionBloc();
-    _getFacilities();
+    _getFacilities("asfas");
     _discountCalculationTimer = Timer.periodic(Duration(seconds: 2), (timer) {
       _discountCalculationTimer = timer;
       _getTotalDiscount();
@@ -92,14 +94,14 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
     _iconGen.getBytesFromAsset(PlunesImages.labMapImage, 100).then((value) {
       hosImage2XGreenBgDesc = BitmapDescriptor.fromBytes(value);
     });
-    EventProvider().getSessionEventBus().on<ScreenRefresher>().listen((event) {
+    EventProvider().getSessionEventBus()!.on<ScreenRefresher>().listen((event) {
       if (event != null &&
           event.screenName == FirebaseNotification.solutionScreen &&
           FirebaseNotification.getCurrentScreenName() != null &&
           FirebaseNotification.getCurrentScreenName() ==
               FirebaseNotification.solutionScreen &&
           mounted) {
-        if (_isPopUpOpened != null && _isPopUpOpened) {
+        if (_isPopUpOpened != null && _isPopUpOpened!) {
           Navigator.pop(context);
         }
         Navigator.maybePop(context);
@@ -108,29 +110,29 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
     super.initState();
   }
 
-  num _getTotalDiscount() {
-    num totalDiscount = 0, _origPrice = 0, _highestDiscount = 0;
+  num? _getTotalDiscount() {
+    num? totalDiscount = 0, _origPrice = 0, _highestDiscount = 0;
     try {
       if (_searchedDocResults != null &&
-          _searchedDocResults.solution != null &&
-          _searchedDocResults.solution.services != null &&
-          _searchedDocResults.solution.services.isNotEmpty) {
-        _searchedDocResults.solution.services.forEach((service) {
-          if (service.doctors != null && service.doctors.isNotEmpty) {
-            service.doctors.forEach((element) {
-              if (element.discount != null && element.discount > 0) {
-                if (((element.price[0] - element.newPrice[0])) >
-                    _highestDiscount) {
-                  _highestDiscount = (element.price[0] - element.newPrice[0]);
-                  _origPrice = element.price[0];
+          _searchedDocResults!.solution != null &&
+          _searchedDocResults!.solution!.services != null &&
+          _searchedDocResults!.solution!.services!.isNotEmpty) {
+        _searchedDocResults!.solution!.services!.forEach((service) {
+          if (service.doctors != null && service.doctors!.isNotEmpty) {
+            service.doctors!.forEach((element) {
+              if (element.discount != null && element.discount! > 0) {
+                if (element.price![0] - element.newPrice![0] >
+                    _highestDiscount!) {
+                  _highestDiscount = (element.price![0] - element.newPrice![0]);
+                  _origPrice = element.price![0];
                 }
               }
             });
           } else {
-            if (service.discount != null && service.discount > 0) {
-              if ((service.price[0] - service.newPrice[0]) > _highestDiscount) {
-                _highestDiscount = (service.price[0] - service.newPrice[0]);
-                _origPrice = service.price[0];
+            if (service.discount != null && service.discount! > 0) {
+              if ((service.price![0] - service.newPrice![0]) > _highestDiscount!) {
+                _highestDiscount = (service.price![0] - service.newPrice![0]);
+                _origPrice = service.price![0];
               }
             }
           }
@@ -142,18 +144,18 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
     }
     _gainedDiscount = _highestDiscount;
     if (_origPrice != null &&
-        _origPrice > 0 &&
+        _origPrice! > 0 &&
         _gainedDiscount != null &&
-        _gainedDiscount > 0) {
+        _gainedDiscount! > 0) {
       _gainedDiscountPercentage = double.tryParse(
-          ((_gainedDiscount / _origPrice) * 100)?.toStringAsFixed(0));
-      _totalDiscountController.add(null);
+          ((_gainedDiscount! / _origPrice!) * 100)!.toStringAsFixed(0));
+      _totalDiscountController!.add(null);
     }
     totalDiscount = _gainedDiscount;
     return totalDiscount;
   }
 
-  _setScreenName(String screenName) {
+  _setScreenName(String? screenName) {
     FirebaseNotification.setScreenName(screenName);
   }
 
@@ -170,18 +172,19 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
     super.dispose();
   }
 
-  void _getFacilities() {
+  void _getFacilities(var data) {
+    print("_getFacilities-->$data");
     if (widget.catalogueData != null &&
-        widget.catalogueData.isFromProfileScreen != null &&
-        widget.catalogueData.isFromProfileScreen) {
-      widget.catalogueData.isFromProfileScreen = null;
+        widget.catalogueData!.isFromProfileScreen != null &&
+        widget.catalogueData!.isFromProfileScreen!) {
+      widget.catalogueData!.isFromProfileScreen = null;
     }
-    _searchSolutionBloc.getDocHosSolution(widget.catalogueData,
+    _searchSolutionBloc!.getDocHosSolution(widget.catalogueData!, "solution",
         searchQuery: widget.searchQuery);
   }
 
   _getPremiumBenefitsForUsers() {
-    _userBloc.getPremiumBenefitsForUsers().then((value) {
+    _userBloc!.getPremiumBenefitsForUsers().then((value) {
       if (value is RequestSuccess) {
         _premiumBenefitsModel = value.response;
       } else if (value is RequestFailed) {}
@@ -192,37 +195,41 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      child: StreamBuilder<RequestState>(
-          stream: _searchSolutionBloc.getDocHosStream(),
+      child: StreamBuilder<RequestState?>(
+          stream: _searchSolutionBloc!.getDocHosStream(),
           initialData:
               (_searchedDocResults == null) ? RequestInProgress() : null,
           builder: (context, snapshot) {
             if (snapshot.data is RequestInProgress) {
               return CustomWidgets().getProgressIndicator();
             } else if (snapshot.data is RequestSuccess) {
-              RequestSuccess data = snapshot.data;
+              RequestSuccess data = snapshot.data as RequestSuccess;
               _searchedDocResults = data.response;
               if (_premiumBenefitsModel == null ||
-                  _premiumBenefitsModel.data == null ||
-                  _premiumBenefitsModel.data.isEmpty) {
+                  _premiumBenefitsModel!.data == null ||
+                  _premiumBenefitsModel!.data!.isEmpty) {
                 _getPremiumBenefitsForUsers();
               }
               _calculateMapData();
-              _searchSolutionBloc.addIntoDocHosStream(null);
+              _searchSolutionBloc!.addIntoDocHosStream(null);
             } else if (snapshot.data is RequestFailed) {
-              RequestFailed _reqFailObj = snapshot.data;
+              RequestFailed? _reqFailObj = snapshot.data as RequestFailed?;
               _failedMessage = _reqFailObj?.failureCause;
-              _searchSolutionBloc.addIntoDocHosStream(null);
+              _searchSolutionBloc!.addIntoDocHosStream(null);
             }
+
+            print("_failedMessage ?? _searchedDocResults?.msg");
+            print(_searchedDocResults!.success);
+            print(_failedMessage ?? _searchedDocResults?.msg);
             return (_searchedDocResults == null ||
-                    (_searchedDocResults.success != null &&
-                        !_searchedDocResults.success) ||
-                    _searchedDocResults.solution == null ||
-                    _searchedDocResults.solution.services == null ||
-                    _searchedDocResults.solution.services.isEmpty)
+                    (_searchedDocResults!.success != null &&
+                        !_searchedDocResults!.success!) ||
+                    _searchedDocResults!.solution == null ||
+                    _searchedDocResults!.solution!.services == null ||
+                    _searchedDocResults!.solution!.services!.isEmpty)
                 ? CustomWidgets().errorWidget(
                     _failedMessage ?? _searchedDocResults?.msg,
-                    onTap: () => _getFacilities(),
+                    onTap: () => _getFacilities("inUI"),
                     isSizeLess: true)
                 : SafeArea(
                     child: AnnotatedRegion<SystemUiOverlayStyle>(
@@ -246,7 +253,7 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
         child: Card(
             color: Colors.white,
             elevation: 3.0,
-            margin: EdgeInsets.only(top: AppConfig.getMediaQuery().padding.top),
+            margin: EdgeInsets.only(top: AppConfig.getMediaQuery()!.padding.top),
             child: Stack(
               children: [
                 ListTile(
@@ -282,7 +289,7 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
                           PlunesImages.validForOneHourOnlyWatch,
                           scale: 3,
                         ),
-                        StreamBuilder<Object>(
+                        StreamBuilder<Object?>(
                             stream: _totalDiscountController?.stream,
                             builder: (context, snapshot) {
                               if (_canGoAhead()) {
@@ -401,7 +408,7 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
           ),
         );
       },
-      stream: _totalDiscountController.stream,
+      stream: _totalDiscountController!.stream,
       initialData: _gainedDiscount,
     );
   }
@@ -428,8 +435,8 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
                   _googleMapController.complete(_mapController);
                 },
                 initialCameraPosition: CameraPosition(
-                    target: LatLng(double.parse(_user.latitude),
-                        double.parse(_user.longitude)),
+                    target: LatLng(double.parse(_user.latitude!),
+                        double.parse(_user.longitude!)),
                     zoom: 10),
                 zoomControlsEnabled: false,
                 padding: EdgeInsets.all(0.0),
@@ -478,12 +485,12 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
                                       BorderRadius.all(Radius.circular(10))),
                             ),
                             (_searchedDocResults != null &&
-                                    _searchedDocResults.solution != null &&
-                                    _searchedDocResults
-                                            .solution.shouldNegotiate !=
+                                    _searchedDocResults!.solution != null &&
+                                    _searchedDocResults!
+                                            .solution!.shouldNegotiate !=
                                         null &&
-                                    _searchedDocResults
-                                        .solution.shouldNegotiate)
+                                    _searchedDocResults!
+                                        .solution!.shouldNegotiate!)
                                 ? Container()
                                 : Container(
                                     margin: EdgeInsets.only(
@@ -497,12 +504,12 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
                                     ),
                                   ),
                             (_searchedDocResults != null &&
-                                    _searchedDocResults.solution != null &&
-                                    _searchedDocResults
-                                            .solution.shouldNegotiate !=
+                                    _searchedDocResults!.solution != null &&
+                                    _searchedDocResults!
+                                            .solution!.shouldNegotiate !=
                                         null &&
-                                    _searchedDocResults
-                                        .solution.shouldNegotiate)
+                                    _searchedDocResults!
+                                        .solution!.shouldNegotiate!)
                                 ? Column(
                                     children: [
                                       Container(
@@ -531,20 +538,20 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
                                     ],
                                   )
                                 : _getNegotiatedPriceTotalView(),
-                            StreamBuilder<Object>(
+                            StreamBuilder<Object?>(
                                 stream: _totalDiscountController?.stream,
                                 builder: (context, snapshot) {
                                   if (_gainedDiscountPercentage == null ||
-                                      _gainedDiscountPercentage <= 0) {
+                                      _gainedDiscountPercentage! <= 0) {
                                     return Container();
                                   }
                                   if (_searchedDocResults != null &&
-                                      _searchedDocResults.solution != null &&
-                                      _searchedDocResults
-                                              .solution.shouldNegotiate !=
+                                      _searchedDocResults!.solution != null &&
+                                      _searchedDocResults!
+                                              .solution!.shouldNegotiate !=
                                           null &&
-                                      _searchedDocResults
-                                          .solution.shouldNegotiate) {
+                                      _searchedDocResults!
+                                          .solution!.shouldNegotiate!) {
                                     return Container();
                                   }
                                   return _getDialerWidget();
@@ -576,19 +583,24 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
         itemBuilder: (context, index) {
-          if (_searchedDocResults.solution.services[index].doctors != null &&
-              _searchedDocResults.solution.services[index].doctors.isNotEmpty) {
+
+
+          if (_searchedDocResults!.solution!.services![index].doctors != null &&
+              _searchedDocResults!.solution!.services![index].doctors!.isNotEmpty) {
+            print("iffffff_bloooooooook_:${_searchedDocResults!.solution!.services![index].name}");
+
             return _getHospitalDoctorListWidget(
-                _searchedDocResults.solution.services[index]);
+                _searchedDocResults!.solution!.services![index]);
           }
+          print("iffffff_bloooooooook_ellllllllll:${_searchedDocResults!.solution!.services![index].name}");
           return CommonWidgets().getBookProfessionalWidget(
-              _searchedDocResults.solution.services[index],
-              () => _openProfile(_searchedDocResults.solution.services[index]),
+              _searchedDocResults!.solution!.services![index],
+              () => _openProfile(_searchedDocResults!.solution!.services![index]),
               () => _bookFacilityAppointment(
-                  _searchedDocResults.solution.services[index]),
+                  _searchedDocResults!.solution!.services![index]),
               () => _openInsuranceScreen(
-                  _searchedDocResults.solution.services[index]),
-              _searchedDocResults.solution);
+                  _searchedDocResults!.solution!.services![index]),
+              _searchedDocResults!.solution);
         },
         itemCount: _searchedDocResults?.solution?.services?.length ?? 0,
       ),
@@ -777,46 +789,46 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
   void _calculateMapData() async {
     await Future.delayed(Duration(milliseconds: 20));
     if (_searchedDocResults != null &&
-        _searchedDocResults.solution != null &&
-        _searchedDocResults.solution.services != null &&
-        _searchedDocResults.solution.services.isNotEmpty) {
+        _searchedDocResults!.solution != null &&
+        _searchedDocResults!.solution!.services != null &&
+        _searchedDocResults!.solution!.services!.isNotEmpty) {
       _globalKeys = [];
       _mapWidgets = [];
       _functions = [];
       _customServices = [];
       for (int index = 0;
-          index < _searchedDocResults.solution.services.length;
+          index < _searchedDocResults!.solution!.services!.length;
           index++) {
-        if (_searchedDocResults.solution.services[index].doctors != null &&
-            _searchedDocResults.solution.services[index].doctors.isNotEmpty) {
-          _searchedDocResults.solution.services[index].doctors
+        if (_searchedDocResults!.solution!.services![index].doctors != null &&
+            _searchedDocResults!.solution!.services![index].doctors!.isNotEmpty) {
+          _searchedDocResults!.solution!.services![index].doctors!
               .forEach((doctor) {
             var key = GlobalKey();
             _globalKeys.add(key);
             _functions.add(() => _showHospitalDoctorPopup(
-                _searchedDocResults.solution.services[index],
+                _searchedDocResults!.solution!.services![index],
                 widget.catalogueData,
                 () =>
-                    _openProfile(_searchedDocResults.solution.services[index]),
-                _searchedDocResults.solution.services[index].doctors
+                    _openProfile(_searchedDocResults!.solution!.services![index]),
+                _searchedDocResults!.solution!.services![index].doctors!
                     .indexOf(doctor),
-                _searchedDocResults.solution));
+                _searchedDocResults!.solution));
             Services service = Services(
-                name: doctor?.name ?? "",
-                address: _searchedDocResults.solution.services[index].address,
-                sId: _searchedDocResults.solution.services[index].sId,
-                latitude: _searchedDocResults.solution.services[index].latitude,
+                name: doctor.name ?? "",
+                address: _searchedDocResults!.solution!.services![index].address,
+                sId: _searchedDocResults!.solution!.services![index].sId,
+                latitude: _searchedDocResults!.solution!.services![index].latitude,
                 longitude:
-                    _searchedDocResults.solution.services[index].longitude,
-                professionalPhotos: _searchedDocResults
-                        .solution.services[index].professionalPhotos ??
+                    _searchedDocResults!.solution!.services![index].longitude,
+                professionalPhotos: _searchedDocResults!
+                        .solution!.services![index].professionalPhotos ??
                     [],
-                distance: _searchedDocResults.solution.services[index].distance,
-                hasPrice: _searchedDocResults.solution.services[index].hasPrice,
+                distance: _searchedDocResults!.solution!.services![index].distance,
+                hasPrice: _searchedDocResults!.solution!.services![index].hasPrice,
                 priceUpdated:
-                    _searchedDocResults.solution.services[index].priceUpdated);
+                    _searchedDocResults!.solution!.services![index].priceUpdated);
             _customServices.add(service);
-            _mapWidgets.add(RepaintBoundary(
+            _mapWidgets!.add(RepaintBoundary(
               child: Container(
                 child: (1 == 1)
                     ? Row(
@@ -877,12 +889,12 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
           var key = GlobalKey();
           _globalKeys.add(key);
           _functions.add(() => _showProfessionalPopup(
-              _searchedDocResults.solution.services[index],
+              _searchedDocResults!.solution!.services![index],
               widget.catalogueData,
-              () => _openProfile(_searchedDocResults.solution.services[index]),
-              _searchedDocResults.solution));
-          _customServices.add(_searchedDocResults.solution.services[index]);
-          _mapWidgets.add(RepaintBoundary(
+              () => _openProfile(_searchedDocResults!.solution!.services![index]),
+              _searchedDocResults!.solution));
+          _customServices.add(_searchedDocResults!.solution!.services![index]);
+          _mapWidgets!.add(RepaintBoundary(
             child: Container(
               child: (1 == 1)
                   ? Row(
@@ -919,8 +931,8 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
                                 color: Colors.transparent,
                                 shape: BoxShape.circle),
                             child: CustomWidgets().getImageFromUrl(
-                                _searchedDocResults
-                                    .solution.services[index].imageUrl,
+                                _searchedDocResults!
+                                    .solution!.services![index].imageUrl,
                                 placeHolderPath: PlunesImages.labMapImage,
                                 boxFit: BoxFit.fill),
                           ),
@@ -948,29 +960,29 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
 
   void _showMapWidgetsAfterDelay() async {
     try {
-      double minZoom = 0;
-      int arrLength = _searchedDocResults.solution.services.length;
+      double? minZoom = 0;
+      int arrLength = _searchedDocResults!.solution!.services!.length;
       for (int index = 0; index < arrLength; index++) {
-        if (_searchedDocResults.solution.services[index].distance != null &&
-            _searchedDocResults.solution.services[index].distance > minZoom) {
-          minZoom = _searchedDocResults.solution.services[index].distance;
+        if (_searchedDocResults!.solution!.services![index].distance != null &&
+            _searchedDocResults!.solution!.services![index].distance! > minZoom!) {
+          minZoom = _searchedDocResults!.solution!.services![index].distance as double?;
         }
       }
       if (minZoom != 0) {
-        _animateMapPosition(minZoom);
+        _animateMapPosition(minZoom!);
       }
       await Future.delayed(Duration(seconds: 1));
       for (int index = 0; index < _globalKeys.length; index++) {
-        RenderRepaintBoundary boundary =
-            _globalKeys[index].currentContext.findRenderObject();
-        var image = await boundary?.toImage(pixelRatio: 2.0);
+        RenderRepaintBoundary? boundary =
+            _globalKeys[index].currentContext!.findRenderObject() as RenderRepaintBoundary?;
+        var image = (await boundary?.toImage(pixelRatio: 2.0))!;
         ByteData byteData =
-            await image?.toByteData(format: ui.ImageByteFormat.png);
+            await (image.toByteData(format: ui.ImageByteFormat.png) as FutureOr<ByteData>);
         var bytes = byteData.buffer.asUint8List();
         // print("bytes are $bytes");
         await Future.delayed(Duration(milliseconds: 150));
         _markers.add(Marker(
-            markerId: MarkerId(_customServices[index].sId),
+            markerId: MarkerId(_customServices[index].sId!),
             onTap: () => _functions[index](),
             icon: CommonMethods.shouldShowProgressOnPrice(
                     _customServices[index],
@@ -1008,10 +1020,10 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
     }
     Future.delayed(Duration(milliseconds: 10)).then((value) {
       if (_mapController != null && mounted) {
-        _mapController.animateCamera(CameraUpdate.newCameraPosition(
+        _mapController!.animateCamera(CameraUpdate.newCameraPosition(
             CameraPosition(
-                target: LatLng(double.parse(_user.latitude),
-                    double.parse(_user.longitude)),
+                target: LatLng(double.parse(_user.latitude!),
+                    double.parse(_user.longitude!)),
                 zoom: minZoom,
                 bearing: 10)));
       }
@@ -1027,7 +1039,7 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
           context,
           MaterialPageRoute(
               builder: (context) => DoctorInfo(service.professionalId,
-                  isDoc: (service.userType.toLowerCase() ==
+                  isDoc: (service.userType!.toLowerCase() ==
                       Constants.doctor.toString().toLowerCase()),
                   isAlreadyInBookingProcess: true))).then((value) {
         _setScreenName(FirebaseNotification.solutionScreen);
@@ -1035,8 +1047,8 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
     }
   }
 
-  _showHospitalDoctorPopup(Services service, CatalogueData catalogueData,
-      Function openProfile, int index, DocHosSolution solution) {
+  _showHospitalDoctorPopup(Services service, CatalogueData? catalogueData,
+      Function openProfile, int index, DocHosSolution? solution) {
     _isPopUpOpened = true;
     showDialog(
         context: context,
@@ -1062,8 +1074,8 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
     });
   }
 
-  _showProfessionalPopup(Services service, CatalogueData catalogueData,
-      Function openProfile, DocHosSolution solution) {
+  _showProfessionalPopup(Services service, CatalogueData? catalogueData,
+      Function openProfile, DocHosSolution? solution) {
     _isPopUpOpened = true;
     showDialog(
         context: context,
@@ -1100,10 +1112,10 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
               index,
               () => _bookAppointmentWithHosDoctor(service, index),
               () => _openInsuranceScreen(service),
-              _searchedDocResults.solution),
+              _searchedDocResults!.solution),
         );
       },
-      itemCount: service?.doctors?.length ?? 0,
+      itemCount: service.doctors?.length ?? 0,
     );
   }
 
@@ -1112,19 +1124,19 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
       _showSnackBar(PlunesStrings.cantBookPriceExpired, shouldPop: true);
       return;
     }
-    _solution = _searchedDocResults.solution;
+    _solution = _searchedDocResults!.solution;
     _setScreenName(null);
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => BookingMainScreen(
-                  price: service.newPrice?.first?.toString(),
+                  price: service.newPrice?.first.toString(),
                   profId: service.professionalId,
                   searchedSolutionServiceId: service.sId,
                   timeSlots: service.timeSlots,
                   docHosSolution: _solution,
                   bookInPrice: service.bookIn,
-                  serviceName: widget.catalogueData.service ??
+                  serviceName: widget.catalogueData!.service ??
                       _searchedDocResults?.catalogueData?.service ??
                       PlunesStrings.NA,
                   serviceIndex: 0,
@@ -1144,27 +1156,27 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
       _showSnackBar(PlunesStrings.cantBookPriceExpired, shouldPop: true);
       return;
     }
-    _solution = _searchedDocResults.solution;
+    _solution = _searchedDocResults!.solution;
     _setScreenName(null);
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => BookingMainScreen(
-                  price: service.doctors[docIndex]?.newPrice?.first?.toString(),
+                  price: service.doctors![docIndex].newPrice?.first.toString(),
                   profId: service.professionalId,
-                  docId: service.doctors[docIndex].professionalId,
+                  docId: service.doctors![docIndex].professionalId,
                   searchedSolutionServiceId: service.sId,
-                  timeSlots: service.doctors[docIndex].timeSlots,
+                  timeSlots: service.doctors![docIndex].timeSlots,
                   docHosSolution: _solution,
-                  bookInPrice: service.doctors[docIndex].bookIn,
-                  serviceName: widget.catalogueData.service ??
+                  bookInPrice: service.doctors![docIndex].bookIn,
+                  serviceName: widget.catalogueData!.service ??
                       _searchedDocResults?.catalogueData?.service ??
                       PlunesStrings.NA,
                   serviceIndex: 0,
                   service: Services(
-                      price: service.doctors[docIndex].price,
-                      zestMoney: service.doctors[docIndex].zestMoney,
-                      newPrice: service.doctors[docIndex].newPrice,
+                      price: service.doctors![docIndex].price,
+                      zestMoney: service.doctors![docIndex].zestMoney,
+                      newPrice: service.doctors![docIndex].newPrice,
                       paymentOptions: service.paymentOptions),
                 ))).then((value) {
       _setScreenName(FirebaseNotification.solutionScreen);
@@ -1219,7 +1231,7 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
               RadialAxis(
                   pointers: [
                     RangePointer(
-                        value: _gainedDiscountPercentage,
+                        value: _gainedDiscountPercentage as double,
                         width: 0.3,
                         sizeUnit: GaugeSizeUnit.factor,
                         cornerStyle: CornerStyle.bothFlat,
@@ -1301,7 +1313,7 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
   void _openInsuranceScreen(Services service) {
     if (service != null &&
         service.professionalId != null &&
-        service.professionalId.trim().isNotEmpty) {
+        service.professionalId!.trim().isNotEmpty) {
       _setScreenName(FirebaseNotification.solutionScreen);
       Navigator.push(
               context,
@@ -1340,8 +1352,8 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
 
   Widget _getBenefitsWidget() {
     if (_premiumBenefitsModel == null ||
-        _premiumBenefitsModel.data == null ||
-        _premiumBenefitsModel.data.isEmpty) {
+        _premiumBenefitsModel!.data == null ||
+        _premiumBenefitsModel!.data!.isEmpty) {
       return Container();
     }
     return Container(
@@ -1370,8 +1382,8 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) => CommonWidgets()
-                  .getPremiumBenefitsWidget(_premiumBenefitsModel.data[index]),
-              itemCount: _premiumBenefitsModel.data.length,
+                  .getPremiumBenefitsWidget(_premiumBenefitsModel!.data![index]),
+              itemCount: _premiumBenefitsModel!.data!.length,
             ),
           )
         ],
@@ -1449,8 +1461,8 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
       {bool hasBorder = false,
       Color borderColor = PlunesColors.GREYCOLOR,
       double borderWidth = 0.8,
-      String imagePath,
-      double fontSize}) {
+      required String imagePath,
+      double? fontSize}) {
     return Container(
       padding: EdgeInsets.symmetric(
           horizontal: horizontalPadding, vertical: verticalPadding),
@@ -1496,34 +1508,34 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
     }
   }
 
-  String _getPriceToShow(SearchedDocResults searchedDocResults, int index) {
+  String? _getPriceToShow(SearchedDocResults? searchedDocResults, int index) {
     if (searchedDocResults != null &&
         searchedDocResults.solution != null &&
-        searchedDocResults.solution.services != null &&
-        searchedDocResults.solution.services.isNotEmpty &&
-        searchedDocResults.solution.services[index].newPrice != null &&
-        searchedDocResults.solution.services[index].newPrice.isNotEmpty) {
-      return searchedDocResults.solution?.services[index]?.newPrice?.first
+        searchedDocResults.solution!.services != null &&
+        searchedDocResults.solution!.services!.isNotEmpty &&
+        searchedDocResults.solution!.services![index].newPrice != null &&
+        searchedDocResults.solution!.services![index].newPrice!.isNotEmpty) {
+      return searchedDocResults.solution?.services![index]?.newPrice?.first
           ?.toStringAsFixed(1);
     } else {
       return "0.0";
     }
   }
 
-  String _getPriceForHospitalDoctor(Doctors doctor) {
+  String? _getPriceForHospitalDoctor(Doctors doctor) {
     if (doctor != null &&
         doctor.newPrice != null &&
-        doctor.newPrice.isNotEmpty) {
-      return doctor?.newPrice?.first?.toStringAsFixed(1);
+        doctor.newPrice!.isNotEmpty) {
+      return doctor.newPrice?.first.toStringAsFixed(1);
     }
     return PlunesStrings.NA;
   }
 
   Widget _getBodyPartsSessionWidget() {
     if (_searchedDocResults == null ||
-        _searchedDocResults.solution == null ||
-        _searchedDocResults.solution.serviceChildren == null ||
-        _searchedDocResults.solution.serviceChildren.isEmpty) {
+        _searchedDocResults!.solution == null ||
+        _searchedDocResults!.solution!.serviceChildren == null ||
+        _searchedDocResults!.solution!.serviceChildren!.isEmpty) {
       return Container();
     }
     return Container(
@@ -1534,20 +1546,20 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
           top: AppConfig.verticalBlockSize * 1),
       child: ListView.builder(
         itemBuilder: (context, index) {
-          var bodyObj = _searchedDocResults.solution.serviceChildren[index];
+          var bodyObj = _searchedDocResults!.solution!.serviceChildren![index];
           if ((bodyObj == null ||
                   bodyObj.bodyPart == null ||
-                  bodyObj.bodyPart.trim().isEmpty) &&
+                  bodyObj.bodyPart!.trim().isEmpty) &&
               (bodyObj == null ||
                   bodyObj.sessionGrafts == null ||
-                  bodyObj.sessionGrafts.trim().isEmpty)) {
+                  bodyObj.sessionGrafts!.trim().isEmpty)) {
             return Container();
           }
           return Container(
-            margin: EdgeInsets.only(right: 10),
-            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+            margin: const EdgeInsets.only(right: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(14)),
+              borderRadius: const BorderRadius.all(Radius.circular(14)),
               border: Border.all(
                   color: PlunesColors.GREYCOLOR.withOpacity(0.6), width: 0.8),
               color: PlunesColors.WHITECOLOR,
@@ -1558,7 +1570,7 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
               children: [
                 (bodyObj != null &&
                         bodyObj.bodyPart != null &&
-                        bodyObj.bodyPart.trim().isNotEmpty)
+                        bodyObj.bodyPart!.trim().isNotEmpty)
                     ? Container(
                         margin: EdgeInsets.only(right: 15),
                         child: Column(
@@ -1566,15 +1578,15 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text("Body Part",
+                            const Text("Body Part",
                                 style: TextStyle(
                                     fontSize: 15,
                                     color: PlunesColors.BLACKCOLOR)),
                             Container(
                               margin: EdgeInsets.only(top: 4),
                               child: Text(
-                                bodyObj?.bodyPart ?? "",
-                                style: TextStyle(
+                                bodyObj.bodyPart ?? "",
+                                style: const TextStyle(
                                     fontSize: 18,
                                     color: PlunesColors.BLACKCOLOR),
                               ),
@@ -1585,21 +1597,21 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
                     : Container(),
                 (bodyObj != null &&
                         bodyObj.sessionGrafts != null &&
-                        bodyObj.sessionGrafts.trim().isNotEmpty)
+                        bodyObj.sessionGrafts!.trim().isNotEmpty)
                     ? Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text("Session",
+                          const Text("Session",
                               style: TextStyle(
                                   fontSize: 15,
                                   color: PlunesColors.BLACKCOLOR)),
                           Container(
-                            margin: EdgeInsets.only(top: 4),
+                            margin: const EdgeInsets.only(top: 4),
                             child: Text(
-                              "* " + bodyObj?.sessionGrafts ?? "",
-                              style: TextStyle(
+                              "* " + bodyObj.sessionGrafts! ?? "",
+                              style: const TextStyle(
                                   fontSize: 18, color: PlunesColors.BLACKCOLOR),
                             ),
                           )
@@ -1612,7 +1624,7 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
         },
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
-        itemCount: _searchedDocResults.solution.serviceChildren.length,
+        itemCount: _searchedDocResults!.solution!.serviceChildren!.length,
       ),
     );
   }

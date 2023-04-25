@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -27,15 +28,12 @@ import 'package:plunes/ui/afterLogin/new_solution_screen/enter_facility_details_
 import 'package:plunes/ui/afterLogin/new_solution_screen/solution_show_price_screen.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/view_solutions_screen.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/profile_screen.dart';
-import 'package:plunes/ui/afterLogin/solution_screens/consultations.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/family_catalogue.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/manual_bidding.dart';
-import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart';
-import 'package:plunes/ui/afterLogin/solution_screens/testNproceduresMainScreen.dart';
 
 // ignore: must_be_immutable
 class SolutionBiddingScreen extends BaseActivity {
-  final String searchQuery;
+  final String? searchQuery;
 
   SolutionBiddingScreen({this.searchQuery});
 
@@ -43,19 +41,22 @@ class SolutionBiddingScreen extends BaseActivity {
   _SolutionBiddingScreenState createState() => _SolutionBiddingScreenState();
 }
 
-class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
+// class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> with TickerProviderStateMixin {
+class _SolutionBiddingScreenState extends State<SolutionBiddingScreen>
     with TickerProviderStateMixin {
-  List<CatalogueData> _catalogues;
-  List<Facility> _facilities;
-  Function onViewMoreTap;
-  TextEditingController _facilitySearchController, _locationSearchController;
-  Timer _debounce;
-  SearchSolutionBloc _searchSolutionBloc;
+  final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  List<CatalogueData>? _catalogues;
+  List<Facility>? _facilities;
+  Function? onViewMoreTap;
+  TextEditingController? _facilitySearchController, _locationSearchController;
+  Timer? _debounce;
+  SearchSolutionBloc? _searchSolutionBloc;
   int pageIndex = SearchSolutionBloc.initialIndex;
-  StreamController _streamController;
-  bool _endReached, _isHospitalSelected;
-  FocusNode _facilityFocusNode, _locationFocusNode;
-  LocationAndServiceModel _locationAndServiceModel;
+  StreamController? _streamController;
+  bool? _endReached, _isHospitalSelected;
+  bool isLoading = false;
+  FocusNode? _facilityFocusNode, _locationFocusNode;
+  LocationAndServiceModel? _locationAndServiceModel;
   int _selectedIndex = 0;
   List<Widget> _tabs = [
     ClipRRect(
@@ -64,13 +65,13 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
           child: Text(
         'Hospital',
         textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 14),
+        style: const TextStyle(fontSize: 14),
       )),
     ),
     ClipRRect(
       borderRadius: BorderRadius.all(Radius.circular(3)),
       child: Container(
-          child: Text(
+          child: const Text(
         "Treatment",
         textAlign: TextAlign.center,
         style: TextStyle(fontSize: 14),
@@ -78,11 +79,11 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
     ),
   ];
 
-  TabController _tabController;
+  TabController? _tabController;
 
-  String _requestFailCause;
+  String? _requestFailCause;
 
-  bool _isSettingLocation;
+  late bool _isSettingLocation;
 
   @override
   void initState() {
@@ -98,8 +99,8 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
     _streamController = StreamController.broadcast();
     _locationSearchController = TextEditingController();
     _facilitySearchController = TextEditingController()..addListener(_onSearch);
-    if (widget.searchQuery != null && widget.searchQuery.trim().isNotEmpty) {
-      _facilitySearchController.text = widget.searchQuery;
+    if (widget.searchQuery != null && widget.searchQuery!.trim().isNotEmpty) {
+      _facilitySearchController!.text = widget.searchQuery!;
     }
     _tabController =
         TabController(length: 2, vsync: this, initialIndex: _selectedIndex);
@@ -107,7 +108,13 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
   }
 
   _getPopularCitiesAndServices() {
-    _searchSolutionBloc.getPopularCitiesAndServices();
+    _searchSolutionBloc!.getPopularCitiesAndServices().then((requestState) {
+      if (requestState is RequestSuccess) {
+        RequestSuccess reqSuccess = requestState as RequestSuccess;
+        _locationAndServiceModel = reqSuccess.response;
+        _setState();
+      }
+    });
   }
 
   @override
@@ -145,10 +152,10 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
               automaticallyImplyLeading: true,
               backgroundColor: Colors.white,
               brightness: Brightness.light,
-              iconTheme: IconThemeData(color: Colors.black),
+              iconTheme: const IconThemeData(color: Colors.black),
               centerTitle: true,
               leading: IconButton(
-                icon: Icon(Icons.arrow_back_ios),
+                icon: const Icon(Icons.arrow_back_ios),
                 onPressed: () {
                   _unFocus();
                   Future.delayed(Duration(milliseconds: 5)).then((value) {
@@ -166,29 +173,31 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
               width: double.infinity,
               child: _isSettingLocation
                   ? Center(child: CustomWidgets().getProgressIndicator())
-                  : StreamBuilder<RequestState>(
+                  : StreamBuilder<RequestState?>(
                       initialData: (_locationAndServiceModel == null)
                           ? RequestInProgress()
                           : null,
                       stream:
-                          _searchSolutionBloc.popularCitiesAndServicesStream,
+                          _searchSolutionBloc!.popularCitiesAndServicesStream,
                       builder: (context, snapShot) {
                         if (snapShot.data is RequestSuccess) {
-                          RequestSuccess reqSuccess = snapShot.data;
+                          RequestSuccess reqSuccess =
+                              snapShot.data as RequestSuccess;
                           _locationAndServiceModel = reqSuccess.response;
-                          _searchSolutionBloc
+                          _searchSolutionBloc!
                               .addStateInPopularCitiesAndServicesStream(null);
                         } else if (snapShot.data is RequestInProgress) {
                           return CustomWidgets().getProgressIndicator();
                         } else if (snapShot.data is RequestFailed) {
-                          RequestFailed reqFailed = snapShot.data;
+                          RequestFailed reqFailed =
+                              snapShot.data as RequestFailed;
                           _requestFailCause = reqFailed.failureCause;
-                          _searchSolutionBloc
+                          _searchSolutionBloc!
                               .addStateInPopularCitiesAndServicesStream(null);
                         }
                         return (_locationAndServiceModel == null ||
-                                (_locationAndServiceModel.success != null &&
-                                    !_locationAndServiceModel.success))
+                                (_locationAndServiceModel!.success != null &&
+                                    !_locationAndServiceModel!.success!))
                             ? CustomWidgets().errorWidget(
                                 _requestFailCause ??
                                     _locationAndServiceModel?.message,
@@ -222,31 +231,31 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
                         isRounded: false),
                   ),
                   Container(
-                    margin: EdgeInsets.only(top: 3),
+                    margin: const EdgeInsets.only(top: 3),
                     child: StreamBuilder(
                       builder: (context, snapShot) {
                         return Container(
                             margin: EdgeInsets.symmetric(
                                 horizontal: AppConfig.horizontalBlockSize * 3),
                             child: _facilitySearchBar(
-                                hintText: _isHospitalSelected
+                                hintText: _isHospitalSelected!
                                     ? "Search Hospitals, Doctors & Labs"
                                     : "Search Disease, Test or Medical Procedure",
                                 hasFocus: true,
                                 focusNode: _facilityFocusNode,
                                 searchController: _facilitySearchController));
                       },
-                      stream: _streamController.stream,
+                      stream: _streamController!.stream,
                     ),
                   )
                 ],
               ),
             ),
-            (_locationFocusNode != null && _locationFocusNode.hasFocus)
+            (_locationFocusNode != null && _locationFocusNode!.hasFocus)
                 ? Expanded(child: _getLocationSearchBarAndRelatedResults())
                 : Expanded(
-                    child: StreamBuilder<Object>(
-                        stream: _streamController.stream,
+                    child: StreamBuilder<Object?>(
+                        stream: _streamController!.stream,
                         builder: (context, snapshot) {
                           return _getFacilitySearchBarAndRelatedResult();
                         }))
@@ -276,20 +285,20 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
   _onSolutionItemTap(int index) async {
     FocusScope.of(context).requestFocus(FocusNode());
     var nowTime = DateTime.now();
-    if (_catalogues[index].solutionExpiredAt != null &&
-        _catalogues[index].solutionExpiredAt != 0) {
+    if (_catalogues![index].solutionExpiredAt != null &&
+        _catalogues![index].solutionExpiredAt != 0) {
       var solExpireTime = DateTime.fromMillisecondsSinceEpoch(
-          _catalogues[index].solutionExpiredAt);
+          _catalogues![index].solutionExpiredAt!);
       var diff = nowTime.difference(solExpireTime);
       if (diff.inSeconds < 5) {
         ///when price discovered and solution is active
-        if (_catalogues[index].priceDiscovered != null &&
-            _catalogues[index].priceDiscovered) {
+        if (_catalogues![index].priceDiscovered != null &&
+            _catalogues![index].priceDiscovered!) {
           await Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => SolutionShowPriceScreen(
-                      catalogueData: _catalogues[index], searchQuery: "")));
+                      catalogueData: _catalogues![index], searchQuery: "")));
           return;
         } else {
           ///when price not discovered but solution is active
@@ -297,7 +306,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
               context,
               MaterialPageRoute(
                   builder: (context) => ViewSolutionsScreen(
-                      catalogueData: _catalogues[index], searchQuery: "")));
+                      catalogueData: _catalogues![index], searchQuery: "")));
           return;
         }
       }
@@ -317,26 +326,26 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
         context,
         MaterialPageRoute(
             builder: (context) => EnterAdditionalUserDetailScr(
-                _catalogues[index], _facilitySearchController.text.trim())));
+                _catalogues![index], _facilitySearchController!.text.trim())));
   }
 
-  _onOtherServiceTap(int index, List<CatalogueData> _catalogues) async {
+  _onOtherServiceTap(int index, List<CatalogueData>? _catalogues) async {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => CatalogueListScreen(_catalogues[index])));
+            builder: (context) => CatalogueListScreen(_catalogues![index])));
     return;
     FocusScope.of(context).requestFocus(FocusNode());
     var nowTime = DateTime.now();
-    if (_catalogues[index].solutionExpiredAt != null &&
+    if (_catalogues![index].solutionExpiredAt != null &&
         _catalogues[index].solutionExpiredAt != 0) {
       var solExpireTime = DateTime.fromMillisecondsSinceEpoch(
-          _catalogues[index].solutionExpiredAt);
+          _catalogues[index].solutionExpiredAt!);
       var diff = nowTime.difference(solExpireTime);
       if (diff.inSeconds < 5) {
         ///when price discovered and solution is active
         if (_catalogues[index].priceDiscovered != null &&
-            _catalogues[index].priceDiscovered) {
+            _catalogues[index].priceDiscovered!) {
           await Navigator.push(
               context,
               MaterialPageRoute(
@@ -369,68 +378,152 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
         context,
         MaterialPageRoute(
             builder: (context) => EnterAdditionalUserDetailScr(
-                _catalogues[index], _facilitySearchController.text.trim())));
+                _catalogues[index], _facilitySearchController!.text.trim())));
   }
 
   _onViewMoreTap(int solution) {
     showDialog(
       context: context,
       builder: (BuildContext context) => CustomWidgets().buildViewMoreDialog(
-        catalogueData: _catalogues[solution],
+        catalogueData: _catalogues![solution],
       ),
     );
   }
 
   _onSearch() {
-    _streamController.add(null);
-    if (_debounce?.isActive ?? false) _debounce.cancel();
+    print("on_serach_started");
+    _streamController!.add(null);
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () {
+      print("on_serach_started : _debounce_Active");
+
       if (_facilitySearchController != null &&
-          _facilitySearchController.text != null &&
-          _facilitySearchController.text.trim().isNotEmpty) {
-        _searchSolutionBloc.addIntoStream(RequestInProgress());
-        _searchSolutionBloc.getSearchedSolution(
-            searchedString: _facilitySearchController.text.trim().toString(),
-            index: 0,
-            isFacilitySelected: _isHospitalSelected);
+          _facilitySearchController!.text != null &&
+          _facilitySearchController!.text.trim().isNotEmpty) {
+        isLoading = true;
+        _setState();
+        _searchSolutionBloc!.addIntoStream(RequestInProgress());
+        _searchSolutionBloc!
+            .getSearchedSolution(
+                searchedString:
+                    _facilitySearchController!.text.trim().toString(),
+                index: 0,
+                isFacilitySelected: _isHospitalSelected!)
+            .then((requestState) {
+          print("requestState is starteeeeee");
+          print("requestState is----> $requestState");
+          print("requestState is _isHospitalSelected=$_isHospitalSelected");
+          isLoading = false;
+          if (requestState is RequestSuccess) {
+            print("requestState is RequestSuccess");
+            RequestSuccess _requestSuccessObject =
+                requestState as RequestSuccess;
+            if (_requestSuccessObject.additionalData == null) {
+              print("requestState is_catalogues_added------- null data");
+
+              if (_requestSuccessObject.requestCode ==
+                  SearchSolutionBloc.initialIndex) {
+                pageIndex = SearchSolutionBloc.initialIndex;
+                _catalogues = [];
+
+                print("requestState is empty catalogues");
+              }
+              if (_requestSuccessObject.requestCode !=
+                      SearchSolutionBloc.initialIndex &&
+                  _requestSuccessObject.response.isEmpty) {
+                print("requestState is endReached");
+                _endReached = true;
+              } else {
+                print("requestState is_catalogues_added");
+
+                if (_isHospitalSelected!) {
+                  print("requestState is is_under_facility");
+
+                  _facilities = [];
+                  _facilities = _requestSuccessObject.response;
+                }
+
+                _endReached = false;
+                Set _allItems = _catalogues!.toSet();
+                _allItems.addAll(_requestSuccessObject.response);
+                _catalogues =
+                    _allItems.toList(growable: true) as List<CatalogueData>?;
+              }
+              pageIndex++;
+            } else {
+              print("else----------part");
+              if (_isHospitalSelected!) {
+                print("requestState2 is is_under_facility");
+
+                _facilities = [];
+                _facilities = _requestSuccessObject.response;
+              }
+            }
+          } else if (requestState is RequestInProgress) {
+            print("requestState is RequestInProgress");
+            return CustomWidgets().getProgressIndicator();
+          } else if (requestState is RequestFailed) {
+            print("requestState is RequestFailed");
+            pageIndex = SearchSolutionBloc.initialIndex;
+          } else {
+            RequestSuccess _requestSuccessObject =
+                requestState as RequestSuccess;
+            print("requestState is is_under_facility-----else");
+
+            if (_isHospitalSelected!) {
+              print("requestState is is_under_facility");
+
+              _facilities = [];
+              _facilities = _requestSuccessObject.response;
+            }
+          }
+
+          _setState();
+        });
       } else {
-        if (_isHospitalSelected) {
+        print("requestState is else_print");
+        if (_isHospitalSelected!) {
           _facilities = [];
         }
+        print("requestState is else_print$_facilities");
+
         _catalogues = [];
-        _searchSolutionBloc.addState(null);
+        _searchSolutionBloc!.addState(null);
       }
     });
   }
 
   Widget _showSearchedItems() {
-    return NotificationListener<ScrollNotification>(
-      onNotification: (scrollState) {
-        if (scrollState is ScrollEndNotification &&
-            scrollState.metrics.extentAfter == 0 &&
-            _facilitySearchController.text.trim().isNotEmpty &&
-            !_endReached) {
-          _searchSolutionBloc.addIntoStream(RequestInProgress());
-          _searchSolutionBloc.getSearchedSolution(
-              searchedString: _facilitySearchController.text.trim().toString(),
-              index: pageIndex);
+    return
+        // NotificationListener<ScrollNotification>(
+        // onNotification: (scrollState) {
+        //   if (scrollState is ScrollEndNotification &&
+        //       scrollState.metrics.extentAfter == 0 &&
+        //       _facilitySearchController!.text.trim().isNotEmpty &&
+        //       !_endReached!) {
+        //     _searchSolutionBloc!.addIntoStream(RequestInProgress());
+        //     _searchSolutionBloc!.getSearchedSolution(
+        //         searchedString: _facilitySearchController!.text.trim().toString(),
+        //         index: pageIndex,
+        //         isFacilitySelected: _isHospitalSelected!);
+        //   }
+        //   return;
+        // } as bool Function(ScrollNotification)?,
+        // child:
+        ListView.builder(
+      itemBuilder: (context, index) {
+        if (_catalogues!.length == index) {
+          return _getManualBiddingWidget();
         }
-        return;
+        TapGestureRecognizer tapRecognizer = TapGestureRecognizer()
+          ..onTap = () => _onViewMoreTap(index);
+        return CustomWidgets().getSolutionRow(_catalogues, index,
+            onButtonTap: () => _onSolutionItemTap(index),
+            onViewMoreTap: tapRecognizer);
       },
-      child: ListView.builder(
-        itemBuilder: (context, index) {
-          if (_catalogues.length == index) {
-            return _getManualBiddingWidget();
-          }
-          TapGestureRecognizer tapRecognizer = TapGestureRecognizer()
-            ..onTap = () => _onViewMoreTap(index);
-          return CustomWidgets().getSolutionRow(_catalogues, index,
-              onButtonTap: () => _onSolutionItemTap(index),
-              onViewMoreTap: tapRecognizer);
-        },
-        shrinkWrap: true,
-        itemCount: _catalogues.length + 1,
-      ),
+      shrinkWrap: true,
+      itemCount: _catalogues!.length + 1,
+      // ),
     );
   }
 
@@ -445,10 +538,10 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
               Expanded(child: Container())
             ],
           )
-        : ((_catalogues == null || _catalogues.isEmpty) &&
-                _facilitySearchController.text.trim().isNotEmpty)
+        : ((_catalogues == null || _catalogues!.isEmpty) &&
+                _facilitySearchController!.text.trim().isNotEmpty)
             ? _getManualBiddingWidget()
-            : Text(PlunesStrings.searchSolutions);
+            : const Text(PlunesStrings.searchSolutions);
   }
 
   Widget _getManualBiddingWidget() {
@@ -457,10 +550,10 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Container(
-            child: Center(
-              child: Text(
+            child: const Center(
+              child: const Text(
                 PlunesStrings.couldNotFindText,
-                style: TextStyle(
+                style: const TextStyle(
                     color: PlunesColors.BLACKCOLOR,
                     fontSize: 17.5,
                     fontWeight: FontWeight.normal),
@@ -468,7 +561,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
               ),
             ),
             color: Color(CommonMethods.getColorHexFromStr("#D8F1E2")),
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
           ),
           InkWell(
             onTap: () {
@@ -487,8 +580,8 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
                 ),
               ),
               color: PlunesColors.WHITECOLOR,
-              padding: EdgeInsets.all(10),
-              margin: EdgeInsets.only(top: 2),
+              padding: const EdgeInsets.all(10),
+              margin: const EdgeInsets.only(top: 2),
             ),
           ),
         ],
@@ -522,10 +615,10 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
   }
 
   Widget _facilitySearchBar(
-      {@required final TextEditingController searchController,
-      @required final String hintText,
+      {required final TextEditingController? searchController,
+      required final String hintText,
       bool hasFocus = false,
-      FocusNode focusNode,
+      FocusNode? focusNode,
       double searchBarHeight = 6}) {
     return StatefulBuilder(builder: (context, newState) {
       return Card(
@@ -585,17 +678,17 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
                           fontSize: 13)),
                 ),
               ),
-              searchController.text.trim().isEmpty
+              searchController!.text.trim().isEmpty
                   ? Container()
                   : InkWell(
                       onTap: () {
                         searchController.text = "";
-                        if (_isHospitalSelected) {
+                        if (_isHospitalSelected!) {
                           _facilities = [];
                         }
                         newState(() {});
                       },
-                      child: Padding(
+                      child: const Padding(
                           padding: EdgeInsets.all(5.0),
                           child: Icon(
                             Icons.clear,
@@ -612,15 +705,15 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
   Future<RequestState> _getLocationStatusForTop() async {
     RequestState _requestState;
     var user = UserManager().getUserDetails();
-    if (user?.latitude != null &&
-        user?.longitude != null &&
-        user.latitude.isNotEmpty &&
-        user.longitude.isNotEmpty &&
+    if (user.latitude != null &&
+        user.longitude != null &&
+        user.latitude!.isNotEmpty &&
+        user.longitude!.isNotEmpty &&
         user.latitude != "0.0" &&
         user.latitude != "0" &&
         user.longitude != "0.0" &&
         user.longitude != "0") {
-      String address = await LocationUtil()
+      String? address = await LocationUtil()
           .getAddressFromLatLong(user.latitude, user.longitude);
       _requestState = RequestSuccess(
           response: LocationAppBarModel(
@@ -641,17 +734,17 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
   }
 
   Widget _getLocationSearchBar(
-      {@required final TextEditingController searchController,
-      @required final String hintText,
+      {required final TextEditingController? searchController,
+      required final String hintText,
       bool hasFocus = false,
       isRounded = true,
-      FocusNode focusNode,
+      FocusNode? focusNode,
       double searchBarHeight = 6}) {
     return FutureBuilder<RequestState>(
       builder: (context, snapshot) {
-        LocationAppBarModel locationModel;
+        LocationAppBarModel? locationModel;
         if (snapshot.data is RequestSuccess) {
-          RequestSuccess reqSuccess = snapshot.data;
+          RequestSuccess reqSuccess = snapshot.data as RequestSuccess;
           locationModel = reqSuccess.response;
         }
         return Card(
@@ -689,7 +782,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
                 children: <Widget>[
                   Container(
                     child: Icon(
-                      Icons.add_location_rounded,
+                      Icons.add_location,
                       color: (focusNode != null && focusNode.hasFocus)
                           ? Color(CommonMethods.getColorHexFromStr("#1492E6"))
                           : Color(CommonMethods.getColorHexFromStr("#CCCCCC")),
@@ -738,25 +831,25 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
   }
 
   Widget _getFacilitySearchBarAndRelatedResult() {
-    return (_facilitySearchController.text.trim().isEmpty)
-        ? _isHospitalSelected
-            ? _getHospitalWidget(_locationAndServiceModel.facilities ?? [])
+    return (_facilitySearchController!.text.trim().isEmpty)
+        ? _isHospitalSelected!
+            ? _getHospitalWidget(_locationAndServiceModel!.facilities ?? [])
             : _getFacilitySuggestionWidget()
         : _getSearchedResultWidget();
   }
 
   Widget _getPopularCitiesListWidget() {
     if (_locationAndServiceModel == null ||
-        _locationAndServiceModel.popularCities == null ||
-        _locationAndServiceModel.popularCities.isEmpty) {
+        _locationAndServiceModel!.popularCities == null ||
+        _locationAndServiceModel!.popularCities!.isEmpty) {
       return Container();
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          margin: EdgeInsets.only(top: 10),
-          child: Text(
+          margin: const EdgeInsets.only(top: 10),
+          child: const Text(
             "Popular cities",
             style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 20),
           ),
@@ -795,7 +888,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
                               borderRadius:
                                   BorderRadius.all(Radius.circular(5)),
                               child: Icon(
-                                Icons.filter_center_focus_rounded,
+                                Icons.filter_center_focus,
                                 size: 35,
                                 color: CommonMethods.getColorForSpecifiedCode(
                                     "#355789"),
@@ -822,7 +915,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
                 child: InkWell(
                   onTap: () {
                     _setLocationFromPopularLocations(
-                        _locationAndServiceModel.popularCities[index]);
+                        _locationAndServiceModel!.popularCities![index]);
                     return;
                   },
                   onDoubleTap: () {},
@@ -843,8 +936,8 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
                           child: ClipRRect(
                             borderRadius: BorderRadius.all(Radius.circular(5)),
                             child: CustomWidgets().getImageFromUrl(
-                                _locationAndServiceModel
-                                    .popularCities[index]?.imageUrl,
+                                _locationAndServiceModel!
+                                    .popularCities![index]?.imageUrl,
                                 boxFit: BoxFit.fill),
                           ),
                         ),
@@ -852,8 +945,8 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
                       Container(
                         margin: EdgeInsets.only(top: 5),
                         child: Text(
-                          _locationAndServiceModel
-                                  .popularCities[index]?.locality ??
+                          _locationAndServiceModel!
+                                  .popularCities![index]?.locality ??
                               "",
                           style: TextStyle(
                               fontSize: 16, color: PlunesColors.BLACKCOLOR),
@@ -864,7 +957,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
                 ),
               );
             },
-            itemCount: _locationAndServiceModel.popularCities.length + 1,
+            itemCount: _locationAndServiceModel!.popularCities!.length + 1,
             shrinkWrap: true,
             scrollDirection: Axis.horizontal,
           ),
@@ -880,8 +973,8 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
 
   Widget _getPopularServicesWidget() {
     if (_locationAndServiceModel == null ||
-        _locationAndServiceModel.popularServices == null ||
-        _locationAndServiceModel.popularServices.isEmpty) {
+        _locationAndServiceModel!.popularServices == null ||
+        _locationAndServiceModel!.popularServices!.isEmpty) {
       return Container();
     }
     return Column(
@@ -904,7 +997,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
                 child: InkWell(
                   onTap: () {
                     _onOtherServiceTap(
-                        index, _locationAndServiceModel.popularServices);
+                        index, _locationAndServiceModel!.popularServices);
                     return;
                   },
                   onDoubleTap: () {},
@@ -925,7 +1018,8 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
                           child: ClipRRect(
                             borderRadius: BorderRadius.all(Radius.circular(5)),
                             child: CustomWidgets().getImageFromUrl(
-                                _locationAndServiceModel.popularServices[index]
+                                _locationAndServiceModel!
+                                        .popularServices![index]
                                         ?.specialityPicture ??
                                     "",
                                 boxFit: BoxFit.fill),
@@ -937,8 +1031,8 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
                         alignment: Alignment.center,
                         margin: EdgeInsets.only(top: 5),
                         child: Text(
-                          _locationAndServiceModel
-                                  .popularServices[index]?.familyName ??
+                          _locationAndServiceModel!
+                                  .popularServices![index]?.familyName ??
                               '',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -951,7 +1045,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
                 ),
               );
             },
-            itemCount: _locationAndServiceModel.popularServices.length,
+            itemCount: _locationAndServiceModel!.popularServices!.length,
             shrinkWrap: true,
             scrollDirection: Axis.horizontal,
           ),
@@ -967,8 +1061,8 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
 
   Widget _getOtherLocationListWidget() {
     if (_locationAndServiceModel == null ||
-        _locationAndServiceModel.otherLocations == null ||
-        _locationAndServiceModel.otherLocations.isEmpty) {
+        _locationAndServiceModel!.otherLocations == null ||
+        _locationAndServiceModel!.otherLocations!.isEmpty) {
       return Container();
     }
     return Column(
@@ -986,7 +1080,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
               return InkWell(
                 onTap: () {
                   _setLocationFromPopularLocations(
-                      _locationAndServiceModel.otherLocations[index]);
+                      _locationAndServiceModel!.otherLocations![index]);
                   return;
                 },
                 onDoubleTap: () {},
@@ -997,7 +1091,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
                   padding: EdgeInsets.symmetric(vertical: 10),
                   margin: EdgeInsets.only(bottom: 2, top: index == 0 ? 5 : 0),
                   child: Text(
-                    _locationAndServiceModel.otherLocations[index].locality ??
+                    _locationAndServiceModel!.otherLocations![index].locality ??
                         "",
                     style:
                         TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 18),
@@ -1005,7 +1099,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
                 ),
               );
             },
-            itemCount: _locationAndServiceModel.otherLocations.length,
+            itemCount: _locationAndServiceModel!.otherLocations!.length,
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
           ),
@@ -1016,15 +1110,15 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
 
   Widget _getOtherServicesListWidget() {
     if (_locationAndServiceModel == null ||
-        _locationAndServiceModel.otherServices == null ||
-        _locationAndServiceModel.otherServices.isEmpty) {
+        _locationAndServiceModel!.otherServices == null ||
+        _locationAndServiceModel!.otherServices!.isEmpty) {
       return Container();
     }
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        const Text(
           "Other services",
           style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 20),
         ),
@@ -1035,7 +1129,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
               return InkWell(
                 onTap: () {
                   _onOtherServiceTap(
-                      index, _locationAndServiceModel.otherServices);
+                      index, _locationAndServiceModel!.otherServices);
                   return;
                 },
                 onDoubleTap: () {},
@@ -1043,18 +1137,19 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
                 highlightColor: Colors.transparent,
                 splashColor: Colors.transparent,
                 child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 10),
+                  padding: const EdgeInsets.symmetric(vertical: 10),
                   margin: EdgeInsets.only(bottom: 2, top: index == 0 ? 5 : 0),
                   child: Text(
-                    _locationAndServiceModel.otherServices[index].familyName ??
+                    _locationAndServiceModel!
+                            .otherServices![index].familyName ??
                         '',
-                    style:
-                        TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 18),
+                    style: const TextStyle(
+                        color: PlunesColors.BLACKCOLOR, fontSize: 18),
                   ),
                 ),
               );
             },
-            itemCount: _locationAndServiceModel.otherServices?.length ?? 0,
+            itemCount: _locationAndServiceModel!.otherServices?.length ?? 0,
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
           ),
@@ -1070,62 +1165,88 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
           widget.getSpacer(
               AppConfig.verticalBlockSize * 1, AppConfig.verticalBlockSize * 1),
           Expanded(
-              child: StreamBuilder<RequestState>(
-            initialData: (_isHospitalSelected &&
-                    (_facilities == null || _facilities.isEmpty))
-                ? RequestInProgress()
-                : null,
-            builder: (context, snapShot) {
-              _streamController?.add(null);
-              if (_isHospitalSelected) {
-                return _getFacilityWidgets(snapShot);
-              }
-              if (snapShot.data is RequestSuccess) {
-                RequestSuccess _requestSuccessObject = snapShot.data;
-                if (_requestSuccessObject.additionalData == null) {
-                  if (_requestSuccessObject.requestCode ==
-                      SearchSolutionBloc.initialIndex) {
-                    pageIndex = SearchSolutionBloc.initialIndex;
-                    _catalogues = [];
-                  }
-                  if (_requestSuccessObject.requestCode !=
-                          SearchSolutionBloc.initialIndex &&
-                      _requestSuccessObject.response.isEmpty) {
-                    _endReached = true;
-                  } else {
-                    _endReached = false;
-                    Set _allItems = _catalogues.toSet();
-                    _allItems.addAll(_requestSuccessObject.response);
-                    _catalogues = _allItems.toList(growable: true);
-                  }
-                  pageIndex++;
-                }
-              } else if (snapShot.data is RequestFailed) {
-                pageIndex = SearchSolutionBloc.initialIndex;
-              }
-              return _catalogues == null || _catalogues.isEmpty
-                  ? _getDefaultWidget(snapShot)
-                  : Column(
-                      children: <Widget>[
-                        Expanded(
-                          child: _showSearchedItems(),
-                          flex: 4,
-                        ),
-                        (snapShot.data is RequestInProgress &&
-                                (_catalogues != null && _catalogues.isNotEmpty))
-                            ? Expanded(
-                                child: CustomWidgets().getProgressIndicator(),
-                                flex: 1)
-                            : Container()
-                      ],
-                    );
-            },
-            stream: _searchSolutionBloc.baseStream,
-          ))
+              //   child: StreamBuilder<RequestState>(
+              // initialData: (_isHospitalSelected! &&
+              //         (_facilities == null || _facilities!.isEmpty))
+              //     ? RequestInProgress()
+              //     : null,
+              // builder: (context, snapShot) {
+              //   _streamController?.add(null);
+              //   if (_isHospitalSelected!) {
+              //     return _getFacilityWidgets(snapShot);
+              //   }
+              //   if (snapShot.data is RequestSuccess) {
+              //     RequestSuccess _requestSuccessObject = snapShot.data as RequestSuccess;
+              //     if (_requestSuccessObject.additionalData == null) {
+              //       if (_requestSuccessObject.requestCode ==
+              //           SearchSolutionBloc.initialIndex) {
+              //         pageIndex = SearchSolutionBloc.initialIndex;
+              //         _catalogues = [];
+              //       }
+              //       if (_requestSuccessObject.requestCode !=
+              //               SearchSolutionBloc.initialIndex &&
+              //           _requestSuccessObject.response.isEmpty) {
+              //         _endReached = true;
+              //       } else {
+              //         _endReached = false;
+              //         Set _allItems = _catalogues!.toSet();
+              //         _allItems.addAll(_requestSuccessObject.response);
+              //         _catalogues = _allItems.toList(growable: true) as List<CatalogueData>?;
+              //         _setState();
+              //       }
+              //       pageIndex++;
+              //     }
+              //   } else if (snapShot.data is RequestFailed) {
+              //     pageIndex = SearchSolutionBloc.initialIndex;
+              //   }
+              child: _isHospitalSelected!
+                  ? _getFacilityWidgets()
+                  : _catalogues != null || _catalogues!.isNotEmpty
+                      ? Column(
+                          children: <Widget>[
+                            Expanded(
+                              child: _showSearchedItems(),
+                              flex: 4,
+                            ),
+                            // (snapShot.data is RequestInProgress &&
+                            //         (_catalogues != null && _catalogues!.isNotEmpty))
+                            //     ? Expanded(
+                            //         child: CustomWidgets().getProgressIndicator(),
+                            //         flex: 1)
+                            //     : Container()
+                          ],
+                        )
+                      : isLoading
+                          ? CustomWidgets().getProgressIndicator()
+                          : CustomWidgets().errorWidget("Treatment not found")
+
+              // },
+              // stream: _searchSolutionBloc!.baseStream,
+              )
+          // )
         ],
       ),
     );
   }
+
+  // showCatelog() {
+  //   return _catalogues == null || _catalogues!.isEmpty
+  //       ? _getDefaultWidget(snapShot)
+  //       : Column(
+  //     children: <Widget>[
+  //       Expanded(
+  //         child: _showSearchedItems(),
+  //         flex: 4,
+  //       ),
+  //       (snapShot.data is RequestInProgress &&
+  //           (_catalogues != null && _catalogues!.isNotEmpty))
+  //           ? Expanded(
+  //           child: CustomWidgets().getProgressIndicator(),
+  //           flex: 1)
+  //           : Container()
+  //     ],
+  //   );
+  // }
 
   Widget _getFacilitySuggestionWidget() {
     return ListView(
@@ -1157,7 +1278,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
       _setState();
       if (UserManager().getIsUserInServiceLocation()) {
         _locationFocusNode?.unfocus();
-        if (_facilityFocusNode != null && !_facilityFocusNode.hasFocus) {
+        if (_facilityFocusNode != null && !_facilityFocusNode!.hasFocus) {
           FocusScope.of(context).requestFocus(_facilityFocusNode);
           _setState();
         }
@@ -1168,33 +1289,33 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
   _setLocationFromPopularLocations(PopularCities addressLine) async {
     if (addressLine != null &&
         addressLine.location != null &&
-        addressLine.location.coordinates.isNotEmpty &&
-        addressLine.location.coordinates.length > 1) {
+        addressLine.location!.coordinates!.isNotEmpty &&
+        addressLine.location!.coordinates!.length > 1) {
       _isSettingLocation = true;
       _setState();
       UserBloc()
           .isUserInServiceLocation(
-              addressLine?.location?.coordinates[1]?.toString(),
-              addressLine?.location?.coordinates?.first?.toString(),
-              address: addressLine?.locality ?? "",
+              addressLine.location?.coordinates![1]?.toString(),
+              addressLine.location?.coordinates?.first?.toString(),
+              address: addressLine.locality ?? "",
               isFromPopup: true,
-              region: addressLine?.locality ?? '')
+              region: addressLine.locality ?? '')
           .then((value) async {
         _isSettingLocation = false;
         _setState();
         await Future.delayed(Duration(milliseconds: 50));
         if (value is RequestSuccess) {
-          CheckLocationResponse checkLocationResponse = value.response;
+          CheckLocationResponse? checkLocationResponse = value.response;
           if (checkLocationResponse != null &&
               checkLocationResponse.msg != null &&
-              checkLocationResponse.msg.isNotEmpty &&
+              checkLocationResponse.msg!.isNotEmpty &&
               mounted) {
             CustomWidgets().getInformativePopup(
                 message: checkLocationResponse.msg, globalKey: scaffoldKey);
           }
           if (UserManager().getIsUserInServiceLocation()) {
             _locationFocusNode?.unfocus();
-            if (_facilityFocusNode != null && !_facilityFocusNode.hasFocus) {
+            if (_facilityFocusNode != null && !_facilityFocusNode!.hasFocus) {
               FocusScope.of(context).requestFocus(_facilityFocusNode);
               _setState();
             }
@@ -1212,7 +1333,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
         margin: EdgeInsets.symmetric(
             horizontal: AppConfig.horizontalBlockSize * 15),
         child: Card(
-          margin: EdgeInsets.only(bottom: 8),
+          margin: const EdgeInsets.only(bottom: 8),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
           child: Container(
             decoration: BoxDecoration(
@@ -1238,7 +1359,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
                 if (_selectedIndex == i) {
                   return;
                 }
-                _facilitySearchController.clear();
+                _facilitySearchController!.clear();
                 _selectedIndex = i;
                 if (_selectedIndex == 0) {
                   _isHospitalSelected = true;
@@ -1253,9 +1374,9 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
         ));
   }
 
-  Widget _getFacilityWidgets(AsyncSnapshot<RequestState> snapShot) {
+  Widget _getFacilityWidgets2(AsyncSnapshot<RequestState> snapShot) {
     if (snapShot.data is RequestSuccess) {
-      RequestSuccess _requestSuccessObject = snapShot.data;
+      RequestSuccess _requestSuccessObject = snapShot.data as RequestSuccess;
       if (_requestSuccessObject.additionalData != null) {
         _facilities = [];
         _facilities = _requestSuccessObject.response;
@@ -1263,7 +1384,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
     } else if (snapShot.data is RequestFailed) {
       _facilities = [];
     }
-    return _facilities == null || _facilities.isEmpty
+    return _facilities == null || _facilities!.isEmpty
         ? snapShot.data is RequestInProgress
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -1275,13 +1396,28 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
                 ],
               )
             : CustomWidgets().errorWidget("Hospitals not found")
-        : _getHospitalWidget(_facilities);
+        : _getHospitalWidget(_facilities!);
+  }
+
+  Widget _getFacilityWidgets() {
+    // if (snapShot.data is RequestSuccess) {
+    //   RequestSuccess _requestSuccessObject = snapShot.data as RequestSuccess;
+    //   if (_requestSuccessObject.additionalData != null) {
+    //     _facilities = [];
+    //     _facilities = _requestSuccessObject.response;
+    //   }
+    // } else if (snapShot.data is RequestFailed) {
+    //   _facilities = [];
+    // }
+    return _facilities == null || _facilities!.isEmpty
+        ? CustomWidgets().errorWidget("Hospitals not found")
+        : _getHospitalWidget(_facilities!);
   }
 
   Widget _getHospitalWidget(List<Facility> facilities) {
     return Container(
       color: Colors.white,
-      padding: EdgeInsets.only(top: 16),
+      padding: const EdgeInsets.only(top: 16),
       child: ListView.builder(
         padding: EdgeInsets.zero,
         itemBuilder: (context, index) {
@@ -1301,7 +1437,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
           right: AppConfig.horizontalBlockSize * 5),
       child: InkWell(
         onTap: () {
-          if (facility.sId != null && facility.sId.trim().isNotEmpty) {
+          if (facility.sId != null && facility.sId!.trim().isNotEmpty) {
             Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -1321,7 +1457,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
                     child: ClipRRect(
                       child: ClipOval(
                           child: CustomWidgets().getImageFromUrl(
-                              facility?.imageUrl,
+                              facility.imageUrl,
                               boxFit: BoxFit.cover)),
                       borderRadius: BorderRadius.circular(15),
                     ),
@@ -1329,21 +1465,21 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
                     width: 48),
                 Expanded(
                   child: Container(
-                    margin: EdgeInsets.only(left: 20),
+                    margin: const EdgeInsets.only(left: 20),
                     child: Text(
-                      CommonMethods.getStringInCamelCase(facility.name),
+                      CommonMethods.getStringInCamelCase(facility.name)!,
                       textAlign: TextAlign.left,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                   ),
                 )
               ],
             ),
             Container(
-              margin: EdgeInsets.only(top: 16),
+              margin: const EdgeInsets.only(top: 16),
               color: CommonMethods.getColorForSpecifiedCode("#707070"),
               height: 0.4,
               width: double.infinity,

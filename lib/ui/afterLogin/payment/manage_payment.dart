@@ -11,13 +11,16 @@ class ManagePayments extends BaseActivity {
   _ManagePaymentsState createState() => _ManagePaymentsState();
 }
 
-class _ManagePaymentsState extends BaseState<ManagePayments> {
+// class _ManagePaymentsState extends BaseState<ManagePayments> {
+class _ManagePaymentsState extends State<ManagePayments> {
+  final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
         key: scaffoldKey,
-        appBar: widget.getAppBar(context, plunesStrings.managePayment, true),
+        appBar: widget.getAppBar(context, plunesStrings.managePayment, true) as PreferredSizeWidget?,
         body: Container(
           child: Column(
             children: <Widget>[

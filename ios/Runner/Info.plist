@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -20,24 +22,13 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>fb625558944851927</string>
-			</array>
-		</dict>
-	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
-	<key>FacebookAppID</key>
-	<string>625558944851927</string>
-	<key>FacebookDisplayName</key>
-	<string>Plunes</string>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<string>NO</string>
 	<key>FirebaseScreenReportingEnabled</key>
+	<false/>
+	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
@@ -50,27 +41,26 @@
 	</dict>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>This app needs access to media to upload your images.</string>
-	<key>NSCalendarsUsageDescription</key>
-	<string>Plunes would like to access your calender.</string>
+	<key>NSCameraAlwaysUsageDescription</key>
+	<string>This app needs access to camera to update profile picture and illness document</string>
 	<key>NSCameraUsageDescription</key>
-	<string>This app needs access to camera ṭo upload profile picture and medical reports.</string>
-	<key>NSContactsUsageDescription</key>
-	<string>This app requires contacts access to function properly.</string>
+	<string>This app needs access to camera to update profile picture and illness document.</string>
+	<key>NSCameraWhenInUseUsageDescription</key>
+	<string>This app needs access to camera to update profile picture and illness document</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>This app need access to the location, because our app share the curated list of doctors with price details in the surroundings of the users. They get the nearest 10 doctors post search.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>This app need access to the location, because our app share the curated list of doctors with price details in the surroundings of the users. They get the nearest 10 doctors post search.</string>
+	<key>NSLocationUsageDescription</key>
+	<string>Older devices need location.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app needs to access location to calculate distance.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This app needs access to mic.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app needs access to photo to upload your profile picture and medical reports.</string>
+	<string>This app needs access to photo to upload your images.</string>
 	<key>UIBackgroundModes</key>
-	<array>
-		<string>fetch</string>
-		<string>remote-notification</string>
-	</array>
+	<array/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -91,6 +81,6 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>io.flutter.embedded_views_preview</key>
-	<true/>
+	<string>YES</string>
 </dict>
 </plist>

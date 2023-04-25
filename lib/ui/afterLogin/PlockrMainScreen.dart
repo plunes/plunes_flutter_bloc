@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
@@ -36,17 +37,17 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
   bool cross = false;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _searchController = new TextEditingController();
-  AnimationController _animationController;
-  ImagePickerHandler imagePicker;
+  AnimationController? _animationController;
+  late ImagePickerHandler imagePicker;
   var globalHeight, globalWidth;
-  PlockrBloc _plockrBloc;
+  PlockrBloc? _plockrBloc;
   bool progress = false;
-  PlockrResponseModel _plockrResponseModel;
-  String failureMessage;
+  PlockrResponseModel? _plockrResponseModel;
+  String? failureMessage;
   bool _isSharing = false, _isDeleting = false;
-  String _selectedReportId;
-  List<dynamic> reportsList = new List();
-  List<UploadedReports> _originalDataList, _searchedList;
+  String? _selectedReportId;
+  List<dynamic> reportsList = [];
+  List<UploadedReports>? _originalDataList, _searchedList;
 
   @override
   void initState() {
@@ -57,7 +58,7 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
     _isDeleting = false;
     _getPlockrData();
     initialize();
-    EventProvider().getSessionEventBus().on<ScreenRefresher>().listen((event) {
+    EventProvider().getSessionEventBus()!.on<ScreenRefresher>().listen((event) {
       if (event != null &&
           event.screenName == FirebaseNotification.exploreScreen &&
           mounted) {
@@ -68,14 +69,14 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
   }
 
   _getPlockrData() {
-    _plockrBloc.getFilesAndData();
+    _plockrBloc!.getFilesAndData();
   }
 
   @override
   void dispose() {
-    _animationController.dispose();
+    _animationController!.dispose();
     _searchController.dispose();
-    _plockrBloc.dispose();
+    _plockrBloc!.dispose();
     super.dispose();
   }
 
@@ -115,11 +116,11 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
           Column(
             children: <Widget>[
               getUploadReportRow(),
-              StreamBuilder<RequestState>(
-                  stream: _plockrBloc.getPlockrFileStream,
+              StreamBuilder<RequestState?>(
+                  stream: _plockrBloc!.getPlockrFileStream,
                   builder: (context, snapshot) {
                     return (_originalDataList == null ||
-                            _originalDataList.isEmpty)
+                            _originalDataList!.isEmpty)
                         ? Container()
                         : getSearchRow();
                   }),
@@ -231,31 +232,31 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
   }
 
   Widget getListItemRowView() {
-    return StreamBuilder<RequestState>(
-        stream: _plockrBloc.getPlockrFileStream,
+    return StreamBuilder<RequestState?>(
+        stream: _plockrBloc!.getPlockrFileStream,
         builder: (context, snapshot) {
           if (snapshot.data != null && snapshot.data is RequestInProgress) {
             return CustomWidgets().getProgressIndicator();
           }
           if (snapshot.data != null && snapshot.data is RequestSuccess) {
-            RequestSuccess requestSuccess = snapshot.data;
+            RequestSuccess requestSuccess = snapshot.data as RequestSuccess;
             _plockrResponseModel = requestSuccess.response;
-            if (_plockrResponseModel.uploadedReports != null &&
-                _plockrResponseModel.uploadedReports.isNotEmpty) {
-              _originalDataList = _plockrResponseModel.uploadedReports;
+            if (_plockrResponseModel!.uploadedReports != null &&
+                _plockrResponseModel!.uploadedReports!.isNotEmpty) {
+              _originalDataList = _plockrResponseModel!.uploadedReports;
             }
-            if (_plockrResponseModel.sharedReports != null &&
-                _plockrResponseModel.sharedReports.isNotEmpty) {
-              _originalDataList.addAll(_plockrResponseModel.sharedReports);
+            if (_plockrResponseModel!.sharedReports != null &&
+                _plockrResponseModel!.sharedReports!.isNotEmpty) {
+              _originalDataList!.addAll(_plockrResponseModel!.sharedReports!);
             }
-            _plockrBloc.addStateInPlockerReportStream(null);
+            _plockrBloc!.addStateInPlockerReportStream(null);
           }
           if (snapshot.data != null && snapshot.data is RequestFailed) {
-            RequestFailed requestFailed = snapshot.data;
+            RequestFailed requestFailed = snapshot.data as RequestFailed;
             failureMessage = requestFailed.failureCause;
-            _plockrBloc.addStateInPlockerReportStream(null);
+            _plockrBloc!.addStateInPlockerReportStream(null);
           }
-          List<UploadedReports> listToRendered = _originalDataList;
+          List<UploadedReports>? listToRendered = _originalDataList;
           if (cross) {
             listToRendered = _searchedList;
           }
@@ -271,7 +272,7 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
   }
 
   @override
-  fetchImageCallBack(File _image) {
+  fetchImageCallBack(_image) {
     if (cross) {
       _searchedList = [];
       _searchController.text = "";
@@ -313,7 +314,7 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
     );
   }
 
-  Widget getMenuPopup(String reportId, String fileType) {
+  Widget getMenuPopup(String? reportId, String? fileType) {
     return Container(
       child: PopupMenuButton<String>(
         child: Container(
@@ -363,7 +364,7 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
     );
   }
 
-  showMenuSelection(String value, String reportId, String fileType) {
+  showMenuSelection(String value, String? reportId, String? fileType) {
     if (value == 'Delete') {
       _selectedReportId = reportId;
       CommonMethods.confirmationDialog(
@@ -379,24 +380,24 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
   }
 
   void deleteReport() async {
-    if (_selectedReportId == null || _selectedReportId.isEmpty) {
+    if (_selectedReportId == null || _selectedReportId!.isEmpty) {
       _showMessage(PlunesStrings.dataNotFound);
       return;
     }
     _isDeleting = true;
     _setState();
-    var result = await _plockrBloc.deleteFileAndData(_selectedReportId);
+    var result = await _plockrBloc!.deleteFileAndData(_selectedReportId);
     _isDeleting = false;
     if (result is RequestSuccess) {
-      if (_originalDataList.contains(UploadedReports(sId: _selectedReportId))) {
-        _originalDataList.remove(UploadedReports(sId: _selectedReportId));
+      if (_originalDataList!.contains(UploadedReports(sId: _selectedReportId))) {
+        _originalDataList!.remove(UploadedReports(sId: _selectedReportId));
       }
       if (cross != null &&
           cross &&
           _searchedList != null &&
-          _searchedList.isNotEmpty &&
-          _searchedList.contains(UploadedReports(sId: _selectedReportId))) {
-        _searchedList.remove(UploadedReports(sId: _selectedReportId));
+          _searchedList!.isNotEmpty &&
+          _searchedList!.contains(UploadedReports(sId: _selectedReportId))) {
+        _searchedList!.remove(UploadedReports(sId: _selectedReportId));
       }
       _showMessage(PlunesStrings.deleteSuccessfully);
     } else if (result is RequestFailed) {
@@ -405,7 +406,7 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
     _setState();
   }
 
-  void _getShareableLink(String sId, String fileType) async {
+  void _getShareableLink(String? sId, String? fileType) async {
     if (sId == null || sId.isEmpty) {
       _showMessage(PlunesStrings.dataNotFound);
       return;
@@ -414,22 +415,22 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
       return;
     }
     _isSharing = true;
-    var result = await _plockrBloc.getSharebleLink(sId);
+    var result = await _plockrBloc!.getSharebleLink(sId);
     _isSharing = false;
     if (result is RequestSuccess) {
-      ShareableReportModel shareableReportModel = result.response;
+      ShareableReportModel? shareableReportModel = result.response;
       if (shareableReportModel != null &&
           shareableReportModel.link != null &&
-          shareableReportModel.link.reportUrl != null &&
-          shareableReportModel.link.reportUrl.isNotEmpty) {
+          shareableReportModel.link!.reportUrl != null &&
+          shareableReportModel.link!.reportUrl!.isNotEmpty) {
         if (fileType != null &&
             fileType.isNotEmpty &&
             fileType == UploadedReports.dicomFile) {
           CustomWidgets().share(
-              "Report url :\n ${_plockrResponseModel.webviewUrl}${shareableReportModel.link.reportUrl}");
+              "Report url :\n ${_plockrResponseModel!.webviewUrl}${shareableReportModel.link!.reportUrl}");
         } else {
           CustomWidgets()
-              .share("Report url :\n ${shareableReportModel.link.reportUrl}");
+              .share("Report url :\n ${shareableReportModel.link!.reportUrl}");
         }
       } else {
         _showMessage(PlunesStrings.dataNotFound);
@@ -459,7 +460,7 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
   Widget _renderedListItems(List<UploadedReports> uploadedReports) {
     return ListView.builder(
       shrinkWrap: true,
-      itemCount: uploadedReports?.length ?? 0,
+      itemCount: uploadedReports.length ?? 0,
       itemBuilder: (context, index) {
         return Container(
           padding:
@@ -478,7 +479,7 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
                         context: context,
                         builder: (BuildContext context) => ShowImageDetails(
                             uploadedReports[index],
-                            _plockrResponseModel.webviewUrl),
+                            _plockrResponseModel!.webviewUrl),
                       );
                     },
                     child: Container(
@@ -496,11 +497,10 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
                               children: <Widget>[
                                 Text(
                                   CommonMethods.getStringInCamelCase(
-                                          uploadedReports[index]
-                                              ?.reportDisplayName) ??
+                                          uploadedReports[index].reportDisplayName) ??
                                       PlunesStrings.NA,
                                   maxLines: 3,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       color: Color(0xff5D5D5D),
                                       fontWeight: FontWeight.w600,
                                       fontSize: 15),
@@ -509,30 +509,28 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
                                   DateUtil.getDuration(
                                       uploadedReports[index].createdTime),
                                   //'2 days ago',
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontSize: 12, color: Color(0xff5D5D5D)),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 10,
                                 ),
-                                Text(
-                                    uploadedReports[index]?.userName ??
+                                Text(uploadedReports[index].userName ??
                                         PlunesStrings.NA,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         color: Color(0xff5D5D5D),
                                         fontSize: 13)),
-                                Text(
-                                    uploadedReports[index]?.remarks ??
+                                Text(uploadedReports[index].remarks ??
                                         PlunesStrings.NA,
                                     maxLines: 1,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         color: Color(0xff5D5D5D),
                                         fontSize: 13)),
                               ],
                             ),
                           )),
-                          getMenuPopup(uploadedReports[index]?.sId,
-                              uploadedReports[index]?.fileType),
+                          getMenuPopup(uploadedReports[index].sId,
+                              uploadedReports[index].fileType),
                         ],
                       ),
                     ),
@@ -548,15 +546,15 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
 
   void _filterOriginalListItems(String text) {
     if (_originalDataList != null &&
-        _originalDataList.isNotEmpty &&
+        _originalDataList!.isNotEmpty &&
         text != null &&
         text.trim().isNotEmpty) {
       _searchedList = [];
-      _originalDataList.forEach((item) {
-        if (item.reportDisplayName
+      _originalDataList!.forEach((item) {
+        if (item.reportDisplayName!
             .toLowerCase()
             .contains(text.trim().toLowerCase())) {
-          _searchedList.add(item);
+          _searchedList!.add(item);
         }
       });
     }

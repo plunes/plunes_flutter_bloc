@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:plunes/Utils/app_config.dart';
@@ -20,8 +21,8 @@ import 'package:plunes/ui/commonView/LocationFetch.dart';
 
 // ignore: must_be_immutable
 class BiddingLoading extends BaseActivity {
-  final CatalogueData catalogueData;
-  final String searchQuery;
+  final CatalogueData? catalogueData;
+  final String? searchQuery;
 
   BiddingLoading({this.catalogueData, this.searchQuery});
 
@@ -29,22 +30,23 @@ class BiddingLoading extends BaseActivity {
   _BiddingLoadingState createState() => _BiddingLoadingState();
 }
 
-class _BiddingLoadingState extends BaseState<BiddingLoading> {
+// class _BiddingLoadingState extends BaseState<BiddingLoading> {
+class _BiddingLoadingState extends State<BiddingLoading> {
   double _bidProgress = 0.0;
-  Timer _timer;
+  Timer? _timer;
   int _start = 0;
   double _movingUnit = 110;
-  bool _progressEnabled;
-  String _failureCause;
+  late bool _progressEnabled;
+  String? _failureCause;
   Completer<GoogleMapController> _googleMapController = Completer();
-  GoogleMapController _mapController;
+  GoogleMapController? _mapController;
   bool _hasAnimated = false;
-  SearchSolutionBloc _searchSolutionBloc;
-  SearchedDocResults _searchedDocResults;
+  late SearchSolutionBloc _searchSolutionBloc;
+  SearchedDocResults? _searchedDocResults;
   Set<Marker> _markers = {}, _bigMarkers = {};
-  BitmapDescriptor hosImage1XGreenBgDesc, hosImage2XGreenBgDesc;
-  User _user;
-  IconGenerator _iconGen;
+  BitmapDescriptor? hosImage1XGreenBgDesc, hosImage2XGreenBgDesc;
+  late User _user;
+  late IconGenerator _iconGen;
 
   @override
   void initState() {
@@ -101,9 +103,9 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                           LocationFetch()))
                   .then((val) {
                 if (val != null) {
-                  var addressControllerList = new List();
+                  var addressControllerList = [];
                   addressControllerList = val.toString().split(":");
-                  String addr = addressControllerList[0] +
+                  String? addr = addressControllerList[0] +
                       ' ' +
                       addressControllerList[1] +
                       ' ' +
@@ -118,11 +120,11 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                           address: addr)
                       .then((result) {
                     if (result is RequestSuccess) {
-                      CheckLocationResponse checkLocationResponse =
+                      CheckLocationResponse? checkLocationResponse =
                           result.response;
                       if (checkLocationResponse != null &&
                           checkLocationResponse.msg != null &&
-                          checkLocationResponse.msg.isNotEmpty) {
+                          checkLocationResponse.msg!.isNotEmpty) {
                         _failureCause = checkLocationResponse.msg;
                       }
                     } else if (result is RequestFailed) {
@@ -231,8 +233,8 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                                 markers: _markers,
                                 // _hasAnimated ? _markers : _bigMarkers,
                                 initialCameraPosition: CameraPosition(
-                                    target: LatLng(double.parse(_user.latitude),
-                                        double.parse(_user.longitude)),
+                                    target: LatLng(double.parse(_user.latitude!),
+                                        double.parse(_user.longitude!)),
                                     zoom: 10),
                                 padding: EdgeInsets.all(0.0),
                                 myLocationEnabled: false,
@@ -579,48 +581,49 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
 
   _negotiate() async {
     var result = await _searchSolutionBloc.getDocHosSolution(
-        widget.catalogueData,
+        widget.catalogueData!,
+        "negoritalt",
         searchQuery: widget.searchQuery);
     if (result is RequestSuccess) {
       _searchedDocResults = result.response;
       if (_searchedDocResults == null ||
-          _searchedDocResults.solution == null ||
-          _searchedDocResults.solution.services == null ||
-          _searchedDocResults.solution.services.isEmpty) {
+          _searchedDocResults!.solution == null ||
+          _searchedDocResults!.solution!.services == null ||
+          _searchedDocResults!.solution!.services!.isEmpty) {
         if (_searchedDocResults != null &&
-            _searchedDocResults.msg != null &&
-            _searchedDocResults.msg.isNotEmpty) {
-          _failureCause = _searchedDocResults.msg;
+            _searchedDocResults!.msg != null &&
+            _searchedDocResults!.msg!.isNotEmpty) {
+          _failureCause = _searchedDocResults!.msg;
         }
       } else {
-        double minZoom = 0;
-        int arrLength = _searchedDocResults.solution.services.length;
+        double? minZoom = 0;
+        int arrLength = _searchedDocResults!.solution!.services!.length;
         for (int index = 0; index < arrLength; index++) {
-          if (_searchedDocResults.solution.services[index].distance != null &&
-              _searchedDocResults.solution.services[index].distance > minZoom) {
-            minZoom = _searchedDocResults.solution.services[index].distance;
+          if (_searchedDocResults!.solution!.services![index].distance != null &&
+              _searchedDocResults!.solution!.services![index].distance! > minZoom!) {
+            minZoom = _searchedDocResults!.solution!.services![index].distance as double?;
           }
         }
         if (minZoom != 0) {
-          _animateMapPosition(minZoom);
+          _animateMapPosition(minZoom!);
         }
         for (int index = 0; index < arrLength; index++) {
           await Future.delayed(Duration(milliseconds: 300));
           _markers.add(Marker(
               markerId:
-                  MarkerId(_searchedDocResults.solution.services[index].sId),
-              icon: hosImage2XGreenBgDesc,
+                  MarkerId(_searchedDocResults!.solution!.services![index].sId!),
+              icon: hosImage2XGreenBgDesc!,
               position: LatLng(
-                  _searchedDocResults.solution.services[index].latitude
+                  _searchedDocResults!.solution!.services![index].latitude
                           ?.toDouble() ??
                       0.0,
-                  _searchedDocResults.solution.services[index].longitude
+                  _searchedDocResults!.solution!.services![index].longitude
                           ?.toDouble() ??
                       0.0),
               infoWindow: InfoWindow(
-                  title: _searchedDocResults.solution.services[index].name,
+                  title: _searchedDocResults!.solution!.services![index].name,
                   snippet:
-                      "${_searchedDocResults.solution.services[index].distance?.toStringAsFixed(1)} km")));
+                      "${_searchedDocResults!.solution!.services![index].distance?.toStringAsFixed(1)} km")));
         }
       }
     } else if (result is RequestFailed) {
@@ -644,10 +647,10 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
     }
     Future.delayed(Duration(milliseconds: 10)).then((value) {
       if (_mapController != null && mounted) {
-        _mapController.animateCamera(CameraUpdate.newCameraPosition(
+        _mapController!.animateCamera(CameraUpdate.newCameraPosition(
             CameraPosition(
-                target: LatLng(double.parse(_user.latitude),
-                    double.parse(_user.longitude)),
+                target: LatLng(double.parse(_user.latitude!),
+                    double.parse(_user.longitude!)),
                 zoom: minZoom,
                 bearing: 10)));
       }

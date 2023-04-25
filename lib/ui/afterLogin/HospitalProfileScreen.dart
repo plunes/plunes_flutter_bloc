@@ -23,7 +23,7 @@ import 'Adapter/AchievementItemAdapter.dart';
 
 // ignore: must_be_immutable
 class HospitalProfileScreen extends BaseActivity {
-  final String title;
+  final String? title;
 
   HospitalProfileScreen({this.title});
 
@@ -42,15 +42,15 @@ class HospitalProfileScreenState extends State<HospitalProfileScreen>
   Stream<String> get fetchImage => _fetchImage.stream;
   AppBarBehavior _appBarBehavior = AppBarBehavior.pinned;
   ScrollController _scrollController = new ScrollController();
-  AnimationController _animationController;
-  ImagePickerHandler imagePicker;
+  AnimationController? _animationController;
+  late ImagePickerHandler imagePicker;
   var globalHeight,
       globalWidth,
-      imageUrl = '',
+      imageUrl = '' as String?,
       _latitude = '',
-      _bannerImageUrl = '',
+      _bannerImageUrl = '' as String?,
       _longitude = '';
-  var _speciality = '',
+  var _speciality = '' as String?,
       _userName = '',
       _userType = '',
       _userEmail = '',
@@ -66,18 +66,17 @@ class HospitalProfileScreenState extends State<HospitalProfileScreen>
       _introduction,
       _gender;
   Set _special_lities = new Set();
-  List<DropdownMenuItem<String>> _dropDownMenuItems;
-  List<dynamic> _doctorsList = List();
+  List<DropdownMenuItem<String>>? _dropDownMenuItems;
+  List<dynamic> _doctorsList = [];
   final double _appBarHeight = 200.0;
-  bool isFirstTime, isBackgroundImage = false;
+  bool isFirstTime=true, isBackgroundImage = false;
   var top = 0.0;
   bool isRecord = false;
-  File _image;
-  Preferences preferences;
+  File? _image;
+  late Preferences preferences;
 
   @override
   void initState() {
-    isFirstTime = true;
     initialize();
     super.initState();
   }
@@ -85,7 +84,7 @@ class HospitalProfileScreenState extends State<HospitalProfileScreen>
   @override
   void dispose() {
     super.dispose();
-    _animationController.dispose();
+    _animationController!.dispose();
     _scrollController.dispose();
     _fetchImage.close();
     bloc.disposeProfileStream();
@@ -147,12 +146,12 @@ class HospitalProfileScreenState extends State<HospitalProfileScreen>
                           child: Container(
                             height: 250.0,
                             width: globalWidth,
-                            child: _bannerImageUrl.contains('http')
+                            child: _bannerImageUrl!.contains('http')
                                 ? Image.network(
-                                    _bannerImageUrl,
+                                    _bannerImageUrl!,
                                     fit: BoxFit.cover,
                                   )
-                                : Image.asset(_bannerImageUrl,
+                                : Image.asset(_bannerImageUrl!,
                                     fit: BoxFit.cover),
                             decoration: BoxDecoration(
                               color: Colors.transparent,
@@ -276,12 +275,11 @@ class HospitalProfileScreenState extends State<HospitalProfileScreen>
                                                         hintStyle: TextStyle(
                                                             color:
                                                                 Colors.black),
-                                                        hasFloatingPlaceholder:
-                                                            true,
+                                                        // hasFloatingPlaceholder: true,
                                                         fillColor:
                                                             Colors.white),
                                                 items: _dropDownMenuItems,
-                                                onChanged: (val) {
+                                                onChanged: (dynamic val) {
                                                   setState(() {
                                                     _speciality = val;
                                                     get_data();
@@ -644,9 +642,9 @@ class HospitalProfileScreenState extends State<HospitalProfileScreen>
                               child: CircleAvatar(
                             radius: 30,
                             backgroundImage:
-                                snapshot.data.toString().contains('http')
+                                (snapshot.data.toString().contains('http')
                                     ? NetworkImage(snapshot.data.toString())
-                                    : ExactAssetImage(snapshot.data.toString()),
+                                    : ExactAssetImage(snapshot.data.toString())) as ImageProvider<Object>?,
                           ));
                         } else
                           return getBackImageView();
@@ -707,7 +705,7 @@ class HospitalProfileScreenState extends State<HospitalProfileScreen>
   }
 
   @override
-  fetchImageCallBack(File _image) {
+  fetchImageCallBack(_image) {
     if (_image != null) {
       print("image==" + base64Encode(_image.readAsBytesSync()).toString());
       this._image = _image;
@@ -756,7 +754,7 @@ class HospitalProfileScreenState extends State<HospitalProfileScreen>
     });
     bloc.fetchProfileData(context, this);
     bloc.profileData.listen((data) async {
-      if (data.success) {
+      if (data.success!) {
         await bloc.saveDataInPreferences(data, context, null);
         widget.showInSnackBar(plunesStrings.success, Colors.green, _scaffoldKey1);
       } else {
@@ -769,7 +767,7 @@ class HospitalProfileScreenState extends State<HospitalProfileScreen>
     });
     _special_lities.add(plunesStrings.chooseSpeciality);
     _dropDownMenuItems = getDropDownMenuItems();
-    _speciality = _dropDownMenuItems[0].value;
+    _speciality = _dropDownMenuItems![0].value;
     get_data();
   }
 
@@ -822,8 +820,8 @@ class HospitalProfileScreenState extends State<HospitalProfileScreen>
 
   // here we are creating the list needed for the DropDownButton
   List<DropdownMenuItem<String>> getDropDownMenuItems() {
-    List<DropdownMenuItem<String>> items = new List();
-    for (String speciality in _special_lities) {
+    List<DropdownMenuItem<String>> items = [];
+    for (String speciality in _special_lities as Iterable<String>) {
       items.add(
         new DropdownMenuItem(
             value: speciality,
@@ -845,7 +843,7 @@ class HospitalProfileScreenState extends State<HospitalProfileScreen>
             opaque: false,
             pageBuilder: (BuildContext context, _, __) => LocationFetch()))
         .then((val) {
-      var addressControllerList = new List();
+      var addressControllerList = [];
       addressControllerList = val.toString().split(":");
       var address = addressControllerList[0] +
           ' ' +

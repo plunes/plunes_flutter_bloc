@@ -13,7 +13,8 @@ import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
-import 'package:share/share.dart';
+// import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 
 // ignore: must_be_immutable
 class ReferScreen extends BaseActivity {
@@ -23,14 +24,15 @@ class ReferScreen extends BaseActivity {
   _ReferScreenState createState() => _ReferScreenState();
 }
 
-class _ReferScreenState extends BaseState<ReferScreen> {
+// class _ReferScreenState extends BaseState<ReferScreen> {
+class _ReferScreenState extends State<ReferScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  var globalHeight, globalWidth, _credit = '0', _referralCode = '';
-  Preferences _preferences;
-  bool progress = true, _hasUsedCodeThrice = false;
-  UserBloc _userBloc;
-  LoginPost _userProfileInfo;
-  String _failureCause;
+  var globalHeight, globalWidth, _credit = '0' as String?, _referralCode = '' as String?;
+  late Preferences _preferences;
+  bool? progress = true, _hasUsedCodeThrice = false;
+  late UserBloc _userBloc;
+  LoginPost? _userProfileInfo;
+  String? _failureCause;
 
   @override
   void initState() {
@@ -55,16 +57,16 @@ class _ReferScreenState extends BaseState<ReferScreen> {
     globalHeight = MediaQuery.of(context).size.height;
     globalWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-        appBar: widget.getAppBar(context, plunesStrings.referAndEarn, true),
+        appBar: widget.getAppBar(context, plunesStrings.referAndEarn, true) as PreferredSizeWidget?,
         key: _scaffoldKey,
         backgroundColor: Colors.white,
         body: Container(
-            child: progress
+            child: progress!
                 ? CustomWidgets().getProgressIndicator()
                 : _failureCause != null
                     ? CustomWidgets().errorWidget(_failureCause,
                         onTap: () => _getCurrentCredits())
-                    : _hasUsedCodeThrice
+                    : _hasUsedCodeThrice!
                         ? _bodyForCodeUsedThrice()
                         : getBodyView()));
   }
@@ -111,7 +113,7 @@ class _ReferScreenState extends BaseState<ReferScreen> {
                   SizedBox(
                     width: 5,
                   ),
-                  widget.createTextViews(_credit, 16, colorsFile.darkGrey1,
+                  widget.createTextViews(_credit!, 16, colorsFile.darkGrey1,
                       TextAlign.start, FontWeight.w500),
                 ],
               ),
@@ -135,7 +137,7 @@ class _ReferScreenState extends BaseState<ReferScreen> {
                   child: Row(
                     children: <Widget>[
                       widget.createTextViews(
-                          _referralCode,
+                          _referralCode!,
                           15,
                           colorsFile.lightGrey5,
                           TextAlign.start,
@@ -182,7 +184,7 @@ class _ReferScreenState extends BaseState<ReferScreen> {
     );
   }
 
-  Widget getBulletRow(String text, {String textInGreen}) {
+  Widget getBulletRow(String text, {String? textInGreen}) {
     return Container(
       margin: EdgeInsets.only(bottom: 10),
       child: Row(
@@ -227,7 +229,7 @@ class _ReferScreenState extends BaseState<ReferScreen> {
 
   void _getCurrentCredits() async {
     _failureCause = null;
-    if (!progress) {
+    if (!progress!) {
       progress = true;
       _setState();
     }
@@ -238,24 +240,24 @@ class _ReferScreenState extends BaseState<ReferScreen> {
     if (requestState is RequestSuccess) {
       _userProfileInfo = requestState.response;
       if (_userProfileInfo != null &&
-          _userProfileInfo.user != null &&
-          _userProfileInfo.user.credits != null &&
-          _userProfileInfo.user.credits != "") {
-        _credit = _userProfileInfo.user.credits;
-        _preferences.setPreferencesString(Constants.PREF_CREDITS, _credit);
+          _userProfileInfo!.user != null &&
+          _userProfileInfo!.user!.credits != null &&
+          _userProfileInfo!.user!.credits != "") {
+        _credit = _userProfileInfo!.user!.credits;
+        _preferences.setPreferencesString(Constants.PREF_CREDITS, _credit!);
       }
       if (_userProfileInfo != null &&
-          _userProfileInfo.user != null &&
-          _userProfileInfo.user.referralCode != null &&
-          _userProfileInfo.user.referralCode != "") {
-        _referralCode = _userProfileInfo.user.referralCode;
+          _userProfileInfo!.user != null &&
+          _userProfileInfo!.user!.referralCode != null &&
+          _userProfileInfo!.user!.referralCode != "") {
+        _referralCode = _userProfileInfo!.user!.referralCode;
         _preferences.setPreferencesString(
-            Constants.PREF_REFERRAL_CODE, _referralCode);
+            Constants.PREF_REFERRAL_CODE, _referralCode!);
       }
       if (_userProfileInfo != null &&
-          _userProfileInfo.user != null &&
-          _userProfileInfo.user.referralExpired != null) {
-        _hasUsedCodeThrice = _userProfileInfo.user.referralExpired;
+          _userProfileInfo!.user != null &&
+          _userProfileInfo!.user!.referralExpired != null) {
+        _hasUsedCodeThrice = _userProfileInfo!.user!.referralExpired;
       }
     } else if (requestState is RequestFailed) {
       _failureCause =
@@ -316,7 +318,7 @@ class _ReferScreenState extends BaseState<ReferScreen> {
                 SizedBox(
                   width: 5,
                 ),
-                widget.createTextViews(_credit, 16, colorsFile.darkGrey1,
+                widget.createTextViews(_credit!, 16, colorsFile.darkGrey1,
                     TextAlign.start, FontWeight.w500),
               ],
             ),

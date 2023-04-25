@@ -6,9 +6,9 @@ import 'package:plunes/requester/request_states.dart';
 class NotificationBloc extends BlocBase {
   Future<RequestState> getNotifications({bool shouldNotify = false}) async {
     addIntoStream(RequestInProgress());
-    var result =
-        await NotificationRepo().getNotifications(shouldNotify: shouldNotify);
+    var result = await NotificationRepo().getNotifications(shouldNotify: shouldNotify);
     addIntoStream(result);
+    super.addIntoStream(result);
     return result;
   }
 
@@ -17,7 +17,7 @@ class NotificationBloc extends BlocBase {
   }
 
   @override
-  void addIntoStream(RequestState result) {
+  void addIntoStream(RequestState? result) {
     super.addIntoStream(result);
   }
 

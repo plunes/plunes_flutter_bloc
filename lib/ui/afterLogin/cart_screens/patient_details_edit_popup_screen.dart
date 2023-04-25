@@ -18,7 +18,7 @@ import 'package:plunes/res/StringsFile.dart';
 // ignore: must_be_immutable
 class EditPatientDetailScreen extends BaseActivity {
   final BookingIds bookingIds;
-  CartMainBloc cartMainBloc;
+  CartMainBloc? cartMainBloc;
 
   EditPatientDetailScreen(this.bookingIds, this.cartMainBloc);
 
@@ -27,18 +27,20 @@ class EditPatientDetailScreen extends BaseActivity {
       _EditPatientDetailScreenState();
 }
 
-class _EditPatientDetailScreenState extends BaseState<EditPatientDetailScreen> {
-  String _gender, _selectedTimeSlot;
-  DateTime _currentDate, _selectedDate;
-  bool _hasScrolledOnce, _hasGotSize;
-  List<String> _slotArray;
-  ScrollController _scrollController;
-  GlobalKey _selectedTimeSlotKey;
+// class _EditPatientDetailScreenState extends BaseState<EditPatientDetailScreen> {
+class _EditPatientDetailScreenState extends State<EditPatientDetailScreen> {
+  final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  String? _gender, _selectedTimeSlot;
+  DateTime? _currentDate, _selectedDate;
+  bool? _hasScrolledOnce, _hasGotSize;
+  List<String?>? _slotArray;
+  ScrollController? _scrollController;
+  GlobalKey? _selectedTimeSlotKey;
   double _widgetSize = 0;
-  CartMainBloc _cartMainBloc;
-  TextEditingController _patientNameController;
-  TextEditingController _serviceNameController;
-  TextEditingController _ageController;
+  CartMainBloc? _cartMainBloc;
+  TextEditingController? _patientNameController;
+  TextEditingController? _serviceNameController;
+  TextEditingController? _ageController;
 
   @override
   void initState() {
@@ -46,9 +48,9 @@ class _EditPatientDetailScreenState extends BaseState<EditPatientDetailScreen> {
     _serviceNameController = TextEditingController();
     _ageController = TextEditingController();
     if (widget.bookingIds != null) {
-      _patientNameController.text = widget.bookingIds.patientName ?? "";
-      _serviceNameController.text = widget.bookingIds.serviceName ?? "";
-      _ageController.text = widget.bookingIds.patientAge ?? "";
+      _patientNameController!.text = widget.bookingIds.patientName ?? "";
+      _serviceNameController!.text = widget.bookingIds.serviceName ?? "";
+      _ageController!.text = widget.bookingIds.patientAge ?? "";
       _gender = widget.bookingIds.patientSex;
     }
     _cartMainBloc = widget.cartMainBloc;
@@ -95,8 +97,8 @@ class _EditPatientDetailScreenState extends BaseState<EditPatientDetailScreen> {
               borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(16),
                   bottomRight: Radius.circular(16)),
-              child: StreamBuilder<RequestState>(
-                  stream: _cartMainBloc.editInfoStream,
+              child: StreamBuilder<RequestState?>(
+                  stream: _cartMainBloc!.editInfoStream,
                   builder: (context, snapshot) {
                     if (snapshot != null &&
                         snapshot.data is RequestInProgress) {
@@ -109,24 +111,23 @@ class _EditPatientDetailScreenState extends BaseState<EditPatientDetailScreen> {
                       Future.delayed(Duration(milliseconds: 10)).then((value) {
                         Navigator.pop(context, true);
                       });
-                      _cartMainBloc.addStateInEditDetailsStream(null);
+                      _cartMainBloc!.addStateInEditDetailsStream(null);
                     } else if (snapshot != null &&
                         snapshot.data is RequestFailed) {
-                      RequestFailed _requestFailed = snapshot.data;
+                      RequestFailed? _requestFailed = snapshot.data as RequestFailed?;
                       Future.delayed(Duration(milliseconds: 10)).then((value) {
-                        _showInSnackBar(_requestFailed.failureCause);
+                        _showInSnackBar(_requestFailed!.failureCause);
                       });
-                      _cartMainBloc.addStateInEditDetailsStream(null);
+                      _cartMainBloc!.addStateInEditDetailsStream(null);
                     }
                     return Row(
                       children: <Widget>[
                         Expanded(
-                          child: FlatButton(
-                              highlightColor: Colors.transparent,
-                              hoverColor: Colors.transparent,
-                              splashColor:
-                                  PlunesColors.SPARKLINGGREEN.withOpacity(.1),
-                              focusColor: Colors.transparent,
+                          child: ElevatedButton(
+                              // highlightColor: Colors.transparent,
+                              // hoverColor: Colors.transparent,
+                              // splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                              // focusColor: Colors.transparent,
                               onPressed: () {
                                 Navigator.pop(context);
                                 return;
@@ -150,12 +151,11 @@ class _EditPatientDetailScreenState extends BaseState<EditPatientDetailScreen> {
                           width: 0.5,
                         ),
                         Expanded(
-                          child: FlatButton(
-                              highlightColor: Colors.transparent,
-                              hoverColor: Colors.transparent,
-                              splashColor:
-                                  PlunesColors.SPARKLINGGREEN.withOpacity(.1),
-                              focusColor: Colors.transparent,
+                          child: ElevatedButton(
+                              // highlightColor: Colors.transparent,
+                              // hoverColor: Colors.transparent,
+                              // splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                              // focusColor: Colors.transparent,
                               onPressed: () {
                                 if (_selectedDate != null &&
                                     _selectedTimeSlot != null &&
@@ -275,7 +275,8 @@ class _EditPatientDetailScreenState extends BaseState<EditPatientDetailScreen> {
                           child: TextField(
                               controller: _ageController,
                               inputFormatters: [
-                                WhitelistingTextInputFormatter.digitsOnly
+                                FilteringTextInputFormatter.digitsOnly
+                                // WhitelistingTextInputFormatter.digitsOnly
                               ],
                               maxLength: 3,
                               style: TextStyle(
@@ -330,7 +331,7 @@ class _EditPatientDetailScreenState extends BaseState<EditPatientDetailScreen> {
                                     color: PlunesColors.GREYCOLOR,
                                     fontSize: 13),
                               ),
-                              onChanged: (String gender) {
+                              onChanged: (String? gender) {
                                 _gender = gender;
                                 _setState();
                               },
@@ -368,7 +369,7 @@ class _EditPatientDetailScreenState extends BaseState<EditPatientDetailScreen> {
     return Container(
       width: double.infinity,
       child: DatePicker(
-        _currentDate,
+        _currentDate!,
         width: AppConfig.horizontalBlockSize * 15.5,
         height: AppConfig.verticalBlockSize * 12.5,
         daysCount: 100,
@@ -394,14 +395,14 @@ class _EditPatientDetailScreenState extends BaseState<EditPatientDetailScreen> {
   void _getSlotsInfo(String dateAsString) {
     _selectedTimeSlot = PlunesStrings.noSlot;
     widget.bookingIds.service?.timeSlots?.forEach((slot) {
-      if (slot.day.toLowerCase().contains(dateAsString.toLowerCase())) {
-        if (!slot.closed &&
+      if (slot.day!.toLowerCase().contains(dateAsString.toLowerCase())) {
+        if (!slot.closed! &&
             slot.slotArray != null &&
-            slot.slotArray.isNotEmpty) {
+            slot.slotArray!.isNotEmpty) {
           _slotArray = slot.slotArray;
-          slot.slotArray.forEach((element) {
+          slot.slotArray!.forEach((element) {
             if (_selectedTimeSlot == PlunesStrings.noSlot) {
-              _checkSelectedSlot(element);
+              _checkSelectedSlot(element!);
             }
           });
         }
@@ -458,8 +459,8 @@ class _EditPatientDetailScreenState extends BaseState<EditPatientDetailScreen> {
                 children: <Widget>[
                   InkWell(
                     onTap: () {
-                      _scrollController
-                          .jumpTo(_scrollController.position.minScrollExtent);
+                      _scrollController!
+                          .jumpTo(_scrollController!.position.minScrollExtent);
                       return;
                     },
                     child: Padding(
@@ -484,22 +485,22 @@ class _EditPatientDetailScreenState extends BaseState<EditPatientDetailScreen> {
                           mainAxisSpacing: 8,
                           crossAxisSpacing: 8),
                       itemBuilder: (_, index) {
-                        if (!_hasScrolledOnce) {
+                        if (!_hasScrolledOnce!) {
                           _hasScrolledOnce = true;
                           _doScroll();
                         }
                         return InkWell(
-                          key: (index == 0 && !_hasGotSize)
+                          key: (index == 0 && !_hasGotSize!)
                               ? _selectedTimeSlotKey
                               : null,
                           onTap: () {
-                            _checkSelectedSlot(_slotArray[index],
+                            _checkSelectedSlot(_slotArray![index]!,
                                 shouldShowPopup: true);
                             _setState();
                             return;
                           },
-                          child: _getTimeBoxWidget(_slotArray[index],
-                              _slotArray[index] == _selectedTimeSlot),
+                          child: _getTimeBoxWidget(_slotArray![index],
+                              _slotArray![index] == _selectedTimeSlot),
                         );
                       },
                       itemCount: _slotArray?.length ?? 0,
@@ -507,8 +508,8 @@ class _EditPatientDetailScreenState extends BaseState<EditPatientDetailScreen> {
                   ),
                   InkWell(
                     onTap: () {
-                      _scrollController
-                          .jumpTo(_scrollController.position.maxScrollExtent);
+                      _scrollController!
+                          .jumpTo(_scrollController!.position.maxScrollExtent);
                       return;
                     },
                     child: Padding(
@@ -531,16 +532,16 @@ class _EditPatientDetailScreenState extends BaseState<EditPatientDetailScreen> {
         _selectedTimeSlot != PlunesStrings.noSlot)) {
       Future.delayed(Duration(milliseconds: 500)).then((value) {
         if (_slotArray != null &&
-            _slotArray.isNotEmpty &&
-            _slotArray.contains(_selectedTimeSlot)) {
-          if (!_hasGotSize) {
+            _slotArray!.isNotEmpty &&
+            _slotArray!.contains(_selectedTimeSlot)) {
+          if (!_hasGotSize!) {
             _hasGotSize = true;
-            var _context = _selectedTimeSlotKey.currentContext;
-            _widgetSize = _context.size.height;
+            var _context = _selectedTimeSlotKey!.currentContext!;
+            _widgetSize = _context.size!.height;
           }
-          int index = _slotArray.indexOf(_selectedTimeSlot);
+          int index = _slotArray!.indexOf(_selectedTimeSlot);
           if (index != null && index >= 0) {
-            _scrollController.animateTo(_widgetSize * index.toDouble(),
+            _scrollController!.animateTo(_widgetSize * index.toDouble(),
                 duration: Duration(milliseconds: 50), curve: Curves.easeInOut);
           }
         }
@@ -566,18 +567,18 @@ class _EditPatientDetailScreenState extends BaseState<EditPatientDetailScreen> {
         _shouldDecreaseDay = true;
       }
       List<String> lastTimeOfBooking =
-          _slotArray[_slotArray.length - 1].split(":");
+          _slotArray![_slotArray!.length - 1]!.split(":");
       int _pmTimeLastSlot = 0;
-      if (_slotArray[_slotArray.length - 1].contains("PM") &&
+      if (_slotArray![_slotArray!.length - 1]!.contains("PM") &&
           lastTimeOfBooking.first != "12") {
         _pmTimeLastSlot = 12;
         lastTimeOfBooking.first =
             "${_pmTimeLastSlot + int.parse(lastTimeOfBooking.first)}";
       }
       if (_selectedDate != null &&
-          (_selectedDate.year == _currentDateTime.year &&
-              _selectedDate.month == _currentDateTime.month &&
-              _selectedDate.day == _currentDateTime.day)) {
+          (_selectedDate!.year == _currentDateTime.year &&
+              _selectedDate!.month == _currentDateTime.month &&
+              _selectedDate!.day == _currentDateTime.day)) {
         List<String> _currentTimeOfBooking =
             DateUtil.getTimeWithAmAndPmFormat(_currentDateTime).split(":");
         int _pmSlotForCurrentTime = 0;
@@ -592,9 +593,9 @@ class _EditPatientDetailScreenState extends BaseState<EditPatientDetailScreen> {
             _currentDateTime.year,
             _currentDateTime.month,
             _currentDateTime.day,
-            int.tryParse(_currentTimeOfBooking.first),
+            int.tryParse(_currentTimeOfBooking.first)!,
             int.tryParse(_currentTimeOfBooking[1]
-                .substring(0, _currentTimeOfBooking[1].indexOf(" "))));
+                .substring(0, _currentTimeOfBooking[1].indexOf(" ")))!);
 //        print("$lastTimeOfBooking lastTimeOfBooking hello $splitTime");
         var _selectedDateTime = DateTime(
             _currentDateTime.year,
@@ -602,15 +603,15 @@ class _EditPatientDetailScreenState extends BaseState<EditPatientDetailScreen> {
             _shouldDecreaseDay
                 ? _currentDateTime.day - 1
                 : _currentDateTime.day,
-            int.tryParse(splitTime.first),
-            int.tryParse(splitTime[1].substring(0, splitTime[1].indexOf(" "))));
+            int.tryParse(splitTime.first)!,
+            int.tryParse(splitTime[1].substring(0, splitTime[1].indexOf(" ")))!);
         var _todayLatBookingDateTime = DateTime(
             _currentDateTime.year,
             _currentDateTime.month,
             _currentDateTime.day,
-            int.tryParse(lastTimeOfBooking.first),
+            int.tryParse(lastTimeOfBooking.first)!,
             int.tryParse(lastTimeOfBooking[1]
-                .substring(0, lastTimeOfBooking[1].indexOf(" "))));
+                .substring(0, lastTimeOfBooking[1].indexOf(" ")))!);
 //        print(
 //            "_selectedDateTime $_selectedDateTime  _currentDateTime $_currentDateTime _todayLatBookingDateTime $_todayLatBookingDateTime");
 //        print(
@@ -621,12 +622,12 @@ class _EditPatientDetailScreenState extends BaseState<EditPatientDetailScreen> {
             _selectedDateTime.isBefore(_todayLatBookingDateTime)) {
           _selectedTimeSlot = selectedTime;
           _selectedDate = DateTime(
-              _selectedDate.year,
-              _selectedDate.month,
-              _selectedDate.day,
-              (int.tryParse(splitTime.first)),
+              _selectedDate!.year,
+              _selectedDate!.month,
+              _selectedDate!.day,
+              int.tryParse(splitTime.first)!,
               int.tryParse(
-                  splitTime[1].substring(0, splitTime[1].indexOf(" "))));
+                  splitTime[1].substring(0, splitTime[1].indexOf(" ")))!);
 //          print("valid");
         } else if ((_selectedDateTime.isBefore(_todayLatBookingDateTime) ||
                 (_selectedDateTime.difference(_todayLatBookingDateTime))
@@ -635,12 +636,12 @@ class _EditPatientDetailScreenState extends BaseState<EditPatientDetailScreen> {
             (_selectedDateTime.isAfter(_currentDateTime))) {
           _selectedTimeSlot = selectedTime;
           _selectedDate = DateTime(
-              _selectedDate.year,
-              _selectedDate.month,
-              _selectedDate.day,
-              (int.tryParse(splitTime.first)),
+              _selectedDate!.year,
+              _selectedDate!.month,
+              _selectedDate!.day,
+              int.tryParse(splitTime.first)!,
               int.tryParse(
-                  splitTime[1].substring(0, splitTime[1].indexOf(" "))));
+                  splitTime[1].substring(0, splitTime[1].indexOf(" ")))!);
 //          print("valid");
         } else {
           if (shouldShowPopup) {
@@ -652,11 +653,11 @@ class _EditPatientDetailScreenState extends BaseState<EditPatientDetailScreen> {
 //        print("else part");
         _selectedTimeSlot = selectedTime;
         _selectedDate = DateTime(
-            _selectedDate.year,
-            _selectedDate.month,
-            _selectedDate.day,
-            (int.tryParse(splitTime.first)),
-            int.tryParse(splitTime[1].substring(0, splitTime[1].indexOf(" "))));
+            _selectedDate!.year,
+            _selectedDate!.month,
+            _selectedDate!.day,
+            int.tryParse(splitTime.first)!,
+            int.tryParse(splitTime[1].substring(0, splitTime[1].indexOf(" ")))!);
       }
     } catch (e, s) {
 //      print("error hai $s");
@@ -706,15 +707,15 @@ class _EditPatientDetailScreenState extends BaseState<EditPatientDetailScreen> {
     });
   }
 
-  bool _isSlotTimeExpired(String time) {
+  bool _isSlotTimeExpired(String? time) {
     bool isSlotTimeExpired = true;
     try {
       var _currentDateTime = DateTime.now();
       if (_selectedDate != null &&
-          (_selectedDate.year == _currentDateTime.year &&
-              _selectedDate.month == _currentDateTime.month &&
-              _selectedDate.day == _currentDateTime.day)) {
-        List<String> splitTime = time.split(":");
+          (_selectedDate!.year == _currentDateTime.year &&
+              _selectedDate!.month == _currentDateTime.month &&
+              _selectedDate!.day == _currentDateTime.day)) {
+        List<String> splitTime = time!.split(":");
         int _pmTime = 0;
         bool _shouldDecreaseDay = false;
         if (time.contains("PM") && splitTime.first != "12") {
@@ -726,9 +727,9 @@ class _EditPatientDetailScreenState extends BaseState<EditPatientDetailScreen> {
           _shouldDecreaseDay = true;
         }
         List<String> lastTimeOfBooking =
-            _slotArray[_slotArray.length - 1].split(":");
+            _slotArray![_slotArray!.length - 1]!.split(":");
         int _pmTimeLastSlot = 0;
-        if (_slotArray[_slotArray.length - 1].contains("PM") &&
+        if (_slotArray![_slotArray!.length - 1]!.contains("PM") &&
             lastTimeOfBooking.first != "12") {
           _pmTimeLastSlot = 12;
           lastTimeOfBooking.first =
@@ -748,17 +749,17 @@ class _EditPatientDetailScreenState extends BaseState<EditPatientDetailScreen> {
             _currentDateTime.year,
             _currentDateTime.month,
             _currentDateTime.day,
-            int.tryParse(_currentTimeOfBooking.first),
+            int.tryParse(_currentTimeOfBooking.first)!,
             int.tryParse(_currentTimeOfBooking[1]
-                .substring(0, _currentTimeOfBooking[1].indexOf(" "))));
+                .substring(0, _currentTimeOfBooking[1].indexOf(" ")))!);
         var _selectedDateTime = DateTime(
             _currentDateTime.year,
             _currentDateTime.month,
             _shouldDecreaseDay
                 ? _currentDateTime.day - 1
                 : _currentDateTime.day,
-            int.tryParse(splitTime.first),
-            int.tryParse(splitTime[1].substring(0, splitTime[1].indexOf(" "))));
+            int.tryParse(splitTime.first)!,
+            int.tryParse(splitTime[1].substring(0, splitTime[1].indexOf(" ")))!);
         if (_selectedDateTime.isAfter(_currentDateTime) ||
             (_selectedDateTime.difference(_currentDateTime)).inMinutes == 0) {
           isSlotTimeExpired = false;
@@ -772,7 +773,7 @@ class _EditPatientDetailScreenState extends BaseState<EditPatientDetailScreen> {
     return isSlotTimeExpired;
   }
 
-  Widget _getTimeBoxWidget(String time, bool isSelected) {
+  Widget _getTimeBoxWidget(String? time, bool isSelected) {
     bool _isSlotTimeExpire = _isSlotTimeExpired(time);
     double opacity = 1.0;
     if (_isSlotTimeExpire) {
@@ -802,12 +803,12 @@ class _EditPatientDetailScreenState extends BaseState<EditPatientDetailScreen> {
             // Color(CommonMethods.getColorHexFromStr("#9C9C9C"))
             //         .withOpacity(opacity),
             fontWeight: FontWeight.normal,
-            fontSize: AppConfig.smallFont - 1),
+            fontSize: AppConfig.smallFont! - 1),
       ),
     );
   }
 
-  void _showInSnackBar(String message, {bool shouldPop = false}) {
+  void _showInSnackBar(String? message, {bool shouldPop = false}) {
     showDialog(
         context: context,
         builder: (context) {
@@ -822,17 +823,17 @@ class _EditPatientDetailScreenState extends BaseState<EditPatientDetailScreen> {
 
   bool _hasFilledDetails() {
     bool _hasFilledDetails = true;
-    String _message;
-    if (_patientNameController.text.trim().isEmpty ||
-        _patientNameController.text.trim().length < 2) {
+    String? _message;
+    if (_patientNameController!.text.trim().isEmpty ||
+        _patientNameController!.text.trim().length < 2) {
       _hasFilledDetails = false;
       _message = PlunesStrings.nameMustBeGreaterThanTwoChar;
-    } else if (_ageController.text.trim().isEmpty ||
-        _ageController.text.trim() == "0" ||
-        int.tryParse(_ageController.text) < 0) {
+    } else if (_ageController!.text.trim().isEmpty ||
+        _ageController!.text.trim() == "0" ||
+        int.tryParse(_ageController!.text)! < 0) {
       _hasFilledDetails = false;
       _message = PlunesStrings.enterValidAge;
-    } else if (_gender == null || _gender.isEmpty) {
+    } else if (_gender == null || _gender!.isEmpty) {
       _hasFilledDetails = false;
       _message = PlunesStrings.pleaseSelectYourGender;
     }
@@ -844,14 +845,14 @@ class _EditPatientDetailScreenState extends BaseState<EditPatientDetailScreen> {
 
   _saveInfo() {
     Map<String, dynamic> json = {
-      "patientName": _patientNameController.text.trim(),
-      "patientAge": _ageController.text.trim(),
+      "patientName": _patientNameController!.text.trim(),
+      "patientAge": _ageController!.text.trim(),
       "patientSex": _gender,
       "patientMobileNumber": UserManager().getUserDetails().mobileNumber,
       "bookingId": widget.bookingIds.sId,
       "timeSlot": _selectedTimeSlot,
-      "appointmentTime": _selectedDate.millisecondsSinceEpoch.toString()
+      "appointmentTime": _selectedDate!.millisecondsSinceEpoch.toString()
     };
-    _cartMainBloc.saveEditedPatientDetails(json);
+    _cartMainBloc!.saveEditedPatientDetails(json);
   }
 }

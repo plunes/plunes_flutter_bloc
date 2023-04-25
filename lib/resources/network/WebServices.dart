@@ -5,8 +5,8 @@ import 'package:plunes/models/Models.dart';
 import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/resources/network/Urls.dart';
 
-import 'ApiCall.dart';
 import '../../Utils/Constants.dart';
+import 'ApiCall.dart';
 
 class WebServices {
   final ApiCall _apiCall = ApiCall();
@@ -25,9 +25,9 @@ class WebServices {
   }
 
   Future<LoginPost> getProfileRequest(
-      BuildContext context, String token) async {
-    return LoginPost.fromJson(await _apiCall
-        .getAPIRequest(context, urls.whoAmI, '', false, token: token));
+      BuildContext context, String? token) async {
+    return LoginPost.fromJson(await (_apiCall
+        .getAPIRequest(context, urls.whoAmI, '', false, token: token) as Future<Map<String, dynamic>?>));
   }
 
   Future<dynamic> getUserOTP(BuildContext context, String url) async {
@@ -77,7 +77,7 @@ class WebServices {
   }
 
   Future<dynamic> postLogoutWebservice(
-      BuildContext context, String token) async {
+      BuildContext context, String? token) async {
     var deviceToken = UserManager().getDeviceToken();
     return await _apiCall.getAPIRequest(
         context,
@@ -92,7 +92,7 @@ class WebServices {
   }
 
   Future<dynamic> putUpdateProfileWebservice(
-      BuildContext context, var body, String token) async {
+      BuildContext context, var body, String? token) async {
     return await _apiCall.getAPIRequest(context, urls.userBaseUrl, '1', false,
         body: json.encode(body), method: Constants.PUT, token: token);
   }

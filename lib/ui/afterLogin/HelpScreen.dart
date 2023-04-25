@@ -24,14 +24,15 @@ class HelpScreen extends BaseActivity {
   _HelpScreenState createState() => _HelpScreenState();
 }
 
-class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
+// class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
+class _HelpScreenState extends State<HelpScreen> implements DialogCallBack {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _descriptionController = new TextEditingController();
   var globalHeight, globalWidth, title = '';
-  DocHosMainInsightBloc _docHosMainInsightBloc;
-  TextEditingController _docHosQueryController;
-  UserBloc _userBloc;
-  HelpLineNumberModel _helpLineNumberModel;
+  DocHosMainInsightBloc? _docHosMainInsightBloc;
+  TextEditingController? _docHosQueryController;
+  UserBloc? _userBloc;
+  HelpLineNumberModel? _helpLineNumberModel;
   final String _helpNumber = "7011311900";
 
   bool booking = false,
@@ -62,7 +63,7 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
     globalHeight = MediaQuery.of(context).size.height;
     globalWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-        appBar: widget.getAppBar(context, plunesStrings.help, true),
+        appBar: widget.getAppBar(context, plunesStrings.help, true) as PreferredSizeWidget?,
         key: _scaffoldKey,
         backgroundColor: Colors.white,
         body: Container(
@@ -82,7 +83,7 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
                   )));
   }
 
-  Widget getHelpContentRow(bool isIcon, String image, String _title,
+  Widget getHelpContentRow(bool isIcon, String? image, String _title,
       double fontSize, FontWeight fontWeight) {
     return InkWell(
       onTap: () => onTapAction(_title),
@@ -114,9 +115,9 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
 
   Widget getBodyDocHosView() {
     bool isSuccess = false;
-    String failureMessage;
-    return StreamBuilder<RequestState>(
-        stream: _docHosMainInsightBloc.helpQueryDocHosStream,
+    String? failureMessage;
+    return StreamBuilder<RequestState?>(
+        stream: _docHosMainInsightBloc!.helpQueryDocHosStream,
         builder: (BuildContext context, snapshot) {
           if (snapshot.data != null && snapshot.data is RequestInProgress) {
             return Container(
@@ -129,10 +130,10 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
             isSuccess = true;
           }
           if (snapshot.data != null && snapshot.data is RequestFailed) {
-            RequestFailed requestFailed = snapshot.data;
+            RequestFailed requestFailed = snapshot.data as RequestFailed;
             failureMessage = requestFailed.failureCause ??
                 PlunesStrings.helpQueryFailedMessage;
-            _docHosMainInsightBloc.addStateInHelpQueryStream(null);
+            _docHosMainInsightBloc!.addStateInHelpQueryStream(null);
           }
           return isSuccess
               ? Dialog(
@@ -253,7 +254,7 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
                               alignLabelWithHint: true,
                               hintText: plunesStrings.description,
                               hintStyle: TextStyle(
-                                  fontSize: AppConfig.largeFont - 3,
+                                  fontSize: AppConfig.largeFont! - 3,
                                   decorationStyle: TextDecorationStyle.wavy)),
                           controller: _docHosQueryController,
                           keyboardType: TextInputType.text,
@@ -273,17 +274,17 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
                             right: AppConfig.horizontalBlockSize * 30),
                         child: InkWell(
                             onTap: () {
-                              if (_docHosQueryController.text
+                              if (_docHosQueryController!.text
                                   .trim()
                                   .isNotEmpty) {
-                                _docHosMainInsightBloc.helpDocHosQuery(
-                                    _docHosQueryController.text.trim());
-                              } else if (_docHosQueryController.text
+                                _docHosMainInsightBloc!.helpDocHosQuery(
+                                    _docHosQueryController!.text.trim());
+                              } else if (_docHosQueryController!.text
                                   .trim()
                                   .isEmpty) {
                                 failureMessage =
                                     PlunesStrings.emptyQueryFieldMessage;
-                                _docHosMainInsightBloc
+                                _docHosMainInsightBloc!
                                     .addStateInHelpQueryStream(null);
                               }
                             },
@@ -296,12 +297,12 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
                                 AppConfig.verticalBlockSize * 1.2,
                                 PlunesColors.WHITECOLOR)),
                       ),
-                      failureMessage == null || failureMessage.isEmpty
+                      failureMessage == null || failureMessage!.isEmpty
                           ? Container()
                           : Container(
                               padding: EdgeInsets.only(
                                   top: AppConfig.verticalBlockSize * 1),
-                              child: Text(failureMessage,
+                              child: Text(failureMessage!,
                                   style: TextStyle(color: Colors.red))),
                       Padding(
                         padding: EdgeInsets.symmetric(
@@ -513,7 +514,7 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
     }
     isPopupShowing = false;
     _setState();
-    var result = await _docHosMainInsightBloc
+    var result = await _docHosMainInsightBloc!
         .helpDocHosQuery("$title : ${_descriptionController.text.trim()}");
     if (result is RequestSuccess && mounted) {
       CustomWidgets().helpThankYou(context);
@@ -543,11 +544,11 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
   Widget _callWidget() {
     return InkWell(
       onTap: () {
-        String num = _helpNumber;
+        String? num = _helpNumber;
         if (_helpLineNumberModel != null &&
-            _helpLineNumberModel.number != null &&
-            _helpLineNumberModel.number.isNotEmpty) {
-          num = _helpLineNumberModel.number;
+            _helpLineNumberModel!.number != null &&
+            _helpLineNumberModel!.number!.isNotEmpty) {
+          num = _helpLineNumberModel!.number;
         }
         LauncherUtil.launchUrl("tel://$num");
         return;
@@ -577,7 +578,7 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
   }
 
   void _getHelpLineNumber() async {
-    var result = await _userBloc.getHelplineNumber();
+    var result = await _userBloc!.getHelplineNumber();
     if (result is RequestSuccess) {
       _helpLineNumberModel = result.response;
     }

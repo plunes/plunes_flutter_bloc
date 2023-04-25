@@ -10,9 +10,9 @@ import 'package:plunes/res/ColorsFile.dart';
 
 // ignore: must_be_immutable
 class ShowInsuranceListScreen extends BaseActivity {
-  final String profId;
-  final bool shouldShowAppBar;
-  Function func;
+  final String? profId;
+  final bool? shouldShowAppBar;
+  Function? func;
 
   ShowInsuranceListScreen({this.profId, this.shouldShowAppBar, this.func});
 
@@ -21,13 +21,14 @@ class ShowInsuranceListScreen extends BaseActivity {
       _ShowInsuranceListScreenState();
 }
 
-class _ShowInsuranceListScreenState extends BaseState<ShowInsuranceListScreen> {
-  UserBloc _userBloc;
-  InsuranceModel _insuranceModel;
-  List<InsuranceProvider> _searchedItemList;
-  TextEditingController _policySearchController;
-  String _failureCause;
-  double _wholeWidgetHeight;
+class _ShowInsuranceListScreenState extends State<ShowInsuranceListScreen> {
+  final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  UserBloc? _userBloc;
+  InsuranceModel? _insuranceModel;
+  List<InsuranceProvider>? _searchedItemList;
+  TextEditingController? _policySearchController;
+  String? _failureCause;
+  double? _wholeWidgetHeight;
 
   @override
   void initState() {
@@ -48,26 +49,26 @@ class _ShowInsuranceListScreenState extends BaseState<ShowInsuranceListScreen> {
   Widget build(BuildContext context) {
     return Material(
       child: Container(
-        height: (widget.shouldShowAppBar != null && !(widget.shouldShowAppBar))
+        height: (widget.shouldShowAppBar != null && !widget.shouldShowAppBar!)
             ? _wholeWidgetHeight ?? AppConfig.verticalBlockSize * 45
             : null,
         child: SafeArea(
           child: Scaffold(
             key: scaffoldKey,
             appBar: widget.shouldShowAppBar ?? true
-                ? widget.getAppBar(context, "Check Insurance", true)
+                ? widget.getAppBar(context, "Check Insurance", true) as PreferredSizeWidget?
                 : null,
-            body: StreamBuilder<RequestState>(
-                stream: _userBloc.insuranceStream,
+            body: StreamBuilder<RequestState?>(
+                stream: _userBloc!.insuranceStream,
                 initialData:
                     (_insuranceModel == null) ? RequestInProgress() : null,
                 builder: (context, snapshot) {
                   if (snapshot.data is RequestSuccess) {
-                    RequestSuccess successObject = snapshot.data;
+                    RequestSuccess successObject = snapshot.data as RequestSuccess;
                     _insuranceModel = successObject.response;
                     _userBloc?.addStateInInsuranceListStream(null);
                   } else if (snapshot.data is RequestFailed) {
-                    RequestFailed _failedObj = snapshot.data;
+                    RequestFailed? _failedObj = snapshot.data as RequestFailed?;
                     _failureCause = _failedObj?.failureCause;
                     _userBloc?.addStateInInsuranceListStream(null);
                   } else if (snapshot.data is RequestInProgress) {
@@ -75,13 +76,13 @@ class _ShowInsuranceListScreenState extends BaseState<ShowInsuranceListScreen> {
                         child: CustomWidgets().getProgressIndicator());
                   }
                   if ((widget.shouldShowAppBar != null &&
-                          !(widget.shouldShowAppBar)) &&
+                          !widget.shouldShowAppBar!) &&
                       (_insuranceModel == null ||
-                          (_insuranceModel.success != null &&
-                              !_insuranceModel.success) ||
-                          _insuranceModel.data == null ||
-                          _insuranceModel.data == null ||
-                          _insuranceModel.data.isEmpty) &&
+                          (_insuranceModel!.success != null &&
+                              !_insuranceModel!.success!) ||
+                          _insuranceModel!.data == null ||
+                          _insuranceModel!.data == null ||
+                          _insuranceModel!.data!.isEmpty) &&
                       _wholeWidgetHeight == null) {
                     _wholeWidgetHeight = 0.0;
                     Future.delayed(Duration(milliseconds: 20)).then((value) {
@@ -89,13 +90,13 @@ class _ShowInsuranceListScreenState extends BaseState<ShowInsuranceListScreen> {
                     });
                   }
                   return (_insuranceModel == null ||
-                          (_insuranceModel.success != null &&
-                              !_insuranceModel.success) ||
-                          _insuranceModel.data == null ||
-                          _insuranceModel.data == null ||
-                          _insuranceModel.data.isEmpty)
+                          (_insuranceModel!.success != null &&
+                              !_insuranceModel!.success!) ||
+                          _insuranceModel!.data == null ||
+                          _insuranceModel!.data == null ||
+                          _insuranceModel!.data!.isEmpty)
                       ? (widget.shouldShowAppBar != null &&
-                              !(widget.shouldShowAppBar))
+                              !widget.shouldShowAppBar!)
                           ? Container()
                           : Container(
                               margin: EdgeInsets.symmetric(
@@ -134,7 +135,7 @@ class _ShowInsuranceListScreenState extends BaseState<ShowInsuranceListScreen> {
           Container(
             margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.4),
           ),
-          (widget.shouldShowAppBar != null && !(widget.shouldShowAppBar))
+          (widget.shouldShowAppBar != null && !widget.shouldShowAppBar!)
               ? Container()
               : _getSearchBar(),
           Expanded(child: _getInsuranceListWidget())
@@ -165,16 +166,16 @@ class _ShowInsuranceListScreenState extends BaseState<ShowInsuranceListScreen> {
                     if (text != null &&
                         text.trim().isNotEmpty &&
                         _insuranceModel != null &&
-                        _insuranceModel.data != null &&
-                        _insuranceModel.data.isNotEmpty) {
+                        _insuranceModel!.data != null &&
+                        _insuranceModel!.data!.isNotEmpty) {
                       _searchedItemList = [];
-                      _insuranceModel.data.forEach((element) {
+                      _insuranceModel!.data!.forEach((element) {
                         if (element.insurancePartner != null &&
-                            element.insurancePartner.trim().isNotEmpty &&
-                            element.insurancePartner
+                            element.insurancePartner!.trim().isNotEmpty &&
+                            element.insurancePartner!
                                 .toLowerCase()
                                 .contains(text.trim().toLowerCase())) {
-                          _searchedItemList.add(element);
+                          _searchedItemList!.add(element);
                         }
                       });
                       _setState();
@@ -214,7 +215,7 @@ class _ShowInsuranceListScreenState extends BaseState<ShowInsuranceListScreen> {
   }
 
   void _getInsuranceList() {
-    _userBloc.getInsuranceList(widget.profId);
+    _userBloc!.getInsuranceList(widget.profId);
   }
 
   void _setState() {
@@ -238,13 +239,13 @@ class _ShowInsuranceListScreenState extends BaseState<ShowInsuranceListScreen> {
         ),
         (widget.func != null &&
                 _getListItems(_list) != null &&
-                _getListItems(_list).length > 10)
+                _getListItems(_list)!.length > 10)
             ? Container(
                 margin: EdgeInsets.only(bottom: 12),
                 child: InkWell(
                   onDoubleTap: () {},
                   onTap: () {
-                    widget.func();
+                    widget.func!();
                     return;
                   },
                   focusColor: Colors.transparent,
@@ -282,11 +283,11 @@ class _ShowInsuranceListScreenState extends BaseState<ShowInsuranceListScreen> {
 
   ScrollController _scrollController = ScrollController();
 
-  Widget _getILISTWidget(List<InsuranceProvider> list) {
+  Widget _getILISTWidget(List<InsuranceProvider>? list) {
     return Scrollbar(
       controller: _scrollController,
       isAlwaysShown:
-          (widget.shouldShowAppBar != null && !(widget.shouldShowAppBar))
+          (widget.shouldShowAppBar != null && !widget.shouldShowAppBar!)
               ? false
               : true,
       child: ListView.builder(
@@ -297,14 +298,14 @@ class _ShowInsuranceListScreenState extends BaseState<ShowInsuranceListScreen> {
             padding: const EdgeInsets.only(top: 5.0, bottom: 5.0, right: 5.0),
             child: Row(
               children: [
-                Icon(Icons.circle,
+                Icon(Icons.add_circle,
                     size: 8.5,
                     color: Color(CommonMethods.getColorHexFromStr("#25B281"))),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.only(left: 8.0),
                     child: Text(
-                      "${list[index]?.insurancePartner ?? ""}",
+                      "${list![index]?.insurancePartner ?? ""}",
                       style: TextStyle(
                           fontSize: 15, color: PlunesColors.BLACKCOLOR),
                     ),
@@ -315,17 +316,17 @@ class _ShowInsuranceListScreenState extends BaseState<ShowInsuranceListScreen> {
           );
         },
         itemCount:
-            (widget.func != null && list.length > 10) ? 10 : list?.length ?? 0,
+            (widget.func != null && list!.length > 10) ? 10 : list?.length ?? 0,
       ),
     );
   }
 
-  List<InsuranceProvider> _getListItems(List<InsuranceProvider> list) {
-    return (_policySearchController.text.trim().isNotEmpty &&
-            (_searchedItemList == null || _searchedItemList.isEmpty))
+  List<InsuranceProvider>? _getListItems(List<InsuranceProvider> list) {
+    return (_policySearchController!.text.trim().isNotEmpty &&
+            (_searchedItemList == null || _searchedItemList!.isEmpty))
         ? list
-        : (_searchedItemList != null && _searchedItemList.isNotEmpty)
+        : (_searchedItemList != null && _searchedItemList!.isNotEmpty)
             ? _searchedItemList
-            : _insuranceModel.data;
+            : _insuranceModel!.data;
   }
 }

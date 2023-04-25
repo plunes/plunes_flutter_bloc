@@ -10,8 +10,6 @@ import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
 import 'package:plunes/ui/beforeLogin/ChangePassword.dart';
 
-import 'AccountSettings.dart';
-
 /*
  * Created by - Plunes Technologies.
  * Developer - Manvendra Kumar Singh
@@ -30,7 +28,7 @@ class _SecuritySettingsState extends State<SecuritySettings>
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   var globalHeight, globalWidth;
 
-  Preferences preferences;
+  late Preferences preferences;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +38,7 @@ class _SecuritySettingsState extends State<SecuritySettings>
     return Scaffold(
         key: _scaffoldKey,
         backgroundColor: Colors.white,
-        appBar: widget.getAppBar(context, plunesStrings.securitySettings, true),
+        appBar: widget.getAppBar(context, plunesStrings.securitySettings, true) as PreferredSizeWidget?,
         body: getBody());
   }
 

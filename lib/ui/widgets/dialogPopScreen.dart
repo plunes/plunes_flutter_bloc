@@ -1,22 +1,21 @@
-import 'package:flutter/material.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:plunes/Utils/Constants.dart';
-import 'package:plunes/Utils/date_util.dart';
-import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
-import 'package:plunes/res/ColorsFile.dart';
-import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
+import 'package:plunes/Utils/date_util.dart';
+import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
-
+import 'package:plunes/res/ColorsFile.dart';
+import 'package:plunes/res/StringsFile.dart';
 // import 'package:flutter_svg/flutter_svg.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/profile_screen.dart';
 
 class DialogWidgets {
-  static DialogWidgets _instance;
+  static DialogWidgets? _instance;
 
   DialogWidgets._init();
 
@@ -24,23 +23,23 @@ class DialogWidgets {
     if (_instance == null) {
       _instance = DialogWidgets._init();
     }
-    return _instance;
+    return _instance!;
   }
 
   Widget buildProfileDialog(
-      {Services solutions, CatalogueData catalogueData, BuildContext context}) {
+      {Services? solutions, CatalogueData? catalogueData, BuildContext? context}) {
     return StatefulBuilder(builder: (context, newState) {
       return Dialog(
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
         elevation: 0.0,
-        child: dialogProfileContent(context, solutions, catalogueData),
+        child: dialogProfileContent(context, solutions!, catalogueData),
       );
     });
   }
 
   Widget dialogProfileContent(
-      BuildContext context, Services solutions, CatalogueData catalogueData) {
+      BuildContext context, Services solutions, CatalogueData? catalogueData) {
     List<DateTime> _slots = [];
     var now = DateTime.now();
     for (int index = 0; index < 100; index++) {
@@ -97,7 +96,7 @@ class DialogWidgets {
                                   MaterialPageRoute(
                                       builder: (context) => DoctorInfo(
                                           solutions.professionalId,
-                                          isDoc: (solutions.userType
+                                          isDoc: (solutions.userType!
                                                   .toLowerCase() ==
                                               Constants.doctor
                                                   .toString()
@@ -119,7 +118,7 @@ class DialogWidgets {
                           },
                           onDoubleTap: () {},
                           child: (solutions.imageUrl != null &&
-                                  solutions.imageUrl.isNotEmpty)
+                                  solutions.imageUrl!.isNotEmpty)
                               ? CircleAvatar(
                                   child: Container(
                                     height: AppConfig.horizontalBlockSize * 14,
@@ -188,11 +187,11 @@ class DialogWidgets {
                           itemBuilder: (context, index) {
                             bool isAvailableSlot = true;
                             String day = DateUtil.getDayAsString(_slots[index]);
-                            solutions.timeSlots.forEach((slot) {
-                              if (slot.day
+                            solutions.timeSlots!.forEach((slot) {
+                              if (slot.day!
                                       .toLowerCase()
                                       .contains(day.toLowerCase()) &&
-                                  slot.closed) {
+                                  slot.closed!) {
                                 isAvailableSlot = false;
                               }
                             });
@@ -241,7 +240,7 @@ class DialogWidgets {
                             );
                           },
                           scrollDirection: Axis.horizontal,
-                          itemCount: _slots.length ?? 0,
+                          itemCount: _slots.length,
                         )),
                   ],
                 ),
@@ -277,13 +276,13 @@ class DialogWidgets {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
-                  Text(
+                  const Text(
                     'Details',
                     style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 30),
-                    child: FlatButton(
+                    child: ElevatedButton(
                       child: Icon(Icons.close),
                       onPressed: () => {
                         Navigator.of(context).pop(),
@@ -300,70 +299,68 @@ class DialogWidgets {
                     Column(
                       children: <Widget>[
                         Container(
-                          margin: EdgeInsets.symmetric(vertical: 10),
+                          margin: const EdgeInsets.symmetric(vertical: 10),
                           height: 350,
                           width: 260,
                           child: SingleChildScrollView(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: <Widget>[
-                                Text(
-                                  'Defination:',
+                                const Text('Defination:',
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                                 Text(
-                                  catalogueData?.service ?? PlunesStrings.NA,
-                                  style: TextStyle(
+                                  catalogueData.service ?? PlunesStrings.NA,
+                                  style: const TextStyle(
                                     color: Colors.black38,
                                   ),
                                 ),
-                                Divider(
+                                const Divider(
                                   color: Colors.black45,
                                 ),
                                 Row(
                                   children: <Widget>[
-                                    Text(
+                                    const Text(
                                       'Duration',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold),
                                     ),
-                                    SizedBox(width: 5),
-                                    Text(
-                                      catalogueData?.duration ??
+                                    const SizedBox(width: 5),
+                                    Text(catalogueData.duration ??
                                           PlunesStrings.NA,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         color: Colors.black45,
                                       ),
                                     ),
                                   ],
                                 ),
-                                Divider(
+                                const Divider(
                                   color: Colors.black45,
                                 ),
                                 Row(children: <Widget>[
-                                  Text(
+                                  const Text(
                                     'Sittings:',
                                     style:
                                         TextStyle(fontWeight: FontWeight.bold),
                                   ),
-                                  SizedBox(width: 5),
+                                  const SizedBox(width: 5),
                                   Text(
-                                    catalogueData?.sitting ?? PlunesStrings.NA,
-                                    style: TextStyle(
+                                    catalogueData.sitting ?? PlunesStrings.NA,
+                                    style: const TextStyle(
                                       color: Colors.black38,
                                     ),
                                   ),
                                 ]),
-                                Divider(
+                                const Divider(
                                   color: Colors.black45,
                                 ),
-                                Text(
+                                const Text(
                                   'Do\'s and Don\'t:',
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                                 Text(
-                                  catalogueData?.dnd ?? PlunesStrings.NA,
-                                  style: TextStyle(
+                                  catalogueData.dnd as String? ?? PlunesStrings.NA,
+                                  style: const TextStyle(
                                     color: Colors.black38,
                                   ),
                                 ),
@@ -376,13 +373,13 @@ class DialogWidgets {
                   ],
                 ),
               ),
-              FlatButton.icon(
+              ElevatedButton.icon(
                 onPressed: () {},
-                label: Text(
+                label: const Text(
                   'Expand',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                 ),
-                icon: Icon(Icons.expand_more),
+                icon: const Icon(Icons.expand_more),
               )
             ]));
   }

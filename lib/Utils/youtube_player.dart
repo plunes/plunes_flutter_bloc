@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
-import 'package:plunes/res/ColorsFile.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 // ignore: must_be_immutable
 class YoutubePlayerProvider extends BaseActivity {
-  final String videoLink, title;
+  final String? videoLink, title;
 
   YoutubePlayerProvider(this.videoLink, {this.title});
 
@@ -15,16 +14,17 @@ class YoutubePlayerProvider extends BaseActivity {
   _YoutubePlayerProviderState createState() => _YoutubePlayerProviderState();
 }
 
-class _YoutubePlayerProviderState extends BaseState<YoutubePlayerProvider> {
-  String _videoId;
-  YoutubePlayerController _controller;
+class _YoutubePlayerProviderState extends State<YoutubePlayerProvider> {
+  final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  String? _videoId;
+  YoutubePlayerController? _controller;
   Key _key = Key("ourKey");
 
   @override
   void initState() {
-    _videoId = YoutubePlayer.convertUrlToId(widget.videoLink);
+    _videoId = YoutubePlayer.convertUrlToId(widget.videoLink!);
     _controller = YoutubePlayerController(
-        initialVideoId: _videoId,
+        initialVideoId: _videoId!,
         flags: YoutubePlayerFlags(loop: false, autoPlay: true));
     super.initState();
   }
@@ -49,7 +49,7 @@ class _YoutubePlayerProviderState extends BaseState<YoutubePlayerProvider> {
             key: scaffoldKey,
             appBar: widget.getAppBar(
                 context, widget.title ?? "App tutorial", true,
-                func: () => _portraitUp()),
+                func: () => _portraitUp()) as PreferredSizeWidget?,
             body: _getPlayer(),
           )),
     );
@@ -66,7 +66,7 @@ class _YoutubePlayerProviderState extends BaseState<YoutubePlayerProvider> {
               child: YoutubePlayerBuilder(
                 player: YoutubePlayer(
                   key: _key,
-                  controller: _controller,
+                  controller: _controller!,
                   onEnded: (data) {
                     _showMessage();
                     return;

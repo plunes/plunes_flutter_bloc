@@ -6,79 +6,88 @@ import 'package:plunes/requester/request_states.dart';
 import 'package:rxdart/rxdart.dart';
 
 class UserBloc extends BlocBase {
-  final _specialityStreamProvider = PublishSubject<RequestState>();
+  final _specialityStreamProvider = PublishSubject<RequestState?>();
 
-  Observable<RequestState> get specialityStream =>
+  Stream<RequestState?> get specialityStream =>
       _specialityStreamProvider.stream;
-  final _serviceStreamProvider = PublishSubject<RequestState>();
+  final _serviceStreamProvider = PublishSubject<RequestState?>();
 
-  Observable<RequestState> get serviceStream => _serviceStreamProvider.stream;
+  Stream<RequestState?> get serviceStream => _serviceStreamProvider.stream;
 
-  final _reviewStreamProvider = PublishSubject<RequestState>();
+  final _reviewStreamProvider = PublishSubject<RequestState?>();
 
-  Observable<RequestState> get rateAndReviewStream =>
+  Stream<RequestState?> get rateAndReviewStream =>
       _reviewStreamProvider.stream;
 
-  final _profileImageProvider = PublishSubject<RequestState>();
+  final _profileImageProvider = PublishSubject<RequestState?>();
 
-  Observable<RequestState> get profileStream => _profileImageProvider.stream;
+  Stream<RequestState?> get profileStream => _profileImageProvider.stream;
 
-  final _mediaContentStreamProvider = PublishSubject<RequestState>();
+  final _mediaContentStreamProvider = PublishSubject<RequestState?>();
 
-  Observable<RequestState> get mediaContentStream =>
+  Stream<RequestState?> get mediaContentStream =>
       _mediaContentStreamProvider.stream;
 
-  final _insuranceStreamProvider = PublishSubject<RequestState>();
+  final _insuranceStreamProvider = PublishSubject<RequestState?>();
 
-  Observable<RequestState> get insuranceStream =>
+  Stream<RequestState?> get insuranceStream =>
       _insuranceStreamProvider.stream;
 
-  final _insuranceFileUploadStreamProvider = PublishSubject<RequestState>();
+  final _insuranceFileUploadStreamProvider = PublishSubject<RequestState?>();
 
-  Observable<RequestState> get insuranceFileUploadStream =>
+  Stream<RequestState?> get insuranceFileUploadStream =>
       _insuranceFileUploadStreamProvider.stream;
 
   final _serviceRelatedToSpecilaityStreamProvider =
-      PublishSubject<RequestState>();
+      PublishSubject<RequestState?>();
 
-  Observable<RequestState> get serviceRelatedToSpecialityStream =>
+  Stream<RequestState?> get serviceRelatedToSpecialityStream =>
       _serviceRelatedToSpecilaityStreamProvider.stream;
 
   final _facilityAvailableInHospitalStreamProvider =
-      PublishSubject<RequestState>();
+      PublishSubject<RequestState?>();
 
-  Observable<RequestState> get facilityOfHospitalStream =>
+  Stream<RequestState?> get facilityOfHospitalStream =>
       _facilityAvailableInHospitalStreamProvider.stream;
 
-  final _premiumBenefitsStreamProvider = PublishSubject<RequestState>();
+  final _premiumBenefitsStreamProvider = PublishSubject<RequestState?>();
 
-  Observable<RequestState> get premiumBenefitsStream =>
+  Stream<RequestState?> get premiumBenefitsStream =>
       _premiumBenefitsStreamProvider.stream;
 
-  final _serviceCategoryStreamProvider = PublishSubject<RequestState>();
+  final _serviceCategoryStreamProvider = PublishSubject<RequestState?>();
 
-  Observable<RequestState> get serviceCategoryStream =>
+  Stream<RequestState?> get serviceCategoryStream =>
       _serviceCategoryStreamProvider.stream;
 
   Future<RequestState> isUserInServiceLocation(var latitude, var longitude,
-      {String address, bool isFromPopup = false, String region}) {
+      {String? address, bool isFromPopup = false, String? region}) {
+
+    print("address_latitude:$latitude");
+    print("address_latitude:$longitude");
+    print("address_address:$address");
+    print("address_isFromPopup:$isFromPopup");
+    print("address_region:$region");
+
     return UserManager().isUserInServiceLocation(latitude, longitude,
         address: address, isFromPopup: isFromPopup, region: region);
   }
 
-  Future<RequestState> getUserProfile(final String userId,
+  Future<RequestState> getUserProfile(final String? userId,
       {bool shouldSaveInfo = false,
       bool isGenUser = true,
-      String docId}) async {
+      String? docId}) async {
     var result = await UserManager().getUserProfile(userId,
         shouldSaveInfo: shouldSaveInfo, isUser: isGenUser,docId: docId);
+    print("result------------------->");
+    print(result);
     super.addIntoStream(result);
     return result;
   }
 
-  Future<RequestState> getGenerateOtp(String mobileNumber,
+  Future<RequestState> getGenerateOtp(String? mobileNumber,
       {bool iFromForgotPassword = false,
-      String signature,
+      String? signature,
       bool isProfessional = false}) async {
     var result = await UserManager().getGenerateOtp(mobileNumber,
         iFromForgotPassword: iFromForgotPassword,
@@ -88,7 +97,7 @@ class UserBloc extends BlocBase {
     return result;
   }
 
-  Future<RequestState> getVerifyOtp(String mobileNumber, var otp,
+  Future<RequestState> getVerifyOtp(String? mobileNumber, var otp,
       {bool iFromForgotPassword = false, bool isProfessional = false}) async {
     var result = await UserManager().getVerifyOtp(mobileNumber, otp,
         iFromForgotPassword: iFromForgotPassword,
@@ -117,7 +126,7 @@ class UserBloc extends BlocBase {
     return UserManager().turnOnOffNotification(isOn);
   }
 
-  Future<RequestState> getUserSpecificSpecialities(String userId) async {
+  Future<RequestState> getUserSpecificSpecialities(String? userId) async {
     var result = await UserManager().getUserSpecificSpecialities(userId);
     addStateInSpecialityStream(result);
     return result;
@@ -132,7 +141,7 @@ class UserBloc extends BlocBase {
     return result;
   }
 
-  Future<RequestState> uploadPicture(File image) async {
+  Future<RequestState?> uploadPicture(File image) async {
     addStateInProfileStream(RequestInProgress());
     var result = await UserManager().uploadPicture(image);
     addStateInProfileStream(result);
@@ -141,17 +150,17 @@ class UserBloc extends BlocBase {
 
   @override
   void dispose() {
-    _specialityStreamProvider?.close();
-    _serviceStreamProvider?.close();
-    _reviewStreamProvider?.close();
-    _profileImageProvider?.close();
-    _mediaContentStreamProvider?.close();
-    _insuranceStreamProvider?.close();
-    _insuranceFileUploadStreamProvider?.close();
-    _serviceRelatedToSpecilaityStreamProvider?.close();
-    _facilityAvailableInHospitalStreamProvider?.close();
-    _premiumBenefitsStreamProvider?.close();
-    _serviceCategoryStreamProvider?.close();
+    _specialityStreamProvider.close();
+    _serviceStreamProvider.close();
+    _reviewStreamProvider.close();
+    _profileImageProvider.close();
+    _mediaContentStreamProvider.close();
+    _insuranceStreamProvider.close();
+    _insuranceFileUploadStreamProvider.close();
+    _serviceRelatedToSpecilaityStreamProvider.close();
+    _facilityAvailableInHospitalStreamProvider.close();
+    _premiumBenefitsStreamProvider.close();
+    _serviceCategoryStreamProvider.close();
     super.dispose();
   }
 
@@ -164,7 +173,7 @@ class UserBloc extends BlocBase {
   }
 
   Future<RequestState> resetPassword(
-      String phoneNumber, String otp, String password,
+      String? phoneNumber, String? otp, String password,
       {bool isProf = false}) async {
     return UserManager()
         .resetPassword(phoneNumber, otp, password, isProf: isProf);
@@ -196,7 +205,7 @@ class UserBloc extends BlocBase {
     return await UserManager().getAdminSpecificData();
   }
 
-  Future<RequestState> getRateAndReviews(String profId,
+  Future<RequestState> getRateAndReviews(String? profId,
       {int initialIndex = 0}) async {
     addStateInReviewStream(RequestInProgress());
     var result = await UserManager().getRateAndReviews(profId);
@@ -204,7 +213,7 @@ class UserBloc extends BlocBase {
     return result;
   }
 
-  Future<RequestState> getMediaContent(String profId,
+  Future<RequestState> getMediaContent(String? profId,
       {int initialIndex = 0}) async {
     addStateInMediaContentStream(RequestInProgress());
     var result = await UserManager().getMediaContent(profId);
@@ -212,18 +221,18 @@ class UserBloc extends BlocBase {
     return result;
   }
 
-  Future<RequestState> getInsuranceList(String profId) async {
+  Future<RequestState> getInsuranceList(String? profId) async {
     addStateInInsuranceListStream(RequestInProgress());
     var result = await UserManager().getInsuranceList(profId);
     addStateInInsuranceListStream(result);
     return result;
   }
 
-  addStateInReviewStream(RequestState data) {
+  addStateInReviewStream(RequestState? data) {
     addStateInGenericStream(_reviewStreamProvider, data);
   }
 
-  addStateInProfileStream(RequestState data) {
+  addStateInProfileStream(RequestState? data) {
     addStateInGenericStream(_profileImageProvider, data);
   }
 
@@ -231,19 +240,19 @@ class UserBloc extends BlocBase {
     addStateInGenericStream(_insuranceFileUploadStreamProvider, data);
   }
 
-  addStateInMediaContentStream(RequestState data) {
+  addStateInMediaContentStream(RequestState? data) {
     addStateInGenericStream(_mediaContentStreamProvider, data);
   }
 
-  addStateInInsuranceListStream(RequestState data) {
+  addStateInInsuranceListStream(RequestState? data) {
     addStateInGenericStream(_insuranceStreamProvider, data);
   }
 
-  addStateInServiceRelatedToSpecialityStream(RequestState data) {
+  addStateInServiceRelatedToSpecialityStream(RequestState? data) {
     addStateInGenericStream(_serviceRelatedToSpecilaityStreamProvider, data);
   }
 
-  addStateInFacilityProviderStream(RequestState data) {
+  addStateInFacilityProviderStream(RequestState? data) {
     addStateInGenericStream(_facilityAvailableInHospitalStreamProvider, data);
   }
 
@@ -251,16 +260,16 @@ class UserBloc extends BlocBase {
     addStateInGenericStream(_premiumBenefitsStreamProvider, data);
   }
 
-  Future<RequestState> uploadInsuranceFile(File file, {String fileType}) async {
+  Future<RequestState> uploadInsuranceFile(File file, bool isImage,{String? fileType}) async {
     addStateInUploadInsuranceFileStream(RequestInProgress());
     var result =
-        await UserManager().uploadInsuranceFile(file, fileType: fileType);
+        await UserManager().uploadInsuranceFile(file, isImage, fileType: fileType);
     addStateInUploadInsuranceFileStream(result);
     return result;
   }
 
   Future<RequestState> getServicesOfSpeciality(
-      String specialityId, String profId) async {
+      String? specialityId, String? profId) async {
     addStateInServiceRelatedToSpecialityStream(RequestInProgress());
     var result =
         await UserManager().getServicesOfSpeciality(profId, specialityId);
@@ -269,7 +278,7 @@ class UserBloc extends BlocBase {
   }
 
   Future<RequestState> getFacilitiesProvidedByHospitalOrDoc(
-      String profId) async {
+      String? profId) async {
     addStateInFacilityProviderStream(RequestInProgress());
     var result =
         await UserManager().getFacilitiesProvidedByHospitalOrDoc(profId);
@@ -280,8 +289,7 @@ class UserBloc extends BlocBase {
   Future<RequestState> getPremiumBenefitsForUsers(
       {bool isFromAboutUsScreen = false}) async {
     addStateInPremiumBenefitsProviderStream(RequestInProgress());
-    var result = await UserManager()
-        .getPremiumBenefitsForUsers(isFromAboutUsScreen: isFromAboutUsScreen);
+    var result = await UserManager().getPremiumBenefitsForUsers(isFromAboutUsScreen: isFromAboutUsScreen);
     addStateInPremiumBenefitsProviderStream(result);
     return result;
   }
@@ -290,7 +298,7 @@ class UserBloc extends BlocBase {
     return UserManager().getBankOffers();
   }
 
-  Future<RequestState> getServiceCategoryData(String profId) async {
+  Future<RequestState> getServiceCategoryData(String? profId) async {
     var result = await UserManager().getServiceCategoryData(profId: profId);
     addStateInServiceCategoryData(result);
     return result;

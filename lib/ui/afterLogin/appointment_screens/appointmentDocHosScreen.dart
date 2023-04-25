@@ -3,30 +3,30 @@ import 'package:flutter/material.dart';
 import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
+import 'package:plunes/Utils/app_config.dart';
+import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/Utils/log.dart';
 import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/blocs/booking_blocs/booking_main_bloc.dart';
+import 'package:plunes/models/booking_models/appointment_model.dart';
 import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
-import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/ui/afterLogin/GalleryScreen.dart';
 import 'package:plunes/ui/afterLogin/HelpScreen.dart';
 import 'package:plunes/ui/afterLogin/booking_screens/booking_main_screen.dart';
-import 'package:plunes/models/booking_models/appointment_model.dart';
-import 'package:plunes/Utils/custom_widgets.dart';
-import 'package:plunes/blocs/booking_blocs/booking_main_bloc.dart';
 
 // ignore: must_be_immutable
 class AppointmentDocHosScreen extends BaseActivity {
   final AppointmentModel appointmentModel;
-  final BookingBloc bookingBloc;
+  final BookingBloc? bookingBloc;
   int index;
-  GlobalKey<ScaffoldState> globalKey;
+  GlobalKey<ScaffoldState>? globalKey;
   Function getAppointment;
-  String bookingId;
+  String? bookingId;
 
   AppointmentDocHosScreen(this.appointmentModel, this.index, this.bookingBloc,
       this.globalKey, this.getAppointment,
@@ -36,9 +36,11 @@ class AppointmentDocHosScreen extends BaseActivity {
   _AppointmentScreenState createState() => _AppointmentScreenState();
 }
 
-class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
-  BookingBloc _bookingBloc;
-  int index;
+// class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
+class _AppointmentScreenState extends State<AppointmentDocHosScreen> {
+final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  BookingBloc? _bookingBloc;
+  int? index;
 
   @override
   void initState() {
@@ -52,7 +54,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
     return Material(child: _getBodyWidget(widget.appointmentModel, index));
   }
 
-  Widget _getBodyWidget(AppointmentModel appointmentModel, int index) {
+  Widget _getBodyWidget(AppointmentModel appointmentModel, int? index) {
     return Container(
       color: (widget.bookingId != null &&
               widget.bookingId == appointmentModel.bookingId)
@@ -66,8 +68,8 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
           _getUserInfoWidget(appointmentModel),
           _getInsuranceWidget(appointmentModel),
           (appointmentModel.service != null &&
-                  appointmentModel.service.doctors != null &&
-                  appointmentModel.service.doctors.isNotEmpty)
+                  appointmentModel.service!.doctors != null &&
+                  appointmentModel.service!.doctors!.isNotEmpty)
               ? Container(
                   width: double.infinity,
                   margin: EdgeInsets.only(top: 5),
@@ -115,7 +117,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                                   AppointmentModel.reservedStatus &&
                               appointmentModel.appointmentTime != null &&
                               DateTime.fromMillisecondsSinceEpoch(int.parse(
-                                      appointmentModel.appointmentTime))
+                                      appointmentModel.appointmentTime!))
                                   .isBefore(DateTime.now())) {
                             _showErrorMessage(PlunesStrings.unableToProcess);
                           }
@@ -134,7 +136,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                           if (appointmentModel != null &&
                               appointmentModel.appointmentTime != null &&
                               DateTime.fromMillisecondsSinceEpoch(int.parse(
-                                      appointmentModel.appointmentTime))
+                                      appointmentModel.appointmentTime!))
                                   .isBefore(DateTime.now())) {
                             _showErrorMessage(PlunesStrings.unableToReschedule);
                             return;
@@ -151,9 +153,9 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                                         appointmentModel:
                                             widget.appointmentModel,
                                         profId: appointmentModel
-                                            .service.professionalId,
+                                            .service!.professionalId,
                                         timeSlots:
-                                            appointmentModel.service.timeSlots,
+                                            appointmentModel.service!.timeSlots,
                                       )));
                           widget.getAppointment();
                         },
@@ -162,12 +164,12 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                     : alreadyCancelAppointment(PlunesStrings.reschedule),
                 Flexible(
                   child: Container(
-                    child: StreamBuilder<Object>(
-                        stream: _bookingBloc.cancelAppointmentStream,
+                    child: StreamBuilder<Object?>(
+                        stream: _bookingBloc!.cancelAppointmentStream,
                         builder: (context, snapshot) {
                           if (snapshot.data != null &&
                               snapshot.data is RequestInProgress) {
-                            RequestInProgress req = snapshot.data;
+                            RequestInProgress req = snapshot.data as RequestInProgress;
                             if (req.requestCode != null &&
                                 req.requestCode == index) {
                               return CustomWidgets().getProgressIndicator();
@@ -175,7 +177,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                           }
                           if (snapshot.data != null &&
                               snapshot.data is RequestSuccess) {
-                            RequestSuccess req = snapshot.data;
+                            RequestSuccess req = snapshot.data as RequestSuccess;
                             if (req.requestCode != null &&
                                 req.requestCode == index) {
                               Future.delayed(Duration(milliseconds: 20))
@@ -191,13 +193,13 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                                               widget.globalKey);
                                     });
                               });
-                              _bookingBloc.addStateInCancelProvider(null);
+                              _bookingBloc!.addStateInCancelProvider(null);
                             }
                             widget.getAppointment();
                           }
                           if (snapshot.data != null &&
                               snapshot.data is RequestFailed) {
-                            RequestFailed requestFailed = snapshot.data;
+                            RequestFailed requestFailed = snapshot.data as RequestFailed;
                             if (requestFailed.requestCode != null &&
                                 requestFailed.requestCode == index) {
                               Future.delayed(Duration(milliseconds: 20))
@@ -206,7 +208,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                                     PlunesStrings.cancelFailedMessage);
 //
                               });
-                              _bookingBloc.addStateInCancelProvider(null);
+                              _bookingBloc!.addStateInCancelProvider(null);
                             }
                           }
                           return (appointmentModel.bookingStatus !=
@@ -218,13 +220,13 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                                                 null &&
                                             DateTime.fromMillisecondsSinceEpoch(
                                                     int.parse(appointmentModel
-                                                        .appointmentTime))
+                                                        .appointmentTime!))
                                                 .isBefore(DateTime.now())) ||
                                         (appointmentModel.bookingStatus ==
                                             AppointmentModel
                                                 .requestCancellation)) {
                                       Navigator.push(
-                                          widget.globalKey.currentState.context,
+                                          widget.globalKey!.currentState!.context,
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   HelpScreen()));
@@ -313,11 +315,11 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                                                                     .center,
                                                             children: <Widget>[
                                                               Expanded(
-                                                                child: FlatButton(
-                                                                    highlightColor: Colors.transparent,
-                                                                    hoverColor: Colors.transparent,
-                                                                    splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
-                                                                    focusColor: Colors.transparent,
+                                                                child: ElevatedButton(
+                                                                    // highlightColor: Colors.transparent,
+                                                                    // hoverColor: Colors.transparent,
+                                                                    // splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                                                                    // focusColor: Colors.transparent,
                                                                     onPressed: () {
                                                                       Navigator.pop(
                                                                           context);
@@ -351,13 +353,13 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                                                                 width: 0.5,
                                                               ),
                                                               Expanded(
-                                                                child: FlatButton(
-                                                                    highlightColor: Colors.transparent,
-                                                                    hoverColor: Colors.transparent,
-                                                                    splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
-                                                                    focusColor: Colors.transparent,
+                                                                child: ElevatedButton(
+                                                                    // highlightColor: Colors.transparent,
+                                                                    // hoverColor: Colors.transparent,
+                                                                    // splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                                                                    // focusColor: Colors.transparent,
                                                                     onPressed: () {
-                                                                      _bookingBloc.cancelAppointment(
+                                                                      _bookingBloc!.cancelAppointment(
                                                                           appointmentModel
                                                                               .bookingId,
                                                                           index);
@@ -404,7 +406,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                                                   null &&
                                               DateTime.fromMillisecondsSinceEpoch(
                                                       int.parse(appointmentModel
-                                                          .appointmentTime))
+                                                          .appointmentTime!))
                                                   .isBefore(DateTime.now()))
                                           ? plunesStrings.help
                                           : (appointmentModel.bookingStatus ==
@@ -442,7 +444,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                 ),
                 Container(
                   child: Text(
-                    '\u20B9 ${appointmentModel.service.newPrice.first}',
+                    '\u20B9 ${appointmentModel.service!.newPrice!.first}',
                     style: TextStyle(
                         fontSize: AppConfig.smallFont,
                         fontWeight: FontWeight.w500,
@@ -457,7 +459,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
               if (widget.appointmentModel.isOpened != null &&
                   UserManager().getUserDetails().userType != Constants.user) {
                 widget.appointmentModel.isOpened =
-                    !widget.appointmentModel.isOpened;
+                    !widget.appointmentModel.isOpened!;
                 _setState();
               }
             },
@@ -477,7 +479,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                           UserManager().getUserDetails().userType !=
                               Constants.user)
                       ? Icon(
-                          widget.appointmentModel.isOpened
+                          widget.appointmentModel.isOpened!
                               ? Icons.keyboard_arrow_up
                               : Icons.keyboard_arrow_down,
                           size: AppConfig.horizontalBlockSize * 6,
@@ -489,14 +491,14 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
           ),
           (widget.appointmentModel.isOpened != null &&
                   UserManager().getUserDetails().userType != Constants.user &&
-                  widget.appointmentModel.isOpened)
+                  widget.appointmentModel.isOpened!)
               ? _getPaymentData(appointmentModel)
               : UserManager().getUserDetails().userType == Constants.user
                   ? _getPaymentData(appointmentModel)
                   : Container(),
           Container(
             height: AppConfig.verticalBlockSize * 5,
-            child: FlatButton.icon(
+            child: ElevatedButton.icon(
                 onPressed: () {
                   showDialog(
                       context: context,
@@ -527,7 +529,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
       try {
         appointmentTime = DateUtil.getDateFormat(
             DateTime.fromMillisecondsSinceEpoch(
-                int.parse(widget.appointmentModel.appointmentTime)));
+                int.parse(widget.appointmentModel.appointmentTime!)));
       } catch (e) {
         AppLog.debugLog(PlunesStrings.appointmentScreenError + '$e');
       }
@@ -542,7 +544,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
       try {
         appointmentTime = DateUtil.getMonthYear(
             DateTime.fromMillisecondsSinceEpoch(
-                int.parse(widget.appointmentModel.appointmentTime)));
+                int.parse(widget.appointmentModel.appointmentTime!)));
       } catch (e) {
         AppLog.debugLog(PlunesStrings.appointmentScreenError + '$e');
       }
@@ -557,7 +559,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
       try {
         appointmentTime = DateUtil.getTimeWithAmAndPmFormat(
             DateTime.fromMillisecondsSinceEpoch(
-                int.parse(widget.appointmentModel.appointmentTime)));
+                int.parse(widget.appointmentModel.appointmentTime!)));
       } catch (e) {
         AppLog.debugLog(PlunesStrings.appointmentScreenError + '$e');
       }
@@ -599,7 +601,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                   '\u20B9 ${appointmentModel.dueBookingAmount}  remaining amount to be paid',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: AppConfig.smallFont + 2,
+                    fontSize: AppConfig.smallFont! + 2,
                     color: PlunesColors.GREENCOLOR,
                   )),
           SizedBox(
@@ -611,16 +613,16 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
               Text(
                 'Booking Id : ${appointmentModel.referenceId}',
                 textAlign: TextAlign.left,
-                style: TextStyle(fontSize: AppConfig.smallFont - 3),
+                style: TextStyle(fontSize: AppConfig.smallFont! - 3),
               ),
               SizedBox(
                 height: AppConfig.verticalBlockSize * 1,
               ),
-              (appointmentModel.service.category != null &&
-                      appointmentModel.service.category.isNotEmpty)
+              (appointmentModel.service!.category != null &&
+                      appointmentModel.service!.category!.isNotEmpty)
                   ? Text(
-                      'Category : ${appointmentModel.service.category.first}',
-                      style: TextStyle(fontSize: AppConfig.smallFont - 3))
+                      'Category : ${appointmentModel.service!.category!.first}',
+                      style: TextStyle(fontSize: AppConfig.smallFont! - 3))
                   : Container(),
             ],
           ),
@@ -640,7 +642,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
     );
   }
 
-  Widget confirmAppointment(String btnName, BookingBloc bookingBloc,
+  Widget confirmAppointment(String btnName, BookingBloc? bookingBloc,
       AppointmentModel appointmentModel) {
     return InkWell(
         child: Text(btnName,
@@ -652,7 +654,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
           if (appointmentModel != null &&
               appointmentModel.appointmentTime != null &&
               DateTime.fromMillisecondsSinceEpoch(
-                      int.parse(appointmentModel.appointmentTime))
+                      int.parse(appointmentModel.appointmentTime!))
                   .isBefore(DateTime.now())) {
             _showErrorMessage(PlunesStrings.unableToConfirm);
             return;
@@ -661,7 +663,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                   context: context,
                   builder: (BuildContext context) => CustomWidgets()
                       .getDocHosConfirmAppointmentPopUp(
-                          context, bookingBloc, appointmentModel))
+                          context, bookingBloc!, appointmentModel))
               .then((value) async {
 //            if (value != null && value is String && value == "No") {
 //              await _bookingBloc.cancelAppointment(
@@ -684,7 +686,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                     : Colors.black54)),
         onTap: () {
           if (btnName == plunesStrings.help) {
-            Navigator.push(widget.globalKey.currentState.context,
+            Navigator.push(widget.globalKey!.currentState!.context,
                 MaterialPageRoute(builder: (context) => HelpScreen()));
             return;
           }
@@ -732,7 +734,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                         style: TextStyle(
                             fontSize: 21, color: PlunesColors.BLACKCOLOR),
                         children: (appointmentModel.centerLocation != null &&
-                                appointmentModel.centerLocation.isNotEmpty)
+                                appointmentModel.centerLocation!.isNotEmpty)
                             ? [
                                 TextSpan(
                                   text:
@@ -746,7 +748,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                             : null),
                   ),
                   (appointmentModel.userAddress == null ||
-                          appointmentModel.userAddress.trim().isEmpty)
+                          appointmentModel.userAddress!.trim().isEmpty)
                       ? Container()
                       : Container(
                           margin: EdgeInsets.only(top: 4),
@@ -763,7 +765,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                     child: InkWell(
                       onTap: () {
                         if (appointmentModel.userMobileNumber != null &&
-                            appointmentModel.userMobileNumber.isNotEmpty) {
+                            appointmentModel.userMobileNumber!.isNotEmpty) {
                           LauncherUtil.launchUrl(
                               "tel://${appointmentModel.userMobileNumber}");
                         }
@@ -918,8 +920,8 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          (appointmentModel.insuranceDetails.insurancePartner == null ||
-                  appointmentModel.insuranceDetails.insurancePartner
+          (appointmentModel.insuranceDetails!.insurancePartner == null ||
+                  appointmentModel.insuranceDetails!.insurancePartner!
                       .trim()
                       .isEmpty)
               ? Container()
@@ -928,15 +930,15 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                   style:
                       TextStyle(fontSize: 12.5, color: PlunesColors.BLACKCOLOR),
                 ),
-          (appointmentModel.insuranceDetails.insurancePartner == null ||
-                  appointmentModel.insuranceDetails.insurancePartner
+          (appointmentModel.insuranceDetails!.insurancePartner == null ||
+                  appointmentModel.insuranceDetails!.insurancePartner!
                       .trim()
                       .isEmpty)
               ? Container()
               : Container(
                   margin: EdgeInsets.only(top: 3),
                   child: Text(
-                    appointmentModel.insuranceDetails.insurancePartner ?? "",
+                    appointmentModel.insuranceDetails!.insurancePartner ?? "",
                     style:
                         TextStyle(fontSize: 16, color: PlunesColors.BLACKCOLOR),
                   )),
@@ -966,8 +968,8 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                (appointmentModel.insuranceDetails.insuranceCard == null ||
-                        appointmentModel.insuranceDetails.insuranceCard
+                (appointmentModel.insuranceDetails!.insuranceCard == null ||
+                        appointmentModel.insuranceDetails!.insuranceCard!
                             .trim()
                             .isEmpty)
                     ? Container()
@@ -978,11 +980,11 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                           splashColor: Colors.transparent,
                           onTap: () {
                             List<Photo> photos = [];
-                            if (appointmentModel.insuranceDetails.insuranceCard
+                            if (appointmentModel.insuranceDetails!.insuranceCard!
                                 .contains("http")) {
                               photos.add(Photo(
                                   assetName: appointmentModel
-                                      .insuranceDetails.insuranceCard));
+                                      .insuranceDetails!.insuranceCard));
                             }
                             if (photos != null && photos.isNotEmpty) {
                               Navigator.push(
@@ -1024,8 +1026,8 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                           ),
                         ),
                       ),
-                (appointmentModel.insuranceDetails.insurancePolicy == null ||
-                        appointmentModel.insuranceDetails.insurancePolicy
+                (appointmentModel.insuranceDetails!.insurancePolicy == null ||
+                        appointmentModel.insuranceDetails!.insurancePolicy!
                             .trim()
                             .isEmpty)
                     ? Container()
@@ -1039,7 +1041,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                             onDoubleTap: () {},
                             onTap: () {
                               _launch(appointmentModel
-                                  .insuranceDetails.insurancePolicy);
+                                  .insuranceDetails!.insurancePolicy!);
                               return;
                             },
                             child: Column(

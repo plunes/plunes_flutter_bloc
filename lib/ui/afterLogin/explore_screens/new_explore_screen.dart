@@ -40,33 +40,35 @@ class NewExploreScreen extends BaseActivity {
   _NewExploreScreenState createState() => _NewExploreScreenState();
 }
 
-class _NewExploreScreenState extends BaseState<NewExploreScreen> {
+// class _NewExploreScreenState extends BaseState<NewExploreScreen> {
+class _NewExploreScreenState extends State<NewExploreScreen> {
+final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   String kDefaultImageUrl =
       'https://goqii.com/blog/wp-content/uploads/Doctor-Consultation.jpg';
-  ExploreMainBloc _exploreMainBloc;
-  ExploreOuterModel _exploreModel;
-  String _failedMessageForExploreData;
-  StreamController _streamController;
+  ExploreMainBloc? _exploreMainBloc;
+  ExploreOuterModel? _exploreModel;
+  String? _failedMessageForExploreData;
+  StreamController? _streamController;
   double _currentDotPosition = 0.0;
   final CarouselController _controller = CarouselController();
-  String _mediaFailedMessage;
-  HomeScreenMainBloc _homeScreenMainBloc;
-  MediaContentPlunes _mediaContentPlunes;
-  List<MediaData> _doctorVideos, _customerVideos;
-  CartMainBloc _cartBloc;
-  String _failedMessageTopFacility, _specialityApiFailureCause;
-  bool _hasCalledTopFacilityApi;
-  TopFacilityModel _topFacilityModel;
-  String _userTypeFilter;
-  String _locationFilter = _nearMeKey;
-  String _selectedSpeciality;
+  String? _mediaFailedMessage;
+  HomeScreenMainBloc? _homeScreenMainBloc;
+  MediaContentPlunes? _mediaContentPlunes;
+  List<MediaData>? _doctorVideos, _customerVideos;
+  CartMainBloc? _cartBloc;
+  String? _failedMessageTopFacility, _specialityApiFailureCause;
+  bool? _hasCalledTopFacilityApi;
+  TopFacilityModel? _topFacilityModel;
+  String? _userTypeFilter;
+  String? _locationFilter = _nearMeKey;
+  String? _selectedSpeciality;
   static final String _nearMeKey = "Near me";
   static final String _allKey = "All";
-  String _selectedSpecialityName;
-  String _userTypeFilterName;
-  String _locationFilterName;
+  String? _selectedSpecialityName;
+  String? _userTypeFilterName;
+  String? _locationFilterName;
   List<SpecialityModel> _specialityItems = [];
-  StreamController _streamControllerForTopFacility;
+  StreamController? _streamControllerForTopFacility;
 
   List<SpecialityModel> _facilityTypeList = [
     SpecialityModel(speciality: "Hospital", id: Constants.hospital.toString()),
@@ -92,7 +94,7 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
     _currentDotPosition = 0.0;
     _getData();
     _getSpecialities();
-    EventProvider().getSessionEventBus().on<ScreenRefresher>().listen((event) {
+    EventProvider().getSessionEventBus()!.on<ScreenRefresher>().listen((event) {
       if (event != null &&
           event.screenName == FirebaseNotification.exploreScreen &&
           mounted) {
@@ -103,11 +105,11 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
   }
 
   void _getSpecialities() {
-    _homeScreenMainBloc.getCommonSpecialities();
+    _homeScreenMainBloc!.getCommonSpecialities();
   }
 
   void _getCartCount() {
-    _cartBloc.getCartCount();
+    _cartBloc!.getCartCount();
   }
 
   _getData() {
@@ -116,7 +118,7 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
   }
 
   _getVideos() {
-    _homeScreenMainBloc.getMediaContent();
+    _homeScreenMainBloc!.getMediaContent();
   }
 
   @override
@@ -132,8 +134,27 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
 
   void _getExploreData() {
     _failedMessageForExploreData = null;
-    _exploreMainBloc.getExploreData();
+    _exploreMainBloc!.getExploreData().then((snapshot) {
+
+      if (snapshot is RequestSuccess) {
+        _exploreModel = snapshot.response;
+      } else if (snapshot is RequestFailed) {
+        RequestFailed? _failedObj = snapshot as RequestFailed?;
+        _failedMessageForExploreData = _failedObj?.failureCause;
+      } else if (snapshot is RequestInProgress) {
+        return Container(
+          child: CustomWidgets().getProgressIndicator(),
+          height: AppConfig.verticalBlockSize * 35,
+        );
+      }
+      _setState();
+
+    });
   }
+
+void _setState() {
+  if (mounted) setState(() {});
+}
 
   @override
   Widget build(BuildContext context) {
@@ -155,7 +176,7 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
                     two: null,
                   ),
                   margin: EdgeInsets.only(
-                      top: AppConfig.getMediaQuery().padding.top),
+                      top: AppConfig.getMediaQuery()!.padding.top),
                 ),
                 Expanded(child: _getBody()),
               ],
@@ -216,7 +237,7 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
                     child: Card(
                       elevation: 2.0,
                       color: Colors.white,
-                      shape: RoundedRectangleBorder(
+                      shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(5))),
                       margin: EdgeInsets.symmetric(
                           horizontal: AppConfig.horizontalBlockSize * 3),
@@ -316,7 +337,7 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
 
   Future<RequestState> _getSpecialityList() async {
     if (CommonMethods.catalogueLists == null ||
-        CommonMethods.catalogueLists.isEmpty) {
+        CommonMethods.catalogueLists!.isEmpty) {
       var result = await UserManager().getSpecialities();
       return result;
     } else {
@@ -342,7 +363,7 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
                       height: AppConfig.verticalBlockSize * 25,
                     );
                   } else if (snapShot.data is RequestFailed) {
-                    RequestFailed _failedObj = snapShot.data;
+                    RequestFailed? _failedObj = snapShot.data as RequestFailed?;
                     _specialityApiFailureCause = _failedObj?.response;
                   } else if (snapShot.data is RequestSuccess) {
                     if (_hasCalledTopFacilityApi == null)
@@ -350,7 +371,7 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
                     _hasCalledTopFacilityApi = true;
                   }
                   return CommonMethods.catalogueLists == null ||
-                          CommonMethods.catalogueLists.isEmpty
+                          CommonMethods.catalogueLists!.isEmpty
                       ? Container(
                           height: AppConfig.verticalBlockSize * 38,
                           child: CustomWidgets().errorWidget(
@@ -362,7 +383,7 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
                       : _getTopFacilityStreamBuilderWidget();
                 },
                 initialData: (CommonMethods.catalogueLists == null ||
-                        CommonMethods.catalogueLists.isEmpty)
+                        CommonMethods.catalogueLists!.isEmpty)
                     ? RequestInProgress()
                     : null);
           }),
@@ -392,7 +413,7 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
           Container(
             alignment: Alignment.topLeft,
             child: Text(
-              _exploreModel?.data?.first?.section2?.heading ??
+              _exploreModel?.data?.first.section2?.heading ??
                   " Get Exclusive Offers Now!",
               style: TextStyle(
                   color: PlunesColors.BLACKCOLOR,
@@ -440,7 +461,7 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
     );
   }
 
-  Widget _getCustomerVideos(List<MediaData> videos) {
+  Widget _getCustomerVideos(List<MediaData>? videos) {
     return Container(
       child: Column(
         children: [
@@ -597,7 +618,7 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
   //   );
   // }
 
-  Widget _getVideoWidget(List<MediaData> videos) {
+  Widget _getVideoWidget(List<MediaData>? videos) {
     return ListView.builder(
         itemCount: videos?.length ?? 0,
         shrinkWrap: true,
@@ -615,7 +636,7 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
                 highlightColor: Colors.transparent,
                 focusColor: Colors.transparent,
                 onTap: () {
-                  String mediaUrl = videos[index]?.mediaUrl;
+                  String? mediaUrl = videos![index].mediaUrl;
                   if (mediaUrl == null || mediaUrl.trim().isEmpty) {
                     return;
                   }
@@ -624,7 +645,7 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
                       MaterialPageRoute(
                           builder: (context) => YoutubePlayerProvider(
                                 mediaUrl,
-                                title: videos[index]?.service ?? "Video",
+                                title: videos[index].service ?? "Video",
                               )));
                 },
                 child: Column(
@@ -634,7 +655,7 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
                         Container(
                           child: ClipRRect(
                             child: CustomWidgets().getImageFromUrl(
-                                "https://img.youtube.com/vi/${YoutubePlayer.convertUrlToId(videos[index].mediaUrl ?? "")}/0.jpg",
+                                "https://img.youtube.com/vi/${YoutubePlayer.convertUrlToId(videos![index].mediaUrl ?? "")}/0.jpg",
                                 boxFit: BoxFit.fill),
                             borderRadius: BorderRadius.only(
                                 topRight: Radius.circular(10),
@@ -663,8 +684,8 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
                         children: [
                           Expanded(
                             child: Text(
-                              videos[index]?.service ??
-                                  videos[index]?.name ??
+                              videos[index].service ??
+                                  videos[index].name ??
                                   "Video",
                               overflow: TextOverflow.ellipsis,
                               maxLines: 2,
@@ -683,7 +704,7 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
                             right: AppConfig.horizontalBlockSize * 2,
                             top: AppConfig.verticalBlockSize * 0.3),
                         child: Text(
-                          videos[index]?.testimonial ?? "",
+                          videos[index].testimonial ?? "",
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -700,156 +721,276 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
         });
   }
 
+  offerMainWidgetBody() {
+    return (_exploreModel == null ||
+        _exploreModel!.data == null ||
+        _exploreModel!.data!.isEmpty ||
+        _exploreModel!.data!.first == null ||
+        _exploreModel!.data!.first.section2 == null ||
+        _exploreModel!.data!.first.section2!.elements == null ||
+        _exploreModel!.data!.first.section2!.elements!.isEmpty)
+        ? Container(
+      child: CustomWidgets().errorWidget(
+          _failedMessageForExploreData,
+          onTap: () => _getExploreData(),
+          isSizeLess: true),
+      height: AppConfig.verticalBlockSize * 35,
+    )
+        : Column(
+      children: [
+        CarouselSlider.builder(
+          carouselController: _controller,
+          itemCount: (_exploreModel!
+              .data!.first.section2!.elements!.length >
+              8)
+              ? 8
+              : _exploreModel!.data!.first.section2!.elements!.length,
+          options: CarouselOptions(
+              height: AppConfig.verticalBlockSize * 28,
+              aspectRatio: 16 / 9,
+              initialPage: 0,
+              enableInfiniteScroll: false,
+              pageSnapping: true,
+              autoPlay: true,
+              reverse: false,
+              enlargeCenterPage: true,
+              viewportFraction: 1.0,
+              onPageChanged: (index, _) {
+                if (_currentDotPosition.toInt() != index) {
+                  _currentDotPosition = index.toDouble();
+                  _streamController?.add(null);
+                }
+              },
+              scrollDirection: Axis.horizontal),
+          itemBuilder: (context, child, itemIndex) =>
+              Container(
+                width: double.infinity,
+                child: InkWell(
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  focusColor: Colors.transparent,
+                  onTap: () {
+
+                    if (_exploreModel!.data!.first.section2!
+                        .elements![itemIndex].serviceName !=
+                        null &&
+                        _exploreModel!.data!.first.section2!
+                            .elements![itemIndex].serviceName!
+                            .trim()
+                            .isNotEmpty) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  SolutionBiddingScreen(
+                                      searchQuery: _exploreModel!
+                                          .data!
+                                          .first
+                                          .section2!
+                                          .elements![itemIndex]
+                                          .serviceName)))
+                          .then((value) {
+                        // _getCartCount();
+                      });
+                    }
+                  },
+                  child: Container(
+                    margin: EdgeInsets.all(10.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: CustomWidgets().getImageFromUrl(
+                          _exploreModel!.data!.first.section2!
+                              .elements![itemIndex].imgUrl ??
+                              "",
+                          boxFit: BoxFit.fill),
+                    ),
+                  ),
+                ),
+              ),
+        ),
+        StreamBuilder<Object?>(
+            stream: _streamController!.stream,
+            builder: (context, snapshot) {
+              return Container(
+                margin: EdgeInsets.only(
+                    top: AppConfig.verticalBlockSize * 0.5),
+                child: DotsIndicator(
+                  dotsCount: (_exploreModel!.data!.first.section2!
+                      .elements!.length >
+                      8)
+                      ? 8
+                      : _exploreModel!
+                      .data!.first.section2!.elements!.length,
+                  position: _currentDotPosition,
+                  axis: Axis.horizontal,
+                  decorator: _decorator,
+                  onTap: (pos) {
+                    _controller.animateToPage(pos.toInt(),
+                        curve: Curves.easeInOut,
+                        duration: Duration(milliseconds: 300));
+                    _currentDotPosition = pos;
+                    _streamController?.add(null);
+                    return;
+                  },
+                ),
+              );
+            })
+      ],
+    );
+  }
+
   Widget _getOfferMainWidget() {
     return Container(
-      child: StreamBuilder<RequestState>(
-          stream: _exploreMainBloc.baseStream,
-          initialData: (_exploreModel == null || _exploreModel.data == null)
-              ? RequestInProgress()
-              : null,
-          builder: (context, snapshot) {
-            if (snapshot.data is RequestSuccess) {
-              RequestSuccess successObject = snapshot.data;
-              _exploreModel = successObject.response;
-            } else if (snapshot.data is RequestFailed) {
-              RequestFailed _failedObj = snapshot.data;
-              _failedMessageForExploreData = _failedObj?.failureCause;
-            } else if (snapshot.data is RequestInProgress) {
-              return Container(
-                child: CustomWidgets().getProgressIndicator(),
-                height: AppConfig.verticalBlockSize * 35,
-              );
-            }
-            return (_exploreModel == null ||
-                    _exploreModel.data == null ||
-                    _exploreModel.data.isEmpty ||
-                    _exploreModel.data.first == null ||
-                    _exploreModel.data.first.section2 == null ||
-                    _exploreModel.data.first.section2.elements == null ||
-                    _exploreModel.data.first.section2.elements.isEmpty)
-                ? Container(
-                    child: CustomWidgets().errorWidget(
-                        _failedMessageForExploreData,
-                        onTap: () => _getExploreData(),
-                        isSizeLess: true),
-                    height: AppConfig.verticalBlockSize * 35,
-                  )
-                : Column(
-                    children: [
-                      CarouselSlider.builder(
-                        carouselController: _controller,
-                        itemCount: (_exploreModel
-                                    .data.first.section2.elements.length >
-                                8)
-                            ? 8
-                            : _exploreModel.data.first.section2.elements.length,
-                        options: CarouselOptions(
-                            height: AppConfig.verticalBlockSize * 28,
-                            aspectRatio: 16 / 9,
-                            initialPage: 0,
-                            enableInfiniteScroll: false,
-                            pageSnapping: true,
-                            autoPlay: true,
-                            reverse: false,
-                            enlargeCenterPage: true,
-                            viewportFraction: 1.0,
-                            onPageChanged: (index, _) {
-                              if (_currentDotPosition.toInt() != index) {
-                                _currentDotPosition = index.toDouble();
-                                _streamController?.add(null);
-                              }
-                            },
-                            scrollDirection: Axis.horizontal),
-                        itemBuilder: (BuildContext context, int itemIndex) =>
-                            Container(
-                          width: double.infinity,
-                          child: InkWell(
-                            splashColor: Colors.transparent,
-                            highlightColor: Colors.transparent,
-                            focusColor: Colors.transparent,
-                            onTap: () {
-                              if (_exploreModel.data.first.section2
-                                          .elements[itemIndex].serviceName !=
-                                      null &&
-                                  _exploreModel.data.first.section2
-                                      .elements[itemIndex].serviceName
-                                      .trim()
-                                      .isNotEmpty) {
-                                Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                SolutionBiddingScreen(
-                                                    searchQuery: _exploreModel
-                                                        .data
-                                                        .first
-                                                        .section2
-                                                        .elements[itemIndex]
-                                                        .serviceName)))
-                                    .then((value) {
-                                  // _getCartCount();
-                                });
-                              }
-                            },
-                            child: Container(
-                              margin: EdgeInsets.all(10.0),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: CustomWidgets().getImageFromUrl(
-                                    _exploreModel.data.first.section2
-                                            .elements[itemIndex].imgUrl ??
-                                        "",
-                                    boxFit: BoxFit.fill),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      StreamBuilder<Object>(
-                          stream: _streamController.stream,
-                          builder: (context, snapshot) {
-                            return Container(
-                              margin: EdgeInsets.only(
-                                  top: AppConfig.verticalBlockSize * 0.5),
-                              child: DotsIndicator(
-                                dotsCount: (_exploreModel.data.first.section2
-                                            .elements.length >
-                                        8)
-                                    ? 8
-                                    : _exploreModel
-                                        .data.first.section2.elements.length,
-                                position: _currentDotPosition,
-                                axis: Axis.horizontal,
-                                decorator: _decorator,
-                                onTap: (pos) {
-                                  _controller.animateToPage(pos.toInt(),
-                                      curve: Curves.easeInOut,
-                                      duration: Duration(milliseconds: 300));
-                                  _currentDotPosition = pos;
-                                  _streamController?.add(null);
-                                  return;
-                                },
-                              ),
-                            );
-                          })
-                    ],
-                  );
-          }),
+      child: offerMainWidgetBody()
+
+      // StreamBuilder<RequestState>(
+      //     stream: _exploreMainBloc!.baseStream,
+      //     initialData: (_exploreModel == null || _exploreModel!.data == null)
+      //         ? RequestInProgress()
+      //         : null,
+      //     builder: (context, snapshot) {
+      //       if (snapshot.data is RequestSuccess) {
+      //         RequestSuccess successObject = snapshot.data as RequestSuccess;
+      //         _exploreModel = successObject.response;
+      //       } else if (snapshot.data is RequestFailed) {
+      //         RequestFailed? _failedObj = snapshot.data as RequestFailed?;
+      //         _failedMessageForExploreData = _failedObj?.failureCause;
+      //       } else if (snapshot.data is RequestInProgress) {
+      //         return Container(
+      //           child: CustomWidgets().getProgressIndicator(),
+      //           height: AppConfig.verticalBlockSize * 35,
+      //         );
+      //       }
+      //       // return (_exploreModel == null ||
+      //       //         _exploreModel!.data == null ||
+      //       //         _exploreModel!.data!.isEmpty ||
+      //       //         _exploreModel!.data!.first == null ||
+      //       //         _exploreModel!.data!.first.section2 == null ||
+      //       //         _exploreModel!.data!.first.section2!.elements == null ||
+      //       //         _exploreModel!.data!.first.section2!.elements!.isEmpty)
+      //       //     ? Container(
+      //       //         child: CustomWidgets().errorWidget(
+      //       //             _failedMessageForExploreData,
+      //       //             onTap: () => _getExploreData(),
+      //       //             isSizeLess: true),
+      //       //         height: AppConfig.verticalBlockSize * 35,
+      //       //       )
+      //       //     : Column(
+      //       //         children: [
+      //       //           CarouselSlider.builder(
+      //       //             carouselController: _controller,
+      //       //             itemCount: (_exploreModel!
+      //       //                         .data!.first.section2!.elements!.length >
+      //       //                     8)
+      //       //                 ? 8
+      //       //                 : _exploreModel!.data!.first.section2!.elements!.length,
+      //       //             options: CarouselOptions(
+      //       //                 height: AppConfig.verticalBlockSize * 28,
+      //       //                 aspectRatio: 16 / 9,
+      //       //                 initialPage: 0,
+      //       //                 enableInfiniteScroll: false,
+      //       //                 pageSnapping: true,
+      //       //                 autoPlay: true,
+      //       //                 reverse: false,
+      //       //                 enlargeCenterPage: true,
+      //       //                 viewportFraction: 1.0,
+      //       //                 onPageChanged: (index, _) {
+      //       //                   if (_currentDotPosition.toInt() != index) {
+      //       //                     _currentDotPosition = index.toDouble();
+      //       //                     _streamController?.add(null);
+      //       //                   }
+      //       //                 },
+      //       //                 scrollDirection: Axis.horizontal),
+      //       //             itemBuilder: (context, child, itemIndex) =>
+      //       //                 Container(
+      //       //               width: double.infinity,
+      //       //               child: InkWell(
+      //       //                 splashColor: Colors.transparent,
+      //       //                 highlightColor: Colors.transparent,
+      //       //                 focusColor: Colors.transparent,
+      //       //                 onTap: () {
+      //       //                   if (_exploreModel!.data!.first.section2!
+      //       //                               .elements![itemIndex].serviceName !=
+      //       //                           null &&
+      //       //                       _exploreModel!.data!.first.section2!
+      //       //                           .elements![itemIndex].serviceName!
+      //       //                           .trim()
+      //       //                           .isNotEmpty) {
+      //       //                     Navigator.push(
+      //       //                             context,
+      //       //                             MaterialPageRoute(
+      //       //                                 builder: (context) =>
+      //       //                                     SolutionBiddingScreen(
+      //       //                                         searchQuery: _exploreModel!
+      //       //                                             .data!
+      //       //                                             .first
+      //       //                                             .section2!
+      //       //                                             .elements![itemIndex]
+      //       //                                             .serviceName)))
+      //       //                         .then((value) {
+      //       //                       // _getCartCount();
+      //       //                     });
+      //       //                   }
+      //       //                 },
+      //       //                 child: Container(
+      //       //                   margin: EdgeInsets.all(10.0),
+      //       //                   child: ClipRRect(
+      //       //                     borderRadius: BorderRadius.circular(10),
+      //       //                     child: CustomWidgets().getImageFromUrl(
+      //       //                         _exploreModel!.data!.first.section2!
+      //       //                                 .elements![itemIndex].imgUrl ??
+      //       //                             "",
+      //       //                         boxFit: BoxFit.fill),
+      //       //                   ),
+      //       //                 ),
+      //       //               ),
+      //       //             ),
+      //       //           ),
+      //       //           StreamBuilder<Object?>(
+      //       //               stream: _streamController!.stream,
+      //       //               builder: (context, snapshot) {
+      //       //                 return Container(
+      //       //                   margin: EdgeInsets.only(
+      //       //                       top: AppConfig.verticalBlockSize * 0.5),
+      //       //                   child: DotsIndicator(
+      //       //                     dotsCount: (_exploreModel!.data!.first.section2!
+      //       //                                 .elements!.length >
+      //       //                             8)
+      //       //                         ? 8
+      //       //                         : _exploreModel!
+      //       //                             .data!.first.section2!.elements!.length,
+      //       //                     position: _currentDotPosition,
+      //       //                     axis: Axis.horizontal,
+      //       //                     decorator: _decorator,
+      //       //                     onTap: (pos) {
+      //       //                       _controller.animateToPage(pos.toInt(),
+      //       //                           curve: Curves.easeInOut,
+      //       //                           duration: Duration(milliseconds: 300));
+      //       //                       _currentDotPosition = pos;
+      //       //                       _streamController?.add(null);
+      //       //                       return;
+      //       //                     },
+      //       //                   ),
+      //       //                 );
+      //       //               })
+      //       //         ],
+      //       //       );
+      //     }),
     );
   }
 
   Widget _getVideosSection() {
-    return StreamBuilder<RequestState>(
-        stream: _homeScreenMainBloc.mediaStream,
+    return StreamBuilder<RequestState?>(
+        stream: _homeScreenMainBloc!.mediaStream,
         initialData: _mediaContentPlunes == null ? RequestInProgress() : null,
         builder: (context, snapshot) {
           if (snapshot.data is RequestSuccess) {
-            RequestSuccess successObject = snapshot.data;
+            RequestSuccess successObject = snapshot.data as RequestSuccess;
             _mediaContentPlunes = successObject.response;
             _filterVideos();
             _homeScreenMainBloc?.addIntoMediaStream(null);
           } else if (snapshot.data is RequestFailed) {
-            RequestFailed _failedObj = snapshot.data;
+            RequestFailed? _failedObj = snapshot.data as RequestFailed?;
             _mediaFailedMessage = _failedObj?.failureCause;
             _homeScreenMainBloc?.addIntoMediaStream(null);
           } else if (snapshot.data is RequestInProgress) {
@@ -876,16 +1017,16 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
             );
           }
           return (_mediaContentPlunes == null ||
-                  _mediaContentPlunes.data == null ||
-                  _mediaContentPlunes.data.isEmpty)
+                  _mediaContentPlunes!.data == null ||
+                  _mediaContentPlunes!.data!.isEmpty)
               ? Container()
               : Container(
                   child: Column(
                     children: [
-                      (_doctorVideos == null || _doctorVideos.isEmpty)
+                      (_doctorVideos == null || _doctorVideos!.isEmpty)
                           ? Container()
                           : _getDoctorVideoSection(_doctorVideos),
-                      (_customerVideos == null || _customerVideos.isEmpty)
+                      (_customerVideos == null || _customerVideos!.isEmpty)
                           ? Container()
                           : _getCustomerVideos(_customerVideos),
                     ],
@@ -898,16 +1039,16 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
     _doctorVideos = [];
     _customerVideos = [];
     if (_mediaContentPlunes != null &&
-        _mediaContentPlunes.data != null &&
-        _mediaContentPlunes.data.isNotEmpty) {
-      _mediaContentPlunes.data.forEach((element) {
-        if (element.mediaType != null && element.mediaType.trim().isNotEmpty) {
-          if (element.mediaType.toLowerCase() ==
+        _mediaContentPlunes!.data != null &&
+        _mediaContentPlunes!.data!.isNotEmpty) {
+      _mediaContentPlunes!.data!.forEach((element) {
+        if (element.mediaType != null && element.mediaType!.trim().isNotEmpty) {
+          if (element.mediaType!.toLowerCase() ==
               Constants.USER_TESTIMONIAL.toString().toLowerCase()) {
-            _customerVideos.add(element);
-          } else if (element.mediaType.toLowerCase() ==
+            _customerVideos!.add(element);
+          } else if (element.mediaType!.toLowerCase() ==
               Constants.PROFESSIONAL_TESTIMONIAL.toString().toLowerCase()) {
-            _doctorVideos.add(element);
+            _doctorVideos!.add(element);
           }
         }
       });
@@ -915,7 +1056,7 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
   }
 
   void _getTopFacilities({bool isInitialRequest = false}) {
-    _homeScreenMainBloc.getTopFacilities(
+    _homeScreenMainBloc!.getTopFacilities(
         specialityId: _selectedSpeciality,
         shouldSortByNearest: (_locationFilter == _allKey) ? false : true,
         facilityType: _userTypeFilter,
@@ -923,16 +1064,16 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
   }
 
   Widget _getTopFacilityStreamBuilderWidget() {
-    return StreamBuilder<RequestState>(
-        stream: _homeScreenMainBloc.topFacilityStream,
+    return StreamBuilder<RequestState?>(
+        stream: _homeScreenMainBloc!.topFacilityStream,
         initialData: (_topFacilityModel == null) ? RequestInProgress() : null,
         builder: (context, snapshot) {
           if (snapshot.data is RequestSuccess) {
-            RequestSuccess successObject = snapshot.data;
+            RequestSuccess successObject = snapshot.data as RequestSuccess;
             _topFacilityModel = successObject.response;
             _homeScreenMainBloc?.addIntoTopFacilityStream(null);
           } else if (snapshot.data is RequestFailed) {
-            RequestFailed _failedObj = snapshot.data;
+            RequestFailed? _failedObj = snapshot.data as RequestFailed?;
             _failedMessageTopFacility = _failedObj?.failureCause;
             _homeScreenMainBloc?.addIntoTopFacilityStream(null);
           } else if (snapshot.data is RequestInProgress) {
@@ -942,10 +1083,10 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
             );
           }
           return (_topFacilityModel == null ||
-                  (_topFacilityModel.success != null &&
-                      !_topFacilityModel.success) ||
-                  _topFacilityModel.data == null ||
-                  _topFacilityModel.data.isEmpty)
+                  (_topFacilityModel!.success != null &&
+                      !_topFacilityModel!.success!) ||
+                  _topFacilityModel!.data == null ||
+                  _topFacilityModel!.data!.isEmpty)
               ? Container(
                   height: AppConfig.verticalBlockSize * 38,
                   child: CustomWidgets().errorWidget(_failedMessageTopFacility,
@@ -966,17 +1107,17 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
                         highlightColor: Colors.transparent,
                         focusColor: Colors.transparent,
                         onTap: () {
-                          if (_topFacilityModel.data[index] != null &&
-                              _topFacilityModel.data[index].userType != null &&
-                              _topFacilityModel.data[index].professionalId !=
+                          if (_topFacilityModel!.data![index] != null &&
+                              _topFacilityModel!.data![index].userType != null &&
+                              _topFacilityModel!.data![index].professionalId !=
                                   null) {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => DoctorInfo(
                                           // "5dfcca413d6ac133c4b6f42b",
-                                          _topFacilityModel
-                                              .data[index].professionalId,
+                                          _topFacilityModel!
+                                              .data![index].professionalId,
                                           isDoc: false,
                                           // (_topFacilityModel
                                           //         .data[index].userType
@@ -989,18 +1130,18 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
                         },
                         onDoubleTap: () {},
                         child: CommonWidgets().getHospitalCard(
-                            _topFacilityModel.data[index]?.imageUrl ?? '',
+                            _topFacilityModel!.data![index].imageUrl ?? '',
                             CommonMethods.getStringInCamelCase(
-                                _topFacilityModel.data[index].name),
-                            _topFacilityModel.data[index].biography ?? '',
-                            _topFacilityModel.data[index]?.rating,
-                            _topFacilityModel.data[index],
+                                _topFacilityModel!.data![index].name),
+                            _topFacilityModel!.data![index].biography ?? '',
+                            _topFacilityModel!.data![index].rating,
+                            _topFacilityModel!.data![index],
                             _streamControllerForTopFacility,
                             () => _openInsuranceScreen(
-                                _topFacilityModel.data[index])),
+                                _topFacilityModel!.data![index])),
                       );
                     },
-                    itemCount: _topFacilityModel.data.length,
+                    itemCount: _topFacilityModel!.data!.length,
                   ),
                 );
         });
@@ -1009,7 +1150,7 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
   _openInsuranceScreen(TopFacility service) {
     if (service != null &&
         service.professionalId != null &&
-        service.professionalId.trim().isNotEmpty) {
+        service.professionalId!.trim().isNotEmpty) {
       Navigator.push(
               context,
               MaterialPageRoute(
@@ -1123,9 +1264,9 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
                     ),
                   ),
                   (UserManager().getUserDetails().latitude != null &&
-                          UserManager().getUserDetails().latitude.isNotEmpty &&
+                          UserManager().getUserDetails().latitude!.isNotEmpty &&
                           UserManager().getUserDetails().longitude != null &&
-                          UserManager().getUserDetails().longitude.isNotEmpty &&
+                          UserManager().getUserDetails().longitude!.isNotEmpty &&
                           UserManager().getIsUserInServiceLocation())
                       ? Column(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -1251,8 +1392,8 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
                                     (_selectedSpeciality != null &&
                                             _selectedSpeciality ==
                                                 _getSpecialityItems()[index].id)
-                                        ? Icons.radio_button_checked_rounded
-                                        : Icons.radio_button_off,
+                                        ? Icons.radio_button_checked
+                                        : Icons.radio_button_unchecked,
                                     color: (_selectedSpeciality != null &&
                                             _selectedSpeciality ==
                                                 _getSpecialityItems()[index].id)
@@ -1299,11 +1440,11 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
       return _specialityItems;
     }
     _specialityItems = [];
-    CommonMethods.catalogueLists.forEach((element) {
+    CommonMethods.catalogueLists!.forEach((element) {
       if (element.speciality != null &&
-          element.speciality.trim().isNotEmpty &&
+          element.speciality!.trim().isNotEmpty &&
           element.id != null &&
-          element.id.trim().isNotEmpty) {
+          element.id!.trim().isNotEmpty) {
         _specialityItems.add(element);
       }
     });

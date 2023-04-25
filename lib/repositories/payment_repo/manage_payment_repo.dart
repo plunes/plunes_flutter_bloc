@@ -13,13 +13,13 @@ class ManagePaymentRepo {
         headerIncluded: true,
         requestType: HttpRequestMethods.HTTP_GET,
         queryParameter: {"userId": UserManager().getUserDetails().uid});
-    if (result.isRequestSucceed) {
-      BankDetails _bankDetails;
-      LoginPost _loginPost = LoginPost.fromJson(result.response.data);
+    if (result!.isRequestSucceed!) {
+      BankDetails? _bankDetails;
+      LoginPost _loginPost = LoginPost.fromJson(result.response!.data);
       if (_loginPost != null &&
           _loginPost.user != null &&
-          _loginPost.user.bankDetails != null) {
-        _bankDetails = _loginPost.user.bankDetails;
+          _loginPost.user!.bankDetails != null) {
+        _bankDetails = _loginPost.user!.bankDetails;
       }
       return RequestSuccess(response: _bankDetails);
     } else {
@@ -33,28 +33,28 @@ class ManagePaymentRepo {
         headerIncluded: true,
         requestType: HttpRequestMethods.HTTP_PUT,
         postData: user.toJson());
-    if (result.isRequestSucceed) {
+    if (result!.isRequestSucceed!) {
       return RequestSuccess();
     } else {
       return RequestFailed(failureCause: result.failureCause);
     }
   }
 
-  Future<RequestState> getUpiDetails(String bookingId) async {
+  Future<RequestState> getUpiDetails(String? bookingId) async {
     var result = await DioRequester().requestMethodWithNoBaseUrl(
         url: Urls.UPI_PAYMENT_URL,
         headerIncluded: true,
         requestType: HttpRequestMethods.HTTP_POST,
         postData: {"payment_id": bookingId});
-    if (result.isRequestSucceed) {
-      return RequestSuccess(response: UpiModel.fromJson(result.response.data));
+    if (result!.isRequestSucceed!) {
+      return RequestSuccess(response: UpiModel.fromJson(result.response!.data));
     } else {
       return RequestFailed(failureCause: result.failureCause);
     }
   }
 
-  Future<RequestState> sendUpiPaymentResponse(String bookingId, String status,
-      String txnId, String responseCode) async {
+  Future<RequestState> sendUpiPaymentResponse(String? bookingId, String status,
+      String? txnId, String? responseCode) async {
     var result = await DioRequester().requestMethod(
         url: Urls.CAPTURE_UPI_PAYMENT_URL,
         headerIncluded: true,
@@ -65,7 +65,7 @@ class ManagePaymentRepo {
           "txnId": txnId,
           "responseCode": responseCode
         });
-    if (result.isRequestSucceed) {
+    if (result!.isRequestSucceed!) {
       return RequestSuccess();
     } else {
       return RequestFailed(failureCause: result.failureCause);

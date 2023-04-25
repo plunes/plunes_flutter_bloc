@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
-import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/solution_blocs/search_solution_bloc.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
@@ -17,23 +18,21 @@ import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/booking_screens/booking_main_screen.dart';
-import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
-import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/profile_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/choose_more_facilities_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/solution_map_screen.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+
 import '../../widgets/dialogPopScreen.dart';
-import 'package:showcaseview/showcaseview.dart';
-import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 
 // ignore: must_be_immutable
 class SolutionReceivedScreen extends BaseActivity {
-  final CatalogueData catalogueData;
-  final String searchQuery;
-  final SearchedDocResults searchedDocResults;
+  final CatalogueData? catalogueData;
+  final String? searchQuery;
+  final SearchedDocResults? searchedDocResults;
 
   SolutionReceivedScreen(
       {this.catalogueData, this.searchQuery, this.searchedDocResults});
@@ -42,26 +41,28 @@ class SolutionReceivedScreen extends BaseActivity {
   _SolutionReceivedScreenState createState() => _SolutionReceivedScreenState();
 }
 
-class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
-  Timer _timer, _timerToUpdateSolutionReceivedTime, _discountCalculationTimer;
-  SearchSolutionBloc _searchSolutionBloc;
-  SearchedDocResults _searchedDocResults;
-  DocHosSolution _solution;
-  BuildContext _buildContext;
-  bool _isFetchingInitialData;
-  String _failureCause;
-  int _solutionReceivedTime = 0, _expirationTimer;
-  bool _shouldStartTimer, _isCrossClicked;
-  StreamController _streamForTimer,
+// class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
+class _SolutionReceivedScreenState extends State<SolutionReceivedScreen> {
+final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  Timer? _timer, _timerToUpdateSolutionReceivedTime, _discountCalculationTimer;
+  SearchSolutionBloc? _searchSolutionBloc;
+  SearchedDocResults? _searchedDocResults;
+  DocHosSolution? _solution;
+  BuildContext? _buildContext;
+  late bool _isFetchingInitialData;
+  String? _failureCause;
+  int? _solutionReceivedTime = 0, _expirationTimer;
+  bool? _shouldStartTimer, _isCrossClicked;
+  StreamController? _streamForTimer,
       _docExpandCollapseController,
       _totalDiscountController;
-  TextEditingController _searchController;
-  FocusNode _focusNode;
+  TextEditingController? _searchController;
+  FocusNode? _focusNode;
   final double lat = 28.4594965, long = 77.0266383;
   Set<Services> _services = {};
-  num _gainedDiscount = 0, _gainedDiscountPercentage = 0;
+  num? _gainedDiscount = 0, _gainedDiscountPercentage = 0;
   GlobalKey _moreFacilityKey = GlobalKey();
-  ScrollController _scrollController;
+  ScrollController? _scrollController;
   Key _visibilityKey = Key("ItsVisibilityKey");
 
   int _currentProgress = 1;
@@ -74,7 +75,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
     _isCrossClicked = false;
     _focusNode = FocusNode()
       ..addListener(() {
-        if (_focusNode.hasFocus) {
+        if (_focusNode!.hasFocus) {
           Navigator.pop(context, true);
         }
       });
@@ -87,7 +88,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
         Timer.periodic(Duration(seconds: 1), (timer) {
       _timerToUpdateSolutionReceivedTime = timer;
       _currentProgress++;
-      _streamForTimer.add(null);
+      _streamForTimer!.add(null);
     });
     _discountCalculationTimer = Timer.periodic(Duration(seconds: 4), (timer) {
       _discountCalculationTimer = timer;
@@ -101,16 +102,16 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
       _searchedDocResults = widget.searchedDocResults;
     }
     if (_searchedDocResults != null &&
-        _searchedDocResults.solution != null &&
-        _searchedDocResults.solution.services != null &&
-        _searchedDocResults.solution.services.isNotEmpty) {
+        _searchedDocResults!.solution != null &&
+        _searchedDocResults!.solution!.services != null &&
+        _searchedDocResults!.solution!.services!.isNotEmpty) {
       _isFetchingInitialData = false;
       _checkShouldTimerRun();
 //      _highlightSearchBar();
     } else if (_searchedDocResults != null &&
-        _searchedDocResults.msg != null &&
-        _searchedDocResults.msg.isNotEmpty) {
-      _failureCause = _searchedDocResults.msg;
+        _searchedDocResults!.msg != null &&
+        _searchedDocResults!.msg!.isNotEmpty) {
+      _failureCause = _searchedDocResults!.msg;
     }
     _fetchResultAndStartTimer();
     super.initState();
@@ -120,7 +121,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
     if (!UserManager().getWidgetShownStatus(Constants.SOLUTION_SCREEN)) {
       Future.delayed(Duration(milliseconds: 20)).then((value) {
         WidgetsBinding.instance.addPostFrameCallback((_) =>
-            ShowCaseWidget.of(_buildContext).startShowCase([_moreFacilityKey]));
+            ShowCaseWidget.of(_buildContext!).startShowCase([_moreFacilityKey]));
         Future.delayed(Duration(milliseconds: 50)).then((value) {
           UserManager().setWidgetShownStatus(Constants.SOLUTION_SCREEN);
         });
@@ -131,7 +132,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   @override
   void dispose() {
     _disableScreenShotFlag();
-    if (_timer != null && _timer.isActive) {
+    if (_timer != null && _timer!.isActive) {
       _timer?.cancel();
     }
     _scrollController?.dispose();
@@ -159,7 +160,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                   color: Colors.white,
                   elevation: 3.0,
                   margin: EdgeInsets.only(
-                      top: AppConfig.getMediaQuery().padding.top),
+                      top: AppConfig.getMediaQuery()!.padding.top),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
@@ -210,15 +211,15 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
               return _isFetchingInitialData
                   ? CustomWidgets().getProgressIndicator()
                   : _searchedDocResults == null ||
-                          _searchedDocResults.solution == null ||
-                          _searchedDocResults.solution.services == null ||
-                          _searchedDocResults.solution.services.isEmpty
+                          _searchedDocResults!.solution == null ||
+                          _searchedDocResults!.solution!.services == null ||
+                          _searchedDocResults!.solution!.services!.isEmpty
                       ? Padding(
                           padding: EdgeInsets.symmetric(
                               horizontal: AppConfig.horizontalBlockSize * 8),
                           child: CustomWidgets().errorWidget(_failureCause,
                               onTap: (_failureCause != null &&
-                                      _failureCause.isNotEmpty &&
+                                      _failureCause!.isNotEmpty &&
                                       _failureCause == PlunesStrings.noInternet)
                                   ? () => _fetchResultAndStartTimer()
                                   : null,
@@ -235,40 +236,40 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
         controller: _scrollController,
         padding: EdgeInsets.all(0),
         itemBuilder: (context, index) {
-          if (_searchedDocResults.solution.showAdditionalFacilities != null &&
-              _searchedDocResults.solution.showAdditionalFacilities &&
-              (_searchedDocResults.solution.services != null ||
-                  _searchedDocResults.solution.services.isNotEmpty) &&
-              index == _searchedDocResults.solution.services.length) {
+          if (_searchedDocResults!.solution!.showAdditionalFacilities != null &&
+              _searchedDocResults!.solution!.showAdditionalFacilities! &&
+              (_searchedDocResults!.solution!.services != null ||
+                  _searchedDocResults!.solution!.services!.isNotEmpty) &&
+              index == _searchedDocResults!.solution!.services!.length) {
             return _getViewMoreFacilityWidget();
-          } else if (_searchedDocResults.solution.services[index].doctors !=
+          } else if (_searchedDocResults!.solution!.services![index].doctors !=
                   null &&
-              _searchedDocResults.solution.services[index].doctors.isNotEmpty) {
+              _searchedDocResults!.solution!.services![index].doctors!.isNotEmpty) {
             return _showHosDocCards(
-                _searchedDocResults.solution.services[index], _currentProgress);
+                _searchedDocResults!.solution!.services![index], _currentProgress);
           }
           return CustomWidgets().getDocDetailWidget(
-              _searchedDocResults.solution?.services ?? [],
+              _searchedDocResults!.solution?.services ?? [],
               index,
               () => _checkAvailability(index),
               () => _onBookingTap(
-                  _searchedDocResults.solution.services[index], index),
-              _searchedDocResults.catalogueData,
+                  _searchedDocResults!.solution!.services![index], index),
+              _searchedDocResults!.catalogueData,
               _buildContext,
-              () => _viewProfile(_searchedDocResults.solution?.services[index]),
+              () => _viewProfile(_searchedDocResults!.solution!.services![index]),
               _currentProgress,
               _streamForTimer);
         },
-        itemCount: _searchedDocResults.solution == null
+        itemCount: _searchedDocResults!.solution == null
             ? 0
-            : _searchedDocResults.solution.services == null ||
-                    _searchedDocResults.solution.services.isEmpty
+            : _searchedDocResults!.solution!.services == null ||
+                    _searchedDocResults!.solution!.services!.isEmpty
                 ? 0
-                : (_searchedDocResults.solution.showAdditionalFacilities !=
+                : (_searchedDocResults!.solution!.showAdditionalFacilities !=
                             null &&
-                        _searchedDocResults.solution.showAdditionalFacilities)
-                    ? (_searchedDocResults.solution.services.length + 1)
-                    : _searchedDocResults.solution.services.length);
+                        _searchedDocResults!.solution!.showAdditionalFacilities!)
+                    ? (_searchedDocResults!.solution!.services!.length + 1)
+                    : _searchedDocResults!.solution!.services!.length);
   }
 
   Widget _getViewMoreFacilityWidget() {
@@ -307,7 +308,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                 _currentProgress = 1;
                 _isCrossClicked = false;
                 _shouldStartTimer = true;
-                if (_timer != null && _timer.isActive) {
+                if (_timer != null && _timer!.isActive) {
                   _negotiate();
                 } else {
                   _fetchResultAndStartTimer();
@@ -352,8 +353,8 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
     showDialog(
         context: context,
         builder: (BuildContext context) => DialogWidgets().buildProfileDialog(
-            catalogueData: _searchedDocResults.catalogueData,
-            solutions: _searchedDocResults.solution.services[selectedIndex],
+            catalogueData: _searchedDocResults!.catalogueData,
+            solutions: _searchedDocResults!.solution!.services![selectedIndex],
             context: _buildContext));
   }
 
@@ -362,18 +363,18 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
       _showSnackBar(PlunesStrings.cantBookPriceExpired, shouldPop: true);
       return;
     }
-    _solution = _searchedDocResults.solution;
+    _solution = _searchedDocResults!.solution;
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => BookingMainScreen(
-                  price: service.newPrice[0].toString(),
+                  price: service.newPrice![0].toString(),
                   profId: service.professionalId,
                   searchedSolutionServiceId: service.sId,
                   timeSlots: service.timeSlots,
                   docHosSolution: _solution,
                   bookInPrice: service.bookIn,
-                  serviceName: widget.catalogueData.service ??
+                  serviceName: widget.catalogueData!.service ??
                       _searchedDocResults?.catalogueData?.service ??
                       PlunesStrings.NA,
                   serviceIndex: 0,
@@ -388,24 +389,25 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   }
 
   Future<RequestState> _negotiate() async {
-    var result = await _searchSolutionBloc.getDocHosSolution(
-        widget.catalogueData,
+    var result = await _searchSolutionBloc!.getDocHosSolution(
+        widget.catalogueData!,
+        "solution_reeived",
         searchQuery: widget.searchQuery);
     if (_searchedDocResults != null &&
-        _searchedDocResults.solution != null &&
-        _searchedDocResults.solution.services != null &&
-        _searchedDocResults.solution.services.isNotEmpty) {
+        _searchedDocResults!.solution != null &&
+        _searchedDocResults!.solution!.services != null &&
+        _searchedDocResults!.solution!.services!.isNotEmpty) {
       return result;
     }
     if (result is RequestSuccess) {
       _searchedDocResults = result.response;
-      if (_searchedDocResults.solution?.services == null ||
-          _searchedDocResults.solution.services.isEmpty) {
+      if (_searchedDocResults!.solution?.services == null ||
+          _searchedDocResults!.solution!.services!.isEmpty) {
         _failureCause = PlunesStrings.oopsServiceNotAvailable;
         if (_searchedDocResults != null &&
-            _searchedDocResults.msg != null &&
-            _searchedDocResults.msg.isNotEmpty) {
-          _failureCause = _searchedDocResults.msg;
+            _searchedDocResults!.msg != null &&
+            _searchedDocResults!.msg!.isNotEmpty) {
+          _failureCause = _searchedDocResults!.msg;
         }
       } else {
         _checkShouldTimerRun();
@@ -428,8 +430,8 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
     _timer = Timer.periodic(Duration(seconds: 3), (timer) {
       _timer = timer;
       if (!mounted) {
-        if (_timer != null && _timer.isActive) {
-          _timer.cancel();
+        if (_timer != null && _timer!.isActive) {
+          _timer!.cancel();
         }
         return;
       }
@@ -445,22 +447,22 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
           ListView(
             children: <Widget>[
               _getWhyPlunesView(),
-              StreamBuilder<Object>(
-                  stream: _searchSolutionBloc.getDocHosStream(),
+              StreamBuilder<Object?>(
+                  stream: _searchSolutionBloc!.getDocHosStream(),
                   builder: (context, snapshot) {
                     return (_timer != null &&
-                            _timer.isActive &&
-                            !(_isCrossClicked))
+                            _timer!.isActive &&
+                            !(_isCrossClicked!))
                         ? _getHoldOnPopup()
                         : _getNegotiatedPriceTotalView();
                   }),
-              StreamBuilder<Object>(
+              StreamBuilder<Object?>(
                   stream: _totalDiscountController?.stream,
                   builder: (context, snapshot) {
                     if (_gainedDiscountPercentage == null ||
-                        _gainedDiscountPercentage <= 0) {
+                        _gainedDiscountPercentage! <= 0) {
                       return Container();
-                    } else if (_timer != null && _timer.isActive) {
+                    } else if (_timer != null && _timer!.isActive) {
                       return Container();
                     }
                     return _getDailerWidget();
@@ -472,23 +474,23 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                     left: AppConfig.horizontalBlockSize * 4,
                     right: AppConfig.horizontalBlockSize * 4,
                     top: AppConfig.verticalBlockSize * 1),
-                child: StreamBuilder<RequestState>(
+                child: StreamBuilder<RequestState?>(
                   builder: (context, snapShot) {
                     if (snapShot.data is RequestSuccess) {
-                      RequestSuccess _successObject = snapShot.data;
+                      RequestSuccess _successObject = snapShot.data as RequestSuccess;
                       _searchedDocResults = _successObject.response;
                       _checkExpandedSolutions();
-                      _searchSolutionBloc.addIntoDocHosStream(null);
+                      _searchSolutionBloc!.addIntoDocHosStream(null);
                       _checkShouldTimerRun();
                     } else if (snapShot.data is RequestFailed) {
-                      RequestFailed _failedObject = snapShot.data;
+                      RequestFailed _failedObject = snapShot.data as RequestFailed;
                       _failureCause = _failedObject.failureCause;
-                      _searchSolutionBloc.addIntoDocHosStream(null);
+                      _searchSolutionBloc!.addIntoDocHosStream(null);
                       _cancelNegotiationTimer();
                     }
                     return _showContent();
                   },
-                  stream: _searchSolutionBloc.getDocHosStream(),
+                  stream: _searchSolutionBloc!.getDocHosStream(),
                 ),
               ),
             ],
@@ -799,7 +801,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
 
   void _fetchResultAndStartTimer() {
     _negotiate().then((value) {
-      if (_shouldStartTimer) {
+      if (_shouldStartTimer!) {
         _startTimer();
       }
     });
@@ -807,48 +809,48 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   }
 
   _cancelNegotiationTimer() {
-    if (_searchedDocResults.solution?.services != null ||
-        _searchedDocResults.solution.services.isNotEmpty) {
-      _searchedDocResults.solution.services.forEach((service) {
-        if (service.negotiating != null && service.negotiating) {
+    if (_searchedDocResults!.solution?.services != null ||
+        _searchedDocResults!.solution!.services!.isNotEmpty) {
+      _searchedDocResults!.solution!.services!.forEach((service) {
+        if (service.negotiating != null && service.negotiating!) {
           service.negotiating = false;
         }
       });
     }
-    if (_timer != null && _timer.isActive) {
+    if (_timer != null && _timer!.isActive) {
       _timer?.cancel();
     }
     _setState();
   }
 
   _checkShouldTimerRun() {
-    if (_searchedDocResults.solution?.services == null ||
-        _searchedDocResults.solution.services.isEmpty) {
-      if (_timer != null && _timer.isActive) {
+    if (_searchedDocResults!.solution?.services == null ||
+        _searchedDocResults!.solution!.services!.isEmpty) {
+      if (_timer != null && _timer!.isActive) {
         _cancelNegotiationTimer();
       }
       return;
     }
     bool shouldNegotiate = false;
 //    _solutionReceivedTime = _searchedDocResults.solution?.createdTime ?? 0;
-    _expirationTimer = _searchedDocResults.solution?.expirationTimer ?? 0;
+    _expirationTimer = _searchedDocResults!.solution?.expirationTimer ?? 0;
     _solutionReceivedTime = _expirationTimer;
     if (DateTime.now()
-            .difference(DateTime.fromMillisecondsSinceEpoch(_expirationTimer))
+            .difference(DateTime.fromMillisecondsSinceEpoch(_expirationTimer!))
             .inHours >=
         1) {
       _cancelNegotiationTimer();
       return;
     }
-    _searchedDocResults.solution.services.forEach((service) {
-      if (service.negotiating != null && service.negotiating) {
+    _searchedDocResults!.solution!.services!.forEach((service) {
+      if (service.negotiating != null && service.negotiating!) {
         shouldNegotiate = true;
       }
     });
     if (shouldNegotiate) {
       _shouldStartTimer = true;
     } else {
-      if (_timer != null && _timer.isActive) {
+      if (_timer != null && _timer!.isActive) {
         _cancelNegotiationTimer();
       }
     }
@@ -864,7 +866,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
       // } else {
       route = DoctorInfo(
         service.professionalId,
-        isDoc: (service.userType.toLowerCase() ==
+        isDoc: (service.userType!.toLowerCase() ==
             Constants.doctor.toString().toLowerCase()),
       );
       // }
@@ -903,10 +905,10 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                           left: AppConfig.horizontalBlockSize * 3)),
                   Expanded(
                     child: Text(
-                      service?.name ?? PlunesStrings.NA,
+                      service.name ?? PlunesStrings.NA,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontSize: 15,
                           color: PlunesColors.BLACKCOLOR,
                           fontWeight: FontWeight.normal),
@@ -934,8 +936,8 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
               width: double.infinity,
               color: PlunesColors.GREYCOLOR,
             ),
-            StreamBuilder<Object>(
-                stream: _docExpandCollapseController.stream,
+            StreamBuilder<Object?>(
+                stream: _docExpandCollapseController!.stream,
                 builder: (context, snapshot) {
                   return ListView.builder(
                     shrinkWrap: true,
@@ -945,7 +947,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                       return _hosDoc(service, index, currentStep);
                     },
                     itemCount:
-                        (service.isExpanded) ? service.doctors.length : 1,
+                        service.isExpanded! ? service.doctors!.length : 1,
                   );
                 })
           ],
@@ -972,9 +974,9 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                   return;
                 },
                 onDoubleTap: () {},
-                child: (service.doctors[index].imageUrl != null &&
-                        service.doctors[index].imageUrl.isNotEmpty &&
-                        service.doctors[index].imageUrl.contains("http"))
+                child: (service.doctors![index].imageUrl != null &&
+                        service.doctors![index].imageUrl!.isNotEmpty &&
+                        service.doctors![index].imageUrl!.contains("http"))
                     ? CircleAvatar(
                         backgroundColor: Colors.transparent,
                         child: Container(
@@ -982,7 +984,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                           width: AppConfig.horizontalBlockSize * 14,
                           child: ClipOval(
                               child: CustomWidgets().getImageFromUrl(
-                                  service.doctors[index].imageUrl,
+                                  service.doctors![index].imageUrl,
                                   boxFit: BoxFit.fill,
                                   placeHolderPath:
                                       PlunesImages.doc_placeholder)),
@@ -990,7 +992,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                         radius: AppConfig.horizontalBlockSize * 7,
                       )
                     : CustomWidgets().getProfileIconWithName(
-                        service.doctors[index].name,
+                        service.doctors![index].name,
                         14,
                         14,
                       ),
@@ -1014,10 +1016,10 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                                   top: AppConfig.verticalBlockSize * .5),
                               child: Text(
                                 CommonMethods.getStringInCamelCase(
-                                    service.doctors[index]?.name),
+                                    service.doctors![index].name)!,
                                 maxLines: 3,
                                 overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontSize: 15,
                                     color: PlunesColors.BLACKCOLOR,
                                     fontWeight: FontWeight.normal),
@@ -1039,11 +1041,11 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                         alignment: Alignment.topLeft,
                         padding: EdgeInsets.only(
                             top: AppConfig.horizontalBlockSize * 1),
-                        child: (service.doctors[index] != null &&
-                                service.doctors[index].experience != null &&
-                                service.doctors[index].experience > 0)
+                        child: (service.doctors![index] != null &&
+                                service.doctors![index].experience != null &&
+                                service.doctors![index].experience! > 0)
                             ? Text(
-                                "${service.doctors[index].experience > 100 ? "100+" : service.doctors[index].experience} ${PlunesStrings.yrExp}",
+                                "${service.doctors![index].experience! > 100 ? "100+" : service.doctors![index].experience} ${PlunesStrings.yrExp}",
                                 style: TextStyle(
                                   fontSize: 13.5,
                                   color: PlunesColors.GREYCOLOR,
@@ -1053,8 +1055,8 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                   ],
                 ),
               )),
-              service.doctors[index].rating == null ||
-                      service.doctors[index].rating < 1
+              service.doctors![index].rating == null ||
+                      service.doctors![index].rating! < 1
                   ? Container()
                   : Container(
                       width: AppConfig.horizontalBlockSize * 14,
@@ -1066,7 +1068,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                             color: PlunesColors.GREENCOLOR,
                           ),
                           Text(
-                            service.doctors[index].rating?.toStringAsFixed(1) ??
+                            service.doctors![index].rating?.toStringAsFixed(1) ??
                                 PlunesStrings.NA,
                             style: TextStyle(
                                 color: PlunesColors.BLACKCOLOR, fontSize: 14),
@@ -1103,26 +1105,26 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                       Flexible(
                         child: RichText(
                             text: TextSpan(
-                                text: (service.doctors[index].price == null ||
-                                        service.doctors[index].price.isEmpty ||
-                                        service.doctors[index].price[0] ==
-                                            service.doctors[index]?.newPrice[0])
+                                text: (service.doctors![index].price == null ||
+                                        service.doctors![index].price!.isEmpty ||
+                                        service.doctors![index].price![0] ==
+                                            service.doctors![index].newPrice![0])
                                     ? ""
-                                    : "\u20B9${service.doctors[index].price[0]?.toStringAsFixed(0) ?? PlunesStrings.NA} ",
+                                    : "\u20B9${service.doctors![index].price![0].toStringAsFixed(0) ?? PlunesStrings.NA} ",
                                 style: TextStyle(
                                     fontSize: 14,
-                                    color: service.negotiating
+                                    color: service.negotiating!
                                         ? PlunesColors.BLACKCOLOR
                                         : PlunesColors.GREYCOLOR,
-                                    decoration: service.negotiating
+                                    decoration: service.negotiating!
                                         ? TextDecoration.none
                                         : TextDecoration.lineThrough),
                                 children: <TextSpan>[
                               TextSpan(
-                                text: service.negotiating
+                                text: service.negotiating!
                                     ? ""
-                                    : " \u20B9${service.doctors[index].newPrice[0]?.toStringAsFixed(2) ?? PlunesStrings.NA}",
-                                style: TextStyle(
+                                    : " \u20B9${service.doctors![index].newPrice![0].toStringAsFixed(2) ?? PlunesStrings.NA}",
+                                style: const TextStyle(
                                     fontSize: 14,
                                     color: PlunesColors.BLACKCOLOR,
                                     fontWeight: FontWeight.w500,
@@ -1134,20 +1136,20 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                           padding: EdgeInsets.only(
                               left: AppConfig.horizontalBlockSize * 1)),
                       Flexible(
-                        child: ((service.doctors[index].price.isEmpty) ||
-                                (service.doctors[index].newPrice.isEmpty) ||
-                                service.doctors[index].price[0] ==
-                                    service.doctors[index].newPrice[0])
+                        child: ((service.doctors![index].price!.isEmpty) ||
+                                (service.doctors![index].newPrice!.isEmpty) ||
+                                service.doctors![index].price![0] ==
+                                    service.doctors![index].newPrice![0])
                             ? Container()
-                            : service.negotiating
+                            : service.negotiating!
                                 ? Container()
                                 : Text(
-                                    (service.doctors[index].discount == null ||
-                                            service.doctors[index].discount ==
+                                    (service.doctors![index].discount == null ||
+                                            service.doctors![index].discount ==
                                                 0 ||
-                                            service.doctors[index].discount < 0)
+                                            service.doctors![index].discount! < 0)
                                         ? ""
-                                        : " ${PlunesStrings.save} \u20B9 ${(service.doctors[index].price[0] - service.doctors[index].newPrice[0])?.toStringAsFixed(2)}",
+                                        : " ${PlunesStrings.save} \u20B9 ${(service.doctors![index].price![0] - service.doctors![index].newPrice![0]).toStringAsFixed(2)}",
                                     style: TextStyle(
                                         fontSize: 14,
                                         color: PlunesColors.GREENCOLOR),
@@ -1160,9 +1162,9 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                       alignment: Alignment.topLeft,
                       padding: EdgeInsets.only(
                           top: AppConfig.horizontalBlockSize * 1),
-                      child: (service.doctors[index].homeCollection != null &&
-                              service.doctors[index].homeCollection &&
-                              !(service.negotiating))
+                      child: (service.doctors![index].homeCollection != null &&
+                              service.doctors![index].homeCollection! &&
+                              !service.negotiating!)
                           ? Text(
                               PlunesStrings.homeCollectionAvailable,
                               style: TextStyle(
@@ -1175,7 +1177,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
               )),
               InkWell(
                   onTap: () {
-                    if (service.negotiating) {
+                    if (service.negotiating!) {
                       return;
                     }
                     if (!_canGoAhead()) {
@@ -1183,29 +1185,29 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                           shouldPop: true);
                       return;
                     }
-                    _solution = _searchedDocResults.solution;
+                    _solution = _searchedDocResults!.solution;
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => BookingMainScreen(
-                                  price: service.doctors[index].newPrice[0]
+                                  price: service.doctors![index].newPrice![0]
                                       .toString(),
                                   profId: service.professionalId,
-                                  docId: service.doctors[index].professionalId,
+                                  docId: service.doctors![index].professionalId,
                                   searchedSolutionServiceId: service.sId,
-                                  timeSlots: service.doctors[index].timeSlots,
+                                  timeSlots: service.doctors![index].timeSlots,
                                   docHosSolution: _solution,
-                                  bookInPrice: service.doctors[index].bookIn,
-                                  serviceName: widget.catalogueData.service ??
+                                  bookInPrice: service.doctors![index].bookIn,
+                                  serviceName: widget.catalogueData!.service ??
                                       _searchedDocResults
                                           ?.catalogueData?.service ??
                                       PlunesStrings.NA,
                                   serviceIndex: 0,
                                   service: Services(
-                                      price: service.doctors[index].price,
+                                      price: service.doctors![index].price,
                                       zestMoney:
-                                          service.doctors[index].zestMoney,
-                                      newPrice: service.doctors[index].newPrice,
+                                          service.doctors![index].zestMoney,
+                                      newPrice: service.doctors![index].newPrice,
                                       paymentOptions: service.paymentOptions),
                                 ))).then((value) {
                       if (value != null &&
@@ -1216,11 +1218,11 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                     });
                   },
                   child: CustomWidgets().getRoundedButton(
-                      service.doctors[index].bookIn == null
+                      service.doctors![index].bookIn == null
                           ? PlunesStrings.book
-                          : "${PlunesStrings.bookIn} ${service.doctors[index].bookIn}",
+                          : "${PlunesStrings.bookIn} ${service.doctors![index].bookIn}",
                       AppConfig.horizontalBlockSize * 8,
-                      service.negotiating
+                      service.negotiating!
                           ? PlunesColors.GREYCOLOR
                           : PlunesColors.SPARKLINGGREEN,
                       AppConfig.horizontalBlockSize * 3,
@@ -1228,7 +1230,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                       PlunesColors.WHITECOLOR))
             ],
           ),
-          service.negotiating
+          service.negotiating!
               ? Container(
                   width: double.infinity,
                   margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
@@ -1242,7 +1244,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                   ),
                 )
               : Container(),
-          service.negotiating
+          service.negotiating!
               ? Container(
                   width: double.infinity,
                   margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
@@ -1250,8 +1252,8 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                     width: double.infinity,
                     margin:
                         EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
-                    child: StreamBuilder<Object>(
-                        stream: _streamForTimer.stream,
+                    child: StreamBuilder<Object?>(
+                        stream: _streamForTimer!.stream,
                         builder: (context, snapshot) {
                           return StepProgressIndicator(
                             totalSteps: 33,
@@ -1267,9 +1269,9 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                   ),
                 )
               : Container(),
-          (service.doctors.length == 1)
+          (service.doctors!.length == 1)
               ? Container()
-              : (service.isExpanded && (index == (service.doctors.length - 1)))
+              : (service.isExpanded! && (index == (service.doctors!.length - 1)))
                   ? Container(
                       width: double.infinity,
                       alignment: Alignment.center,
@@ -1277,7 +1279,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                           top: AppConfig.verticalBlockSize * 0.5),
                       child: InkWell(
                         onTap: () {
-                          service.isExpanded = !service.isExpanded;
+                          service.isExpanded = !service.isExpanded!;
                           if (_services.contains(service)) {
                             _services.remove(service);
                             _services.add(service);
@@ -1307,7 +1309,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                         ),
                       ),
                     )
-                  : (!(service.isExpanded) && index == 0)
+                  : (!service.isExpanded! && index == 0)
                       ? Container(
                           margin: EdgeInsets.only(
                               top: AppConfig.verticalBlockSize * 0.5),
@@ -1315,7 +1317,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                           alignment: Alignment.center,
                           child: InkWell(
                             onTap: () {
-                              service.isExpanded = !service.isExpanded;
+                              service.isExpanded = !service.isExpanded!;
                               if (_services.contains(service)) {
                                 _services.remove(service);
                                 _services.add(service);
@@ -1368,15 +1370,15 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
       return;
     }
     if (_searchedDocResults != null &&
-        _searchedDocResults.solution != null &&
-        _searchedDocResults.solution.services != null &&
-        _searchedDocResults.solution.services.isNotEmpty) {
-      _searchedDocResults.solution.services.forEach((service) {
-        if (service.doctors != null && service.doctors.isNotEmpty) {
-          _services?.forEach((processedService) {
+        _searchedDocResults!.solution != null &&
+        _searchedDocResults!.solution!.services != null &&
+        _searchedDocResults!.solution!.services!.isNotEmpty) {
+      _searchedDocResults!.solution!.services!.forEach((service) {
+        if (service.doctors != null && service.doctors!.isNotEmpty) {
+          _services.forEach((processedService) {
             if (service == processedService &&
                 processedService.isExpanded != null &&
-                processedService.isExpanded) {
+                processedService.isExpanded!) {
               service.isExpanded = processedService.isExpanded;
             }
           });
@@ -1386,7 +1388,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   }
 
   Widget _getNegotiatedPriceTotalView() {
-    if (_timer != null && _timer.isActive) {
+    if (_timer != null && _timer!.isActive) {
       return Container();
     }
     return StreamBuilder(
@@ -1396,7 +1398,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
         }
         String time = "NA";
         var duration = DateTime.now().difference(
-            DateTime.fromMillisecondsSinceEpoch(_solutionReceivedTime));
+            DateTime.fromMillisecondsSinceEpoch(_solutionReceivedTime!));
         if (duration.inHours >= 1) {
           time = "${duration.inHours} hour";
         } else if (duration.inMinutes < 1) {
@@ -1456,38 +1458,38 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
           ),
         );
       },
-      stream: _totalDiscountController.stream,
+      stream: _totalDiscountController!.stream,
       initialData: _gainedDiscount,
     );
   }
 
-  Future<num> _getDiscountAsync() async {
+  Future<num?> _getDiscountAsync() async {
     return _getTotalDiscount();
   }
 
-  num _getTotalDiscount() {
-    num totalDiscount = 0, _origPrice = 0, _highestDiscount = 0;
+  num? _getTotalDiscount() {
+    num? totalDiscount = 0, _origPrice = 0, _highestDiscount = 0;
     try {
       if (_searchedDocResults != null &&
-          _searchedDocResults.solution != null &&
-          _searchedDocResults.solution.services != null &&
-          _searchedDocResults.solution.services.isNotEmpty) {
-        _searchedDocResults.solution.services.forEach((service) {
-          if (service.doctors != null && service.doctors.isNotEmpty) {
-            service.doctors.forEach((element) {
-              if (element.discount != null && element.discount > 0) {
-                if (((element.price[0] - element.newPrice[0])) >
-                    _highestDiscount) {
-                  _highestDiscount = (element.price[0] - element.newPrice[0]);
-                  _origPrice = element.price[0];
+          _searchedDocResults!.solution != null &&
+          _searchedDocResults!.solution!.services != null &&
+          _searchedDocResults!.solution!.services!.isNotEmpty) {
+        _searchedDocResults!.solution!.services!.forEach((service) {
+          if (service.doctors != null && service.doctors!.isNotEmpty) {
+            service.doctors!.forEach((element) {
+              if (element.discount != null && element.discount! > 0) {
+                if (element.price![0] - element.newPrice![0] >
+                    _highestDiscount!) {
+                  _highestDiscount = (element.price![0] - element.newPrice![0]);
+                  _origPrice = element.price![0];
                 }
               }
             });
           } else {
-            if (service.discount != null && service.discount > 0) {
-              if ((service.price[0] - service.newPrice[0]) > _highestDiscount) {
-                _highestDiscount = (service.price[0] - service.newPrice[0]);
-                _origPrice = service.price[0];
+            if (service.discount != null && service.discount! > 0) {
+              if ((service.price![0] - service.newPrice![0]) > _highestDiscount!) {
+                _highestDiscount = (service.price![0] - service.newPrice![0]);
+                _origPrice = service.price![0];
               }
             }
           }
@@ -1499,12 +1501,12 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
     }
     _gainedDiscount = _highestDiscount;
     if (_origPrice != null &&
-        _origPrice > 0 &&
+        _origPrice! > 0 &&
         _gainedDiscount != null &&
-        _gainedDiscount > 0) {
+        _gainedDiscount! > 0) {
       _gainedDiscountPercentage = double.tryParse(
-          ((_gainedDiscount / _origPrice) * 100)?.toStringAsFixed(0));
-      _totalDiscountController.add(null);
+          ((_gainedDiscount! / _origPrice!) * 100).toStringAsFixed(0));
+      _totalDiscountController!.add(null);
     }
     totalDiscount = _gainedDiscount;
     return totalDiscount;
@@ -1513,7 +1515,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   bool _canGoAhead() {
     bool _canGoAhead = true;
     var duration = DateTime.now()
-        .difference(DateTime.fromMillisecondsSinceEpoch(_expirationTimer));
+        .difference(DateTime.fromMillisecondsSinceEpoch(_expirationTimer!));
     if (duration.inHours >= 1) {
       _canGoAhead = false;
     }
@@ -1523,7 +1525,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   bool _canNegotiate() {
     bool _canGoAhead = true;
     var duration = DateTime.now()
-        .difference(DateTime.fromMillisecondsSinceEpoch(_solutionReceivedTime));
+        .difference(DateTime.fromMillisecondsSinceEpoch(_solutionReceivedTime!));
     if (duration.inHours >= 1) {
       _canGoAhead = false;
     }
@@ -1775,7 +1777,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      widget.catalogueData.service ??
+                      widget.catalogueData!.service ??
                           _searchedDocResults?.catalogueData?.service ??
                           PlunesStrings.NA,
                       style: TextStyle(
@@ -1892,7 +1894,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
               RadialAxis(
                   pointers: [
                     RangePointer(
-                        value: _gainedDiscountPercentage,
+                        value: _gainedDiscountPercentage as double,
                         width: 0.3,
                         sizeUnit: GaugeSizeUnit.factor,
                         cornerStyle: CornerStyle.bothFlat,
@@ -1969,8 +1971,8 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   }
 
   Widget _getTimerForTop() {
-    return StreamBuilder<Object>(
-        stream: _streamForTimer.stream,
+    return StreamBuilder<Object?>(
+        stream: _streamForTimer!.stream,
         builder: (context, snapshot) {
           String value = "Valid for 1 hour only";
           bool shouldShowRichText = false;
@@ -1978,22 +1980,22 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
             var dateTimeNow = DateTime.now();
             if (dateTimeNow
                     .difference(
-                        DateTime.fromMillisecondsSinceEpoch(_expirationTimer))
+                        DateTime.fromMillisecondsSinceEpoch(_expirationTimer!))
                     .inMinutes >=
                 60) {
               value = "Prices Expired";
             } else if (dateTimeNow
                         .difference(DateTime.fromMillisecondsSinceEpoch(
-                            _expirationTimer))
+                            _expirationTimer!))
                         .inMinutes <
                     60 &&
                 dateTimeNow
                         .difference(DateTime.fromMillisecondsSinceEpoch(
-                            _expirationTimer))
+                            _expirationTimer!))
                         .inMinutes >
                     0) {
               value =
-                  "${60 - dateTimeNow.difference(DateTime.fromMillisecondsSinceEpoch(_expirationTimer)).inMinutes} min";
+                  "${60 - dateTimeNow.difference(DateTime.fromMillisecondsSinceEpoch(_expirationTimer!)).inMinutes} min";
               shouldShowRichText = true;
             }
           }

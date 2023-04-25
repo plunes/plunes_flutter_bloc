@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:permission/permission.dart';
+import 'package:permission_handler/permission_handler.dart';
+// import 'package:permission/permission.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
@@ -26,16 +28,12 @@ import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/EditProfileScreen.dart';
 import 'package:plunes/ui/afterLogin/HealthSoulutionNear.dart';
 import 'package:plunes/ui/afterLogin/cart_screens/add_to_cart_main_screen.dart';
-import 'package:plunes/ui/afterLogin/explore_screens/explore_main_screen.dart';
-import 'package:plunes/ui/afterLogin/new_solution_screen/enter_facility_details_scr.dart';
-import 'package:plunes/ui/afterLogin/new_solution_screen/view_solutions_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/solution_received_screen.dart';
 import 'package:plunes/ui/commonView/LocationFetch.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
-import './previous_activity_screen.dart';
 import 'package:showcaseview/showcaseview.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 // ignore: must_be_immutable
 class BiddingMainScreen extends BaseActivity {
@@ -47,22 +45,23 @@ class BiddingMainScreen extends BaseActivity {
   _BiddingMainScreenState createState() => _BiddingMainScreenState();
 }
 
-class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
-  TextEditingController _textEditingController;
-  FocusNode _focusNode;
-  bool _progressEnabled;
-  bool _canGoAhead, _isPanelOpened;
-  String _failureCause, _locationMessage;
-  PrevMissSolutionBloc _prevMissSolutionBloc;
-  PrevSearchedSolution _prevSearchedSolution;
-  Timer _timer;
-  StreamController _controller, _panelStreamController;
-  BuildContext _context;
+// class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
+class _BiddingMainScreenState extends State<BiddingMainScreen> {
+  TextEditingController? _textEditingController;
+  FocusNode? _focusNode;
+  late bool _progressEnabled;
+  bool? _canGoAhead, _isPanelOpened;
+  String? _failureCause, _locationMessage;
+  PrevMissSolutionBloc? _prevMissSolutionBloc;
+  PrevSearchedSolution? _prevSearchedSolution;
+  Timer? _timer;
+  StreamController? _controller, _panelStreamController;
+  BuildContext? _context;
   GlobalKey _searchKey = GlobalKey();
   GlobalKey _one = GlobalKey();
   GlobalKey _two = GlobalKey();
-  PanelController _panelController;
-  CartMainBloc _cartBloc;
+  PanelController? _panelController;
+  CartMainBloc? _cartBloc;
 
   @override
   void initState() {
@@ -79,12 +78,12 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
     _panelStreamController = StreamController.broadcast();
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       _timer = timer;
-      _controller.add(null);
+      _controller!.add(null);
     });
     _focusNode = FocusNode();
     _getPreviousSolutions();
     _getUserDetails();
-    EventProvider().getSessionEventBus().on<ScreenRefresher>().listen((event) {
+    EventProvider().getSessionEventBus()!.on<ScreenRefresher>().listen((event) {
       if (event != null &&
           event.screenName == EditProfileScreen.tag &&
           mounted) {
@@ -102,7 +101,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
     if (!UserManager().getWidgetShownStatus(Constants.BIDDING_MAIN_SCREEN)) {
       Future.delayed(Duration(seconds: 1)).then((value) {
         WidgetsBinding.instance.addPostFrameCallback((_) =>
-            ShowCaseWidget.of(_context)
+            ShowCaseWidget.of(_context!)
                 .startShowCase([_searchKey, _one, _two]));
         Future.delayed(Duration(seconds: 1)).then((value) {
           UserManager().setWidgetShownStatus(Constants.BIDDING_MAIN_SCREEN);
@@ -118,9 +117,9 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
             pageBuilder: (BuildContext context, _, __) => LocationFetch()))
         .then((val) {
       if (val != null) {
-        var addressControllerList = new List();
+        var addressControllerList = [];
         addressControllerList = val.toString().split(":");
-        String addr = addressControllerList[0] +
+        String? addr = addressControllerList[0] +
             ' ' +
             addressControllerList[1] +
             ' ' +
@@ -128,7 +127,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
 //                          print("addr is $addr");
         var _latitude = addressControllerList[3];
         var _longitude = addressControllerList[4];
-        String region = addr;
+        String? region = addr;
         if (addressControllerList.length == 6 &&
             addressControllerList[5] != null) {
           region = addressControllerList[5];
@@ -152,7 +151,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
 
   _showLocationDialog() async {
     await showDialog(
-        context: _context,
+        context: _context!,
         builder: (context) {
           return CustomWidgets().fetchLocationPopUp(_context);
         },
@@ -164,12 +163,11 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: scaffoldKey,
       body: ShowCaseWidget(
         builder: Builder(builder: (context) {
           _context = context;
           return StreamBuilder<RequestState>(
-              stream: _prevMissSolutionBloc.baseStream,
+              stream: _prevMissSolutionBloc!.baseStream,
               builder: (context, snapshot) {
                 return _getWidgetBody();
               });
@@ -191,14 +189,14 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                   fit: BoxFit.cover)),
           child: Column(
             mainAxisAlignment: (_prevSearchedSolution == null ||
-                    _prevSearchedSolution.data == null ||
-                    _prevSearchedSolution.data.isEmpty)
+                    _prevSearchedSolution!.data == null ||
+                    _prevSearchedSolution!.data!.isEmpty)
                 ? MainAxisAlignment.start
                 : MainAxisAlignment.end,
             children: <Widget>[
               (_prevSearchedSolution == null ||
-                      _prevSearchedSolution.data == null ||
-                      _prevSearchedSolution.data.isEmpty)
+                      _prevSearchedSolution!.data == null ||
+                      _prevSearchedSolution!.data!.isEmpty)
                   ? AnimatedContainer(
                       padding: EdgeInsets.only(
                           top: AppConfig.verticalBlockSize * 28),
@@ -210,11 +208,11 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                     )
                   : Container(),
               (_prevSearchedSolution == null ||
-                      _prevSearchedSolution.data == null ||
-                      _prevSearchedSolution.data.isEmpty)
+                      _prevSearchedSolution!.data == null ||
+                      _prevSearchedSolution!.data!.isEmpty)
                   ? Container()
                   : Expanded(child: _getBottomView()),
-              _canGoAhead ? Container() : _getNoLocationView(),
+              _canGoAhead! ? Container() : _getNoLocationView(),
             ],
           ),
         ),
@@ -226,7 +224,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
             one: _one,
             two: _two,
           ),
-          margin: EdgeInsets.only(top: AppConfig.getMediaQuery().padding.top),
+          margin: EdgeInsets.only(top: AppConfig.getMediaQuery()!.padding.top),
         )
       ],
     );
@@ -247,15 +245,15 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
 ////              _panelStreamController.add(null);
 //            },
       color: Colors.transparent,
-      maxHeight: _canGoAhead
+      maxHeight: _canGoAhead!
           ? AppConfig.verticalBlockSize * 80
           : AppConfig.verticalBlockSize * 53,
-      minHeight: _canGoAhead
+      minHeight: _canGoAhead!
           ? AppConfig.verticalBlockSize * 60
           : AppConfig.verticalBlockSize * 53,
       panelBuilder: (s) {
-        return StreamBuilder<Object>(
-            stream: _controller.stream,
+        return StreamBuilder<Object?>(
+            stream: _controller!.stream,
             builder: (context, snapshot) {
               return Stack(
                 children: <Widget>[
@@ -278,8 +276,8 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                                 vertical: AppConfig.verticalBlockSize * 2),
                             child: InkWell(
                               onTap: () {
-                                if (_prevSearchedSolution.topSearches != null &&
-                                    _prevSearchedSolution.topSearches) {
+                                if (_prevSearchedSolution!.topSearches != null &&
+                                    _prevSearchedSolution!.topSearches!) {
                                   return;
                                 }
                                 // Navigator.push(
@@ -289,13 +287,13 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                                 //             PreviousActivity()));
                               },
                               highlightColor:
-                                  (_prevSearchedSolution.topSearches != null &&
-                                          _prevSearchedSolution.topSearches)
+                                  (_prevSearchedSolution!.topSearches != null &&
+                                          _prevSearchedSolution!.topSearches!)
                                       ? Colors.transparent
                                       : null,
                               splashColor:
-                                  (_prevSearchedSolution.topSearches != null &&
-                                          _prevSearchedSolution.topSearches)
+                                  (_prevSearchedSolution!.topSearches != null &&
+                                          _prevSearchedSolution!.topSearches!)
                                       ? Colors.transparent
                                       : null,
                               child: Row(
@@ -303,9 +301,9 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
                                   Text(
-                                    (_prevSearchedSolution.topSearches !=
+                                    (_prevSearchedSolution!.topSearches !=
                                                 null &&
-                                            _prevSearchedSolution.topSearches)
+                                            _prevSearchedSolution!.topSearches!)
                                         ? PlunesStrings.topSearches
                                         : PlunesStrings.previousActivities,
                                     style: TextStyle(
@@ -313,8 +311,8 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
-                                  (_prevSearchedSolution.topSearches != null &&
-                                          _prevSearchedSolution.topSearches)
+                                  (_prevSearchedSolution!.topSearches != null &&
+                                          _prevSearchedSolution!.topSearches!)
                                       ? Container()
                                       : Icon(
                                           Icons.chevron_right,
@@ -326,18 +324,18 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                             ),
                           ),
                           (_prevSearchedSolution == null ||
-                                  _prevSearchedSolution.data == null ||
-                                  _prevSearchedSolution.data.isEmpty)
+                                  _prevSearchedSolution!.data == null ||
+                                  _prevSearchedSolution!.data!.isEmpty)
                               ? Container()
                               : Flexible(
                                   child: ListView.builder(
                                   padding: EdgeInsets.all(0.0),
                                   itemBuilder: (context, index) {
-                                    if (_prevSearchedSolution
-                                                .data[index].toShowSearched !=
+                                    if (_prevSearchedSolution!
+                                                .data![index].toShowSearched !=
                                             null &&
-                                        _prevSearchedSolution
-                                            .data[index].toShowSearched) {
+                                        _prevSearchedSolution!
+                                            .data![index].toShowSearched!) {
                                       return Container(
                                         width: double.infinity,
                                         padding: EdgeInsets.only(
@@ -351,8 +349,8 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                                                 AppConfig.verticalBlockSize *
                                                     2),
                                         child: Text(
-                                          _prevSearchedSolution
-                                                  .data[index].specialityId ??
+                                          _prevSearchedSolution!
+                                                  .data![index].specialityId ??
                                               PlunesStrings.topSearches,
                                           style: TextStyle(
                                             fontSize: 16,
@@ -366,42 +364,42 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                                           ..onTap = () => _onViewMoreTap(index);
                                     return CustomWidgets()
                                         .getTopSearchesPrevSearchedSolutionRow(
-                                            _prevSearchedSolution.data, index,
+                                            _prevSearchedSolution!.data, index,
                                             onButtonTap: () {
-                                      if (_prevSearchedSolution
-                                                  .data[index].topSearch !=
+                                      if (_prevSearchedSolution!
+                                                  .data![index].topSearch !=
                                               null &&
-                                          _prevSearchedSolution
-                                              .data[index].topSearch) {
+                                          _prevSearchedSolution!
+                                              .data![index].topSearch!) {
                                         _onSolutionItemTapForTopSearches(
-                                            _prevSearchedSolution.data[index]);
+                                            _prevSearchedSolution!.data![index]);
                                       } else {
                                         _onSolutionItemTap(
-                                            _prevSearchedSolution.data[index]);
+                                            _prevSearchedSolution!.data![index]);
                                       }
                                     },
                                             isTopSearches:
-                                                ((_prevSearchedSolution
+                                                ((_prevSearchedSolution!
                                                                 .topSearches !=
                                                             null &&
-                                                        _prevSearchedSolution
-                                                            .topSearches) ||
-                                                    (_prevSearchedSolution
-                                                                .data[index]
+                                                        _prevSearchedSolution!
+                                                            .topSearches!) ||
+                                                    (_prevSearchedSolution!
+                                                                .data![index]
                                                                 .topSearch !=
                                                             null &&
-                                                        _prevSearchedSolution
-                                                            .data[index]
-                                                            .topSearch)),
+                                                        _prevSearchedSolution!
+                                                            .data![index]
+                                                            .topSearch!)),
                                             onViewMoreTap: tapRecognizer);
                                   },
-                                  itemCount: _prevSearchedSolution.data.length,
+                                  itemCount: _prevSearchedSolution!.data!.length,
                                 )),
                         ],
                       )),
                   Positioned(
-                    child: StreamBuilder<Object>(
-                        stream: _panelStreamController.stream,
+                    child: StreamBuilder<Object?>(
+                        stream: _panelStreamController!.stream,
                         builder: (context, snapshot) {
 //                                if (_isPanelOpened != null && !_isPanelOpened) {
 //                                  return Container();
@@ -467,10 +465,10 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
     if ((!(await _getLocationPermissionStatus()) &&
             !(UserManager().getIsUserInServiceLocation())) &&
         (_prevSearchedSolution != null &&
-            _prevSearchedSolution.topSearches != null &&
-            _prevSearchedSolution.topSearches)) {
+            _prevSearchedSolution!.topSearches != null &&
+            _prevSearchedSolution!.topSearches!)) {
       await showDialog(
-          context: _context,
+          context: _context!,
           builder: (context) {
             return CustomWidgets().fetchLocationPopUp(_context);
           },
@@ -481,13 +479,13 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
       _canGoAhead = UserManager().getIsUserInServiceLocation();
       _setState();
     }
-    if (_prevSearchedSolution.topSearches == null ||
-        !(_prevSearchedSolution.topSearches)) {
+    if (_prevSearchedSolution!.topSearches == null ||
+        !_prevSearchedSolution!.topSearches!) {
       catalogueData.isFromNotification = true;
     }
     if (catalogueData.createdAt != null &&
         catalogueData.createdAt != 0 &&
-        DateTime.fromMillisecondsSinceEpoch(catalogueData.createdAt)
+        DateTime.fromMillisecondsSinceEpoch(catalogueData.createdAt!)
                 .difference(DateTime.now())
                 .inHours ==
             0) {
@@ -497,9 +495,9 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
               builder: (context) =>
                   SolutionReceivedScreen(catalogueData: catalogueData)));
     } else {
-      if (!_canGoAhead) {
+      if (!_canGoAhead!) {
         await showDialog(
-            context: _context,
+            context: _context!,
             builder: (context) {
               return CustomWidgets().fetchLocationPopUp(_context);
             },
@@ -527,7 +525,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
     if ((!(await _getLocationPermissionStatus()) &&
         !(UserManager().getIsUserInServiceLocation()))) {
       await showDialog(
-          context: _context,
+          context: _context!,
           builder: (context) {
             return CustomWidgets().fetchLocationPopUp(_context);
           },
@@ -538,9 +536,9 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
       _canGoAhead = UserManager().getIsUserInServiceLocation();
       _setState();
     }
-    if (!_canGoAhead) {
+    if (!_canGoAhead!) {
       await showDialog(
-          context: _context,
+          context: _context!,
           builder: (context) {
             return CustomWidgets().fetchLocationPopUp(_context);
           },
@@ -568,8 +566,8 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
     var user = UserManager().getUserDetails();
     if (user?.latitude != null &&
         user?.longitude != null &&
-        user.latitude.isNotEmpty &&
-        user.longitude.isNotEmpty &&
+        user.latitude!.isNotEmpty &&
+        user.longitude!.isNotEmpty &&
         user.latitude != "0.0" &&
         user.latitude != "0" &&
         user.longitude != "0.0" &&
@@ -588,7 +586,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
   }
 
   _checkUserLocation(var latitude, var longitude,
-      {String address, String region}) async {
+      {String? address, String? region}) async {
     if (!_progressEnabled) {
       _progressEnabled = true;
       _setState();
@@ -598,10 +596,10 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
             address: address, region: region)
         .then((result) {
       if (result is RequestSuccess) {
-        CheckLocationResponse checkLocationResponse = result.response;
+        CheckLocationResponse? checkLocationResponse = result.response;
         if (checkLocationResponse != null &&
             checkLocationResponse.msg != null &&
-            checkLocationResponse.msg.isNotEmpty) {
+            checkLocationResponse.msg!.isNotEmpty) {
           _failureCause = checkLocationResponse.msg;
         }
       } else if (result is RequestFailed) {
@@ -630,9 +628,9 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                           LocationFetch()))
                   .then((val) {
                 if (val != null) {
-                  var addressControllerList = new List();
+                  var addressControllerList = [];
                   addressControllerList = val.toString().split(":");
-                  String addr = addressControllerList[0] +
+                  String? addr = addressControllerList[0] +
                       ' ' +
                       addressControllerList[1] +
                       ' ' +
@@ -640,7 +638,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
 //                                    print("addr is $addr");
                   var _latitude = addressControllerList[3];
                   var _longitude = addressControllerList[4];
-                  String region = addr;
+                  String? region = addr;
                   if (addressControllerList.length == 6 &&
                       addressControllerList[5] != null) {
                     region = addressControllerList[5];
@@ -679,11 +677,11 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                               Expanded(
                                 child: Container(
                                   child: Text(
-                                    !(snapShot.data)
+                                    !snapShot.data!
                                         ? _progressEnabled
                                             ? "Verifying location. . ."
-                                            : _failureCause ?? _locationMessage
-                                        : _failureCause ?? _locationMessage,
+                                            : _failureCause ?? _locationMessage!
+                                        : _failureCause ?? _locationMessage!,
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.w500,
@@ -743,7 +741,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
   }
 
   void _getPreviousSolutions() async {
-    var requestState = await _prevMissSolutionBloc.getPreviousSolutions();
+    var requestState = await _prevMissSolutionBloc!.getPreviousSolutions();
     if (requestState is RequestSuccess) {
       _prevSearchedSolution = requestState.response;
       _setState();
@@ -754,22 +752,27 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
     bool _hasLocationPermission = true;
     try {
       if (Platform.isIOS) {
-        PermissionStatus permissionStatus =
-            await Permission.getSinglePermissionStatus(PermissionName.Location);
-        if (permissionStatus != PermissionStatus.allow) {
+        var permissionStatus = await Permission.location.status;
+        // PermissionStatus permissionStatus = await Permission.getSinglePermissionStatus(PermissionName.Location);
+        if (permissionStatus != PermissionStatus.granted && !permissionStatus.isLimited) {
           _hasLocationPermission = false;
           _locationMessage = PlunesStrings.turnOnLocationService;
         }
       } else {
-        var permissionList =
-            await Permission.getPermissionsStatus([PermissionName.Location]);
-        permissionList.forEach((element) {
-          if (element.permissionName == PermissionName.Location &&
-              element.permissionStatus != PermissionStatus.allow) {
-            _hasLocationPermission = false;
-            _locationMessage = PlunesStrings.turnOnLocationService;
-          }
-        });
+        var locationStatus = await Permission.location.status;
+        if(!locationStatus.isGranted && !locationStatus.isLimited) {
+          _hasLocationPermission = false;
+          _locationMessage = PlunesStrings.turnOnLocationService;
+        }
+
+        // var permissionList = await Permission.getPermissionsStatus([PermissionName.Location]);
+        // permissionList.forEach((element) {
+        //   if (element.permissionName == locationStatus.Location &&
+        //       element.permissionStatus != PermissionStatus.allow) {
+        //     _hasLocationPermission = false;
+        //     _locationMessage = PlunesStrings.turnOnLocationService;
+        //   }
+        // });
       }
       if (!_hasLocationPermission) {
         return _hasLocationPermission;
@@ -777,8 +780,8 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
       var user = UserManager().getUserDetails();
       if (user?.latitude == null ||
           user?.longitude == null ||
-          user.latitude.isNotEmpty ||
-          user.longitude.isNotEmpty ||
+          user.latitude!.isNotEmpty ||
+          user.longitude!.isNotEmpty ||
           user.latitude == "0.0" ||
           user.latitude == "0" ||
           user.longitude == "0.0" ||
@@ -787,7 +790,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
         _locationMessage = PlunesStrings.pleaseSelectLocation;
       }
     } catch (e) {
-      print("error is " + e);
+      print("error is " + e.toString());
     }
     return _hasLocationPermission;
   }
@@ -822,7 +825,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                 MaterialPageRoute(
                     builder: (context) => SolutionBiddingScreen()));
             _canGoAhead = UserManager().getIsUserInServiceLocation();
-            if (_canGoAhead) {
+            if (_canGoAhead!) {
               _setState();
             }
             _getPreviousSolutions();
@@ -879,17 +882,17 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
   }
 
   void _getCartCount() {
-    _cartBloc.getCartCount();
+    _cartBloc!.getCartCount();
   }
 }
 
 // ignore: must_be_immutable
 class HomePageAppBar extends StatefulWidget {
   final Function onDrawerTap, onSetLocationTap, onSetLocationManually;
-  bool hasSearchBar;
-  final GlobalKey<State<StatefulWidget>> two, one;
-  Function refreshCartItems;
-  String searchBarText;
+  bool? hasSearchBar;
+  final GlobalKey<State<StatefulWidget>>? two, one;
+  Function? refreshCartItems;
+  String? searchBarText;
 
   HomePageAppBar(
       this.onDrawerTap, this.onSetLocationTap, this.onSetLocationManually,
@@ -929,18 +932,17 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
   Future<RequestState> _getLocationStatusForTop() async {
     RequestState _requestState;
     var user = UserManager().getUserDetails();
-    if (user?.latitude != null &&
-        user?.longitude != null &&
-        user.latitude.isNotEmpty &&
-        user.longitude.isNotEmpty &&
+    if (user.latitude != null &&
+        user.longitude != null &&
+        user.latitude!.isNotEmpty &&
+        user.longitude!.isNotEmpty &&
         user.latitude != "0.0" &&
         user.latitude != "0" &&
         user.longitude != "0.0" &&
         user.longitude != "0") {
-      String address = await LocationUtil()
+      String? address = await LocationUtil()
           .getAddressFromLatLong(user.latitude, user.longitude);
-      _requestState = RequestSuccess(
-          response: LocationAppBarModel(
+      _requestState = RequestSuccess(response: LocationAppBarModel(
               address: (address != null &&
                       address == PlunesStrings.enterYourLocation)
                   ? PlunesStrings.enterYourLocation
@@ -949,6 +951,9 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
                       address == PlunesStrings.enterYourLocation)
                   ? false
                   : true));
+      print("-----------locationtopAddres:${address}");
+      print("-----------locationtopAddres:${user.latitude} ${user.longitude}");
+
     } else {
       _requestState = RequestSuccess(
           response: LocationAppBarModel(
@@ -967,8 +972,8 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
             widget.onDrawerTap();
             return;
           },
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
+          child: const Padding(
+            padding: EdgeInsets.all(16.0),
             child: Icon(
               Icons.menu,
               color: PlunesColors.BLACKCOLOR,
@@ -981,13 +986,13 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              (widget.hasSearchBar != null && widget.hasSearchBar)
+              (widget.hasSearchBar != null && widget.hasSearchBar!)
                   ? Expanded(
                       child: Container(
                         alignment: Alignment.center,
                         child: Text(
-                          widget.searchBarText,
-                          style: TextStyle(
+                          widget.searchBarText!,
+                          style: const TextStyle(
                               color: PlunesColors.BLACKCOLOR,
                               fontSize: 16,
                               fontWeight: FontWeight.w500),
@@ -996,7 +1001,7 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
                     )
                   : Flexible(child: _getLocationWidget()),
               Container(
-                child: StreamBuilder<Object>(
+                child: StreamBuilder<Object?>(
                     stream: FirebaseNotification().notificationStream,
                     builder: (context, snapshot) {
                       return IconButton(
@@ -1007,8 +1012,8 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
                                 ? Container(
                                     alignment: Alignment.center,
                                     child: Text(
-                                      "${FirebaseNotification().getCartCount() < 10 ? FirebaseNotification().getCartCount() : 9}",
-                                      style: TextStyle(fontSize: 10),
+                                      "${FirebaseNotification().getCartCount()! < 10 ? FirebaseNotification().getCartCount() : 9}",
+                                      style: const TextStyle(fontSize: 10),
                                     ),
                                     margin: EdgeInsets.only(
                                         right: AppConfig.horizontalBlockSize *
@@ -1064,9 +1069,9 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
         future: _getLocationStatusForTop(),
         builder: (context, snapshot) {
           if (snapshot.data is RequestSuccess) {
-            RequestSuccess reqSuccess = snapshot.data;
-            LocationAppBarModel locationModel = reqSuccess.response;
-            if (locationModel != null && locationModel.hasLocation) {
+            RequestSuccess reqSuccess = snapshot.data as RequestSuccess;
+            LocationAppBarModel? locationModel = reqSuccess.response;
+            if (locationModel != null && locationModel.hasLocation!) {
               return InkWell(
                 onTap: () {
                   _showLocationDialog(false);
@@ -1104,7 +1109,7 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
                           // ),
                           Flexible(
                             child: Container(
-                              margin: EdgeInsets.only(left: 5.0, right: 3),
+                              margin: const EdgeInsets.only(left: 5.0, right: 3),
                               child: Tooltip(
                                   message: locationModel.address,
                                   margin: EdgeInsets.symmetric(
@@ -1112,12 +1117,12 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
                                           AppConfig.horizontalBlockSize * 5),
                                   preferBelow: true,
                                   child: Text(
-                                    locationModel.address,
+                                    locationModel.address!,
                                     textAlign: TextAlign.center,
                                     overflow: TextOverflow.clip,
                                     softWrap: false,
                                     maxLines: 1,
-                                    style: TextStyle(fontSize: 15),
+                                    style: const TextStyle(fontSize: 15),
                                   )),
                             ),
                           ),
@@ -1250,7 +1255,7 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
                         builder: (context) => SolutionBiddingScreen()))
                 .then((value) {
               if (widget.refreshCartItems != null) {
-                widget.refreshCartItems();
+                widget.refreshCartItems!();
               }
             });
           },

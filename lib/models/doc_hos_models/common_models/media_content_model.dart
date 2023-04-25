@@ -1,7 +1,7 @@
 class MediaContentModel {
-  bool success;
-  MediaData data;
-  String message;
+  bool? success;
+  MediaData? data;
+  String? message;
 
   MediaContentModel({this.success, this.data, this.message});
 
@@ -15,7 +15,7 @@ class MediaContentModel {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['success'] = this.success;
     if (this.data != null) {
-      data['data'] = this.data.toJson();
+      data['data'] = this.data!.toJson();
     }
     data['message'] = this.message;
     return data;
@@ -23,20 +23,20 @@ class MediaContentModel {
 }
 
 class MediaData {
-  String sId;
-  List<VideoData> serviceVideo, videos;
-  List<VideoData> customerReviewVideo;
-  List<VideoData> introductionVideo;
-  List<VideoData> achievementsVideo;
-  List<HosPicture> hosPictures;
+  String? sId;
+  List<VideoData>? serviceVideo, videos;
+  List<VideoData>? customerReviewVideo;
+  List<VideoData>? introductionVideo;
+  List<VideoData>? achievementsVideo;
+  List<HosPicture>? hosPictures;
 
   // List<Null> photos;
-  String mobileNumber;
-  String professionalId;
-  String professionalName;
-  String createdAt;
-  String updatedAt;
-  int iV;
+  String? mobileNumber;
+  String? professionalId;
+  String? professionalName;
+  String? createdAt;
+  String? updatedAt;
+  int? iV;
 
   MediaData(
       {this.sId,
@@ -57,39 +57,39 @@ class MediaData {
   MediaData.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
     if (json["hospitalPhotos"] != null) {
-      hosPictures = new List<HosPicture>();
+      hosPictures = [];
       json['hospitalPhotos'].forEach((v) {
-        hosPictures.add(new HosPicture.fromJson(v));
+        hosPictures!.add(new HosPicture.fromJson(v));
       });
     }
     if (json['videos'] != null) {
-      videos = new List<VideoData>();
+      videos = [];
       json['videos'].forEach((v) {
-        videos.add(new VideoData.fromJson(v));
+        videos!.add(new VideoData.fromJson(v));
       });
     }
     if (json['serviceVideo'] != null) {
-      serviceVideo = new List<VideoData>();
+      serviceVideo = [];
       json['serviceVideo'].forEach((v) {
-        serviceVideo.add(new VideoData.fromJson(v));
+        serviceVideo!.add(new VideoData.fromJson(v));
       });
     }
     if (json['customerReviewVideo'] != null) {
-      customerReviewVideo = new List<VideoData>();
+      customerReviewVideo = [];
       json['customerReviewVideo'].forEach((v) {
-        customerReviewVideo.add(new VideoData.fromJson(v));
+        customerReviewVideo!.add(new VideoData.fromJson(v));
       });
     }
     if (json['introductionVideo'] != null) {
-      introductionVideo = new List<VideoData>();
+      introductionVideo = [];
       json['introductionVideo'].forEach((v) {
-        introductionVideo.add(new VideoData.fromJson(v));
+        introductionVideo!.add(new VideoData.fromJson(v));
       });
     }
     if (json['achievementsVideo'] != null) {
-      achievementsVideo = new List<VideoData>();
+      achievementsVideo = [];
       json['achievementsVideo'].forEach((v) {
-        achievementsVideo.add(new VideoData.fromJson(v));
+        achievementsVideo!.add(new VideoData.fromJson(v));
       });
     }
     // if (json['photos'] != null) {
@@ -110,19 +110,19 @@ class MediaData {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['_id'] = this.sId;
     if (this.serviceVideo != null) {
-      data['serviceVideo'] = this.serviceVideo.map((v) => v.toJson()).toList();
+      data['serviceVideo'] = this.serviceVideo!.map((v) => v.toJson()).toList();
     }
     if (this.customerReviewVideo != null) {
       data['customerReviewVideo'] =
-          this.customerReviewVideo.map((v) => v.toJson()).toList();
+          this.customerReviewVideo!.map((v) => v.toJson()).toList();
     }
     if (this.introductionVideo != null) {
       data['introductionVideo'] =
-          this.introductionVideo.map((v) => v.toJson()).toList();
+          this.introductionVideo!.map((v) => v.toJson()).toList();
     }
     if (this.achievementsVideo != null) {
       data['achievementsVideo'] =
-          this.achievementsVideo.map((v) => v.toJson()).toList();
+          this.achievementsVideo!.map((v) => v.toJson()).toList();
     }
     // if (this.photos != null) {
     //   data['photos'] = this.photos.map((v) => v.toJson()).toList();
@@ -138,9 +138,9 @@ class MediaData {
 }
 
 class VideoData {
-  String sId;
-  String videoUrl;
-  String serviceName;
+  String? sId;
+  String? videoUrl;
+  String? serviceName;
 
   VideoData({this.sId, this.videoUrl, this.serviceName});
 
@@ -159,8 +159,8 @@ class VideoData {
 }
 
 class HosPicture {
-  String sId;
-  String imageUrl;
+  String? sId;
+  String? imageUrl;
 
   HosPicture({this.sId, this.imageUrl});
 

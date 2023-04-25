@@ -51,27 +51,28 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
       practisingFocusNode = new FocusNode(),
       collegeFocusNode = new FocusNode(),
       aboutFocusNode = new FocusNode();
-  String image;
-  AnimationController _animationController;
-  ImagePickerHandler imagePicker;
+  String? image;
+  AnimationController? _animationController;
+  late ImagePickerHandler imagePicker;
   bool isDoctor = false, isSpecificationValid = true;
   bool emain_valid = true;
   var globalHeight, globalWidth;
   bool profession_valid = true;
   bool specification_valid = true, name_valid = true;
   bool experience_valid = true, isExperienceValid = true;
-  String _userType, _latitude = '', _longitude = '';
+  String? _userType, _latitude = '', _longitude = '';
   bool progress = false;
-  String user_token = "";
-  String user_id = "", errorMessage = '';
-  File _image;
+  String? user_token = "";
+  String? user_id = "", errorMessage = '';
+  File? _image;
 
-  List<dynamic> _selectedItemId = List(), _selectedSpecializationData = List();
+  List<dynamic>? _selectedItemId = [],
+      _selectedSpecializationData = [];
 
   @override
   void dispose() {
     bloc.dispose();
-    _animationController.dispose();
+    _animationController!.dispose();
 
     super.dispose();
   }
@@ -84,8 +85,8 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
 
   getSharedPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String token = prefs.getString("token");
-    String uid = prefs.getString("uid");
+    String? token = prefs.getString("token");
+    String? uid = prefs.getString("uid");
 
     setState(() {
       user_token = token;
@@ -101,7 +102,7 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
 
     return Scaffold(
         key: _scaffoldKey,
-        appBar: widget.getAppBar(context, '', true),
+        appBar: widget.getAppBar(context, '', true) as PreferredSizeWidget?,
         backgroundColor: Colors.white,
         body: GestureDetector(
             onTap: () => CommonMethods.hideSoftKeyboard(), child: bodyView()));
@@ -153,7 +154,7 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
                         child: image != null
                             ? CircleAvatar(
                                 radius: 40,
-                                backgroundImage: ExactAssetImage(image))
+                                backgroundImage: ExactAssetImage(image!))
                             : Container()),
                   ],
                 ),
@@ -256,7 +257,7 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
                   ? TextInputAction.done
                   : TextInputAction.next,
               onSubmitted: (String value) {
-                setFocus(controller).unfocus();
+                setFocus(controller)!.unfocus();
                 FocusScope.of(context).requestFocus(setTargetFocus(controller));
               },
               controller: controller,
@@ -282,8 +283,8 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
     );
   }
 
-  FocusNode setFocus(TextEditingController controller) {
-    FocusNode focusNode;
+  FocusNode? setFocus(TextEditingController controller) {
+    FocusNode? focusNode;
     if (controller == nameController) {
       focusNode = nameFocusNode;
     } else if (controller == educationController) {
@@ -302,8 +303,8 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
     return focusNode;
   }
 
-  FocusNode setTargetFocus(TextEditingController controller) {
-    FocusNode focusNode;
+  FocusNode? setTargetFocus(TextEditingController controller) {
+    FocusNode? focusNode;
     if (controller == nameController) {
       focusNode = educationFocusNode;
     } else if (controller == educationController) {
@@ -326,7 +327,7 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
             opaque: false,
             pageBuilder: (BuildContext context, _, __) => LocationFetch()))
         .then((val) {
-      var addressControllerList = new List();
+      var addressControllerList = [];
       addressControllerList = val.toString().split(":");
       locationController.text = addressControllerList[0] +
           ' ' +
@@ -445,7 +446,7 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
   }
 
   @override
-  fetchImageCallBack(File _image) {
+  fetchImageCallBack(_image) {
     if (_image != null) {
       print("image==" + base64Encode(_image.readAsBytesSync()).toString());
       this._image = _image;

@@ -1,8 +1,8 @@
 abstract class RequestState {}
 
 class RequestFailed implements RequestState {
-  final String failureCause;
-  final int requestCode;
+  final String? failureCause;
+  final int? requestCode;
   final dynamic response;
 
   const RequestFailed({this.failureCause, this.requestCode, this.response});
@@ -10,7 +10,7 @@ class RequestFailed implements RequestState {
 
 class RequestSuccess implements RequestState {
   final dynamic response, additionalData;
-  final int requestCode;
+  final int? requestCode;
 
   const RequestSuccess({this.response, this.requestCode, this.additionalData});
 }
@@ -23,7 +23,7 @@ class InitialState implements RequestState {
 
 class RequestInProgress implements RequestState {
   final dynamic data;
-  final int requestCode;
+  final int? requestCode;
 
   const RequestInProgress({this.data, this.requestCode});
 }
@@ -33,14 +33,14 @@ class RequestInitialState implements RequestState {
 }
 
 class ValidationSuccess implements RequestState {
-  final int pageNo;
-  final int validationType;
+  final int? pageNo;
+  final int? validationType;
 
   ValidationSuccess({this.pageNo, this.validationType});
 }
 
 class ValidationFailed implements RequestState {
-  final String failedReason;
+  final String? failedReason;
 
   ValidationFailed({this.failedReason});
 }

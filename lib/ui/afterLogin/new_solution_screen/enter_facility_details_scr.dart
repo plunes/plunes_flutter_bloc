@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:dots_indicator/dots_indicator.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
@@ -24,42 +26,42 @@ import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/new_common_widgets/common_widgets.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/solution_show_price_screen.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/view_solutions_screen.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:plunes/ui/afterLogin/upload_video_for_treatment.dart';
 
 // ignore: must_be_immutable
 class EnterAdditionalUserDetailScr extends BaseActivity {
   final CatalogueData catalogueData;
-  final String searchQuery;
+  final String? searchQuery;
+  bool consultation;
 
-  EnterAdditionalUserDetailScr(this.catalogueData, this.searchQuery);
+  EnterAdditionalUserDetailScr(this.catalogueData, this.searchQuery, {this.consultation=false});
 
   @override
   _EnterAdditionalUserDetailScrState createState() =>
       _EnterAdditionalUserDetailScrState();
 }
 
-class _EnterAdditionalUserDetailScrState
-    extends BaseState<EnterAdditionalUserDetailScr>
-    with TickerProviderStateMixin, ImagePickerListener {
-  PageController _pageController;
-  StreamController _pageStream;
-  UserMedicalDetailBloc _submitUserMedicalDetailBloc;
-  TextEditingController _additionalDetailController,
+// class _EnterAdditionalUserDetailScrState extends BaseState<EnterAdditionalUserDetailScr> with TickerProviderStateMixin, ImagePickerListener {
+class _EnterAdditionalUserDetailScrState extends State<EnterAdditionalUserDetailScr> with TickerProviderStateMixin, ImagePickerListener {
+  PageController? _pageController;
+  final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  StreamController? _pageStream;
+  UserMedicalDetailBloc? _submitUserMedicalDetailBloc;
+  TextEditingController? _additionalDetailController,
       _previousMedicalConditionController;
   bool _hasTreatedPreviously = false;
   bool _isInsuranceCovered = false;
-  AnimationController _animationController;
-  ImagePickerHandler _imagePicker;
-  List<Map<String, dynamic>> _docUrls, _imageUrls;
-  List<UploadedReportUrl> _videoUrls;
-  UserBloc _userBloc;
-  PremiumBenefitsModel _premiumBenefitsModel;
-  List<MedicalFormData> _formItemList;
-  bool _isBodyPartListOpened;
-  FormDataModel _formDataModel;
-  String _failedMessage;
-  MedicalSession _medicalSessionModel;
+  AnimationController? _animationController;
+  ImagePickerHandler? _imagePicker;
+  List<Map<String, dynamic>>? _docUrls, _imageUrls;
+  List<UploadedReportUrl>? _videoUrls;
+  UserBloc? _userBloc;
+  PremiumBenefitsModel? _premiumBenefitsModel;
+  List<MedicalFormData>? _formItemList;
+  late bool _isBodyPartListOpened;
+  FormDataModel? _formDataModel;
+  String? _failedMessage;
+  MedicalSession? _medicalSessionModel;
 
   @override
   void initState() {
@@ -81,7 +83,7 @@ class _EnterAdditionalUserDetailScrState
     _animationController = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 500));
     _imagePicker = ImagePickerHandler(this, _animationController, false);
-    _imagePicker.init();
+    _imagePicker!.init();
   }
 
   @override
@@ -97,7 +99,7 @@ class _EnterAdditionalUserDetailScrState
   }
 
   _getPremiumBenefitsForUsers() {
-    _userBloc.getPremiumBenefitsForUsers().then((value) {
+    _userBloc!.getPremiumBenefitsForUsers().then((value) {
       if (value is RequestSuccess) {
         _premiumBenefitsModel = value.response;
         _setState();
@@ -105,8 +107,8 @@ class _EnterAdditionalUserDetailScrState
     });
   }
 
-  _uploadFile(File file, {String fileType}) async {
-    _submitUserMedicalDetailBloc.uploadFile(file, fileType: fileType);
+  _uploadFile(dynamic file, {String? fileType}) async {
+    _submitUserMedicalDetailBloc!.uploadFile(file, fileType: fileType);
   }
 
   @override
@@ -118,17 +120,17 @@ class _EnterAdditionalUserDetailScrState
           value: SystemUiOverlayStyle.dark,
           child: Scaffold(
             key: scaffoldKey,
-            body: StreamBuilder<RequestState>(
-                stream: _submitUserMedicalDetailBloc.uploadFileStream,
+            body: StreamBuilder<RequestState?>(
+                stream: _submitUserMedicalDetailBloc!.uploadFileStream,
                 builder: (context, snapshot) {
                   if (snapshot.data is RequestInProgress) {
-                    RequestInProgress requestInProgress = snapshot.data;
+                    RequestInProgress? requestInProgress = snapshot.data as RequestInProgress?;
                     if (requestInProgress != null &&
                         requestInProgress.data == null) {
                       return CustomWidgets().getProgressIndicator();
                     }
                   } else if (snapshot.data is RequestSuccess) {
-                    RequestSuccess data = snapshot.data;
+                    RequestSuccess data = snapshot.data as RequestSuccess;
                     Future.delayed(Duration(milliseconds: 10)).then((value) {
                       if (data.additionalData != null &&
                           (data.additionalData.toString() ==
@@ -146,18 +148,18 @@ class _EnterAdditionalUserDetailScrState
                             Constants.typeReport) {
                       _setReportUrls(data.response);
                     }
-                    _submitUserMedicalDetailBloc.addIntoSubmitFileStream(null);
+                    _submitUserMedicalDetailBloc!.addIntoSubmitFileStream(null);
                   } else if (snapshot.data is RequestFailed) {
-                    RequestFailed _reqFailObj = snapshot.data;
+                    RequestFailed? _reqFailObj = snapshot.data as RequestFailed?;
                     Future.delayed(Duration(milliseconds: 10)).then((value) {
-                      if (_reqFailObj.response != null &&
+                      if (_reqFailObj!.response != null &&
                           (_reqFailObj.response.toString() ==
                                   Constants.typeImage ||
                               _reqFailObj.response.toString() ==
                                   Constants.typeReport))
                         _showMessagePopup(_reqFailObj?.failureCause);
                     });
-                    _submitUserMedicalDetailBloc.addIntoSubmitFileStream(null);
+                    _submitUserMedicalDetailBloc!.addIntoSubmitFileStream(null);
                   }
                   return _getBodyData();
                 }),
@@ -166,24 +168,25 @@ class _EnterAdditionalUserDetailScrState
   }
 
   Widget _getBodyData() {
-    return StreamBuilder<RequestState>(
-        stream: _submitUserMedicalDetailBloc.fetchDetailStream,
+    return StreamBuilder<RequestState?>(
+        stream: _submitUserMedicalDetailBloc!.fetchDetailStream,
         initialData: _formDataModel == null ? RequestInProgress() : null,
         builder: (context, snapshot) {
           if (snapshot.data is RequestSuccess) {
-            RequestSuccess successObject = snapshot.data;
+            RequestSuccess successObject = snapshot.data as RequestSuccess;
             _formDataModel = successObject.response;
             _initFormData();
             _submitUserMedicalDetailBloc?.addIntoFetchMedicalDetailStream(null);
           } else if (snapshot.data is RequestFailed) {
-            RequestFailed _failedObj = snapshot.data;
+            RequestFailed? _failedObj = snapshot.data as RequestFailed?;
             _failedMessage = _failedObj?.failureCause;
             _submitUserMedicalDetailBloc?.addIntoFetchMedicalDetailStream(null);
           } else if (snapshot.data is RequestInProgress) {
             return CustomWidgets().getProgressIndicator();
           }
+
           return (_formDataModel == null ||
-                  (_formDataModel.success != null && !_formDataModel.success))
+                  (_formDataModel!.success != null && !_formDataModel!.success!))
               ? CustomWidgets().errorWidget(_failedMessage,
                   onTap: () => _getFormData(), isSizeLess: true)
               : _getBody();
@@ -191,26 +194,26 @@ class _EnterAdditionalUserDetailScrState
   }
 
   Widget _getBody() {
-    return StreamBuilder<RequestState>(
-        stream: _submitUserMedicalDetailBloc.submitDetailStream,
+    return StreamBuilder<RequestState?>(
+        stream: _submitUserMedicalDetailBloc!.submitDetailStream,
         builder: (context, snapshot) {
           if (snapshot.data is RequestInProgress) {
             return CustomWidgets().getProgressIndicator();
           } else if (snapshot.data is RequestSuccess) {
-            RequestSuccess data = snapshot.data;
+            RequestSuccess data = snapshot.data as RequestSuccess;
             if (data.response != null && data.response) {
               _navigateToNextScreen(data?.additionalData?.toString());
             }
-            _submitUserMedicalDetailBloc.addIntoSubmitMedicalDetailStream(null);
+            _submitUserMedicalDetailBloc!.addIntoSubmitMedicalDetailStream(null);
           } else if (snapshot.data is RequestFailed) {
-            RequestFailed _reqFailObj = snapshot.data;
+            RequestFailed? _reqFailObj = snapshot.data as RequestFailed?;
             Future.delayed(Duration(milliseconds: 10)).then((value) {
               _showMessagePopup(_reqFailObj?.failureCause);
             });
-            _submitUserMedicalDetailBloc.addIntoSubmitMedicalDetailStream(null);
+            _submitUserMedicalDetailBloc!.addIntoSubmitMedicalDetailStream(null);
           }
           return Container(
-            margin: EdgeInsets.only(top: AppConfig.getMediaQuery().padding.top),
+            margin: EdgeInsets.only(top: AppConfig.getMediaQuery()!.padding.top),
             child: Column(
               children: [
                 _getAppAndSearchBarWidget(),
@@ -233,15 +236,6 @@ class _EnterAdditionalUserDetailScrState
             right: AppConfig.horizontalBlockSize * 2.5,
             top: AppConfig.verticalBlockSize * 0.6,
             bottom: AppConfig.horizontalBlockSize * 1.8),
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Color.fromRGBO(19, 184, 126, 0.19),
-            Color.fromRGBO(255, 255, 255, 0),
-          ],
-        )),
         child: Column(
           children: [
             Row(
@@ -252,7 +246,7 @@ class _EnterAdditionalUserDetailScrState
                     Navigator.pop(context, false);
                     return;
                   },
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.arrow_back_ios,
                     color: PlunesColors.BLACKCOLOR,
                   ),
@@ -261,11 +255,12 @@ class _EnterAdditionalUserDetailScrState
                   child: Container(
                     margin: EdgeInsets.only(left: 28),
                     child: Text(
+                     widget.consultation ? "Book your Consultation" :
                       PlunesStrings.bookYourProcedure,
                       textAlign: TextAlign.left,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
-                      style: TextStyle(
+                      style: const TextStyle(
                           color: PlunesColors.BLACKCOLOR, fontSize: 20),
                     ),
                   ),
@@ -276,7 +271,25 @@ class _EnterAdditionalUserDetailScrState
               margin: EdgeInsets.only(
                   top: AppConfig.verticalBlockSize * 0.8,
                   bottom: AppConfig.verticalBlockSize * 2.8),
+              decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Color.fromRGBO(19, 184, 126, 0.19),
+                  Color.fromRGBO(255, 255, 255, 0),
+                ],
+              )),
               child: Card(
+                // decoration: const BoxDecoration(
+                //     gradient: LinearGradient(
+                //   begin: Alignment.topCenter,
+                //   end: Alignment.bottomCenter,
+                //   colors: [
+                //     Color.fromRGBO(19, 184, 126, 0.19),
+                //     Color.fromRGBO(255, 255, 255, 0),
+                //   ],
+                // )),
                 elevation: 4.0,
                 color: Colors.white,
                 shadowColor: Color(CommonMethods.getColorHexFromStr("#E7E7E7")),
@@ -343,16 +356,16 @@ class _EnterAdditionalUserDetailScrState
   }
 
   bool _hasFormDataList() {
-    return (_formItemList != null && _formItemList.isNotEmpty) ||
+    return (_formItemList != null && _formItemList!.isNotEmpty) ||
         (_medicalSessionModel != null &&
-            _medicalSessionModel.sessions != null &&
-            _medicalSessionModel.sessions.isNotEmpty);
+            _medicalSessionModel!.sessions != null &&
+            _medicalSessionModel!.sessions!.isNotEmpty);
   }
 
   Widget _getPageViewWidget() {
     return PageView(
       controller: _pageController,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       scrollDirection: Axis.horizontal,
       children: [
         _getFirstPage(),
@@ -363,7 +376,7 @@ class _EnterAdditionalUserDetailScrState
   }
 
   Widget _getConditionalPage() {
-    return _medicalSessionModel != null && _medicalSessionModel.sessions != null
+    return _medicalSessionModel != null && _medicalSessionModel!.sessions != null
         ? _getMedicalSessionWidget()
         : Container(
             margin: EdgeInsets.symmetric(
@@ -386,7 +399,7 @@ class _EnterAdditionalUserDetailScrState
                                     Container(
                                       width: double.infinity,
                                       child: Text(
-                                        "${(_formDataModel.data != null && _formDataModel?.data?.childrenKeys != null && _formDataModel.data.childrenKeys.isNotEmpty) ? _formDataModel.data.childrenKeys.first : ""}",
+                                        "${(_formDataModel!.data != null && _formDataModel?.data?.childrenKeys != null && _formDataModel!.data!.childrenKeys!.isNotEmpty) ? _formDataModel!.data!.childrenKeys!.first : ""}",
                                         textAlign: TextAlign.left,
                                         maxLines: 2,
                                         style: TextStyle(
@@ -398,8 +411,8 @@ class _EnterAdditionalUserDetailScrState
                                     _getDropDownOfBodyParts()
                                   ],
                                 )),
-                            _formItemList.first.sessionValues == null ||
-                                    _formItemList.first.sessionValues.isEmpty
+                            _formItemList!.first.sessionValues == null ||
+                                    _formItemList!.first.sessionValues!.isEmpty
                                 ? Container()
                                 : Expanded(
                                     flex: 5,
@@ -412,7 +425,7 @@ class _EnterAdditionalUserDetailScrState
                                           Container(
                                             width: double.infinity,
                                             child: Text(
-                                              "${(_formDataModel.data != null && _formDataModel.data.childrenKeys != null && _formDataModel.data.childrenKeys.length > 1) ? _formDataModel?.data?.childrenKeys[1] : ""}",
+                                              "${(_formDataModel!.data != null && _formDataModel!.data!.childrenKeys != null && _formDataModel!.data!.childrenKeys!.length > 1) ? _formDataModel?.data?.childrenKeys![1] : ""}",
                                               textAlign: TextAlign.left,
                                               maxLines: 2,
                                               style: TextStyle(
@@ -421,10 +434,10 @@ class _EnterAdditionalUserDetailScrState
                                                       .withOpacity(0.8)),
                                             ),
                                           ),
-                                          _formItemList.first.sessionValues ==
+                                          _formItemList!.first.sessionValues ==
                                                       null ||
-                                                  _formItemList.first
-                                                      .sessionValues.isEmpty
+                                                  _formItemList!.first
+                                                      .sessionValues!.isEmpty
                                               ? Container()
                                               : _getSessionDropDown()
                                         ],
@@ -445,7 +458,7 @@ class _EnterAdditionalUserDetailScrState
                         child: ListView.builder(
                           padding: EdgeInsets.zero,
                           itemBuilder: (context, index) {
-                            if (_formItemList[index].isItemSeparated) {
+                            if (_formItemList![index].isItemSeparated!) {
                               return Container(
                                 margin: EdgeInsets.only(
                                     bottom: AppConfig.verticalBlockSize * 1),
@@ -504,7 +517,7 @@ class _EnterAdditionalUserDetailScrState
                                                             children: [
                                                               Expanded(
                                                                 child: Text(
-                                                                  _formItemList[
+                                                                  _formItemList![
                                                                               index]
                                                                           .bodyPartName ??
                                                                       "",
@@ -531,7 +544,7 @@ class _EnterAdditionalUserDetailScrState
                                                             ],
                                                           ),
                                                           Text(
-                                                            "${(_formDataModel.data != null && _formDataModel.data.childrenKeys != null && _formDataModel.data.childrenKeys.isNotEmpty) ? _formDataModel.data.childrenKeys.first : ""}",
+                                                            "${(_formDataModel!.data != null && _formDataModel!.data!.childrenKeys != null && _formDataModel!.data!.childrenKeys!.isNotEmpty) ? _formDataModel!.data!.childrenKeys!.first : ""}",
                                                             maxLines: 1,
                                                             style: TextStyle(
                                                                 fontSize: 12,
@@ -544,10 +557,10 @@ class _EnterAdditionalUserDetailScrState
                                                       ),
                                                     )),
                                               ))),
-                                          _formItemList[index].sessionValues ==
+                                          _formItemList![index].sessionValues ==
                                                       null ||
-                                                  _formItemList[index]
-                                                      .sessionValues
+                                                  _formItemList![index]
+                                                      .sessionValues!
                                                       .isEmpty
                                               ? Container()
                                               : Expanded(
@@ -555,11 +568,11 @@ class _EnterAdditionalUserDetailScrState
                                                   child: Container(
                                                     margin: EdgeInsets.only(
                                                         left: 10),
-                                                    child: _formItemList[index]
+                                                    child: _formItemList![index]
                                                                     .sessionValues ==
                                                                 null ||
-                                                            _formItemList[index]
-                                                                .sessionValues
+                                                            _formItemList![index]
+                                                                .sessionValues!
                                                                 .isEmpty
                                                         ? Container()
                                                         : Container(
@@ -599,7 +612,7 @@ class _EnterAdditionalUserDetailScrState
                                                                   children: [
                                                                     ListView
                                                                         .builder(
-                                                                      padding: EdgeInsets.symmetric(
+                                                                      padding: const EdgeInsets.symmetric(
                                                                           horizontal:
                                                                               5),
                                                                       itemBuilder:
@@ -607,22 +620,22 @@ class _EnterAdditionalUserDetailScrState
                                                                               innerIndex) {
                                                                         if (innerIndex !=
                                                                                 0 &&
-                                                                            !_formItemList[index].isSessionListOpened) {
+                                                                            !_formItemList![index].isSessionListOpened!) {
                                                                           return Container();
                                                                         }
                                                                         return InkWell(
                                                                           onTap:
                                                                               () {
-                                                                            _formItemList[index].isSessionListOpened =
-                                                                                !_formItemList[index].isSessionListOpened;
+                                                                            _formItemList![index].isSessionListOpened =
+                                                                                !_formItemList![index].isSessionListOpened!;
                                                                             _setState();
-                                                                            if (_formItemList[index].sessionValues[innerIndex] ==
+                                                                            if (_formItemList![index].sessionValues![innerIndex] ==
                                                                                 _enterManually) {
-                                                                              _openTextEditingPopup(_formItemList[index]);
+                                                                              _openTextEditingPopup(_formItemList![index]);
                                                                               return;
                                                                             }
-                                                                            _formItemList[index].sessionValue =
-                                                                                _formItemList[index].sessionValues[innerIndex] ?? "";
+                                                                            _formItemList![index].sessionValue =
+                                                                                _formItemList![index].sessionValues![innerIndex] ?? "";
                                                                             _setState();
                                                                           },
                                                                           onDoubleTap:
@@ -637,7 +650,7 @@ class _EnterAdditionalUserDetailScrState
                                                                               Expanded(
                                                                                 child: Container(
                                                                                   padding: const EdgeInsets.only(top: 4.0),
-                                                                                  child: _formItemList[index].isSessionListOpened && _formItemList[index].sessionValues[innerIndex] == _enterManually
+                                                                                  child: _formItemList![index].isSessionListOpened! && _formItemList![index].sessionValues![innerIndex] == _enterManually
                                                                                       ? Row(
                                                                                           children: [
                                                                                             Expanded(
@@ -650,16 +663,16 @@ class _EnterAdditionalUserDetailScrState
                                                                                           ],
                                                                                         )
                                                                                       : Text(
-                                                                                          _formItemList[index].isSessionListOpened ? _formItemList[index].sessionValues[innerIndex] ?? "" : _formItemList[index].sessionValue ?? _formItemList[index].sessionValues.first ?? "",
+                                                                                          _formItemList![index].isSessionListOpened! ? _formItemList![index].sessionValues![innerIndex] ?? "" : _formItemList![index].sessionValue ?? _formItemList![index].sessionValues!.first ?? "",
                                                                                           maxLines: 1,
                                                                                           style: TextStyle(fontSize: 16, color: PlunesColors.BLACKCOLOR),
                                                                                         ),
                                                                                 ),
                                                                               ),
-                                                                              innerIndex == 0 && _formItemList[index].sessionValues.isNotEmpty && _formItemList[index].sessionValues.length > 1
+                                                                              innerIndex == 0 && _formItemList![index].sessionValues!.isNotEmpty && _formItemList![index].sessionValues!.length > 1
                                                                                   ? InkWell(
                                                                                       onTap: () {
-                                                                                        _formItemList[index].isSessionListOpened = !_formItemList[index].isSessionListOpened;
+                                                                                        _formItemList![index].isSessionListOpened = !_formItemList![index].isSessionListOpened!;
                                                                                         _setState();
                                                                                       },
                                                                                       onDoubleTap: () {},
@@ -675,13 +688,13 @@ class _EnterAdditionalUserDetailScrState
                                                                       },
                                                                       shrinkWrap:
                                                                           true,
-                                                                      itemCount: _formItemList[
+                                                                      itemCount: _formItemList![
                                                                               index]
-                                                                          .sessionValues
+                                                                          .sessionValues!
                                                                           .length,
                                                                     ),
                                                                     Text(
-                                                                      "${(_formDataModel.data != null && _formDataModel.data.childrenKeys != null && _formDataModel.data.childrenKeys.length > 1) ? _formDataModel?.data?.childrenKeys[1] : ""}",
+                                                                      "${(_formDataModel!.data != null && _formDataModel!.data!.childrenKeys != null && _formDataModel!.data!.childrenKeys!.length > 1) ? _formDataModel?.data?.childrenKeys![1] : ""}",
                                                                       maxLines:
                                                                           1,
                                                                       style: TextStyle(
@@ -703,10 +716,10 @@ class _EnterAdditionalUserDetailScrState
                                         child: Icon(Icons.close),
                                         onDoubleTap: () {},
                                         onTap: () {
-                                          _formItemList[index].isItemSeparated =
-                                              !_formItemList[index]
-                                                  .isItemSeparated;
-                                          _formItemList[index]
+                                          _formItemList![index].isItemSeparated =
+                                              !_formItemList![index]
+                                                  .isItemSeparated!;
+                                          _formItemList![index]
                                               .isSessionListOpened = false;
                                           _isBodyPartListOpened = false;
                                           _setState();
@@ -719,7 +732,7 @@ class _EnterAdditionalUserDetailScrState
                             }
                             return Container();
                           },
-                          itemCount: _formItemList.length,
+                          itemCount: _formItemList!.length,
                           shrinkWrap: true,
                         ),
                       ),
@@ -742,17 +755,17 @@ class _EnterAdditionalUserDetailScrState
           children: [
             (widget.catalogueData.service != null &&
                     widget.catalogueData.family != null &&
-                    (widget.catalogueData.service.trim().toLowerCase() !=
-                        widget.catalogueData.family.trim().toLowerCase()))
+                    (widget.catalogueData.service!.trim().toLowerCase() !=
+                        widget.catalogueData.family!.trim().toLowerCase()))
                 ? Container(
                     margin: EdgeInsets.only(bottom: 7),
                     width: double.infinity,
                     child: Text(
-                      "${widget.catalogueData.service.trim()}",
+                      "${widget.catalogueData.service!.trim()}",
                       textAlign: TextAlign.left,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontSize: 20, color: PlunesColors.BLACKCOLOR),
                     ),
                   )
@@ -770,7 +783,9 @@ class _EnterAdditionalUserDetailScrState
               ),
             ),
             Card(
-              margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.8),
+              elevation: 12,
+              margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.8, bottom: AppConfig.verticalBlockSize * 1.8,
+              left: AppConfig.verticalBlockSize * .65, right: AppConfig.verticalBlockSize * .65),
               child: Container(
                 decoration: BoxDecoration(
                     gradient: LinearGradient(colors: [
@@ -791,7 +806,7 @@ class _EnterAdditionalUserDetailScrState
                         maxLines: 10,
                         controller: _additionalDetailController,
                         maxLength: 500,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: PlunesColors.BLACKCOLOR,
                           fontSize: 16,
                         ),
@@ -821,21 +836,22 @@ class _EnterAdditionalUserDetailScrState
               ),
             ),
             Container(
+              padding: EdgeInsets.all(4),
               width: double.infinity,
               margin:
                   EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2.5),
               child: Row(
                 children: [
                   Expanded(
-                      child: (_videoUrls != null && _videoUrls.isNotEmpty)
+                      child: (_videoUrls != null && _videoUrls!.isNotEmpty)
                           ? _getVideoWithBackground()
                           : _getVideoCard()),
                   Expanded(
-                      child: (_imageUrls != null && _imageUrls.isNotEmpty)
+                      child: (_imageUrls != null && _imageUrls!.isNotEmpty)
                           ? _getCameraCardWithBackground()
                           : _getCameraCard()),
                   Expanded(
-                      child: (_docUrls != null && _docUrls.isNotEmpty)
+                      child: (_docUrls != null && _docUrls!.isNotEmpty)
                           ? _getReportWithBackground()
                           : _getUploadReportCard()),
                 ],
@@ -845,10 +861,10 @@ class _EnterAdditionalUserDetailScrState
               width: double.infinity,
               margin:
                   EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2.5),
-              child: Text(
+              child: const Text(
                 "Note* - Make sure to upload your correct medical reports & pictures as we share them with medical professionals to get best treatment details for you.",
                 textAlign: TextAlign.left,
-                style: TextStyle(fontSize: 11.5),
+                style: TextStyle(fontSize: 11),
               ),
             ),
             _getPremiumBenefitsForUserWidget()
@@ -861,9 +877,9 @@ class _EnterAdditionalUserDetailScrState
   Widget _getReportWithBackground() {
     return Card(
       margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(18))),
-      elevation: 2.5,
+      elevation: 9,
       child: InkWell(
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
@@ -934,12 +950,12 @@ class _EnterAdditionalUserDetailScrState
         hoverColor: Colors.transparent,
         splashColor: Colors.transparent,
         onTap: () {
-          if (_videoUrls.first.url != null &&
-              _videoUrls.first.url.trim().isNotEmpty) {
+          if (_videoUrls!.first.url != null &&
+              _videoUrls!.first.url!.trim().isNotEmpty) {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => VideoUtil(_videoUrls.first.url)));
+                    builder: (context) => VideoUtil(_videoUrls!.first.url)));
           } else {
             _showMessagePopup(PlunesStrings.unableToPlayVideo);
           }
@@ -950,14 +966,14 @@ class _EnterAdditionalUserDetailScrState
             Positioned.fill(
               child: ClipRRect(
                 borderRadius: BorderRadius.all(Radius.circular(18)),
-                child: (_videoUrls.first.thumbnail == null ||
-                        _videoUrls.first.thumbnail.isEmpty)
+                child: (_videoUrls!.first.thumbnail == null ||
+                        _videoUrls!.first.thumbnail!.isEmpty)
                     ? Image.asset(
                         PlunesImages.docUploadIcon,
                         fit: BoxFit.fill,
                       )
                     : CustomWidgets().getImageFromUrl(
-                        _videoUrls.first.thumbnail ?? "",
+                        _videoUrls!.first.thumbnail ?? "",
                         boxFit: BoxFit.fill),
               ),
             ),
@@ -1003,9 +1019,9 @@ class _EnterAdditionalUserDetailScrState
   Widget _getVideoCard() {
     return Card(
       margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(18))),
-      elevation: 2.5,
+      elevation: 9,
       child: InkWell(
         focusColor: Colors.transparent,
         highlightColor: Colors.transparent,
@@ -1025,8 +1041,8 @@ class _EnterAdditionalUserDetailScrState
                 if (_videoUrls == null) {
                   _videoUrls = [];
                 }
-                if (_videoUrls.isNotEmpty) {
-                  _videoUrls.addAll(value);
+                if (_videoUrls!.isNotEmpty) {
+                  _videoUrls!.addAll(value);
                 } else {
                   _videoUrls = value;
                 }
@@ -1078,9 +1094,9 @@ class _EnterAdditionalUserDetailScrState
   Widget _getCameraCard() {
     return Card(
       margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(18))),
-      elevation: 2.5,
+      elevation: 9,
       child: InkWell(
         focusColor: Colors.transparent,
         highlightColor: Colors.transparent,
@@ -1089,8 +1105,8 @@ class _EnterAdditionalUserDetailScrState
         onTap: () {
           _showEncryptionPopup(() {
             if (_imageUrls == null ||
-                _imageUrls.isEmpty ||
-                _imageUrls.length < 4) {
+                _imageUrls!.isEmpty ||
+                _imageUrls!.length < 4) {
               _imagePicker?.showDialog(context);
             } else {
               _showMessagePopup("You can upload up to 3 pictures");
@@ -1100,7 +1116,7 @@ class _EnterAdditionalUserDetailScrState
         onDoubleTap: () {},
         child: Container(
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(18)),
+              borderRadius: const BorderRadius.all(Radius.circular(18)),
               gradient: LinearGradient(colors: [
                 Color(CommonMethods.getColorHexFromStr("#FEFEFE")),
                 Color(CommonMethods.getColorHexFromStr("#F6F6F6"))
@@ -1123,7 +1139,7 @@ class _EnterAdditionalUserDetailScrState
                   width: double.infinity,
                   alignment: Alignment.center,
                   margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 4),
-                  child: Text(
+                  child: const Text(
                     "Upload Photo",
                     textAlign: TextAlign.center,
                     style:
@@ -1254,12 +1270,12 @@ class _EnterAdditionalUserDetailScrState
                         ),
                       ),
                     ),
-                    (_imageUrls.isNotEmpty && _imageUrls.length == 3)
+                    (_imageUrls!.isNotEmpty && _imageUrls!.length == 3)
                         ? Container()
-                        : FlatButton(
-                            splashColor: Colors.transparent,
-                            hoverColor: Colors.transparent,
-                            highlightColor: Colors.transparent,
+                        : ElevatedButton(
+                            // splashColor: Colors.transparent,
+                            // hoverColor: Colors.transparent,
+                            // highlightColor: Colors.transparent,
                             child: Container(
                               height: AppConfig.verticalBlockSize * 3,
                               width: AppConfig.horizontalBlockSize * 30,
@@ -1282,7 +1298,7 @@ class _EnterAdditionalUserDetailScrState
                             ),
                             onPressed: () {
                               Navigator.pop(context, false);
-                              _imagePicker.showDialog(context);
+                              _imagePicker!.showDialog(context);
                             },
                           )
                   ],
@@ -1417,8 +1433,8 @@ class _EnterAdditionalUserDetailScrState
   // }
 
   List<Widget> _showSelectedImages() {
-    List<Widget> images = List<Widget>();
-    for (int i = 0; i < _imageUrls.length; i++) {
+    List<Widget> images = [];
+    for (int i = 0; i < _imageUrls!.length; i++) {
       images.add(_getUploadedImage(i));
     }
     return images;
@@ -1437,7 +1453,7 @@ class _EnterAdditionalUserDetailScrState
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10.0),
               child: CustomWidgets().getImageFromUrl(
-                  _imageUrls[index]["url"] ?? '',
+                  _imageUrls![index]["url"] ?? '',
                   boxFit: BoxFit.fill),
             ),
             decoration: BoxDecoration(
@@ -1449,17 +1465,17 @@ class _EnterAdditionalUserDetailScrState
                 left: AppConfig.horizontalBlockSize * 3.38,
                 top: AppConfig.verticalBlockSize * 1),
             alignment: Alignment.centerLeft,
-            child: FlatButton(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18.0),
-                side: BorderSide(color: PlunesColors.WHITECOLOR),
-              ),
+            child: ElevatedButton(
+              // shape: RoundedRectangleBorder(
+              //   borderRadius: BorderRadius.circular(18.0),
+              //   side: BorderSide(color: PlunesColors.WHITECOLOR),
+              // ),
               onPressed: () {
                 if (mounted)
                   setState(() {
-                    _imageUrls.removeAt(index);
+                    _imageUrls!.removeAt(index);
                     Navigator.pop(context, false);
-                    if (_imageUrls.isNotEmpty) {
+                    if (_imageUrls!.isNotEmpty) {
                       _showImagesDialog();
                     }
                   });
@@ -1498,9 +1514,9 @@ class _EnterAdditionalUserDetailScrState
   Widget _getUploadReportCard() {
     return Card(
       margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(18))),
-      elevation: 2.5,
+      elevation: 9,
       child: InkWell(
         focusColor: Colors.transparent,
         highlightColor: Colors.transparent,
@@ -1509,18 +1525,29 @@ class _EnterAdditionalUserDetailScrState
         onTap: () {
           _showEncryptionPopup(() {
             try {
-              _imagePicker
+              _imagePicker!
                   .pickFile(context, fileType: FileType.any)
                   .then((value) {
                 if (value != null &&
-                    value.path != null &&
-                    value.path.trim().isNotEmpty &&
-                    value.path.contains(".")) {
-                  String _fileExtension = value.path.split(".")?.last;
-                  if (_fileExtension != null &&
-                      (_fileExtension.toLowerCase() ==
+                    value.paths != null &&
+                    value.paths.toString().trim().isNotEmpty &&
+                    value.paths.toString().contains(".")) {
+                  String _fileExtension = value.paths.toString().replaceAll("[", "").replaceAll("]", "").split(".")!.last;
+
+                  print("fileExtension--1>${_fileExtension.toLowerCase()}");
+                  print("fileExtension--2>${Constants.pdfExtension.toLowerCase()}");
+                  if (_fileExtension != null && (_fileExtension.toLowerCase() ==
                           Constants.pdfExtension.toLowerCase())) {
-                    _uploadFile(value, fileType: Constants.typeReport);
+                    try {
+                      print("value.files[0].name");
+                      print(value.files[0].name);
+                      print(value.files[0].path);
+                      print(value.files[0].size);
+                    } catch (e) {
+                      print(e.toString());
+                    }
+
+                    _uploadFile(File(value.files[0]!.path!), fileType: Constants.typeReport);
                   } else {
                     _showMessagePopup(PlunesStrings.selectValidDocWarningText);
                   }
@@ -1528,17 +1555,17 @@ class _EnterAdditionalUserDetailScrState
                   _showMessagePopup(PlunesStrings.selectValidDocWarningText);
                 }
               }).catchError((e) {
-                // print(e);
+                print("error_1549->${e.toString()}");
               });
             } catch (e) {
-              // print(e);
+              print("error_1552->${e.toString()}");
             }
           });
         },
         onDoubleTap: () {},
         child: Container(
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(18)),
+              borderRadius: const BorderRadius.all(Radius.circular(18)),
               gradient: LinearGradient(colors: [
                 Color(CommonMethods.getColorHexFromStr("#FEFEFE")),
                 Color(CommonMethods.getColorHexFromStr("#F6F6F6"))
@@ -1580,19 +1607,24 @@ class _EnterAdditionalUserDetailScrState
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
+        // Card(
+        //   elevation: 3.0,
+        //   margin: EdgeInsets.all(0),
+        //   child: Container(),
+        // ),
         Card(
-          elevation: 3.0,
-          margin: EdgeInsets.all(0),
-          child: Container(),
-        ),
-        Card(
+          elevation: 9.0,
+          color: Colors.white,
+          // shadowColor: Color(CommonMethods.getColorHexFromStr("#E7E7E7")),
+          // shape: RoundedRectangleBorder(
+          //     borderRadius: BorderRadius.all(Radius.circular(8))),
           margin: EdgeInsets.all(0),
           child: Container(
             margin: EdgeInsets.symmetric(
                 horizontal: AppConfig.horizontalBlockSize * 4.2,
                 vertical: AppConfig.verticalBlockSize * 2),
-            child: StreamBuilder<Object>(
-                stream: _pageStream.stream,
+            child: StreamBuilder<Object?>(
+                stream: _pageStream!.stream,
                 builder: (context, snapshot) {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1604,17 +1636,17 @@ class _EnterAdditionalUserDetailScrState
                         splashColor: Colors.transparent,
                         onTap: () {
                           if ((_pageController == null ||
-                              _pageController.page == null ||
-                              _pageController.page.toInt() == 0)) {
+                              _pageController!.page == null ||
+                              _pageController!.page!.toInt() == 0)) {
                             return;
                           }
                           _removeFocus();
-                          _pageController
+                          _pageController!
                               .previousPage(
                                   duration: Duration(milliseconds: 500),
                                   curve: Curves.easeInOut)
                               .then((value) {
-                            _pageStream.add(null);
+                            _pageStream!.add(null);
                           });
                         },
                         child: CustomWidgets().getRoundedButton(
@@ -1624,8 +1656,8 @@ class _EnterAdditionalUserDetailScrState
                             AppConfig.horizontalBlockSize * 5,
                             AppConfig.verticalBlockSize * 1,
                             (_pageController == null ||
-                                    _pageController.page == null ||
-                                    _pageController.page.toInt() == 0)
+                                    _pageController!.page == null ||
+                                    _pageController!.page!.toInt() == 0)
                                 ? Color(
                                     CommonMethods.getColorHexFromStr("#767676"))
                                 : PlunesColors.BLACKCOLOR,
@@ -1634,7 +1666,7 @@ class _EnterAdditionalUserDetailScrState
                       ),
                       DotsIndicator(
                         dotsCount: _hasFormDataList() ? 3 : 2,
-                        position: _pageController.page ?? 0,
+                        position: _pageController!.page ?? 0,
                         decorator: DotsDecorator(
                             activeColor: PlunesColors.BLACKCOLOR,
                             color: PlunesColors.GREYCOLOR),
@@ -1646,33 +1678,36 @@ class _EnterAdditionalUserDetailScrState
                         splashColor: Colors.transparent,
                         onDoubleTap: () {},
                         onTap: () {
-                          if (_hasFormDataList() &&
-                              _pageController.page.toInt() == 2) {
+                          if (_hasFormDataList() && _pageController!.page!.toInt() == 2) {
+                            print("11111------111");
                             _submitUserDetail();
-                          } else if (!_hasFormDataList() &&
-                              _pageController.page.toInt() == 1) {
+                          } else if (!_hasFormDataList() && _pageController!.page!.toInt() == 1) {
+                            print("11111------222");
                             _submitUserDetail();
+
                           } else {
+                            print("11111------333");
+
                             _removeFocus();
-                            _pageController
+                            _pageController!
                                 .nextPage(
                                     duration: Duration(milliseconds: 500),
                                     curve: Curves.easeInOut)
                                 .then((value) {
-                              _pageStream.add(null);
+                              _pageStream!.add(null);
                             });
                           }
                         },
                         child: CustomWidgets().getRoundedButton(
                             (_pageController == null ||
-                                    _pageController.page == null)
+                                    _pageController!.page == null)
                                 ? PlunesStrings.next
                                 : _hasFormDataList()
-                                    ? (_pageController.page.toInt() == 1 ||
-                                            _pageController.page.toInt() == 0)
+                                    ? (_pageController!.page!.toInt() == 1 ||
+                                            _pageController!.page!.toInt() == 0)
                                         ? PlunesStrings.next
                                         : plunesStrings.submit
-                                    : _pageController.page.toInt() == 1
+                                    : _pageController!.page!.toInt() == 1
                                         ? plunesStrings.submit
                                         : PlunesStrings.next,
                             AppConfig.horizontalBlockSize * 8,
@@ -1997,13 +2032,13 @@ class _EnterAdditionalUserDetailScrState
   }
 
   @override
-  fetchImageCallBack(File image) {
+  fetchImageCallBack(image) {
     if (image != null && image.path != null) {
       _uploadFile(image, fileType: Constants.typeImage);
     }
   }
 
-  void _showMessagePopup(String message) {
+  void _showMessagePopup(String? message) {
     if (mounted) {
       showDialog(
           context: context,
@@ -2020,9 +2055,9 @@ class _EnterAdditionalUserDetailScrState
       _imageUrls = [];
     }
     if (_medicalFileResponseModel.data != null &&
-        _medicalFileResponseModel.data.reports != null &&
-        _medicalFileResponseModel.data.reports.isNotEmpty) {
-      _imageUrls.add(_medicalFileResponseModel.data.reports.first.toJson());
+        _medicalFileResponseModel.data!.reports != null &&
+        _medicalFileResponseModel.data!.reports!.isNotEmpty) {
+      _imageUrls!.add(_medicalFileResponseModel.data!.reports!.first.toJson());
     }
   }
 
@@ -2032,19 +2067,18 @@ class _EnterAdditionalUserDetailScrState
       _docUrls = [];
     }
     if (_medicalFileResponseModel.data != null &&
-        _medicalFileResponseModel.data.reports != null &&
-        _medicalFileResponseModel.data.reports.isNotEmpty) {
-      _docUrls.add(_medicalFileResponseModel.data.reports.first.toJson());
+        _medicalFileResponseModel.data!.reports != null &&
+        _medicalFileResponseModel.data!.reports!.isNotEmpty) {
+      _docUrls!.add(_medicalFileResponseModel.data!.reports!.first.toJson());
     }
   }
 
   void _submitUserDetail() {
     if (!_isNecessaryDataFilled()) {
-      _pageController
-          .animateToPage(0,
-              duration: Duration(milliseconds: 500), curve: Curves.easeInOut)
+      _pageController!
+          .animateToPage(0, duration: Duration(milliseconds: 500), curve: Curves.easeInOut)
           .then((value) {
-        _pageStream.add(null);
+        _pageStream!.add(null);
       });
       return;
     }
@@ -2052,34 +2086,34 @@ class _EnterAdditionalUserDetailScrState
     Map<String, dynamic> formDataReq = Map();
     if (_hasFormDataList()) {
       if (_medicalSessionModel != null &&
-          _medicalSessionModel.sessions != null &&
-          _medicalSessionModel.sessions.isNotEmpty) {
+          _medicalSessionModel!.sessions != null &&
+          _medicalSessionModel!.sessions!.isNotEmpty) {
         formDataReq[FormDataModel.sessionGraftKey] =
-            _medicalSessionModel.selectedSession ??
-                _medicalSessionModel.sessions.first;
+            _medicalSessionModel!.selectedSession ??
+                _medicalSessionModel!.sessions!.first;
         _formSubmissionList.add(formDataReq);
       } else {
-        if (_formItemList != null && _formItemList.isNotEmpty) {
-          for (int index = 0; index < _formItemList.length; index++) {
-            if (_formItemList[index].isItemSeparated != null &&
-                _formItemList[index].isItemSeparated) {
+        if (_formItemList != null && _formItemList!.isNotEmpty) {
+          for (int index = 0; index < _formItemList!.length; index++) {
+            if (_formItemList![index].isItemSeparated != null &&
+                _formItemList![index].isItemSeparated!) {
               Map<String, dynamic> _formDataReq = Map();
               _formDataReq[FormDataModel.bodyPartKey] =
-                  _formItemList[index].bodyPartName;
+                  _formItemList![index].bodyPartName;
               _formDataReq[FormDataModel.sessionGraftKey] =
-                  _formItemList[index].sessionValue;
+                  _formItemList![index].sessionValue;
               _formSubmissionList.add(_formDataReq);
             }
           }
           if (_formSubmissionList == null || _formSubmissionList.isEmpty) {
             _showMessagePopup(
                 "Please select ${_formItemList?.last?.firstKey ?? "body part"}");
-            _pageController
+            _pageController!
                 .animateToPage(1,
                     duration: Duration(milliseconds: 500),
                     curve: Curves.easeInOut)
                 .then((value) {
-              _pageStream.add(null);
+              _pageStream!.add(null);
             });
             return;
           }
@@ -2094,29 +2128,29 @@ class _EnterAdditionalUserDetailScrState
           _videoUrls?.map((e) => e.toJson())?.toList(growable: true) ?? [],
       "treatedPreviously": _hasTreatedPreviously,
       "description": _hasTreatedPreviously
-          ? _previousMedicalConditionController.text.trim()
+          ? _previousMedicalConditionController!.text.trim()
           : null,
-      "additionalDetails": _additionalDetailController.text.trim(),
+      "additionalDetails": _additionalDetailController!.text.trim(),
       "insurance": _isInsuranceCovered,
       "serviceChildren": _formSubmissionList
     };
     // print("data $_postData");
-    _submitUserMedicalDetailBloc.submitUserMedicalDetail(_postData);
+    _submitUserMedicalDetailBloc!.submitUserMedicalDetail(_postData);
   }
 
   bool isFromProfileScreenAndPriceAvailable() {
     return (widget.catalogueData != null &&
         widget.catalogueData.isFromProfileScreen != null &&
-        widget.catalogueData.isFromProfileScreen &&
+        widget.catalogueData.isFromProfileScreen! &&
         widget.catalogueData.servicePrice != null &&
-        widget.catalogueData.servicePrice > 0);
+        widget.catalogueData.servicePrice! > 0);
   }
 
-  void _navigateToNextScreen(String reportId) {
-    // print("report id is $reportId");
+  void _navigateToNextScreen(String? reportId) {
     Future.delayed(Duration(milliseconds: 10)).then((value) {
       widget.catalogueData.userReportId = reportId;
       if (isFromProfileScreenAndPriceAvailable()) {
+        print("report id is iffffff -> $reportId");
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -2125,6 +2159,7 @@ class _EnterAdditionalUserDetailScrState
                     catalogueData: widget.catalogueData)));
         return;
       }
+      print("report id is elseelse -> $reportId");
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -2138,8 +2173,8 @@ class _EnterAdditionalUserDetailScrState
 
   Widget _getPremiumBenefitsForUserWidget() {
     if (_premiumBenefitsModel == null ||
-        _premiumBenefitsModel.data == null ||
-        _premiumBenefitsModel.data.isEmpty) {
+        _premiumBenefitsModel!.data == null ||
+        _premiumBenefitsModel!.data!.isEmpty) {
       return Container();
     }
     return Column(
@@ -2160,8 +2195,8 @@ class _EnterAdditionalUserDetailScrState
             shrinkWrap: true,
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) => CommonWidgets()
-                .getPremiumBenefitsWidget(_premiumBenefitsModel.data[index]),
-            itemCount: _premiumBenefitsModel.data.length,
+                .getPremiumBenefitsWidget(_premiumBenefitsModel!.data![index]),
+            itemCount: _premiumBenefitsModel!.data!.length,
           ),
         ),
       ],
@@ -2186,20 +2221,20 @@ class _EnterAdditionalUserDetailScrState
   bool _isProcedure() {
     return (widget.catalogueData != null &&
         widget.catalogueData.category != null &&
-        widget.catalogueData.category.isNotEmpty &&
-        widget.catalogueData.category.trim().toLowerCase() ==
+        widget.catalogueData.category!.isNotEmpty &&
+        widget.catalogueData.category!.trim().toLowerCase() ==
             Constants.procedureKey.toLowerCase());
   }
 
   bool _isNecessaryDataFilled() {
     bool hasAppropriateData = true;
-    String errorMessage;
+    String? errorMessage;
     if (widget.catalogueData != null &&
         widget.catalogueData.category != null &&
-        widget.catalogueData.category.isNotEmpty &&
-        widget.catalogueData.category.trim().toLowerCase() ==
+        widget.catalogueData.category!.isNotEmpty &&
+        widget.catalogueData.category!.trim().toLowerCase() ==
             Constants.procedureKey.toLowerCase()) {
-      if (_additionalDetailController.text.trim().isEmpty) {
+      if (_additionalDetailController!.text.trim().isEmpty) {
         errorMessage = "Please fill additional detail for treatment";
         hasAppropriateData = false;
       }
@@ -2216,6 +2251,10 @@ class _EnterAdditionalUserDetailScrState
     //   }
     // }
     if (!hasAppropriateData) {
+      _showMessagePopup(errorMessage);
+    } else if (_additionalDetailController!.text.trim().isEmpty) {
+      errorMessage = "Please fill additional detail for treatment";
+      hasAppropriateData = false;
       _showMessagePopup(errorMessage);
     }
     return hasAppropriateData;
@@ -2241,11 +2280,11 @@ class _EnterAdditionalUserDetailScrState
                     Color(CommonMethods.getColorHexFromStr("#F6F6F6"))
                   ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
               child: ListView.builder(
-                padding: EdgeInsets.symmetric(horizontal: 5),
+                padding: const EdgeInsets.symmetric(horizontal: 5),
                 itemBuilder: (context, index) {
                   if (index != 0 && !_isBodyPartListOpened) {
                     return Container();
-                  } else if (_formItemList[index].isItemSeparated) {
+                  } else if (_formItemList![index].isItemSeparated!) {
                     return Container();
                   }
                   return InkWell(
@@ -2253,13 +2292,13 @@ class _EnterAdditionalUserDetailScrState
                       _isBodyPartListOpened = !_isBodyPartListOpened;
                       _setState();
                       if (index != 0) {
-                        var medicalObj = _formItemList[index];
-                        if (_formItemList
+                        var medicalObj = _formItemList![index];
+                        if (_formItemList!
                             .contains(_medicalFormDataSelectionObj)) {
-                          _formItemList.remove(_medicalFormDataSelectionObj);
+                          _formItemList!.remove(_medicalFormDataSelectionObj);
                         }
-                        _formItemList.remove(medicalObj);
-                        _formItemList.insert(0, medicalObj);
+                        _formItemList!.remove(medicalObj);
+                        _formItemList!.insert(0, medicalObj);
                         // _formItemList[index].isItemSeparated = true;
                         _setState();
                       }
@@ -2273,7 +2312,7 @@ class _EnterAdditionalUserDetailScrState
                           child: Container(
                             padding: const EdgeInsets.only(top: 4.0, bottom: 4),
                             child: Text(
-                              _formItemList[index].bodyPartName ?? "",
+                              _formItemList![index].bodyPartName ?? "",
                               maxLines: 1,
                               style: TextStyle(
                                   fontSize: 16, color: PlunesColors.BLACKCOLOR),
@@ -2281,8 +2320,8 @@ class _EnterAdditionalUserDetailScrState
                           ),
                         ),
                         index == 0 &&
-                                _formItemList.isNotEmpty &&
-                                _formItemList.length > 1
+                                _formItemList!.isNotEmpty &&
+                                _formItemList!.length > 1
                             ? Padding(
                                 padding: EdgeInsets.symmetric(
                                     horizontal: 4, vertical: 1),
@@ -2293,7 +2332,7 @@ class _EnterAdditionalUserDetailScrState
                   );
                 },
                 shrinkWrap: true,
-                itemCount: _formItemList.length,
+                itemCount: _formItemList!.length,
               )),
         ));
   }
@@ -2315,23 +2354,23 @@ class _EnterAdditionalUserDetailScrState
                     Color(CommonMethods.getColorHexFromStr("#F6F6F6"))
                   ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
               child: ListView.builder(
-                padding: EdgeInsets.symmetric(horizontal: 5),
+                padding: const EdgeInsets.symmetric(horizontal: 5),
                 itemBuilder: (context, index) {
-                  if (!_formItemList.first.isSessionListOpened && index != 0) {
+                  if (!_formItemList!.first.isSessionListOpened! && index != 0) {
                     return Container();
                   }
                   return InkWell(
                     onTap: () {
-                      _formItemList.first.isSessionListOpened =
-                          !_formItemList.first.isSessionListOpened;
+                      _formItemList!.first.isSessionListOpened =
+                          !_formItemList!.first.isSessionListOpened!;
                       _setState();
-                      if (_formItemList.first.sessionValues[index] ==
+                      if (_formItemList!.first.sessionValues![index] ==
                           _enterManually) {
-                        _openTextEditingPopup(_formItemList.first);
+                        _openTextEditingPopup(_formItemList!.first);
                         return;
                       }
-                      _formItemList.first.sessionValue =
-                          _formItemList.first.sessionValues[index] ?? "";
+                      _formItemList!.first.sessionValue =
+                          _formItemList!.first.sessionValues![index] ?? "";
                       _setState();
                     },
                     onDoubleTap: () {},
@@ -2342,8 +2381,8 @@ class _EnterAdditionalUserDetailScrState
                         Expanded(
                           child: Container(
                             padding: const EdgeInsets.only(top: 4.0, bottom: 4),
-                            child: _formItemList.first.isSessionListOpened &&
-                                    _formItemList.first.sessionValues[index] ==
+                            child: _formItemList!.first.isSessionListOpened! &&
+                                    _formItemList!.first.sessionValues![index] ==
                                         _enterManually
                                 ? Row(
                                     children: [
@@ -2359,28 +2398,28 @@ class _EnterAdditionalUserDetailScrState
                                     ],
                                   )
                                 : Text(
-                                    _formItemList.first.isSessionListOpened
-                                        ? _formItemList
-                                                .first.sessionValues[index] ??
+                                    _formItemList!.first.isSessionListOpened!
+                                        ? _formItemList!
+                                                .first.sessionValues![index] ??
                                             ""
-                                        : _formItemList.first.sessionValue ??
-                                            _formItemList
-                                                .first.sessionValues.first ??
+                                        : _formItemList!.first.sessionValue ??
+                                            _formItemList!
+                                                .first.sessionValues!.first ??
                                             "",
                                     maxLines: 1,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontSize: 16,
                                         color: PlunesColors.BLACKCOLOR),
                                   ),
                           ),
                         ),
                         index == 0 &&
-                                _formItemList.first.sessionValues.isNotEmpty &&
-                                _formItemList.first.sessionValues.length > 1
+                                _formItemList!.first.sessionValues!.isNotEmpty &&
+                                _formItemList!.first.sessionValues!.length > 1
                             ? InkWell(
                                 onTap: () {
-                                  _formItemList.first.isSessionListOpened =
-                                      !_formItemList.first.isSessionListOpened;
+                                  _formItemList!.first.isSessionListOpened =
+                                      !_formItemList!.first.isSessionListOpened!;
                                   _setState();
                                 },
                                 onDoubleTap: () {},
@@ -2396,7 +2435,7 @@ class _EnterAdditionalUserDetailScrState
                   );
                 },
                 shrinkWrap: true,
-                itemCount: _formItemList.first.sessionValues.length,
+                itemCount: _formItemList!.first.sessionValues!.length,
               )),
         ));
   }
@@ -2413,31 +2452,31 @@ class _EnterAdditionalUserDetailScrState
 
   void _initFormData() {
     if (_formDataModel != null &&
-        _formDataModel.data != null &&
-        _formDataModel.data.children != null &&
-        _formDataModel.data.children.isNotEmpty) {
-      if (_formItemList == null || _formItemList.isEmpty) {
+        _formDataModel!.data != null &&
+        _formDataModel!.data!.children != null &&
+        _formDataModel!.data!.children!.isNotEmpty) {
+      if (_formItemList == null || _formItemList!.isEmpty) {
         _formItemList = [];
       }
-      _formItemList.add(_medicalFormDataSelectionObj);
-      _formDataModel.data.children.forEach((element) {
+      _formItemList!.add(_medicalFormDataSelectionObj);
+      _formDataModel!.data!.children!.forEach((element) {
         List<String> _possibleValues = [];
         if (element.possibleValues != null &&
-            element.possibleValues.isNotEmpty) {
-          _possibleValues.addAll(element.possibleValues);
+            element.possibleValues!.isNotEmpty) {
+          _possibleValues.addAll(element.possibleValues!);
           _possibleValues.add(_enterManually);
         }
         String firstKey = "";
         String secondKey = '';
-        if (_formDataModel.data != null &&
-            _formDataModel.data.childrenKeys != null &&
-            _formDataModel.data.childrenKeys.isNotEmpty) {
-          firstKey = _formDataModel.data.childrenKeys.first;
-          if (_formDataModel.data.childrenKeys.length > 1) {
-            secondKey = _formDataModel.data.childrenKeys[1];
+        if (_formDataModel!.data != null &&
+            _formDataModel!.data!.childrenKeys != null &&
+            _formDataModel!.data!.childrenKeys!.isNotEmpty) {
+          firstKey = _formDataModel!.data!.childrenKeys!.first;
+          if (_formDataModel!.data!.childrenKeys!.length > 1) {
+            secondKey = _formDataModel!.data!.childrenKeys![1];
           }
         }
-        _formItemList.add(MedicalFormData(
+        _formItemList!.add(MedicalFormData(
             bodyPartName: element.bodyPart ?? "",
             sessionValues: _possibleValues,
             valueController: TextEditingController(),
@@ -2447,18 +2486,18 @@ class _EnterAdditionalUserDetailScrState
             isSessionListOpened: false));
       });
     } else if (_formDataModel != null &&
-        _formDataModel.data != null &&
-        _formDataModel.data.sessions != null &&
-        _formDataModel.data.sessions.isNotEmpty) {
+        _formDataModel!.data != null &&
+        _formDataModel!.data!.sessions != null &&
+        _formDataModel!.data!.sessions!.isNotEmpty) {
       _medicalSessionModel = MedicalSession(
-          key: _formDataModel.data.sessionKey,
+          key: _formDataModel!.data!.sessionKey,
           isListOpened: false,
           sessions: _formDataModel?.data?.sessions ?? []);
     }
   }
 
   Widget _getAddButton() {
-    if (_formItemList.length == 1) {
+    if (_formItemList!.length == 1) {
       return Container(
         margin:
             EdgeInsets.only(left: 10, top: AppConfig.verticalBlockSize * 4.85),
@@ -2466,8 +2505,8 @@ class _EnterAdditionalUserDetailScrState
           child: Icon(Icons.close),
           onDoubleTap: () {},
           onTap: () {
-            _formItemList.first.isItemSeparated = false;
-            _formItemList.insert(0, _medicalFormDataSelectionObj);
+            _formItemList!.first.isItemSeparated = false;
+            _formItemList!.insert(0, _medicalFormDataSelectionObj);
             _isBodyPartListOpened = false;
             _setState();
           },
@@ -2477,8 +2516,8 @@ class _EnterAdditionalUserDetailScrState
     bool shouldShowButton = false;
     // _formItemList.forEach((element) {
     if (_formItemList != null &&
-        _formItemList.isNotEmpty &&
-        !(_formItemList.first == _medicalFormDataSelectionObj)) {
+        _formItemList!.isNotEmpty &&
+        !(_formItemList!.first == _medicalFormDataSelectionObj)) {
       shouldShowButton = true;
     }
     // });
@@ -2491,8 +2530,8 @@ class _EnterAdditionalUserDetailScrState
           if (!shouldShowButton) {
             return;
           }
-          _formItemList.first.isItemSeparated = true;
-          _formItemList.insert(0, _medicalFormDataSelectionObj);
+          _formItemList!.first.isItemSeparated = true;
+          _formItemList!.insert(0, _medicalFormDataSelectionObj);
           _setState();
         },
         child: CustomWidgets().getRoundedButton(
@@ -2509,13 +2548,13 @@ class _EnterAdditionalUserDetailScrState
   }
 
   Widget _getSeparatorLine() {
-    if (_formItemList.length == 1) {
+    if (_formItemList!.length == 1) {
       return Container(
           margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1));
     }
     bool shouldShowButton = false;
-    _formItemList.forEach((element) {
-      if (element.isItemSeparated && element != _formItemList.first) {
+    _formItemList!.forEach((element) {
+      if (element.isItemSeparated! && element != _formItemList!.first) {
         shouldShowButton = true;
       }
     });
@@ -2534,7 +2573,7 @@ class _EnterAdditionalUserDetailScrState
 
   _getFormData() {
     _failedMessage = null;
-    _submitUserMedicalDetailBloc.fetchUserMedicalDetail(widget.catalogueData);
+    _submitUserMedicalDetailBloc!.fetchUserMedicalDetail(widget.catalogueData);
   }
 
   _openTextEditingPopup(MedicalFormData medicalFormData) {
@@ -2555,7 +2594,7 @@ class _EnterAdditionalUserDetailScrState
                       Container(
                         alignment: Alignment.center,
                         child: Text(
-                          "Enter number of ${medicalFormData?.secondKey ?? "session"}",
+                          "Enter number of ${medicalFormData.secondKey ?? "session"}",
                           style: TextStyle(
                               fontSize: 18, color: PlunesColors.BLACKCOLOR),
                         ),
@@ -2579,7 +2618,7 @@ class _EnterAdditionalUserDetailScrState
                                     color: PlunesColors.BLACKCOLOR,
                                     fontSize: 15),
                                 inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly
+                                  // FilteringTextInputFormatter.digitsOnly
                                 ],
                                 decoration: InputDecoration.collapsed(
                                     hintText: "Enter Number"),
@@ -2588,14 +2627,14 @@ class _EnterAdditionalUserDetailScrState
                             InkWell(
                               onTap: () {
                                 if (medicalFormData.valueController != null &&
-                                    medicalFormData.valueController.text
+                                    medicalFormData.valueController!.text
                                             .trim() !=
                                         null &&
-                                    medicalFormData.valueController.text
+                                    medicalFormData.valueController!.text
                                         .trim()
                                         .isNotEmpty) {
                                   medicalFormData.sessionValue = medicalFormData
-                                      .valueController.text
+                                      .valueController!.text
                                       .trim();
                                   Navigator.maybePop(context).then((value) {
                                     _setState();
@@ -2625,7 +2664,7 @@ class _EnterAdditionalUserDetailScrState
             ),
           );
         }).then((value) {
-      medicalFormData.valueController.clear();
+      medicalFormData.valueController!.clear();
     });
   }
 
@@ -2685,16 +2724,16 @@ class _EnterAdditionalUserDetailScrState
                                       begin: Alignment.topCenter,
                                       end: Alignment.bottomCenter)),
                               child: ListView.builder(
-                                padding: EdgeInsets.symmetric(horizontal: 5),
+                                padding: const EdgeInsets.symmetric(horizontal: 5),
                                 itemBuilder: (context, index) {
                                   if (index != 0 &&
-                                      !_medicalSessionModel.isListOpened) {
+                                      !_medicalSessionModel!.isListOpened!) {
                                     return Container();
                                   }
                                   return InkWell(
                                     onTap: () {
-                                      _medicalSessionModel.isListOpened =
-                                          !_medicalSessionModel.isListOpened;
+                                      _medicalSessionModel!.isListOpened =
+                                          !_medicalSessionModel!.isListOpened!;
                                       _setState();
                                       // if (_formItemList[index]
                                       //         .sessionValues[innerIndex] ==
@@ -2702,9 +2741,9 @@ class _EnterAdditionalUserDetailScrState
                                       //   _openTextEditingPopup(_formItemList[index]);
                                       //   return;
                                       // }
-                                      _medicalSessionModel.selectedSession =
-                                          _medicalSessionModel
-                                                  .sessions[index] ??
+                                      _medicalSessionModel!.selectedSession =
+                                          _medicalSessionModel!
+                                                  .sessions![index] ??
                                               "";
                                       _setState();
                                     },
@@ -2718,10 +2757,10 @@ class _EnterAdditionalUserDetailScrState
                                           child: Container(
                                             padding:
                                                 const EdgeInsets.only(top: 4.0),
-                                            child: _medicalSessionModel
-                                                        .isListOpened &&
-                                                    _medicalSessionModel
-                                                            .sessions[index] ==
+                                            child: _medicalSessionModel!
+                                                        .isListOpened! &&
+                                                    _medicalSessionModel!
+                                                            .sessions![index] ==
                                                         _enterManually
                                                 ? Row(
                                                     children: [
@@ -2739,20 +2778,20 @@ class _EnterAdditionalUserDetailScrState
                                                     ],
                                                   )
                                                 : Text(
-                                                    _medicalSessionModel
-                                                            .isListOpened
-                                                        ? _medicalSessionModel
-                                                                    .sessions[
+                                                    _medicalSessionModel!
+                                                            .isListOpened!
+                                                        ? _medicalSessionModel!
+                                                                    .sessions![
                                                                 index] ??
                                                             ""
-                                                        : _medicalSessionModel
+                                                        : _medicalSessionModel!
                                                                 .selectedSession ??
-                                                            _medicalSessionModel
-                                                                .sessions
+                                                            _medicalSessionModel!
+                                                                .sessions!
                                                                 .first ??
                                                             "",
                                                     maxLines: 1,
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                         fontSize: 16,
                                                         color: PlunesColors
                                                             .BLACKCOLOR),
@@ -2760,15 +2799,15 @@ class _EnterAdditionalUserDetailScrState
                                           ),
                                         ),
                                         index == 0 &&
-                                                _medicalSessionModel
-                                                        .sessions.length >
+                                                _medicalSessionModel!
+                                                        .sessions!.length >
                                                     1
                                             ? InkWell(
                                                 onTap: () {
-                                                  _medicalSessionModel
+                                                  _medicalSessionModel!
                                                           .isListOpened =
-                                                      !_medicalSessionModel
-                                                          .isListOpened;
+                                                      !_medicalSessionModel!
+                                                          .isListOpened!;
                                                   _setState();
                                                 },
                                                 onDoubleTap: () {},
@@ -2786,7 +2825,7 @@ class _EnterAdditionalUserDetailScrState
                                   );
                                 },
                                 shrinkWrap: true,
-                                itemCount: _medicalSessionModel.sessions.length,
+                                itemCount: _medicalSessionModel!.sessions!.length,
                               )),
                         ),
                       ),
@@ -2808,7 +2847,7 @@ class _EnterAdditionalUserDetailScrState
 }
 
 class MedicalFormData {
-  String bodyPartName, sessionValue, firstKey, secondKey;
+  String? bodyPartName, sessionValue, firstKey, secondKey;
 
   @override
   bool operator ==(Object other) =>
@@ -2819,9 +2858,9 @@ class MedicalFormData {
 
   @override
   int get hashCode => bodyPartName.hashCode;
-  TextEditingController valueController;
-  List<String> sessionValues;
-  bool isItemSeparated, isSessionListOpened;
+  TextEditingController? valueController;
+  List<String>? sessionValues;
+  bool? isItemSeparated, isSessionListOpened;
 
   MedicalFormData(
       {this.bodyPartName,
@@ -2835,9 +2874,9 @@ class MedicalFormData {
 }
 
 class MedicalSession {
-  String key, selectedSession;
-  List<String> sessions;
-  bool isListOpened;
+  String? key, selectedSession;
+  List<String>? sessions;
+  bool? isListOpened;
 
   MedicalSession(
       {this.sessions, this.key, this.selectedSession, this.isListOpened});

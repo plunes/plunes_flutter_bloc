@@ -1,7 +1,6 @@
 /// Example of a stacked area chart.
-import 'package:charts_flutter/flutter.dart' as charts;
+// import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
-
 // import 'package:intl/intl.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/models/doc_hos_models/common_models/realtime_insights_response_model.dart';
@@ -153,119 +152,126 @@ class LinearSales {
 /// For datetime axis, the [StaticDateTimeTickProviderSpec] can be used by
 /// passing in a list of ticks defined with [TickSpec] of datetime.
 class StaticallyProvidedTicks extends StatelessWidget {
-  final List<charts.Series> seriesList;
-  final bool animate;
-  static num _userPrice;
-  static List<DataPoint> _dataPoints;
+  // final List<charts.Series> seriesList;
+  final bool? animate;
+  static num? _userPrice;
+  static List<DataPoint>? _dataPoints;
 
-  StaticallyProvidedTicks(this.seriesList, {this.animate});
+  StaticallyProvidedTicks(
+      // this.seriesList,
+      {this.animate});
 
   factory StaticallyProvidedTicks.withSampleData(
-      List<DataPoint> points, num userPrice) {
+      List<DataPoint>? points, num? userPrice) {
     _userPrice = userPrice;
     _dataPoints = points;
     return new StaticallyProvidedTicks(
-      _createSampleData(points),
+      // _createSampleData(points),
       animate: false,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    var _ticksOnxAxis = <charts.TickSpec<String>>[];
-    if (_dataPoints != null && _dataPoints.isNotEmpty) {
-      _dataPoints.forEach((element) {
-        if (element != null && element.x != null && element.x == _userPrice) {
-          _ticksOnxAxis.add(charts.TickSpec('$_userPrice',
-              label: '$_userPrice',
-              style: charts.TextStyleSpec(
-                  color: charts.Color.fromHex(code: "#25B281"))));
-        } else if (element != null && element.x != null) {
-          _ticksOnxAxis.add(charts.TickSpec('${element.x}',
-              style: charts.TextStyleSpec(color: charts.Color.white)));
-        }
-      });
-    }
-    return IgnorePointer(
-      ignoring: true,
-      child: charts.BarChart(
-        seriesList,
-        animate: animate,
-        primaryMeasureAxis: new charts.NumericAxisSpec(
-          tickProviderSpec: new charts.BasicNumericTickProviderSpec(
-            desiredTickCount: 4,
-            zeroBound: true,
-          ),
-          showAxisLine: true,
-          renderSpec: charts.GridlineRendererSpec(
-              labelRotation: 0,
-              labelAnchor: charts.TickLabelAnchor.after,
-              labelStyle: charts.TextStyleSpec(
-                color: charts.Color.fromHex(code: "#9AA1A9"),
-              ),
-              axisLineStyle: charts.LineStyleSpec(
-                color: charts.Color.white,
-                thickness: 1,
-              )),
-        ),
-        domainAxis: new charts.OrdinalAxisSpec(
-            renderSpec: charts.SmallTickRendererSpec(
-                labelRotation: 0,
-                labelStyle: charts.TextStyleSpec(
-                  color: charts.Color.fromHex(code: "#9AA1A9"),
-                ),
-                axisLineStyle: charts.LineStyleSpec(
-                  color: charts.Color.white,
-                  thickness: 1,
-                )),
-            tickProviderSpec:
-                new charts.StaticOrdinalTickProviderSpec(_ticksOnxAxis)),
-        behaviors: [
-          new charts.InitialSelection(selectedDataConfig: [
-            new charts.SeriesDatumConfig<String>('Graph', '$_userPrice')
-          ]),
-          charts.ChartTitle('Facility',
-              behaviorPosition: charts.BehaviorPosition.start,
-              innerPadding: 5,
-              titleOutsideJustification:
-                  charts.OutsideJustification.middleDrawArea,
-              titleStyleSpec: charts.TextStyleSpec(
-                  color: charts.Color.white, fontSize: 16)),
-          new charts.ChartTitle('Price',
-              behaviorPosition: charts.BehaviorPosition.bottom,
-              innerPadding: 5,
-              titleOutsideJustification:
-                  charts.OutsideJustification.middleDrawArea,
-              titleStyleSpec: charts.TextStyleSpec(
-                  color: charts.Color.white, fontSize: 16)),
-        ],
-      ),
-    );
+    return Text("\n\n\n\n\ code commented");
   }
 
-  static List<charts.Series<LinearSales, String>> _createSampleData(
-      List<DataPoint> points) {
-    points.sort((a, b) => a.x.compareTo(b.x));
-    List<LinearSales> _dataSeries = [];
-    points.forEach((element) {
-      _dataSeries
-          .add(LinearSales(element.x?.toInt() ?? 0, element.y?.toInt() ?? 0));
-    });
-    return [
-      new charts.Series<LinearSales, String>(
-        id: 'Graph',
-        colorFn: (_, __) => charts.ColorUtil.fromDartColor(
-            Color(CommonMethods.getColorHexFromStr("#FF6C40")).withOpacity(1)),
-        domainFn: (LinearSales sales, _) => sales.user?.toString() ?? "0",
-        measureFn: (LinearSales sales, _) => sales.price?.toInt() ?? 0,
-        data: _dataSeries,
-        displayName: "Display name",
-        areaColorFn: (_, s) => charts.ColorUtil.fromDartColor(
-            Color(CommonMethods.getColorHexFromStr("#FF6C40"))
-                .withOpacity(0.25)),
-      ),
-    ];
-  }
+  // @override
+  // Widget build(BuildContext context) {
+  //   var _ticksOnxAxis = <charts.TickSpec<String>>[];
+  //   if (_dataPoints != null && _dataPoints.isNotEmpty) {
+  //     _dataPoints.forEach((element) {
+  //       if (element != null && element.x != null && element.x == _userPrice) {
+  //         _ticksOnxAxis.add(charts.TickSpec('$_userPrice',
+  //             label: '$_userPrice',
+  //             style: charts.TextStyleSpec(
+  //                 color: charts.Color.fromHex(code: "#25B281"))));
+  //       } else if (element != null && element.x != null) {
+  //         _ticksOnxAxis.add(charts.TickSpec('${element.x}',
+  //             style: charts.TextStyleSpec(color: charts.Color.white)));
+  //       }
+  //     });
+  //   }
+  //   return IgnorePointer(
+  //     ignoring: true,
+  //     child: charts.BarChart(
+  //       seriesList,
+  //       animate: animate,
+  //       primaryMeasureAxis: new charts.NumericAxisSpec(
+  //         tickProviderSpec: new charts.BasicNumericTickProviderSpec(
+  //           desiredTickCount: 4,
+  //           zeroBound: true,
+  //         ),
+  //         showAxisLine: true,
+  //         renderSpec: charts.GridlineRendererSpec(
+  //             labelRotation: 0,
+  //             labelAnchor: charts.TickLabelAnchor.after,
+  //             labelStyle: charts.TextStyleSpec(
+  //               color: charts.Color.fromHex(code: "#9AA1A9"),
+  //             ),
+  //             axisLineStyle: charts.LineStyleSpec(
+  //               color: charts.Color.white,
+  //               thickness: 1,
+  //             )),
+  //       ),
+  //       domainAxis: new charts.OrdinalAxisSpec(
+  //           renderSpec: charts.SmallTickRendererSpec(
+  //               labelRotation: 0,
+  //               labelStyle: charts.TextStyleSpec(
+  //                 color: charts.Color.fromHex(code: "#9AA1A9"),
+  //               ),
+  //               axisLineStyle: charts.LineStyleSpec(
+  //                 color: charts.Color.white,
+  //                 thickness: 1,
+  //               )),
+  //           tickProviderSpec:
+  //               new charts.StaticOrdinalTickProviderSpec(_ticksOnxAxis)),
+  //       behaviors: [
+  //         new charts.InitialSelection(selectedDataConfig: [
+  //           new charts.SeriesDatumConfig<String>('Graph', '$_userPrice')
+  //         ]),
+  //         charts.ChartTitle('Facility',
+  //             behaviorPosition: charts.BehaviorPosition.start,
+  //             innerPadding: 5,
+  //             titleOutsideJustification:
+  //                 charts.OutsideJustification.middleDrawArea,
+  //             titleStyleSpec: charts.TextStyleSpec(
+  //                 color: charts.Color.white, fontSize: 16)),
+  //         new charts.ChartTitle('Price',
+  //             behaviorPosition: charts.BehaviorPosition.bottom,
+  //             innerPadding: 5,
+  //             titleOutsideJustification:
+  //                 charts.OutsideJustification.middleDrawArea,
+  //             titleStyleSpec: charts.TextStyleSpec(
+  //                 color: charts.Color.white, fontSize: 16)),
+  //       ],
+  //     ),
+  //   );
+  // }
+  //
+  // static List<charts.Series<LinearSales, String>> _createSampleData(
+  //     List<DataPoint> points) {
+  //   points.sort((a, b) => a.x.compareTo(b.x));
+  //   List<LinearSales> _dataSeries = [];
+  //   points.forEach((element) {
+  //     _dataSeries
+  //         .add(LinearSales(element.x?.toInt() ?? 0, element.y?.toInt() ?? 0));
+  //   });
+  //   return [
+  //     new charts.Series<LinearSales, String>(
+  //       id: 'Graph',
+  //       colorFn: (_, __) => charts.ColorUtil.fromDartColor(
+  //           Color(CommonMethods.getColorHexFromStr("#FF6C40")).withOpacity(1)),
+  //       domainFn: (LinearSales sales, _) => sales.user?.toString() ?? "0",
+  //       measureFn: (LinearSales sales, _) => sales.price?.toInt() ?? 0,
+  //       data: _dataSeries,
+  //       displayName: "Display name",
+  //       areaColorFn: (_, s) => charts.ColorUtil.fromDartColor(
+  //           Color(CommonMethods.getColorHexFromStr("#FF6C40"))
+  //               .withOpacity(0.25)),
+  //     ),
+  //   ];
+  // }
 
 // /// Create series list with single series
 // static List<charts.Series<OrdinalSales, String>> _createSampleData() {

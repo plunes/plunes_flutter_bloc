@@ -5,46 +5,46 @@ import 'package:sms_otp_auto_verify/sms_otp_auto_verify.dart';
 
 /// This class is for app configurations (i.e Media query,App textSize )
 class AppConfig {
-  static MediaQueryData _mediaQueryData;
-  static double screenFullHeight;
-  static double screenFullWidth;
-  static double screenHeightWihPaddingExclude;
-  static double screenWidthWihPaddingExclude;
-  static double smallFont;
-  static double verySmallFont;
-  static double mediumFont;
-  static double largeFont;
-  static double extraLargeFont;
-  static double veryExtraLargeFont;
-  static double horizontalBlockSize;
-  static double verticalBlockSize;
-  static GlobalKey<NavigatorState> _navKey;
+  static MediaQueryData? _mediaQueryData;
+  static late double screenFullHeight;
+  static late double screenFullWidth;
+  static double? screenHeightWihPaddingExclude;
+  static double? screenWidthWihPaddingExclude;
+  static double? smallFont;
+  static double? verySmallFont;
+  static double? mediumFont;
+  static double? largeFont;
+  static double? extraLargeFont;
+  static double? veryExtraLargeFont;
+  static late double horizontalBlockSize;
+  static late double verticalBlockSize;
+  static GlobalKey<NavigatorState>? _navKey;
 
   static void setNavKey(GlobalKey<NavigatorState> navKey) {
     _navKey = navKey;
   }
 
-  static GlobalKey<NavigatorState> getNavKey() {
+  static GlobalKey<NavigatorState>? getNavKey() {
     return _navKey;
   }
 
   static init(BuildContext context) {
     _mediaQueryData = MediaQuery.of(context);
-    screenFullHeight = _mediaQueryData.size.height;
-    screenFullWidth = _mediaQueryData.size.width;
+    screenFullHeight = _mediaQueryData!.size.height;
+    screenFullWidth = _mediaQueryData!.size.width;
     horizontalBlockSize = screenFullWidth / 100;
     verticalBlockSize = screenFullHeight / 100;
-    screenHeightWihPaddingExclude = (_mediaQueryData.size.height -
-            (_mediaQueryData.padding.top + _mediaQueryData.padding.bottom)) /
+    screenHeightWihPaddingExclude = (_mediaQueryData!.size.height -
+            (_mediaQueryData!.padding.top + _mediaQueryData!.padding.bottom)) /
         100;
 
-    screenWidthWihPaddingExclude = (_mediaQueryData.size.width -
-            (_mediaQueryData.padding.left + _mediaQueryData.padding.right)) /
+    screenWidthWihPaddingExclude = (_mediaQueryData!.size.width -
+            (_mediaQueryData!.padding.left + _mediaQueryData!.padding.right)) /
         100;
     _setTextSizes();
   }
 
-  static MediaQueryData getMediaQuery() {
+  static MediaQueryData? getMediaQuery() {
     return _mediaQueryData;
   }
 
@@ -68,8 +68,8 @@ class AppConfig {
     return Platform.isAndroid;
   }
 
-  static Future<String> getAppSignature() async {
-    String signature = await SmsRetrieved.getAppSignature();
+  static Future<String?> getAppSignature() async {
+    String? signature = await SmsVerification.getAppSignature();
 //    print("signature $signature");
     return signature;
   }

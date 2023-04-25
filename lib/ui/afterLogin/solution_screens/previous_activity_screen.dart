@@ -1,28 +1,29 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
+import 'package:plunes/Utils/app_config.dart';
+import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/Utils/event_bus.dart';
 import 'package:plunes/Utils/video_util.dart';
+import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/cart_bloc/cart_main_bloc.dart';
+import 'package:plunes/blocs/solution_blocs/prev_missed_solution_bloc.dart';
 import 'package:plunes/firebase/FirebaseNotification.dart';
 import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/doc_hos_models/common_models/realtime_insights_response_model.dart';
+import 'package:plunes/models/solution_models/previous_searched_model.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/repositories/user_repo.dart';
+import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/GalleryScreen.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/solution_show_price_screen.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/view_solutions_screen.dart';
-import 'package:plunes/Utils/custom_widgets.dart';
-import 'package:plunes/base/BaseActivity.dart';
-import 'package:plunes/blocs/solution_blocs/prev_missed_solution_bloc.dart';
-import 'package:plunes/models/solution_models/previous_searched_model.dart';
-import 'package:plunes/requester/request_states.dart';
-import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_main_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
 
@@ -36,16 +37,18 @@ class PreviousActivity extends BaseActivity {
   _PreviousActivityState createState() => _PreviousActivityState();
 }
 
-class _PreviousActivityState extends BaseState<PreviousActivity> {
-  PrevMissSolutionBloc _prevMissSolutionBloc;
-  PrevSearchedSolution _prevSearchedSolution;
+// class _PreviousActivityState extends BaseState<PreviousActivity> {
+class _PreviousActivityState extends State<PreviousActivity> {
+final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  PrevMissSolutionBloc? _prevMissSolutionBloc;
+  PrevSearchedSolution? _prevSearchedSolution;
   List<CatalogueData> _prevSolutions = [], _missedSolutions = [];
-  String _failureCause;
-  bool _isProcessing;
-  StreamController _streamController;
-  Timer _timerForTimeUpdation;
-  CartMainBloc _cartBloc;
-  User _user;
+  String? _failureCause;
+  late bool _isProcessing;
+  StreamController? _streamController;
+  Timer? _timerForTimeUpdation;
+  CartMainBloc? _cartBloc;
+  User? _user;
 
   @override
   void initState() {
@@ -62,7 +65,7 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
     _missedSolutions = [];
     _prevMissSolutionBloc = PrevMissSolutionBloc();
     _getPreviousSolutions();
-    EventProvider().getSessionEventBus().on<ScreenRefresher>().listen((event) {
+    EventProvider().getSessionEventBus()!.on<ScreenRefresher>().listen((event) {
       if (event != null &&
           event.screenName == FirebaseNotification.activityScreen &&
           mounted) {
@@ -73,7 +76,7 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
   }
 
   void _getCartCount() {
-    _cartBloc.getCartCount();
+    _cartBloc!.getCartCount();
   }
 
   @override
@@ -92,10 +95,8 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
     return Scaffold(
       body: Column(
         children: [
-          (_user != null &&
-                  _user.userType != null &&
-                  _user.userType.toLowerCase() ==
-                      Constants.user.toString().toLowerCase())
+          (_user != null && _user!.userType != null &&
+                  _user!.userType!.toLowerCase() == Constants.user.toString().toLowerCase())
               ? Container(
                   child: HomePageAppBar(
                     widget.func,
@@ -107,14 +108,13 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                     searchBarText: "Your Activity",
                   ),
                   margin: EdgeInsets.only(
-                      top: AppConfig.getMediaQuery().padding.top),
+                      top: AppConfig.getMediaQuery()!.padding.top),
                 )
               : Container(),
           Expanded(
             child: _isProcessing
                 ? CustomWidgets().getProgressIndicator()
-                : (_failureCause != null &&
-                        _failureCause == PlunesStrings.noInternet)
+                : (_failureCause != null && _failureCause == PlunesStrings.noInternet)
                     ? CustomWidgets().errorWidget(_failureCause,
                         buttonText: PlunesStrings.refresh,
                         onTap: () => _getPreviousSolutions())
@@ -218,15 +218,15 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
   Widget _getPreviousView() {
     return Expanded(
         child: Card(
-            margin: EdgeInsets.all(0.0),
+            margin: const EdgeInsets.all(0.0),
             child: Container(
               width: double.infinity,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   (_prevSearchedSolution == null ||
-                          _prevSearchedSolution.data == null ||
-                          _prevSearchedSolution.data.isEmpty ||
+                          _prevSearchedSolution!.data == null ||
+                          _prevSearchedSolution!.data!.isEmpty ||
                           _prevSolutions == null ||
                           _prevSolutions.isEmpty)
                       ? Expanded(
@@ -260,17 +260,17 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                                   itemBuilder: (context, index) {
                                     if ((_prevSolutions[index].topSearch !=
                                                 null &&
-                                            _prevSolutions[index].topSearch) ||
+                                            _prevSolutions[index].topSearch!) ||
                                         (_prevSolutions[index].toShowSearched !=
                                                 null &&
                                             _prevSolutions[index]
-                                                .toShowSearched)) {
+                                                .toShowSearched!)) {
                                       return Container();
                                     }
                                     return _getPreviousActivityCard(
                                         _prevSolutions[index]);
                                   },
-                                  itemCount: _prevSolutions?.length ?? 0,
+                                  itemCount: _prevSolutions.length ?? 0,
                                 ),
                               ),
                             ],
@@ -287,25 +287,20 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
       _isProcessing = true;
       _setState();
     }
-    _prevMissSolutionBloc.getPreviousSolutions().then((requestState) {
+    _prevMissSolutionBloc!.getPreviousSolutions().then((requestState) {
       if (requestState is RequestSuccess) {
         _prevSearchedSolution = requestState.response;
         if (_prevSearchedSolution != null &&
-            _prevSearchedSolution.data != null &&
-            _prevSearchedSolution.data.isNotEmpty) {
+            _prevSearchedSolution!.data != null &&
+            _prevSearchedSolution!.data!.isNotEmpty) {
           _prevSolutions = [];
           _missedSolutions = [];
-          _prevSearchedSolution.data.forEach((solution) {
-            // if (solution.isActive == false) {
-            //   _missedSolutions.add(solution);
-            // } else {
+          _prevSearchedSolution!.data!.forEach((solution) {
             _prevSolutions.add(solution);
-            // }
           });
         }
       } else if (requestState is RequestFailed) {
-        _failureCause =
-            requestState.failureCause ?? plunesStrings.somethingWentWrong;
+        _failureCause = requestState.failureCause ?? plunesStrings.somethingWentWrong;
       }
       _isProcessing = false;
       _setState();
@@ -318,12 +313,12 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
     if (catalogueData.solutionExpiredAt != null &&
         catalogueData.solutionExpiredAt != 0) {
       var solExpireTime =
-          DateTime.fromMillisecondsSinceEpoch(catalogueData.solutionExpiredAt);
+          DateTime.fromMillisecondsSinceEpoch(catalogueData.solutionExpiredAt!);
       var diff = nowTime.difference(solExpireTime);
       if (diff.inSeconds < 5) {
         ///when price discovered and solution is active
         if (catalogueData.priceDiscovered != null &&
-            catalogueData.priceDiscovered) {
+            catalogueData.priceDiscovered!) {
           await Navigator.push(
               context,
               MaterialPageRoute(
@@ -402,7 +397,7 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                   width: AppConfig.horizontalBlockSize * 14,
                   child: (catalogueData == null ||
                           catalogueData.speciality == null ||
-                          catalogueData.speciality.isEmpty)
+                          catalogueData.speciality!.isEmpty)
                       ? Image.asset(PlunesImages.basicImage,
                           fit: BoxFit.contain)
                       : CustomWidgets().getImageFromUrl(
@@ -423,7 +418,7 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                             style: TextStyle(fontSize: 17),
                           ),
                         ),
-                        StreamBuilder<Object>(
+                        StreamBuilder<Object?>(
                             stream: _streamController?.stream,
                             builder: (context, snapshot) {
                               if (_getRemainingTimeOfSolutionExpiration(
@@ -437,7 +432,7 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                                     top: AppConfig.verticalBlockSize * 1),
                                 child: Text(
                                   _getRemainingTimeOfSolutionExpiration(
-                                      catalogueData),
+                                      catalogueData)!,
                                   maxLines: 2,
                                   style: TextStyle(
                                       fontSize: 14,
@@ -446,7 +441,7 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                                                           catalogueData) ==
                                                       catalogueData
                                                           ?.expirationMessage ??
-                                                  _expirationMessage)
+                                                  _expirationMessage as bool)
                                               ? Color(CommonMethods
                                                   .getColorHexFromStr(
                                                       "#CEDD00"))
@@ -460,20 +455,20 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                         _getDiscoverButton(catalogueData),
                         Container(
                           alignment: Alignment.topLeft,
-                          child: (!(catalogueData.isActive) &&
+                          child: (!catalogueData.isActive! &&
                                       catalogueData.maxDiscount != null &&
                                       catalogueData.maxDiscount != 0 &&
                                       (catalogueData.booked == null ||
-                                          !(catalogueData.booked))) &&
-                                  ((_getRemainingTimeOfSolutionExpiration(
+                                          !catalogueData.booked!)) &&
+                                  (_getRemainingTimeOfSolutionExpiration(
                                               catalogueData) ==
                                           catalogueData?.expirationMessage ??
-                                      _expirationMessage))
+                                      _expirationMessage as bool)
                               ? Container(
                                   padding: EdgeInsets.only(
                                       top: AppConfig.verticalBlockSize * 2),
                                   child: Text(
-                                    "You have missed ${catalogueData.maxDiscount.toStringAsFixed(0)}% on your ${catalogueData.service ?? PlunesStrings.NA} Previously",
+                                    "You have missed ${catalogueData.maxDiscount!.toStringAsFixed(0)}% on your ${catalogueData.service ?? PlunesStrings.NA} Previously",
                                     maxLines: 4,
                                     style: TextStyle(
                                         fontSize: 14, color: Colors.black),
@@ -482,15 +477,15 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                         ),
                         (catalogueData != null &&
                                 ((catalogueData.hasUserReport != null &&
-                                        catalogueData.hasUserReport &&
+                                        catalogueData.hasUserReport! &&
                                         catalogueData.userReportId != null &&
-                                        catalogueData.userReportId
+                                        catalogueData.userReportId!
                                             .trim()
                                             .isNotEmpty) ||
                                     (catalogueData.isServiceChildrenAvailable !=
                                             null &&
                                         catalogueData
-                                            .isServiceChildrenAvailable)) &&
+                                            .isServiceChildrenAvailable!)) &&
                                 (!_isCardExpired(catalogueData)))
                             ? Container(
                                 width: double.infinity,
@@ -506,7 +501,7 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                                           if (catalogueData != null &&
                                               catalogueData.userReportId !=
                                                   null &&
-                                              catalogueData.userReportId
+                                              catalogueData.userReportId!
                                                   .trim()
                                                   .isNotEmpty)
                                             Navigator.push(
@@ -558,14 +553,14 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
 
   final String _expirationMessage = "Prices are Expired now, Discover to Book";
 
-  String _getRemainingTimeOfSolutionExpiration(CatalogueData solution) {
+  String? _getRemainingTimeOfSolutionExpiration(CatalogueData solution) {
     String timeRemaining = "";
     if (solution.solutionExpiredAt == null) {
       return solution.expirationMessage ?? _expirationMessage;
     } else if (solution.priceDiscovered != null &&
-        !solution.priceDiscovered &&
+        !solution.priceDiscovered! &&
         solution.isActive != null &&
-        solution.isActive) {
+        solution.isActive!) {
       return null;
     }
     var now = DateTime.now();
@@ -609,7 +604,7 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
   }
 
   Widget _getDiscoverButton(CatalogueData catalogueData) {
-    String buttonName = _getDiscoverButtonText(catalogueData);
+    String? buttonName = _getDiscoverButtonText(catalogueData);
     return buttonName == null
         ? Container()
         : Container(
@@ -668,17 +663,17 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
     //       );
   }
 
-  String _getDiscoverButtonText(CatalogueData catalogueData) {
-    String buttonName;
+  String? _getDiscoverButtonText(CatalogueData catalogueData) {
+    String? buttonName;
     var nowTime = DateTime.now();
     if (catalogueData.solutionExpiredAt != null &&
         catalogueData.solutionExpiredAt != 0) {
       var solExpireTime =
-          DateTime.fromMillisecondsSinceEpoch(catalogueData.solutionExpiredAt);
+          DateTime.fromMillisecondsSinceEpoch(catalogueData.solutionExpiredAt!);
       var diff = nowTime.difference(solExpireTime);
       if (diff.inSeconds < 5) {
         if (catalogueData.priceDiscovered != null &&
-            catalogueData.priceDiscovered) {
+            catalogueData.priceDiscovered!) {
         } else {
           // buttonName = "Discover Prices";
         }
@@ -707,7 +702,7 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
 
 // ignore: must_be_immutable
 class PreviousActivityReport extends BaseActivity {
-  String userReportId;
+  String? userReportId;
   CatalogueData catalogueData;
 
   PreviousActivityReport(this.userReportId, this.catalogueData);
@@ -716,17 +711,19 @@ class PreviousActivityReport extends BaseActivity {
   _PreviousActivityReportState createState() => _PreviousActivityReportState();
 }
 
-class _PreviousActivityReportState extends BaseState<PreviousActivityReport> {
-  PrevMissSolutionBloc _prevMissSolutionBloc;
-  bool _isProcessing;
-  UserReportOuterModel _userReport;
+// class _PreviousActivityReportState extends BaseState<PreviousActivityReport> {
+class _PreviousActivityReportState extends State<PreviousActivityReport> {
+final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  PrevMissSolutionBloc? _prevMissSolutionBloc;
+  late bool _isProcessing;
+  UserReportOuterModel? _userReport;
 
-  String _failureCause;
+  String? _failureCause;
 
   @override
   void initState() {
     if ((widget.catalogueData.hasUserReport == null ||
-        !widget.catalogueData.hasUserReport)) {
+        !widget.catalogueData.hasUserReport!)) {
       _isProcessing = false;
     } else {
       _isProcessing = true;
@@ -754,7 +751,7 @@ class _PreviousActivityReportState extends BaseState<PreviousActivityReport> {
       child: Scaffold(
         key: scaffoldKey,
         appBar:
-            widget.getAppBar(context, PlunesStrings.previousActivities, true),
+            widget.getAppBar(context, PlunesStrings.previousActivities, true) as PreferredSizeWidget?,
         body: _isProcessing
             ? CustomWidgets().getProgressIndicator()
             : _getWidgetBody(),
@@ -764,7 +761,7 @@ class _PreviousActivityReportState extends BaseState<PreviousActivityReport> {
 
   void _getReport() {
     if ((widget.catalogueData.hasUserReport == null ||
-        !widget.catalogueData.hasUserReport)) {
+        !widget.catalogueData.hasUserReport!)) {
       return;
     }
     _failureCause = null;
@@ -772,7 +769,7 @@ class _PreviousActivityReportState extends BaseState<PreviousActivityReport> {
       _isProcessing = true;
       _setState();
     }
-    _prevMissSolutionBloc
+    _prevMissSolutionBloc!
         .getUserReport(widget.userReportId)
         .then((requestState) {
       if (requestState is RequestSuccess) {
@@ -789,37 +786,37 @@ class _PreviousActivityReportState extends BaseState<PreviousActivityReport> {
   Widget _getWidgetBody() {
     return Container(
       color: Color(CommonMethods.getColorHexFromStr("#FAF9F9")),
-      margin: EdgeInsets.only(bottom: 10),
+      margin: const EdgeInsets.only(bottom: 10),
       child: SingleChildScrollView(
         child: Column(
           children: [
             Container(
-              padding: EdgeInsets.all(12),
-              decoration: BoxDecoration(
+              padding: const EdgeInsets.all(12),
+              decoration: const BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(12)),
                   color: PlunesColors.WHITECOLOR),
               child: Column(
                 children: [
                   Container(
-                      margin: EdgeInsets.only(top: 5),
+                      margin: const EdgeInsets.only(top: 5),
                       alignment: Alignment.topLeft,
-                      child: Text(widget.catalogueData?.service ?? "",
+                      child: Text(widget.catalogueData.service ?? "",
                           maxLines: 2,
-                          style: TextStyle(
+                          style: const TextStyle(
                               color: PlunesColors.BLACKCOLOR, fontSize: 20))),
                   _getBodyPartsSessionWidget(),
                 ],
               ),
             ),
-            ((widget.catalogueData.hasUserReport == null ||
-                    !widget.catalogueData.hasUserReport))
+            widget.catalogueData.hasUserReport == null ||
+                    !widget.catalogueData.hasUserReport!
                 ? Container()
                 : (_userReport == null ||
-                        _userReport.success == null ||
-                        !(_userReport.success) ||
-                        _userReport.data == null ||
-                        _userReport.data.additionalDetails == null ||
-                        _userReport.data.additionalDetails.isEmpty)
+                        _userReport!.success == null ||
+                        !_userReport!.success! ||
+                        _userReport!.data == null ||
+                        _userReport!.data!.additionalDetails == null ||
+                        _userReport!.data!.additionalDetails!.isEmpty)
                     ? CustomWidgets().errorWidget(
                         _userReport?.message ?? _failureCause,
                         buttonText: PlunesStrings.refresh,
@@ -841,7 +838,7 @@ class _PreviousActivityReportState extends BaseState<PreviousActivityReport> {
 
   Widget _getBodyPartsSessionWidget() {
     if (widget.catalogueData.serviceChildren == null ||
-        widget.catalogueData.serviceChildren.isEmpty) {
+        widget.catalogueData.serviceChildren!.isEmpty) {
       return Container();
     }
     return Container(
@@ -852,20 +849,20 @@ class _PreviousActivityReportState extends BaseState<PreviousActivityReport> {
           top: AppConfig.verticalBlockSize * 2),
       child: ListView.builder(
         itemBuilder: (context, index) {
-          var bodyObj = widget.catalogueData.serviceChildren[index];
+          var bodyObj = widget.catalogueData.serviceChildren![index];
           if ((bodyObj == null ||
                   bodyObj.bodyPart == null ||
-                  bodyObj.bodyPart.trim().isEmpty) &&
+                  bodyObj.bodyPart!.trim().isEmpty) &&
               (bodyObj == null ||
                   bodyObj.sessionGrafts == null ||
-                  bodyObj.sessionGrafts.trim().isEmpty)) {
+                  bodyObj.sessionGrafts!.trim().isEmpty)) {
             return Container();
           }
           return Container(
-            margin: EdgeInsets.only(right: 10),
-            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+            margin: const EdgeInsets.only(right: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(14)),
+              borderRadius: const BorderRadius.all(Radius.circular(14)),
               border: Border.all(
                   color: PlunesColors.GREYCOLOR.withOpacity(0.6), width: 0.8),
               color: PlunesColors.WHITECOLOR,
@@ -876,7 +873,7 @@ class _PreviousActivityReportState extends BaseState<PreviousActivityReport> {
               children: [
                 (bodyObj != null &&
                         bodyObj.bodyPart != null &&
-                        bodyObj.bodyPart.trim().isNotEmpty)
+                        bodyObj.bodyPart!.trim().isNotEmpty)
                     ? Container(
                         margin: EdgeInsets.only(right: 15),
                         child: Column(
@@ -884,15 +881,15 @@ class _PreviousActivityReportState extends BaseState<PreviousActivityReport> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text("Body Part",
+                            const Text("Body Part",
                                 style: TextStyle(
                                     fontSize: 15,
                                     color: PlunesColors.BLACKCOLOR)),
                             Container(
-                              margin: EdgeInsets.only(top: 4),
+                              margin: const EdgeInsets.only(top: 4),
                               child: Text(
-                                bodyObj?.bodyPart ?? "",
-                                style: TextStyle(
+                                bodyObj.bodyPart ?? "",
+                                style: const TextStyle(
                                     fontSize: 18,
                                     color: PlunesColors.BLACKCOLOR),
                               ),
@@ -903,21 +900,21 @@ class _PreviousActivityReportState extends BaseState<PreviousActivityReport> {
                     : Container(),
                 (bodyObj != null &&
                         bodyObj.sessionGrafts != null &&
-                        bodyObj.sessionGrafts.trim().isNotEmpty)
+                        bodyObj.sessionGrafts!.trim().isNotEmpty)
                     ? Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text("Session",
+                          const Text("Session",
                               style: TextStyle(
                                   fontSize: 15,
                                   color: PlunesColors.BLACKCOLOR)),
                           Container(
-                            margin: EdgeInsets.only(top: 4),
+                            margin: const EdgeInsets.only(top: 4),
                             child: Text(
-                              "* " + bodyObj?.sessionGrafts ?? "",
-                              style: TextStyle(
+                              "* ${bodyObj.sessionGrafts!}",
+                              style: const TextStyle(
                                   fontSize: 18, color: PlunesColors.BLACKCOLOR),
                             ),
                           )
@@ -930,26 +927,26 @@ class _PreviousActivityReportState extends BaseState<PreviousActivityReport> {
         },
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
-        itemCount: widget.catalogueData.serviceChildren.length,
+        itemCount: widget.catalogueData.serviceChildren!.length,
       ),
     );
   }
 
   Widget _getAdditionalDetailWidget() {
-    return (_userReport.data.additionalDetails == null ||
-            _userReport.data.additionalDetails.trim().isEmpty)
+    return (_userReport!.data!.additionalDetails == null ||
+            _userReport!.data!.additionalDetails!.trim().isEmpty)
         ? Container()
         : Container(
-            padding: EdgeInsets.all(12),
-            margin: EdgeInsets.only(top: 10),
-            decoration: BoxDecoration(
+            padding: const EdgeInsets.all(12),
+            margin: const EdgeInsets.only(top: 10),
+            decoration: const BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(12)),
                 color: PlunesColors.WHITECOLOR),
             child: Column(
               children: [
                 Container(
                   alignment: Alignment.centerLeft,
-                  child: Text("Additional Details for the required service",
+                  child: const Text("Additional Details for the required service",
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -957,9 +954,9 @@ class _PreviousActivityReportState extends BaseState<PreviousActivityReport> {
                 ),
                 Container(
                   alignment: Alignment.centerLeft,
-                  margin: EdgeInsets.only(top: 8),
-                  child: Text(_userReport.data.additionalDetails ?? "",
-                      style: TextStyle(
+                  margin: const EdgeInsets.only(top: 8),
+                  child: Text(_userReport!.data!.additionalDetails ?? "",
+                      style: const TextStyle(
                           fontSize: 16, color: PlunesColors.BLACKCOLOR)),
                 ),
               ],
@@ -968,20 +965,20 @@ class _PreviousActivityReportState extends BaseState<PreviousActivityReport> {
   }
 
   Widget _getPreviousDetailWidget() {
-    return (_userReport.data.description == null ||
-            _userReport.data.description.trim().isEmpty)
+    return (_userReport!.data!.description == null ||
+            _userReport!.data!.description!.trim().isEmpty)
         ? Container()
         : Container(
-            padding: EdgeInsets.all(12),
-            margin: EdgeInsets.only(top: 10),
-            decoration: BoxDecoration(
+            padding: const EdgeInsets.all(12),
+            margin: const EdgeInsets.only(top: 10),
+            decoration: const BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(12)),
                 color: PlunesColors.WHITECOLOR),
             child: Column(
               children: [
                 Container(
                   alignment: Alignment.centerLeft,
-                  child: Text("Condition of previous treatment",
+                  child: const Text("Condition of previous treatment",
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -989,9 +986,9 @@ class _PreviousActivityReportState extends BaseState<PreviousActivityReport> {
                 ),
                 Container(
                   alignment: Alignment.centerLeft,
-                  margin: EdgeInsets.only(top: 8),
-                  child: Text(_userReport.data.description ?? "",
-                      style: TextStyle(
+                  margin: const EdgeInsets.only(top: 8),
+                  child: Text(_userReport!.data!.description ?? "",
+                      style: const TextStyle(
                           fontSize: 16, color: PlunesColors.BLACKCOLOR)),
                 ),
               ],
@@ -1000,20 +997,20 @@ class _PreviousActivityReportState extends BaseState<PreviousActivityReport> {
   }
 
   Widget _getPhotosWidget() {
-    return (_userReport.data.imageUrl == null ||
-            _userReport.data.imageUrl.isEmpty)
+    return (_userReport!.data!.imageUrl == null ||
+            _userReport!.data!.imageUrl!.isEmpty)
         ? Container()
         : Container(
-            padding: EdgeInsets.all(12),
-            margin: EdgeInsets.only(top: 10),
-            decoration: BoxDecoration(
+            padding: const EdgeInsets.all(12),
+            margin: const EdgeInsets.only(top: 10),
+            decoration: const BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(12)),
                 color: PlunesColors.WHITECOLOR),
             child: Column(
               children: [
                 Container(
                   alignment: Alignment.centerLeft,
-                  child: Text("Photos",
+                  child: const Text("Photos",
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -1029,7 +1026,7 @@ class _PreviousActivityReportState extends BaseState<PreviousActivityReport> {
                       return InkWell(
                         onTap: () {
                           List<Photo> photos = [];
-                          _userReport.data.imageUrl.forEach((picData) {
+                          _userReport!.data!.imageUrl!.forEach((picData) {
                             var element = picData?.imageUrl;
                             if (element == null ||
                                 element.isEmpty ||
@@ -1052,17 +1049,16 @@ class _PreviousActivityReportState extends BaseState<PreviousActivityReport> {
                               right: AppConfig.horizontalBlockSize * 1.5),
                           child: ClipRRect(
                             child: CustomWidgets().getImageFromUrl(
-                                _userReport.data.imageUrl[index]?.imageUrl ??
-                                    '',
+                                _userReport!.data!.imageUrl![index].imageUrl,
                                 boxFit: BoxFit.fill),
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            borderRadius: const BorderRadius.all(Radius.circular(10)),
                           ),
                           height: AppConfig.verticalBlockSize * 26,
                           width: AppConfig.horizontalBlockSize * 88,
                         ),
                       );
                     },
-                    itemCount: _userReport.data.imageUrl?.length ?? 0,
+                    itemCount: _userReport!.data!.imageUrl?.length ?? 0,
                   ),
                 ),
               ],
@@ -1071,20 +1067,20 @@ class _PreviousActivityReportState extends BaseState<PreviousActivityReport> {
   }
 
   Widget _getVideoWidget() {
-    return (_userReport.data.videoUrl == null ||
-            _userReport.data.videoUrl.isEmpty)
+    return (_userReport!.data!.videoUrl == null ||
+            _userReport!.data!.videoUrl!.isEmpty)
         ? Container()
         : Container(
-            padding: EdgeInsets.all(12),
-            margin: EdgeInsets.only(top: 10),
-            decoration: BoxDecoration(
+            padding: const EdgeInsets.all(12),
+            margin: const EdgeInsets.only(top: 10),
+            decoration: const BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(12)),
                 color: PlunesColors.WHITECOLOR),
             child: Column(
               children: [
                 Container(
                   alignment: Alignment.centerLeft,
-                  child: Text("Video",
+                  child: const Text("Video",
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -1092,18 +1088,18 @@ class _PreviousActivityReportState extends BaseState<PreviousActivityReport> {
                 ),
                 Container(
                   height: AppConfig.verticalBlockSize * 27,
-                  margin: EdgeInsets.only(top: 10),
+                  margin: const EdgeInsets.only(top: 10),
                   child: InkWell(
                     onTap: () {
-                      if (_userReport.data.videoUrl.first.videoUrl != null &&
-                          _userReport.data.videoUrl.first.videoUrl
+                      if (_userReport!.data!.videoUrl!.first.videoUrl != null &&
+                          _userReport!.data!.videoUrl!.first.videoUrl!
                               .trim()
                               .isNotEmpty) {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => VideoUtil(
-                                    _userReport.data.videoUrl.first.videoUrl)));
+                                    _userReport!.data!.videoUrl!.first.videoUrl)));
                       } else {
                         _showSnackBar(PlunesStrings.unableToPlayVideo);
                       }
@@ -1114,7 +1110,7 @@ class _PreviousActivityReportState extends BaseState<PreviousActivityReport> {
                         Container(
                           child: ClipRRect(
                             child: CustomWidgets().getImageFromUrl(
-                                _userReport.data.videoUrl?.first?.thumbnail ??
+                                _userReport!.data!.videoUrl?.first?.thumbnail ??
                                     '',
                                 boxFit: BoxFit.fitWidth),
                             borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -1141,8 +1137,8 @@ class _PreviousActivityReportState extends BaseState<PreviousActivityReport> {
   }
 
   Widget _getDocWidget() {
-    return (_userReport.data.reportUrl == null ||
-            _userReport.data.reportUrl.isEmpty)
+    return (_userReport!.data!.reportUrl == null ||
+            _userReport!.data!.reportUrl!.isEmpty)
         ? Container()
         : Container(
             padding: EdgeInsets.all(12),
@@ -1162,18 +1158,18 @@ class _PreviousActivityReportState extends BaseState<PreviousActivityReport> {
                 ),
                 InkWell(
                   onTap: () {
-                    if (_userReport.data.reportUrl.first.reportUrl != null &&
-                        _userReport.data.reportUrl.first.reportUrl
+                    if (_userReport!.data!.reportUrl!.first.reportUrl != null &&
+                        _userReport!.data!.reportUrl!.first.reportUrl!
                             .trim()
                             .isNotEmpty) {
                       LauncherUtil.launchUrl(
-                          _userReport.data.reportUrl?.first?.reportUrl);
+                          _userReport!.data!.reportUrl!.first!.reportUrl!);
                     }
                     return;
                   },
                   onDoubleTap: () {},
                   child: Container(
-                    margin: EdgeInsets.only(top: 10),
+                    margin: const EdgeInsets.only(top: 10),
                     height: AppConfig.verticalBlockSize * 27,
                     child: Container(
                       child: ClipRRect(
@@ -1184,7 +1180,7 @@ class _PreviousActivityReportState extends BaseState<PreviousActivityReport> {
                             fit: BoxFit.contain,
                           ),
                         ),
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderRadius: const BorderRadius.all(Radius.circular(10)),
                       ),
                       height: AppConfig.verticalBlockSize * 26,
                       width: double.infinity,

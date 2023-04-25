@@ -25,20 +25,20 @@ class _AchievementsScreenState extends State<AchievementsScreen>
     implements DialogCallBack {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   var globalHeight, globalWidth, backAssetImage, counter = 0, selectedIndex;
-  List selectedImageList = new List();
+  List selectedImageList = [];
   final _textController = TextEditingController();
-  AnimationController _animationController;
-  ImagePickerHandler imagePicker;
-  ScrollController _controller;
+  AnimationController? _animationController;
+  late ImagePickerHandler imagePicker;
+  ScrollController? _controller;
   bool progress = false;
-  String user_token = "";
-  String user_id = "";
-  File _image;
+  String? user_token = "";
+  String? user_id = "";
+  File? _image;
 
   getSharedPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String token = prefs.getString("token");
-    String uid = prefs.getString("uid");
+    String? token = prefs.getString("token");
+    String? uid = prefs.getString("uid");
     user_token = token;
     user_id = uid;
     setState(() {});
@@ -52,8 +52,8 @@ class _AchievementsScreenState extends State<AchievementsScreen>
 
   @override
   void dispose() {
-    _animationController.dispose();
-    _controller.dispose();
+    _animationController!.dispose();
+    _controller!.dispose();
     super.dispose();
   }
 
@@ -65,7 +65,7 @@ class _AchievementsScreenState extends State<AchievementsScreen>
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: widget.getAppBar(context, plunesStrings.achievement, true),
+      appBar: widget.getAppBar(context, plunesStrings.achievement, true) as PreferredSizeWidget?,
       key: _scaffoldKey,
       body: GestureDetector(
           onTap: () => CommonMethods.hideSoftKeyboard(), child: bodyView()),
@@ -128,7 +128,7 @@ class _AchievementsScreenState extends State<AchievementsScreen>
           controller: controller,
           maxLength: 250,
           maxLines: null,
-          maxLengthEnforced: true,
+         // maxLengthEnforced: true,
           onChanged: (text) {
             setState(() {
               counter = text.length;
@@ -278,12 +278,12 @@ class _AchievementsScreenState extends State<AchievementsScreen>
   }
 
   @override
-  fetchImageCallBack(File _image) {
+  fetchImageCallBack(_image) {
     if (_image != null) {
       print("image==" + base64Encode(_image.readAsBytesSync()).toString());
       this._image = _image;
       selectedImageList.add(_image.path);
-      _controller.animateTo(_controller.offset + 150.0,
+      _controller!.animateTo(_controller!.offset + 150.0,
           duration: Duration(microseconds: 100), curve: Curves.ease);
     }
   }

@@ -1,8 +1,8 @@
 class InsuranceModel {
-  bool success;
-  int count;
-  int size;
-  List<InsuranceProvider> data;
+  bool? success;
+  int? count;
+  int? size;
+  List<InsuranceProvider>? data;
 
   InsuranceModel({this.success, this.count, this.size, this.data});
 
@@ -11,9 +11,9 @@ class InsuranceModel {
     count = json['count'];
     size = json['size'];
     if (json['data'] != null) {
-      data = new List<InsuranceProvider>();
+      data = [];
       json['data'].forEach((v) {
-        data.add(new InsuranceProvider.fromJson(v));
+        data!.add(new InsuranceProvider.fromJson(v));
       });
     }
   }
@@ -24,18 +24,18 @@ class InsuranceModel {
     data['count'] = this.count;
     data['size'] = this.size;
     if (this.data != null) {
-      data['data'] = this.data.map((v) => v.toJson()).toList();
+      data['data'] = this.data!.map((v) => v.toJson()).toList();
     }
     return data;
   }
 }
 
 class InsuranceProvider {
-  String sId;
-  int createdAt;
-  int updateAt;
-  String insurancePartner;
-  int iV;
+  String? sId;
+  int? createdAt;
+  int? updateAt;
+  String? insurancePartner;
+  int? iV;
 
   InsuranceProvider(
       {this.sId,

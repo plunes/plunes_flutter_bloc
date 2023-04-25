@@ -1,6 +1,6 @@
 class ShareableReportModel {
-  bool success;
-  Link link;
+  bool? success;
+  Link? link;
 
   ShareableReportModel({this.success, this.link});
 
@@ -13,16 +13,16 @@ class ShareableReportModel {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['success'] = this.success;
     if (this.link != null) {
-      data['link'] = this.link.toJson();
+      data['link'] = this.link!.toJson();
     }
     return data;
   }
 }
 
 class Link {
-  String sId;
-  String reportName;
-  String reportUrl;
+  String? sId;
+  String? reportName;
+  String? reportUrl;
 
   Link({this.sId, this.reportName, this.reportUrl});
 

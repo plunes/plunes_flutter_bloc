@@ -3,17 +3,17 @@ import 'package:event_bus/event_bus.dart';
 class EventProvider {
   EventProvider._create();
 
-  static EventProvider _sessionExpirationEvent;
-  EventBus _eventBus;
+  static EventProvider? _sessionExpirationEvent;
+  EventBus? _eventBus;
 
   factory EventProvider() {
     if (_sessionExpirationEvent == null) {
       _sessionExpirationEvent = EventProvider._create();
     }
-    return _sessionExpirationEvent;
+    return _sessionExpirationEvent!;
   }
 
-  EventBus getSessionEventBus() {
+  EventBus? getSessionEventBus() {
     if (_eventBus == null) {
       _eventBus = EventBus();
     }
@@ -22,7 +22,7 @@ class EventProvider {
 }
 
 class ScreenRefresher {
-  String screenName;
+  String? screenName;
   dynamic data;
 
   ScreenRefresher({this.screenName, this.data});

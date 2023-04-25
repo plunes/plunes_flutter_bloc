@@ -1,6 +1,6 @@
 /// Created by Manvendra Kumar Singh
-
 import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,6 +19,7 @@ import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
+
 import 'EnterPhoneScreen.dart';
 import 'ForgotPassword.dart';
 
@@ -31,9 +32,9 @@ import 'ForgotPassword.dart';
 // ignore: must_be_immutable
 class Login extends BaseActivity {
   static const tag = '/login';
-  String phone;
+  String? phone;
 
-  Login({Key key, this.phone}) : super(key: key);
+  Login({Key? key, this.phone}) : super(key: key);
 
   @override
   _LoginState createState() => _LoginState();
@@ -53,25 +54,33 @@ class _LoginState extends State<Login> implements DialogCallBack {
       _isProfessional = false;
   String title = '', body = '';
   var globalHeight, globalWidth;
-  UserBloc _userBloc;
-  String _userType;
-  List<DropdownMenuItem<String>> _dropDownMenuItems;
+  UserBloc? _userBloc;
+  String? _userType="";
+  List<DropdownMenuItem<String>>? _dropDownMenuItems= [];
 
   @override
   void dispose() {
     _userBloc?.dispose();
-    phoneController?.dispose();
+    phoneController.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
     _userBloc = UserBloc();
-    phoneController.text = widget.phone;
-    _dropDownMenuItems = widget.getDropDownMenuItems();
-    _userType = _dropDownMenuItems[0].value;
+    phoneController.text = widget.phone ?? "";
+    getDropdown();
+   // _dropDownMenuItems = widget.getDropDownMenuItems();
+   _userType = Constants.generalUser;
     _isProfessional = false;
     super.initState();
+  }
+
+  getDropdown() async {
+    _dropDownMenuItems = await widget.getDropDownMenuItems();
+    _userType = _dropDownMenuItems![0].value;
+
+    setState(() {});
   }
 
   Widget build(BuildContext context) {
@@ -82,7 +91,7 @@ class _LoginState extends State<Login> implements DialogCallBack {
       onWillPop: _onWillPop,
       child: Scaffold(
           key: _scaffoldKey,
-          appBar: widget.getAppBar(context, plunesStrings.login, false),
+          appBar: widget.getAppBar(context, plunesStrings.login, false) as PreferredSizeWidget?,
           backgroundColor: Colors.white,
           body: GestureDetector(
               onTap: () => CommonMethods.hideSoftKeyboard(),
@@ -194,7 +203,7 @@ class _LoginState extends State<Login> implements DialogCallBack {
                 ? TextInputAction.done
                 : TextInputAction.next,
             onSubmitted: (String value) {
-              setFocus(controller).unfocus();
+              setFocus(controller)!.unfocus();
               FocusScope.of(context).requestFocus(setTargetFocus(controller));
             },
             onChanged: (text) {
@@ -211,7 +220,10 @@ class _LoginState extends State<Login> implements DialogCallBack {
               });
             },
             inputFormatters: (controller == phoneController && _isNumber())
-                ? [WhitelistingTextInputFormatter.digitsOnly]
+                ? [
+                  FilteringTextInputFormatter.digitsOnly
+                  // WhitelistingTextInputFormatter.digitsOnly
+            ]
                 : null,
             maxLength:
                 (controller == phoneController && _isNumber()) ? 10 : null,
@@ -294,16 +306,16 @@ class _LoginState extends State<Login> implements DialogCallBack {
     );
   }
 
-  FocusNode setFocus(TextEditingController controller) {
-    FocusNode focusNode;
+  FocusNode? setFocus(TextEditingController controller) {
+    FocusNode? focusNode;
     if (controller == phoneController)
       focusNode = phoneFocusNode;
     else if (controller == passwordController) focusNode = passwordFocusNode;
     return focusNode;
   }
 
-  FocusNode setTargetFocus(TextEditingController controller) {
-    FocusNode focusNode;
+  FocusNode? setTargetFocus(TextEditingController controller) {
+    FocusNode? focusNode;
     if (controller == phoneController) focusNode = passwordFocusNode;
     return focusNode;
   }
@@ -400,7 +412,7 @@ class _LoginState extends State<Login> implements DialogCallBack {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             color: PlunesColors.BLACKCOLOR,
-                            fontSize: AppConfig.mediumFont - 2,
+                            fontSize: AppConfig.mediumFont! - 2,
                             fontWeight: FontWeight.normal),
                       ),
                     ),
@@ -421,12 +433,11 @@ class _LoginState extends State<Login> implements DialogCallBack {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Expanded(
-                            child: FlatButton(
-                                highlightColor: Colors.transparent,
-                                hoverColor: Colors.transparent,
-                                splashColor:
-                                    PlunesColors.SPARKLINGGREEN.withOpacity(.1),
-                                focusColor: Colors.transparent,
+                            child: ElevatedButton(
+                                // highlightColor: Colors.transparent,
+                                // hoverColor: Colors.transparent,
+                                // splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                                // focusColor: Colors.transparent,
                                 onPressed: () =>
                                     Navigator.of(context).pop(false),
                                 child: Container(
@@ -447,12 +458,11 @@ class _LoginState extends State<Login> implements DialogCallBack {
                             width: 0.5,
                           ),
                           Expanded(
-                            child: FlatButton(
-                                highlightColor: Colors.transparent,
-                                hoverColor: Colors.transparent,
-                                splashColor:
-                                    PlunesColors.SPARKLINGGREEN.withOpacity(.1),
-                                focusColor: Colors.transparent,
+                            child: ElevatedButton(
+                                // highlightColor: Colors.transparent,
+                                // hoverColor: Colors.transparent,
+                                // splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                                // focusColor: Colors.transparent,
                                 onPressed: () => SystemNavigator.pop(),
                                 child: Container(
                                     width: double.infinity,
@@ -521,8 +531,8 @@ class _LoginState extends State<Login> implements DialogCallBack {
             //     ),
             //   ),
           ),
-        ) ??
-        false;
+        ).then((value) => value as bool) ??
+        false as Future<bool>;
   }
 
   _submitLogin() {
@@ -547,14 +557,15 @@ class _LoginState extends State<Login> implements DialogCallBack {
     progress = true;
     _setState();
     await Future.delayed(Duration(milliseconds: 100));
-    var result = await _userBloc.login(phoneController.text.trim(),
+    var result = await _userBloc!.login(phoneController.text.trim(),
         passwordController.text.trim(), _isProfessional);
     progress = false;
     _setState();
     await Future.delayed(Duration(milliseconds: 100));
+    print("data-->${result.toString()}");
     if (result is RequestSuccess) {
       LoginPost data = result.response;
-      if (data.success) {
+      if (data.success!) {
         AnalyticsProvider().registerEvent(AnalyticsKeys.loginKey);
         await bloc.saveDataInPreferences(data, context, plunesStrings.login);
         // _showInSnackBar(
@@ -564,8 +575,8 @@ class _LoginState extends State<Login> implements DialogCallBack {
             PlunesColors.BLACKCOLOR, _scaffoldKey);
       }
     } else if (result is RequestFailed) {
-      _showInSnackBar(
-          result?.failureCause, PlunesColors.BLACKCOLOR, _scaffoldKey);
+      print("data2-->${result.failureCause}");
+    _showInSnackBar(result.failureCause, PlunesColors.BLACKCOLOR, _scaffoldKey);
     }
   }
 
@@ -589,17 +600,39 @@ class _LoginState extends State<Login> implements DialogCallBack {
             style: TextStyle(fontSize: 12, color: PlunesColors.BLACKCOLOR),
           ),
         ),
+        // DropdownButtonFormField(
+        //   value: _userType,
+        //     items: items,
+        //   icon: Image.asset(
+        //     "assets/images/arrow-down-Icon.png",
+        //     color: PlunesColors.GREYCOLOR,
+        //     width: 15,
+        //     height: 15,
+        //   ),
+        //   onChanged: changedDropDownItem,
+        //   decoration: widget.myInputBoxDecoration(colorsFile.lightGrey1,
+        //       colorsFile.lightGrey1, null, null, true, null),),
         Container(
           child: DropdownButtonFormField(
             value: _userType,
-            items: _dropDownMenuItems,
+           // items: _dropDownMenuItems,
+
+            items: widget.usersType.map((items) {
+              return DropdownMenuItem(
+                value: items,
+                child: Text(items),
+              );
+            }).toList(),
+
             icon: Image.asset(
               "assets/images/arrow-down-Icon.png",
               color: PlunesColors.GREYCOLOR,
               width: 15,
               height: 15,
             ),
-            onChanged: changedDropDownItem,
+            onChanged: (value) {
+              changedDropDownItem(value.toString());
+            },
             decoration: widget.myInputBoxDecoration(colorsFile.lightGrey1,
                 colorsFile.lightGrey1, null, null, true, null),
           ),
@@ -608,7 +641,7 @@ class _LoginState extends State<Login> implements DialogCallBack {
     );
   }
 
-  changedDropDownItem(String userTypeValue) {
+  changedDropDownItem(String? userTypeValue) {
     if (mounted)
       setState(() {
         _userType = userTypeValue;
@@ -621,7 +654,7 @@ class _LoginState extends State<Login> implements DialogCallBack {
   }
 
   void _showInSnackBar(
-      String message, Color blackcolor, GlobalKey<ScaffoldState> scaffoldKey) {
+      String? message, Color blackcolor, GlobalKey<ScaffoldState> scaffoldKey) {
     if (mounted)
       showDialog(
           context: context,

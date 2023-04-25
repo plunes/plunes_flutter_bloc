@@ -31,16 +31,16 @@ class HospitalDoctorOverviewScreen extends BaseActivity {
   _HospitalOverviewScreenState createState() => _HospitalOverviewScreenState();
 }
 
-class _HospitalOverviewScreenState
-    extends BaseState<HospitalDoctorOverviewScreen>
-    with WidgetsBindingObserver {
-  User _user;
-  DocHosMainInsightBloc _docHosMainInsightBloc;
+// class _HospitalOverviewScreenState extends BaseState<HospitalDoctorOverviewScreen> with WidgetsBindingObserver {
+class _HospitalOverviewScreenState extends State<HospitalDoctorOverviewScreen> with WidgetsBindingObserver {
+final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  late User _user;
+  DocHosMainInsightBloc? _docHosMainInsightBloc;
   List<CentreData> _centresList = [];
-  RealTimeInsightsResponse _realTimeInsightsResponse;
-  ActionableInsightResponseModel _actionableInsightResponse;
-  TotalBusinessEarnedModel _totalBusinessEarnedResponse;
-  String _reaTimeInsightFailureCause,
+  RealTimeInsightsResponse? _realTimeInsightsResponse;
+  ActionableInsightResponseModel? _actionableInsightResponse;
+  TotalBusinessEarnedModel? _totalBusinessEarnedResponse;
+  String? _reaTimeInsightFailureCause,
       _actionableInsightFailureCause,
       _businessFailureCause,
       _failureCause,
@@ -49,16 +49,16 @@ class _HospitalOverviewScreenState
       _selectedUserIdForActionableInsightDropDown = "",
       _selectedDay = 'Today';
   int days = 1, initialDayForAdminUser = 1;
-  List<String> _daysCount = ['Today', 'Week', 'Month', 'Year'];
+  List<String?> _daysCount = ['Today', 'Week', 'Month', 'Year'];
   List<int> duration = [1, 7, 30, 365];
-  bool _isProcessing;
+  late bool _isProcessing;
   bool _scrollParent = false;
-  StreamController _timeUpdater;
-  Timer _timer;
-  ScrollController _scrollController;
-  BuildContext _context;
+  StreamController? _timeUpdater;
+  Timer? _timer;
+  ScrollController? _scrollController;
+  late BuildContext _context;
   GlobalKey _realTimeInsightKey = GlobalKey();
-  SocketIoUtil _socketIoUtil;
+  SocketIoUtil? _socketIoUtil;
 
   @override
   void initState() {
@@ -68,31 +68,31 @@ class _HospitalOverviewScreenState
     _timeUpdater = StreamController.broadcast();
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       _timer = timer;
-      _timeUpdater.add(null);
+      _timeUpdater!.add(null);
     });
     _centresList = [];
     _scrollParent = false;
     _isProcessing = false;
     _user = UserManager().getUserDetails();
     _socketIoUtil = SocketIoUtil();
-    _socketIoUtil.initSocket();
+    _socketIoUtil!.initSocket();
     _docHosMainInsightBloc = DocHosMainInsightBloc();
-    if (_user.isAdmin && (UserManager().centreData == null)) {
+    if (_user.isAdmin! && (UserManager().centreData == null)) {
       _getCentresData();
-    } else if (_user.isAdmin && UserManager().centreData != null) {
+    } else if (_user.isAdmin! && UserManager().centreData != null) {
       _setDataIntoList();
       _getAllData();
     } else {
       _getAllData();
     }
-    EventProvider().getSessionEventBus().on<ScreenRefresher>().listen((event) {
+    EventProvider().getSessionEventBus()!.on<ScreenRefresher>().listen((event) {
       if (event != null &&
           event.screenName == FirebaseNotification.insightScreen &&
           mounted) {
         _getRealTimeInsights();
       }
     });
-    EventProvider().getSessionEventBus().on<ScreenRefresher>().listen((event) {
+    EventProvider().getSessionEventBus()!.on<ScreenRefresher>().listen((event) {
       if (event != null &&
           event.screenName == SocketIoUtil.insightTopic &&
           mounted) {
@@ -104,15 +104,15 @@ class _HospitalOverviewScreenState
   }
 
   _getRealTimeInsights() {
-    _docHosMainInsightBloc.getRealTimeInsights();
+    _docHosMainInsightBloc!.getRealTimeInsights();
   }
 
-  _getActionableInsights({String userId}) {
-    _docHosMainInsightBloc.getActionableInsights(userId: userId);
+  _getActionableInsights({String? userId}) {
+    _docHosMainInsightBloc!.getActionableInsights(userId: userId);
   }
 
-  _getTotalBusinessData(int days, {String userId}) {
-    _docHosMainInsightBloc.getTotalBusinessData(days, userId: userId);
+  _getTotalBusinessData(int days, {String? userId}) {
+    _docHosMainInsightBloc!.getTotalBusinessData(days, userId: userId);
     _setState();
   }
 
@@ -161,7 +161,7 @@ class _HospitalOverviewScreenState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          StreamBuilder<RequestState>(
+          StreamBuilder<RequestState?>(
             builder: (context, snapShot) {
               if (snapShot.data is RequestInProgress) {
                 return Container(
@@ -169,22 +169,22 @@ class _HospitalOverviewScreenState
                     child: CustomWidgets().getProgressIndicator());
               }
               if (snapShot.data is RequestSuccess) {
-                RequestSuccess _requestSuccess = snapShot.data;
+                RequestSuccess _requestSuccess = snapShot.data as RequestSuccess;
                 _realTimeInsightsResponse = _requestSuccess.response;
                 if (_realTimeInsightsResponse?.data != null &&
-                    _realTimeInsightsResponse.data.isEmpty) {
+                    _realTimeInsightsResponse!.data!.isEmpty) {
                   _reaTimeInsightFailureCause =
                       PlunesStrings.noRealTimeInsights;
                 }
-                _docHosMainInsightBloc.addStateInRealTimeInsightStream(null);
+                _docHosMainInsightBloc!.addStateInRealTimeInsightStream(null);
               }
               if (snapShot.data is RequestFailed) {
-                RequestFailed _requestFailed = snapShot.data;
+                RequestFailed _requestFailed = snapShot.data as RequestFailed;
                 _reaTimeInsightFailureCause = _requestFailed.failureCause;
-                _docHosMainInsightBloc.addStateInRealTimeInsightStream(null);
+                _docHosMainInsightBloc!.addStateInRealTimeInsightStream(null);
               }
               return (_realTimeInsightsResponse == null ||
-                      _realTimeInsightsResponse.data.isEmpty)
+                      _realTimeInsightsResponse!.data!.isEmpty)
                   ? Container(
                       height: AppConfig.verticalBlockSize * 42,
                       child: Center(
@@ -237,7 +237,7 @@ class _HospitalOverviewScreenState
                             _setState();
                           });
                           return;
-                        },
+                        } as bool Function(OverscrollNotification)?,
                         child: IgnorePointer(
                           ignoring: _scrollParent,
                           child: ListView.builder(
@@ -250,11 +250,11 @@ class _HospitalOverviewScreenState
                               itemIndex--;
                               return _getRealInsightWidget(itemIndex);
                             },
-                            itemCount: (_realTimeInsightsResponse.data ==
+                            itemCount: (_realTimeInsightsResponse!.data ==
                                         null ||
-                                    _realTimeInsightsResponse.data.isEmpty)
+                                    _realTimeInsightsResponse!.data!.isEmpty)
                                 ? 0
-                                : (_realTimeInsightsResponse.data.length + 1),
+                                : (_realTimeInsightsResponse!.data!.length + 1),
                           ),
                         ),
                       ),
@@ -262,7 +262,7 @@ class _HospitalOverviewScreenState
             },
             initialData:
                 _realTimeInsightsResponse == null ? RequestInProgress() : null,
-            stream: _docHosMainInsightBloc.realTimeInsightStream,
+            stream: _docHosMainInsightBloc!.realTimeInsightStream,
           )
         ],
       ),
@@ -289,10 +289,10 @@ class _HospitalOverviewScreenState
                   ),
                 ),
                 dense: false,
-                trailing: (_user.isAdmin &&
+                trailing: (_user.isAdmin! &&
                         UserManager().centreData != null &&
-                        UserManager().centreData.len != null &&
-                        UserManager().centreData.len != 0)
+                        UserManager().centreData!.len != null &&
+                        UserManager().centreData!.len != 0)
                     ? _businessCentresDropDown()
                     : _selectDayDropDown(),
                 //Text('drop down here'),
@@ -306,24 +306,24 @@ class _HospitalOverviewScreenState
                 margin: EdgeInsets.symmetric(
                     horizontal: AppConfig.horizontalBlockSize * 10,
                     vertical: AppConfig.verticalBlockSize * 1.5),
-                child: StreamBuilder<RequestState>(
+                child: StreamBuilder<RequestState?>(
                   builder: (context, snapShot) {
                     if (snapShot.data is RequestInProgress) {
                       return CustomWidgets().getProgressIndicator();
                     }
                     if (snapShot.data is RequestSuccess) {
-                      RequestSuccess _requestSuccess = snapShot.data;
+                      RequestSuccess _requestSuccess = snapShot.data as RequestSuccess;
                       _totalBusinessEarnedResponse = _requestSuccess.response;
                       if (_totalBusinessEarnedResponse == null) {
                         _businessFailureCause =
                             PlunesStrings.noBusinessDataFound;
                       }
-                      _docHosMainInsightBloc.addStateInBusinessStream(null);
+                      _docHosMainInsightBloc!.addStateInBusinessStream(null);
                     }
                     if (snapShot.data is RequestFailed) {
-                      RequestFailed _requestFailed = snapShot.data;
+                      RequestFailed _requestFailed = snapShot.data as RequestFailed;
                       _businessFailureCause = _requestFailed.failureCause;
-                      _docHosMainInsightBloc.addStateInBusinessStream(null);
+                      _docHosMainInsightBloc!.addStateInBusinessStream(null);
                     }
                     return (_totalBusinessEarnedResponse == null)
                         ? Center(
@@ -338,7 +338,7 @@ class _HospitalOverviewScreenState
                                   child: Column(
                                     children: <Widget>[
                                       Text(
-                                        '\u20B9 ${_totalBusinessEarnedResponse.businessGained?.toStringAsFixed(2) ?? "0"}',
+                                        '\u20B9 ${_totalBusinessEarnedResponse!.businessGained?.toStringAsFixed(2) ?? "0"}',
                                         style: TextStyle(
                                           color: PlunesColors.GREENCOLOR,
                                           fontSize: AppConfig.largeFont,
@@ -361,7 +361,7 @@ class _HospitalOverviewScreenState
                                     child: Column(
                                   children: <Widget>[
                                     Text(
-                                      '\u20B9 ${_totalBusinessEarnedResponse.businessLost?.toStringAsFixed(2) ?? "0"}',
+                                      '\u20B9 ${_totalBusinessEarnedResponse!.businessLost?.toStringAsFixed(2) ?? "0"}',
                                       style: TextStyle(
                                         color: Colors.yellow,
                                         fontSize: AppConfig.largeFont,
@@ -379,13 +379,13 @@ class _HospitalOverviewScreenState
                   initialData: _totalBusinessEarnedResponse == null
                       ? RequestInProgress()
                       : null,
-                  stream: _docHosMainInsightBloc.businessDataStream,
+                  stream: _docHosMainInsightBloc!.businessDataStream,
                 ),
               ),
-              (_user.isAdmin &&
+              (_user.isAdmin! &&
                       UserManager().centreData != null &&
-                      UserManager().centreData.len != null &&
-                      UserManager().centreData.len != 0)
+                      UserManager().centreData!.len != null &&
+                      UserManager().centreData!.len != 0)
                   ? Container(
                       alignment: Alignment.center,
                       child: _selectDayDropDown(),
@@ -449,7 +449,7 @@ class _HospitalOverviewScreenState
                       child: Container(),
                       flex: 1,
                     ),
-                    (_user.isAdmin &&
+                    (_user.isAdmin! &&
                             _centresList != null &&
                             _centresList.isNotEmpty)
                         ? Expanded(
@@ -461,7 +461,7 @@ class _HospitalOverviewScreenState
                 ),
               ),
               Divider(color: Colors.black38),
-              StreamBuilder<RequestState>(
+              StreamBuilder<RequestState?>(
                 builder: (context, snapShot) {
                   if (snapShot.data is RequestInProgress) {
                     return Container(
@@ -471,25 +471,25 @@ class _HospitalOverviewScreenState
                     );
                   }
                   if (snapShot.data is RequestSuccess) {
-                    RequestSuccess _requestSuccess = snapShot.data;
+                    RequestSuccess _requestSuccess = snapShot.data as RequestSuccess;
                     _actionableInsightResponse = _requestSuccess.response;
                     if (_actionableInsightResponse?.data != null &&
-                        _actionableInsightResponse.data.isEmpty) {
+                        _actionableInsightResponse!.data!.isEmpty) {
                       _actionableInsightFailureCause =
                           PlunesStrings.noActionableInsightAvailable;
                     }
-                    _docHosMainInsightBloc
+                    _docHosMainInsightBloc!
                         .addStateInActionableInsightStream(null);
                   }
                   if (snapShot.data is RequestFailed) {
-                    RequestFailed _requestFailed = snapShot.data;
+                    RequestFailed _requestFailed = snapShot.data as RequestFailed;
                     _actionableInsightFailureCause =
                         _requestFailed.failureCause;
-                    _docHosMainInsightBloc
+                    _docHosMainInsightBloc!
                         .addStateInActionableInsightStream(null);
                   }
                   return (_actionableInsightResponse == null ||
-                          _actionableInsightResponse.data.isEmpty)
+                          _actionableInsightResponse!.data!.isEmpty)
                       ? Container(
                           width: double.infinity,
                           height: AppConfig.verticalBlockSize * 35,
@@ -547,10 +547,10 @@ class _HospitalOverviewScreenState
                                             children: <TextSpan>[
                                               TextSpan(
                                                   text:
-                                                      "${_actionableInsightResponse?.data[itemIndex]?.serviceName ?? _getNaString()}",
+                                                      "${_actionableInsightResponse?.data![itemIndex]?.serviceName ?? _getNaString()}",
                                                   style: TextStyle(
                                                       fontSize: AppConfig
-                                                              .verySmallFont +
+                                                              .verySmallFont! +
                                                           1,
                                                       color: PlunesColors
                                                           .BLACKCOLOR,
@@ -560,7 +560,7 @@ class _HospitalOverviewScreenState
                                                 text: " is ",
                                                 style: TextStyle(
                                                     fontSize: AppConfig
-                                                            .verySmallFont +
+                                                            .verySmallFont! +
                                                         1,
                                                     color: Colors.black54,
                                                     fontWeight:
@@ -568,10 +568,10 @@ class _HospitalOverviewScreenState
                                               ),
                                               TextSpan(
                                                   text:
-                                                      "${_actionableInsightResponse?.data[itemIndex]?.percent?.toStringAsFixed(0) ?? _getNaString()}%",
+                                                      "${_actionableInsightResponse?.data![itemIndex]?.percent?.toStringAsFixed(0) ?? _getNaString()}%",
                                                   style: TextStyle(
                                                       fontSize: AppConfig
-                                                              .verySmallFont +
+                                                              .verySmallFont! +
                                                           1,
                                                       color: PlunesColors
                                                           .BLACKCOLOR,
@@ -582,7 +582,7 @@ class _HospitalOverviewScreenState
                                                     " higher than the booked price.",
                                                 style: TextStyle(
                                                     fontSize: AppConfig
-                                                            .verySmallFont +
+                                                            .verySmallFont! +
                                                         1,
                                                     color: Colors.black54,
                                                     fontWeight:
@@ -592,13 +592,13 @@ class _HospitalOverviewScreenState
                                       )),
                                   FlatButtonLinks(
                                       'Update here',
-                                      AppConfig.smallFont + 2,
+                                      AppConfig.smallFont! + 2,
                                       null,
                                       20,
                                       true,
                                       () => _openActionableUpdatePriceWidget(
-                                          _actionableInsightResponse
-                                              .data[itemIndex])),
+                                          _actionableInsightResponse!
+                                              .data![itemIndex])),
                                   Divider(color: Colors.black38)
                                 ],
                               );
@@ -611,7 +611,7 @@ class _HospitalOverviewScreenState
                 initialData: _actionableInsightResponse == null
                     ? RequestInProgress()
                     : null,
-                stream: _docHosMainInsightBloc.actionableStream,
+                stream: _docHosMainInsightBloc!.actionableStream,
               )
             ],
           ),
@@ -632,7 +632,7 @@ class _HospitalOverviewScreenState
         .then((value) {
       if (value != null && value) {
         _showSnackBar(PlunesStrings.priceUpdateSuccessMessage);
-        if (_user.isAdmin && _centresList != null && _centresList.isNotEmpty) {
+        if (_user.isAdmin! && _centresList != null && _centresList.isNotEmpty) {
           _getActionableInsights(
               userId: _selectedUserIdForActionableInsightDropDown);
         } else {
@@ -660,14 +660,14 @@ class _HospitalOverviewScreenState
                 docHosMainInsightBloc: _docHosMainInsightBloc,
                 realInsight: realInsight))).then((value) {
       if (value != null && value) {
-        if (realInsight.suggested != null && realInsight.suggested) {
+        if (realInsight.suggested != null && realInsight.suggested!) {
           showDialog(
               context: context,
               builder: (context) {
                 return CustomWidgets().savePriceInCatalogue(
                     realInsight, scaffoldKey, _docHosMainInsightBloc);
               }).then((value) {
-            _docHosMainInsightBloc.addStatePriceUpdationInCatalogueStream(null);
+            _docHosMainInsightBloc!.addStatePriceUpdationInCatalogueStream(null);
             _getRealTimeInsights();
           });
         } else {
@@ -707,15 +707,15 @@ class _HospitalOverviewScreenState
     if (_selectedDay == null) {
       _selectedDay = _daysCount.first;
     }
-    List<DropdownMenuItem<String>> _varianceDropDownItems = new List();
-    for (String daysCount in _daysCount) {
+    List<DropdownMenuItem<String>> _varianceDropDownItems = [];
+    for (String? daysCount in _daysCount) {
       _varianceDropDownItems.add(new DropdownMenuItem(
         value: daysCount,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             new Text(
-              daysCount,
+              daysCount!,
               style: TextStyle(
                 fontSize: AppConfig.mediumFont,
                 color: Colors.black,
@@ -737,9 +737,9 @@ class _HospitalOverviewScreenState
           children: <Widget>[
             DropdownButtonFormField(
               items: _varianceDropDownItems,
-              onChanged: (value) {
+              onChanged: (dynamic value) {
                 _selectedDay = value;
-                if (_user.isAdmin &&
+                if (_user.isAdmin! &&
                     _centresList != null &&
                     _centresList.isNotEmpty) {
                   _getTotalBusinessData(
@@ -764,7 +764,7 @@ class _HospitalOverviewScreenState
     if (_selectedUserIdForActionableInsightDropDown == null) {
       _selectedUserIdForActionableInsightDropDown = _centresList.first.sId;
     }
-    List<DropdownMenuItem<String>> _varianceDropDownItems = new List();
+    List<DropdownMenuItem<String>> _varianceDropDownItems = [];
     for (CentreData centreData in _centresList) {
       _varianceDropDownItems.add(new DropdownMenuItem(
         value: centreData.sId,
@@ -797,7 +797,7 @@ class _HospitalOverviewScreenState
             Flexible(
               child: DropdownButtonFormField(
                 items: _varianceDropDownItems,
-                onChanged: (value) {
+                onChanged: (dynamic value) {
                   _selectedUserIdForActionableInsightDropDown = value;
                   _actionableInsightResponse = null;
                   _getActionableInsights(
@@ -819,7 +819,7 @@ class _HospitalOverviewScreenState
     if (_selectedUserIdForBusinessDropDown == null) {
       _selectedUserIdForBusinessDropDown = _centresList.first.sId;
     }
-    List<DropdownMenuItem<String>> _varianceDropDownItems = new List();
+    List<DropdownMenuItem<String>> _varianceDropDownItems = [];
     for (CentreData centreData in _centresList) {
       _varianceDropDownItems.add(DropdownMenuItem(
           value: centreData.sId,
@@ -849,7 +849,7 @@ class _HospitalOverviewScreenState
             Flexible(
               child: DropdownButtonFormField(
                 items: _varianceDropDownItems,
-                onChanged: (value) {
+                onChanged: (dynamic value) {
                   _selectedUserIdForBusinessDropDown = value;
                   _totalBusinessEarnedResponse = null;
                   _getTotalBusinessData(
@@ -881,7 +881,7 @@ class _HospitalOverviewScreenState
         isAlwaysShown: true,
         child: RefreshIndicator(
           onRefresh: () async {
-            _docHosMainInsightBloc
+            _docHosMainInsightBloc!
                 .addStateInRealTimeInsightStream(RequestInProgress());
             _getRealTimeInsights();
             return await Future.delayed(Duration(seconds: 1));
@@ -925,23 +925,23 @@ class _HospitalOverviewScreenState
 
   void _getAllData() {
     _getRealTimeInsights();
-    (_user.isAdmin &&
+    (_user.isAdmin! &&
             UserManager().centreData != null &&
-            UserManager().centreData.len != 0)
+            UserManager().centreData!.len != 0)
         ? _getActionableInsights(userId: "")
         : _getActionableInsights();
-    (_user.isAdmin &&
+    (_user.isAdmin! &&
             UserManager().centreData != null &&
-            UserManager().centreData.len != 0)
+            UserManager().centreData!.len != 0)
         ? _getTotalBusinessData(initialDayForAdminUser, userId: "")
         : _getTotalBusinessData(days);
   }
 
   void _setDataIntoList() {
     if (UserManager().centreData != null &&
-        UserManager().centreData.len != null &&
-        UserManager().centreData.len != 0) {
-      UserManager().centreData.data.forEach((element) {
+        UserManager().centreData!.len != null &&
+        UserManager().centreData!.len != 0) {
+      UserManager().centreData!.data!.forEach((element) {
         _centresList.add(element);
       });
       _centresList.insert(
@@ -1028,12 +1028,12 @@ class _HospitalOverviewScreenState
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 Expanded(
-                  child: StreamBuilder<Object>(
-                      stream: _docHosMainInsightBloc.realTimeInsightStream,
+                  child: StreamBuilder<Object?>(
+                      stream: _docHosMainInsightBloc!.realTimeInsightStream,
                       builder: (context, snapshot) {
                         return (_realTimeInsightsResponse == null ||
-                                _realTimeInsightsResponse.data == null ||
-                                _realTimeInsightsResponse.data.isEmpty)
+                                _realTimeInsightsResponse!.data == null ||
+                                _realTimeInsightsResponse!.data!.isEmpty)
                             ? Container()
                             : Text(
                                 'Preferred Time : ${_realTimeInsightsResponse?.preferredTime}',
@@ -1063,7 +1063,7 @@ class _HospitalOverviewScreenState
   }
 
   Widget _getViewMoreWidgetForRealInsight(RealInsight data) {
-    return data.hasUserReport != null && data.hasUserReport && data.isCardOpened
+    return data.hasUserReport != null && data.hasUserReport! && data.isCardOpened!
         ? Container(
             margin: EdgeInsets.only(
                 left: AppConfig.horizontalBlockSize * 4,
@@ -1079,8 +1079,8 @@ class _HospitalOverviewScreenState
                   ),
                 ),
                 (data.userReport != null &&
-                        data.userReport.additionalDetails != null &&
-                        data.userReport.additionalDetails.trim().isNotEmpty)
+                        data.userReport!.additionalDetails != null &&
+                        data.userReport!.additionalDetails!.trim().isNotEmpty)
                     ? Container(
                         margin: EdgeInsets.only(
                             bottom: AppConfig.verticalBlockSize * 2.8),
@@ -1127,8 +1127,8 @@ class _HospitalOverviewScreenState
                       )
                     : Container(),
                 (data.userReport != null &&
-                        data.userReport.description != null &&
-                        data.userReport.description.trim().isNotEmpty)
+                        data.userReport!.description != null &&
+                        data.userReport!.description!.trim().isNotEmpty)
                     ? Container(
                         margin: EdgeInsets.only(left: 4),
                         child: Column(
@@ -1203,7 +1203,7 @@ class _HospitalOverviewScreenState
                     ),
                   ),
                   onTap: () {
-                    data.isCardOpened = !data.isCardOpened;
+                    data.isCardOpened = !data.isCardOpened!;
                     _setState();
                   },
                   onDoubleTap: () {},
@@ -1229,7 +1229,7 @@ class _HospitalOverviewScreenState
           highlightColor: Colors.transparent,
           hoverColor: Colors.transparent,
           onTap: () {
-            data.isCardOpened = !data.isCardOpened;
+            data.isCardOpened = !data.isCardOpened!;
             _setState();
           },
           onDoubleTap: () {},
@@ -1261,18 +1261,18 @@ class _HospitalOverviewScreenState
       child: Row(
         children: [
           (data.userReport != null &&
-                  data.userReport.videoUrl != null &&
-                  data.userReport.videoUrl.isNotEmpty)
+                  data.userReport!.videoUrl != null &&
+                  data.userReport!.videoUrl!.isNotEmpty)
               ? Expanded(child: _getVideoWidget(data))
               : Container(),
           (data.userReport != null &&
-                  data.userReport.imageUrl != null &&
-                  data.userReport.imageUrl.isNotEmpty)
+                  data.userReport!.imageUrl != null &&
+                  data.userReport!.imageUrl!.isNotEmpty)
               ? Expanded(child: _getPhotosWidget(data))
               : Container(),
           (data.userReport != null &&
-                  data.userReport.reportUrl != null &&
-                  data.userReport.reportUrl.isNotEmpty)
+                  data.userReport!.reportUrl != null &&
+                  data.userReport!.reportUrl!.isNotEmpty)
               ? Expanded(child: _getDocumentWidget(data))
               : Container()
         ],
@@ -1289,13 +1289,13 @@ class _HospitalOverviewScreenState
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
       onTap: () {
-        if (data.userReport.videoUrl.first.url != null &&
-            data.userReport.videoUrl.first.url.trim().isNotEmpty) {
+        if (data.userReport!.videoUrl!.first.url != null &&
+            data.userReport!.videoUrl!.first.url!.trim().isNotEmpty) {
           Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) =>
-                      VideoUtil(data.userReport.videoUrl.first.url)));
+                      VideoUtil(data.userReport!.videoUrl!.first.url)));
         }
       },
       onDoubleTap: () {},
@@ -1323,7 +1323,7 @@ class _HospitalOverviewScreenState
                     borderRadius: BorderRadius.all(Radius.circular(12)),
                     child: SizedBox.expand(
                       child: CustomWidgets().getImageFromUrl(
-                          data?.userReport?.videoUrl?.first?.thumbnail ?? "",
+                          data.userReport?.videoUrl?.first.thumbnail ?? "",
                           boxFit: BoxFit.cover),
                     ),
                   ),
@@ -1353,7 +1353,7 @@ class _HospitalOverviewScreenState
         highlightColor: Colors.transparent,
         onTap: () {
           List<Photo> photos = [];
-          data.userReport.imageUrl.forEach((element) {
+          data.userReport!.imageUrl!.forEach((element) {
             if (element == null ||
                 element.isEmpty ||
                 !(element.contains("http"))) {
@@ -1396,12 +1396,12 @@ class _HospitalOverviewScreenState
                       ),
                     ),
                   ),
-                  data.userReport.imageUrl.length > 1
+                  data.userReport!.imageUrl!.length > 1
                       ? Positioned.fill(
                           child: Container(
                             alignment: Alignment.center,
                             child: Text(
-                              "+${data.userReport.imageUrl.length}",
+                              "+${data.userReport!.imageUrl!.length}",
                               style: TextStyle(
                                   color: PlunesColors.GREYCOLOR, fontSize: 60),
                             ),
@@ -1424,8 +1424,8 @@ class _HospitalOverviewScreenState
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
         onTap: () {
-          if (data.userReport.reportUrl.first != null) {
-            _launch(data.userReport.reportUrl.first);
+          if (data.userReport!.reportUrl!.first != null) {
+            _launch(data.userReport!.reportUrl!.first);
           }
         },
         onDoubleTap: () {},
@@ -1473,17 +1473,17 @@ class _HospitalOverviewScreenState
       margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 1),
       child: Stack(
         children: [
-          (_realTimeInsightsResponse.data[itemIndex].hasUserReport == null ||
-                      !_realTimeInsightsResponse
-                          .data[itemIndex].hasUserReport) ||
-                  _realTimeInsightsResponse.data[itemIndex].isCardOpened
+          (_realTimeInsightsResponse!.data![itemIndex].hasUserReport == null ||
+                      !_realTimeInsightsResponse!
+                          .data![itemIndex].hasUserReport!) ||
+                  _realTimeInsightsResponse!.data![itemIndex].isCardOpened!
               ? Container()
               : Positioned(
                   bottom: 0.0,
                   left: 0.0,
                   right: 0.0,
                   child: _getCardOpenButton(
-                      _realTimeInsightsResponse.data[itemIndex]),
+                      _realTimeInsightsResponse!.data![itemIndex]),
                 ),
           Card(
             elevation: 2.0,
@@ -1493,12 +1493,12 @@ class _HospitalOverviewScreenState
                 top: 5,
                 left: 5,
                 right: 5,
-                bottom: (_realTimeInsightsResponse
-                                    .data[itemIndex].hasUserReport ==
+                bottom: (_realTimeInsightsResponse!
+                                    .data![itemIndex].hasUserReport ==
                                 null ||
-                            !_realTimeInsightsResponse
-                                .data[itemIndex].hasUserReport) ||
-                        _realTimeInsightsResponse.data[itemIndex].isCardOpened
+                            !_realTimeInsightsResponse!
+                                .data![itemIndex].hasUserReport!) ||
+                        _realTimeInsightsResponse!.data![itemIndex].isCardOpened!
                     ? 0.0
                     : AppConfig.verticalBlockSize * 4.2),
             child: Container(
@@ -1510,42 +1510,42 @@ class _HospitalOverviewScreenState
                 children: <Widget>[
                   PatientServiceInfo(
                     patientName:
-                        _realTimeInsightsResponse.data[itemIndex].userName,
+                        _realTimeInsightsResponse!.data![itemIndex].userName,
                     serviceName: "is looking for " +
-                        "${_realTimeInsightsResponse.data[itemIndex].serviceName ?? _getNaString()}",
+                        "${_realTimeInsightsResponse!.data![itemIndex].serviceName ?? _getNaString()}",
                     remainingTime:
-                        (_realTimeInsightsResponse.data[itemIndex] != null &&
-                                    _realTimeInsightsResponse
-                                            .data[itemIndex].booked !=
+                        (_realTimeInsightsResponse!.data![itemIndex] != null &&
+                                    _realTimeInsightsResponse!
+                                            .data![itemIndex].booked !=
                                         null &&
-                                    _realTimeInsightsResponse
-                                        .data[itemIndex].booked ||
-                                (_realTimeInsightsResponse.data[itemIndex] !=
+                                    _realTimeInsightsResponse!
+                                        .data![itemIndex].booked! ||
+                                (_realTimeInsightsResponse!.data![itemIndex] !=
                                         null &&
-                                    _realTimeInsightsResponse
-                                            .data[itemIndex].priceUpdated !=
+                                    _realTimeInsightsResponse!
+                                            .data![itemIndex].priceUpdated !=
                                         null &&
-                                    _realTimeInsightsResponse
-                                        .data[itemIndex].priceUpdated))
+                                    _realTimeInsightsResponse!
+                                        .data![itemIndex].priceUpdated!))
                             ? 0
-                            : _realTimeInsightsResponse
-                                    .data[itemIndex]?.expiredAt ??
+                            : _realTimeInsightsResponse!
+                                    .data![itemIndex].expiredAt ??
                                 0,
-                    centreLocation: _realTimeInsightsResponse
-                        .data[itemIndex].centerLocation,
+                    centreLocation: _realTimeInsightsResponse!
+                        .data![itemIndex].centerLocation,
                     imageUrl:
-                        _realTimeInsightsResponse.data[itemIndex].imageUrl,
+                        _realTimeInsightsResponse!.data![itemIndex].imageUrl,
                     getRealTimeInsights: () => _getRealTimeInsights(),
-                    realInsight: _realTimeInsightsResponse.data[itemIndex],
-                    openInsightPopup: (_realTimeInsightsResponse
-                                    .data[itemIndex] !=
+                    realInsight: _realTimeInsightsResponse!.data![itemIndex],
+                    openInsightPopup: (_realTimeInsightsResponse!
+                                    .data![itemIndex] !=
                                 null &&
-                            _realTimeInsightsResponse.data[itemIndex].expired !=
+                            _realTimeInsightsResponse!.data![itemIndex].expired !=
                                 null &&
-                            _realTimeInsightsResponse.data[itemIndex].expired)
+                            _realTimeInsightsResponse!.data![itemIndex].expired!)
                         ? null
                         : () => _openRealTimeInsightPriceUpdateWidget(
-                            _realTimeInsightsResponse.data[itemIndex]),
+                            _realTimeInsightsResponse!.data![itemIndex]),
                     serviceNotAvailable: () =>
                         _serviceNotAvailableMethod(itemIndex),
                   ),
@@ -1628,7 +1628,7 @@ class _HospitalOverviewScreenState
                   //       )
                   //     : Container(),
                   _getViewMoreWidgetForRealInsight(
-                      _realTimeInsightsResponse.data[itemIndex])
+                      _realTimeInsightsResponse!.data![itemIndex])
                 ],
               ),
             ),
@@ -1645,10 +1645,10 @@ class _HospitalOverviewScreenState
           builder: (context) {
             return CustomWidgets().turnOffNotificationPopup(
                 scaffoldKey,
-                _realTimeInsightsResponse.data[itemIndex],
-                _docHosMainInsightBloc);
+                _realTimeInsightsResponse!.data![itemIndex],
+                _docHosMainInsightBloc!);
           }).then((value) {
-        _docHosMainInsightBloc.addStateInDoNotDisturbStream(null);
+        _docHosMainInsightBloc!.addStateInDoNotDisturbStream(null);
         _getRealTimeInsights();
       });
       return;
@@ -1658,7 +1658,7 @@ class _HospitalOverviewScreenState
 
 class RealTimeInsightsWIdget extends StatelessWidget {
   const RealTimeInsightsWIdget({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -1690,7 +1690,7 @@ class RealTimeInsightsWIdget extends StatelessWidget {
 // ignore: must_be_immutable
 class FlatButtonLinks extends StatelessWidget {
   final String linkName;
-  final String onTapFunc;
+  final String? onTapFunc;
   double leftMargin;
   bool isUnderline;
   double fontSize;
@@ -1723,13 +1723,13 @@ class FlatButtonLinks extends StatelessWidget {
 }
 
 class PatientServiceInfo extends StatefulWidget {
-  final String patientName, centreLocation;
-  final String serviceName;
-  final String imageUrl;
-  final int remainingTime;
-  final Function getRealTimeInsights, openInsightPopup, serviceNotAvailable;
-  final int timer;
-  final RealInsight realInsight;
+  final String? patientName, centreLocation;
+  final String? serviceName;
+  final String? imageUrl;
+  final int? remainingTime;
+  final Function? getRealTimeInsights, openInsightPopup, serviceNotAvailable;
+  final int? timer;
+  final RealInsight? realInsight;
 
   PatientServiceInfo(
       {this.patientName,
@@ -1748,18 +1748,18 @@ class PatientServiceInfo extends StatefulWidget {
 }
 
 class _PatientServiceInfoState extends State<PatientServiceInfo> {
-  Timer _timer, _timerForSolutionExpire;
+  Timer? _timer, _timerForSolutionExpire;
   int _secondVal = 60;
-  int _countDownValue = 59, _prevMinValue;
+  int? _countDownValue = 59, _prevMinValue;
   String _timeValue = "00:00";
-  RealInsight _realInsight;
+  RealInsight? _realInsight;
 
   @override
   void dispose() {
-    if (_timer != null && _timer.isActive) {
+    if (_timer != null && _timer!.isActive) {
       _timer?.cancel();
     }
-    if (_timerForSolutionExpire != null && _timerForSolutionExpire.isActive) {
+    if (_timerForSolutionExpire != null && _timerForSolutionExpire!.isActive) {
       _timerForSolutionExpire?.cancel();
     }
     super.dispose();
@@ -1771,7 +1771,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
     print("\n ${widget.realInsight?.toString()}");
     _timeValue = "00:00";
     if (widget.timer != null) {
-      _countDownValue = widget.timer - 1;
+      _countDownValue = widget.timer! - 1;
     }
     if (!shouldShowWidget()) {
       _runSolutionExpireTimer();
@@ -1787,7 +1787,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
       _setState();
     } else {
       if (timer != null && timer.isActive) {
-        timer?.cancel();
+        timer.cancel();
       }
     }
   }
@@ -1797,7 +1797,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
             widget.remainingTime == 0 ||
             DateTime.now()
                     .difference(DateTime.fromMillisecondsSinceEpoch(
-                        widget.remainingTime))
+                        widget.remainingTime!))
                     .inSeconds >=
                 0) ??
         true;
@@ -1826,7 +1826,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
         child: InkWell(
           onTap: () {
             if (widget.serviceNotAvailable != null) {
-              widget.serviceNotAvailable();
+              widget.serviceNotAvailable!();
             }
           },
           onDoubleTap: () {},
@@ -1845,7 +1845,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
               PlunesStrings.serviceNotAvailableText,
               style: TextStyle(
                 color: Color(CommonMethods.getColorHexFromStr("#1473E6")),
-                fontSize: AppConfig.smallFont - 2,
+                fontSize: AppConfig.smallFont! - 2,
                 fontWeight: FontWeight.normal,
               ),
             ),
@@ -1858,7 +1858,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
   Widget _getTimeWidget() {
     if (widget.remainingTime != null && widget.remainingTime != 0) {
       var duration = DateTime.now().difference(
-          DateTime.fromMillisecondsSinceEpoch(widget.remainingTime));
+          DateTime.fromMillisecondsSinceEpoch(widget.remainingTime!));
       if (duration.inDays.abs() > 1 || duration.inHours.abs() >= 24) {
         _timeValue =
             "${duration.inDays.abs() + 1} ${duration.inDays.abs() == 1 ? "day" : "days"}";
@@ -1955,10 +1955,10 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
         _setState();
       } else if (DateTime.now()
               .difference(
-                  DateTime.fromMillisecondsSinceEpoch(widget.remainingTime))
+                  DateTime.fromMillisecondsSinceEpoch(widget.remainingTime!))
               .inSeconds >=
           0) {
-        widget.getRealTimeInsights();
+        widget.getRealTimeInsights!();
         timer.cancel();
       }
       return;
@@ -1967,8 +1967,8 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
 
   Widget _getProfileImageWidget() {
     return (widget.imageUrl != null &&
-            widget.imageUrl.isNotEmpty &&
-            widget.imageUrl.contains("http"))
+            widget.imageUrl!.isNotEmpty &&
+            widget.imageUrl!.contains("http"))
         ? CircleAvatar(
             backgroundColor: Colors.transparent,
             child: Container(
@@ -2000,10 +2000,10 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
               Expanded(
                 child: RichText(
                     text: TextSpan(
-                        text: widget.patientName +
-                            " (${_realInsight.distance?.toStringAsFixed(0) ?? 1}km)",
+                        text: widget.patientName! +
+                            " (${_realInsight!.distance?.toStringAsFixed(0) ?? 1}km)",
                         style: TextStyle(
-                          fontSize: AppConfig.smallFont + 2,
+                          fontSize: AppConfig.smallFont! + 2,
                           color: Colors.black,
                           fontWeight: FontWeight.normal,
                         ))),
@@ -2014,21 +2014,21 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
           Container(
             margin: EdgeInsets.only(top: 2),
             child: Text(
-              widget.serviceName,
+              widget.serviceName!,
               style: TextStyle(
-                fontSize: AppConfig.verySmallFont + 1,
+                fontSize: AppConfig.verySmallFont! + 1,
                 color: PlunesColors.BLACKCOLOR,
                 fontWeight: FontWeight.normal,
               ),
             ),
           ),
-          (widget.centreLocation != null && widget.centreLocation.isNotEmpty)
+          (widget.centreLocation != null && widget.centreLocation!.isNotEmpty)
               ? Container(
                   margin: EdgeInsets.only(top: 2),
                   child: Text(
                     "${widget.centreLocation}",
                     style: TextStyle(
-                      fontSize: AppConfig.smallFont + 2,
+                      fontSize: AppConfig.smallFont! + 2,
                       color: PlunesColors.GREYCOLOR.withOpacity(0.9),
                       fontWeight: FontWeight.normal,
                     ),
@@ -2037,20 +2037,20 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
               : Container(),
           _getButtonsRow(),
           ((_realInsight != null &&
-                      _realInsight.expired != null &&
-                      _realInsight.expired) ||
+                      _realInsight!.expired != null &&
+                      _realInsight!.expired!) ||
                   (_realInsight != null &&
-                      _realInsight.booked != null &&
-                      _realInsight.booked) ||
+                      _realInsight!.booked != null &&
+                      _realInsight!.booked!) ||
                   shouldShowWidget())
               ? Container()
-              : (_realInsight.compRate != null && _realInsight.compRate > 0)
+              : (_realInsight!.compRate != null && _realInsight!.compRate! > 0)
                   ? Row(
                       children: <Widget>[
                         Padding(
                           padding: const EdgeInsets.only(right: 5),
                           child: Text(
-                            "${_realInsight.compRate?.toStringAsFixed(1)}%",
+                            "${_realInsight!.compRate?.toStringAsFixed(1)}%",
                             style: TextStyle(
                                 color: PlunesColors.RED,
                                 fontSize: AppConfig.smallFont),
@@ -2073,11 +2073,11 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                     )
                   : Container(),
           ((_realInsight != null &&
-                      _realInsight.expired != null &&
-                      _realInsight.expired) ||
+                      _realInsight!.expired != null &&
+                      _realInsight!.expired!) ||
                   (_realInsight != null &&
-                      _realInsight.booked != null &&
-                      _realInsight.booked))
+                      _realInsight!.booked != null &&
+                      _realInsight!.booked!))
               ? Container(
                   margin:
                       EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.5),
@@ -2086,12 +2086,12 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                     children: <Widget>[
                       Flexible(
                         child: Text(
-                          "${_realInsight.expirationMessage ?? PlunesStrings.NA}",
+                          "${_realInsight!.expirationMessage ?? PlunesStrings.NA}",
                           style: TextStyle(
                               fontSize: AppConfig.smallFont,
                               fontWeight: FontWeight.normal,
-                              color: (_realInsight.professionalBooked != null &&
-                                      _realInsight.professionalBooked)
+                              color: (_realInsight!.professionalBooked != null &&
+                                      _realInsight!.professionalBooked!)
                                   ? PlunesColors.GREENCOLOR
                                   : PlunesColors.ORANGE),
                           maxLines: 2,
@@ -2108,21 +2108,21 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
   }
 
   String _getButtonName() {
-    if (_realInsight.category != null &&
-        _realInsight.category.toLowerCase() ==
+    if (_realInsight!.category != null &&
+        _realInsight!.category!.toLowerCase() ==
             Constants.procedureKey.toLowerCase()) {
-      return (_realInsight.priceUpdated != null && _realInsight.priceUpdated)
+      return (_realInsight!.priceUpdated != null && _realInsight!.priceUpdated!)
           ? "Price submitted"
           : "Submit price";
     }
-    return (_realInsight.priceUpdated != null && _realInsight.priceUpdated)
+    return (_realInsight!.priceUpdated != null && _realInsight!.priceUpdated!)
         ? "Price Updated"
         : PlunesStrings.kindlyUpdateYourPrice;
   }
 
   Color _getButtonColour() {
-    if (_realInsight.category != null &&
-        _realInsight.category.toLowerCase() ==
+    if (_realInsight!.category != null &&
+        _realInsight!.category!.toLowerCase() ==
             Constants.procedureKey.toLowerCase()) {
       return Color(CommonMethods.getColorHexFromStr("#1D3861"));
     }
@@ -2130,8 +2130,8 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
   }
 
   Color _getButtonTextColour() {
-    if (_realInsight.category != null &&
-        _realInsight.category.toLowerCase() ==
+    if (_realInsight!.category != null &&
+        _realInsight!.category!.toLowerCase() ==
             Constants.procedureKey.toLowerCase()) {
       return PlunesColors.WHITECOLOR;
     }
@@ -2152,18 +2152,18 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                     splashColor: Colors.transparent,
                     highlightColor: Colors.transparent,
                     onTap: () {
-                      if (_realInsight.priceUpdated != null &&
-                          _realInsight.priceUpdated) {
+                      if (_realInsight!.priceUpdated != null &&
+                          _realInsight!.priceUpdated!) {
                         return;
                       }
-                      widget.openInsightPopup();
+                      widget.openInsightPopup!();
                     },
                     onDoubleTap: () {},
                     child: Container(
                         decoration: BoxDecoration(
                           color: _getButtonColour(),
-                          border: !(_realInsight.category != null &&
-                                  _realInsight.category.toLowerCase() ==
+                          border: !(_realInsight!.category != null &&
+                                  _realInsight!.category!.toLowerCase() ==
                                       Constants.procedureKey.toLowerCase())
                               ? Border.all(
                                   color: Color(CommonMethods.getColorHexFromStr(
@@ -2179,13 +2179,13 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                           _getButtonName(),
                           style: TextStyle(
                             color: _getButtonTextColour(),
-                            fontSize: AppConfig.smallFont - 2,
+                            fontSize: AppConfig.smallFont! - 2,
                             fontWeight: FontWeight.normal,
                           ),
                         )),
                   ),
                 ),
-          (_realInsight.suggested != null && _realInsight.suggested)
+          (_realInsight!.suggested != null && _realInsight!.suggested!)
               ? _getServiceNotAvailableButton()
               : Flexible(child: Container())
         ],

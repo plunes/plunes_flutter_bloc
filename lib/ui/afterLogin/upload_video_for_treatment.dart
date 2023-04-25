@@ -16,7 +16,7 @@ import 'package:plunes/res/StringsFile.dart';
 
 // ignore: must_be_immutable
 class UploadVideoForTreatment extends BaseActivity {
-  UserMedicalDetailBloc submitUserMedicalDetailBloc;
+  UserMedicalDetailBloc? submitUserMedicalDetailBloc;
 
   UploadVideoForTreatment({this.submitUserMedicalDetailBloc});
 
@@ -25,11 +25,12 @@ class UploadVideoForTreatment extends BaseActivity {
       _UploadVideoForTreatmentState();
 }
 
-class _UploadVideoForTreatmentState extends BaseState<UploadVideoForTreatment>
+class _UploadVideoForTreatmentState extends State<UploadVideoForTreatment>
     with TickerProviderStateMixin, ImagePickerListener, MethodCallBack {
-  AnimationController _animationController;
-  ImagePickerHandler _imagePicker;
-  List<UploadedReportUrl> _videoUrls;
+  final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  AnimationController? _animationController;
+  ImagePickerHandler? _imagePicker;
+  List<UploadedReportUrl>? _videoUrls;
 
   @override
   void initState() {
@@ -43,7 +44,7 @@ class _UploadVideoForTreatmentState extends BaseState<UploadVideoForTreatment>
         vsync: this, duration: const Duration(milliseconds: 500));
     _imagePicker = ImagePickerHandler(this, _animationController, true,
         methodCallBack: this);
-    _imagePicker.init();
+    _imagePicker!.init();
   }
 
   @override
@@ -52,7 +53,7 @@ class _UploadVideoForTreatmentState extends BaseState<UploadVideoForTreatment>
     super.dispose();
   }
 
-  void _showMessagePopup(String message, {bool shouldPop = false}) {
+  void _showMessagePopup(String? message, {bool shouldPop = false}) {
     if (mounted) {
       showDialog(
           context: context,
@@ -73,17 +74,17 @@ class _UploadVideoForTreatmentState extends BaseState<UploadVideoForTreatment>
   Widget build(BuildContext context) {
     return Material(
       child: SafeArea(
-        child: StreamBuilder<RequestState>(
-            stream: widget?.submitUserMedicalDetailBloc?.uploadFileStream,
+        child: StreamBuilder<RequestState?>(
+            stream: widget.submitUserMedicalDetailBloc?.uploadFileStream,
             builder: (context, snapshot) {
               if (snapshot.data is RequestInProgress) {
-                RequestInProgress requestInProgress = snapshot.data;
+                RequestInProgress? requestInProgress = snapshot.data as RequestInProgress?;
                 // print("hello ${requestInProgress?.data?.toString()}");
-                double progressValue = 0.0;
+                double? progressValue = 0.0;
                 if (requestInProgress != null &&
                     requestInProgress.data != null) {
                   progressValue = double.tryParse(
-                    requestInProgress?.data?.toString() ?? "0",
+                    requestInProgress.data?.toString() ?? "0",
                   );
                 }
                 return Container(
@@ -97,10 +98,10 @@ class _UploadVideoForTreatmentState extends BaseState<UploadVideoForTreatment>
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                         child: LinearProgressIndicator(
                           backgroundColor: Colors.grey,
-                          minHeight: 22,
+                          // minHeight: 22,
                           value: progressValue == 150
                               ? (0.0)
-                              : (progressValue / 100),
+                              : (progressValue! / 100),
                           valueColor: AlwaysStoppedAnimation<Color>(
                               PlunesColors.GREENCOLOR),
                         ),
@@ -125,19 +126,19 @@ class _UploadVideoForTreatmentState extends BaseState<UploadVideoForTreatment>
                   _showMessagePopup(PlunesStrings.uplaodSuccessMessage,
                       shouldPop: true);
                 });
-                RequestSuccess data = snapshot.data;
+                RequestSuccess data = snapshot.data as RequestSuccess;
                 if (data.additionalData != null &&
                     data.additionalData.toString() == Constants.typeVideo) {
                   _setImageUrls(data.response);
                 }
-                widget?.submitUserMedicalDetailBloc
+                widget.submitUserMedicalDetailBloc
                     ?.addIntoSubmitFileStream(null);
               } else if (snapshot.data is RequestFailed) {
-                RequestFailed _reqFailObj = snapshot.data;
+                RequestFailed? _reqFailObj = snapshot.data as RequestFailed?;
                 Future.delayed(Duration(milliseconds: 10)).then((value) {
                   _showMessagePopup(_reqFailObj?.failureCause);
                 });
-                widget?.submitUserMedicalDetailBloc
+                widget.submitUserMedicalDetailBloc
                     ?.addIntoSubmitFileStream(null);
               }
               return WillPopScope(
@@ -146,7 +147,7 @@ class _UploadVideoForTreatmentState extends BaseState<UploadVideoForTreatment>
                   return true;
                 },
                 child: Scaffold(
-                  appBar: getAppBar(context, "Upload Video", true),
+                  appBar: getAppBar(context, "Upload Video", true) as PreferredSizeWidget?,
                   key: scaffoldKey,
                   body: Builder(
                     builder: (context) {
@@ -163,7 +164,7 @@ class _UploadVideoForTreatmentState extends BaseState<UploadVideoForTreatment>
   }
 
   Widget getAppBar(BuildContext context, String title, bool isIosBackButton,
-      {Function func}) {
+      {Function? func}) {
     return AppBar(
         automaticallyImplyLeading: isIosBackButton,
         backgroundColor: Colors.white,
@@ -187,20 +188,8 @@ class _UploadVideoForTreatmentState extends BaseState<UploadVideoForTreatment>
   }
 
   _uploadVideo(File _image) {
-    widget.submitUserMedicalDetailBloc.uploadFile(_image,
+    widget.submitUserMedicalDetailBloc!.uploadFile(_image,
         fileType: Constants.typeVideo, shouldShowUploadProgress: true);
-  }
-
-  @override
-  fetchImageCallBack(File video) {
-    if (video != null) {
-      _uploadVideo(video);
-    } else {
-      if (mounted && widget.submitUserMedicalDetailBloc != null) {
-        widget.submitUserMedicalDetailBloc.addIntoSubmitFileStream(null);
-      }
-    }
-    // print("_image ${video?.path}");
   }
 
   Widget _getBody() {
@@ -237,17 +226,29 @@ class _UploadVideoForTreatmentState extends BaseState<UploadVideoForTreatment>
       _videoUrls = [];
     }
     if (_medicalFileResponseModel.data != null &&
-        _medicalFileResponseModel.data.reports != null &&
-        _medicalFileResponseModel.data.reports.isNotEmpty) {
-      _videoUrls.add(_medicalFileResponseModel.data.reports.first);
+        _medicalFileResponseModel.data!.reports != null &&
+        _medicalFileResponseModel.data!.reports!.isNotEmpty) {
+      _videoUrls!.add(_medicalFileResponseModel.data!.reports!.first);
     }
   }
 
   @override
   progressCallBack() {
     if (mounted && widget.submitUserMedicalDetailBloc != null) {
-      widget.submitUserMedicalDetailBloc
+      widget.submitUserMedicalDetailBloc!
           .addIntoSubmitFileStream(RequestInProgress(data: 150));
     }
+  }
+
+  @override
+  fetchImageCallBack(video) {
+    if (video != null) {
+      _uploadVideo(video);
+    } else {
+      if (mounted && widget.submitUserMedicalDetailBloc != null) {
+        widget.submitUserMedicalDetailBloc!.addIntoSubmitFileStream(null);
+      }
+    }
+    // print("_image ${video?.path}");
   }
 }

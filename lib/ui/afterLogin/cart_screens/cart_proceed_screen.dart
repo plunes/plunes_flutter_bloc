@@ -18,8 +18,8 @@ import 'package:plunes/ui/afterLogin/new_common_widgets/common_widgets.dart';
 // ignore: must_be_immutable
 class CartProceedScreen extends BaseActivity {
   List<BookingIds> bookingIds;
-  num price, credits;
-  CartOuterModel cartOuterModel;
+  num? price, credits;
+  CartOuterModel? cartOuterModel;
 
   CartProceedScreen(this.price, this.bookingIds,
       {this.credits, this.cartOuterModel});
@@ -28,11 +28,13 @@ class CartProceedScreen extends BaseActivity {
   _CartProceedScreenState createState() => _CartProceedScreenState();
 }
 
-class _CartProceedScreenState extends BaseState<CartProceedScreen> {
-  User _userData;
-  PremiumBenefitsModel _premiumBenefitsModel;
-  UserBloc _userBloc;
-  BankOfferModel _bankModel;
+// class _CartProceedScreenState extends BaseState<CartProceedScreen> {
+class _CartProceedScreenState extends State<CartProceedScreen> {
+final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  User? _userData;
+  PremiumBenefitsModel? _premiumBenefitsModel;
+  late UserBloc _userBloc;
+  BankOfferModel? _bankModel;
   bool _useCredits = false;
 
   @override
@@ -57,7 +59,7 @@ class _CartProceedScreenState extends BaseState<CartProceedScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: getAppBar(context, "Checkout", true),
+        appBar: getAppBar(context, "Checkout", true) as PreferredSizeWidget?,
         body: _getBody(),
       ),
       top: false,
@@ -66,7 +68,7 @@ class _CartProceedScreenState extends BaseState<CartProceedScreen> {
   }
 
   Widget getAppBar(BuildContext context, String title, bool isIosBackButton,
-      {Function func}) {
+      {Function? func}) {
     return AppBar(
         automaticallyImplyLeading: isIosBackButton,
         backgroundColor: Colors.white,
@@ -190,10 +192,10 @@ class _CartProceedScreenState extends BaseState<CartProceedScreen> {
 
   String _getFirstName() {
     String userName = "User";
-    if (_userData.name != null && _userData.name.trim().isNotEmpty) {
-      if (_userData.name.split(" ") != null &&
-          _userData.name.split(" ").isNotEmpty) {
-        userName = _userData.name.split(" ").first;
+    if (_userData!.name != null && _userData!.name!.trim().isNotEmpty) {
+      if (_userData!.name!.split(" ") != null &&
+          _userData!.name!.split(" ").isNotEmpty) {
+        userName = _userData!.name!.split(" ").first;
       } else {
         userName = "";
       }
@@ -208,7 +210,7 @@ class _CartProceedScreenState extends BaseState<CartProceedScreen> {
         children: [
           Container(
             child: Text(
-              _bankModel.confirmTitle ?? "Confirm Your booking & Pay Now",
+              _bankModel!.confirmTitle ?? "Confirm Your booking & Pay Now",
               style: TextStyle(fontSize: 20, color: Colors.black),
             ),
           ),
@@ -233,7 +235,7 @@ class _CartProceedScreenState extends BaseState<CartProceedScreen> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.all(Radius.circular(6)),
                   child: CustomWidgets().getImageFromUrl(
-                      _bankModel?.data[index]?.titleImage ?? '',
+                      _bankModel?.data![index]?.titleImage ?? '',
                       boxFit: BoxFit.fill),
                 ),
               );
@@ -256,10 +258,10 @@ class _CartProceedScreenState extends BaseState<CartProceedScreen> {
       child: Column(
         children: [
           (_bankModel == null ||
-                  _bankModel.success == null ||
-                  !(_bankModel.success) ||
-                  _bankModel.data == null ||
-                  _bankModel.data.isEmpty)
+                  _bankModel!.success == null ||
+                  !_bankModel!.success! ||
+                  _bankModel!.data == null ||
+                  _bankModel!.data!.isEmpty)
               ? Container()
               : _offerWidget(),
           _getCartItemsWidget(),
@@ -280,9 +282,9 @@ class _CartProceedScreenState extends BaseState<CartProceedScreen> {
         child: Column(
           children: [
             (widget.cartOuterModel != null &&
-                    widget.cartOuterModel.data != null &&
-                    widget.cartOuterModel.data.cartId != null &&
-                    widget.cartOuterModel.data.cartId.trim().isNotEmpty)
+                    widget.cartOuterModel!.data != null &&
+                    widget.cartOuterModel!.data!.cartId != null &&
+                    widget.cartOuterModel!.data!.cartId!.trim().isNotEmpty)
                 ? Row(
                     children: [
                       Column(
@@ -297,7 +299,7 @@ class _CartProceedScreenState extends BaseState<CartProceedScreen> {
                           ),
                           Container(
                             child: Text(
-                              widget.cartOuterModel.data.cartId ?? "",
+                              widget.cartOuterModel!.data!.cartId ?? "",
                               style: TextStyle(
                                   fontSize: 18, color: PlunesColors.BLACKCOLOR),
                             ),
@@ -350,7 +352,7 @@ class _CartProceedScreenState extends BaseState<CartProceedScreen> {
     return ListView.builder(
       shrinkWrap: true,
       padding: EdgeInsets.zero,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -366,7 +368,7 @@ class _CartProceedScreenState extends BaseState<CartProceedScreen> {
                       "${_itemList[index]?.serviceName ?? PlunesStrings.NA}",
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
+                      style: const TextStyle(
                           color: PlunesColors.BLACKCOLOR,
                           fontWeight: FontWeight.normal,
                           fontSize: 18),
@@ -376,15 +378,16 @@ class _CartProceedScreenState extends BaseState<CartProceedScreen> {
                 Expanded(
                     flex: 1,
                     child: Container(
-                      margin: EdgeInsets.only(left: 3),
+                      margin: const EdgeInsets.only(left: 3),
                       alignment: Alignment.centerRight,
                       child: RichText(
                         text: TextSpan(
                             children: [
                               TextSpan(
-                                  text:
-                                      "\u20B9${_itemList[index]?.amount ?? 0}",
-                                  style: TextStyle(
+                                  text: "\u20B9 ${!_itemList[index].haveInsurance! ? '${_itemList[index]?.amount ?? 0}' : '0'}",
+
+                                  // text: "as\u20B9${_itemList[index]?.amount ?? 0}",
+                                  style: const TextStyle(
                                       color: PlunesColors.BLACKCOLOR,
                                       fontWeight: FontWeight.normal,
                                       fontSize: 18))
@@ -409,10 +412,10 @@ class _CartProceedScreenState extends BaseState<CartProceedScreen> {
               alignment: Alignment.centerLeft,
               child: Text(
                 CommonMethods.getStringInCamelCase(
-                    _itemList[index]?.serviceProviderName),
+                    _itemList[index]?.serviceProviderName)!,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 14),
+                style: const TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 14),
               ),
             ),
             _itemList.length == index + 1
@@ -447,23 +450,24 @@ class _CartProceedScreenState extends BaseState<CartProceedScreen> {
             count: 1,
             serviceName: element.serviceName,
             serviceProviderId: element.professionalId,
-            serviceProviderName: element.service?.name);
+            serviceProviderName: element.service?.name,
+            haveInsurance: element.haveInsurance);
 
-        print(_model.toString());
-        if (_itemList.contains(_model)) {
-          CartItemMiniModel alreadyFilledItem =
-              _itemList[_itemList.indexOf(_model)];
-          if (alreadyFilledItem != null &&
-              alreadyFilledItem.serviceName == _model.serviceName &&
-              alreadyFilledItem.serviceProviderName ==
-                  _model.serviceProviderName) {
-            alreadyFilledItem.count++;
-          } else {
-            _itemList.add(_model);
-          }
-        } else {
+        // print(_model.toString());
+        // if (_itemList.contains(_model)) {
+        //   CartItemMiniModel alreadyFilledItem =
+        //       _itemList[_itemList.indexOf(_model)];
+        //   if (alreadyFilledItem != null &&
+        //       alreadyFilledItem.serviceName == _model.serviceName &&
+        //       alreadyFilledItem.serviceProviderName ==
+        //           _model.serviceProviderName) {
+        //     alreadyFilledItem.count!+1;
+        //   } else {
+        //     _itemList.add(_model);
+        //   }
+        // } else {
           _itemList.add(_model);
-        }
+        // }
       });
     }
     return _itemList;
@@ -531,8 +535,8 @@ class _CartProceedScreenState extends BaseState<CartProceedScreen> {
 
   Widget _getBenefitsWidget() {
     if (_premiumBenefitsModel == null ||
-        _premiumBenefitsModel.data == null ||
-        _premiumBenefitsModel.data.isEmpty) {
+        _premiumBenefitsModel!.data == null ||
+        _premiumBenefitsModel!.data!.isEmpty) {
       return Container();
     }
     return Container(
@@ -561,8 +565,8 @@ class _CartProceedScreenState extends BaseState<CartProceedScreen> {
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) => CommonWidgets()
-                  .getPremiumBenefitsWidget(_premiumBenefitsModel.data[index]),
-              itemCount: _premiumBenefitsModel.data.length,
+                  .getPremiumBenefitsWidget(_premiumBenefitsModel!.data![index]),
+              itemCount: _premiumBenefitsModel!.data!.length,
             ),
           )
         ],
@@ -579,8 +583,9 @@ class _CartProceedScreenState extends BaseState<CartProceedScreen> {
     });
   }
 
+
   Widget _getUseCreditsWidget() {
-    return (widget.credits != null && widget.credits > 0)
+    return (widget.credits != null && widget.credits! > 0)
         ? Container(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -655,11 +660,12 @@ class _CartProceedScreenState extends BaseState<CartProceedScreen> {
 }
 
 class CartItemMiniModel {
-  String serviceName, serviceProviderName, serviceProviderId;
+  String? serviceName, serviceProviderName, serviceProviderId;
+  bool? haveInsurance;
 
   @override
   String toString() {
-    return 'CartItemMiniModel{serviceName: $serviceName, serviceProviderName: $serviceProviderName, serviceProviderId: $serviceProviderId, count: $count, amount: $amount}';
+    return 'CartItemMiniModel{serviceName: $serviceName, serviceProviderName: $serviceProviderName, serviceProviderId: $serviceProviderId, count: $count, amount: $amount, haveInsurance: $haveInsurance}';
   }
 
   @override
@@ -671,12 +677,13 @@ class CartItemMiniModel {
 
   @override
   int get hashCode => serviceProviderId.hashCode;
-  num count, amount;
+  num? count, amount;
 
   CartItemMiniModel(
       {this.serviceName,
       this.amount,
       this.count,
       this.serviceProviderName,
-      this.serviceProviderId});
+      this.serviceProviderId,
+      this.haveInsurance});
 }

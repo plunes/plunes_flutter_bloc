@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:location/location.dart' as loc;
-import 'package:package_info/package_info.dart';
-import 'package:permission/permission.dart';
+// import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
@@ -22,6 +23,7 @@ import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
 import 'package:plunes/ui/afterLogin/HomeScreen.dart';
+
 import 'GuidedTour.dart';
 
 /*
@@ -39,9 +41,9 @@ class SplashScreen extends BaseActivity {
 }
 
 class _SplashScreenState extends State<SplashScreen> implements DialogCallBack {
-  Timer mTimer;
-  Preferences preferences;
-  UserBloc _userBloc;
+  Timer? mTimer;
+  late Preferences preferences;
+  late UserBloc _userBloc;
   var location = new loc.Location();
 
   @override
@@ -49,7 +51,7 @@ class _SplashScreenState extends State<SplashScreen> implements DialogCallBack {
     _userBloc = UserBloc();
     AnalyticsProvider().registerEvent(AnalyticsKeys.sessionStartKey);
     super.initState();
-    _checkAppUpdateAvailable();
+    // _checkAppUpdateAvailable();
     startTime();
   }
 
@@ -156,17 +158,24 @@ class _SplashScreenState extends State<SplashScreen> implements DialogCallBack {
 
     try {
       // Using default duration to force fetching from remote server.
-      await remoteConfig.fetch(expiration: const Duration(seconds: 0));
-      await remoteConfig.activateFetched();
+
+      await remoteConfig.fetch();
+      // await remoteConfig.fetch(expiration: const Duration(seconds: 0));
+      // await remoteConfig.activateFetched();
+      await remoteConfig.fetchAndActivate();
       remoteConfig.getString('force_update_current_version');
       double newVersion = double.parse(remoteConfig
           .getString('force_update_current_version')
           .trim()
           .replaceAll(".", ""));
+
+      print("verion-new=$newVersion");
+      print("verion-cur=$currentVersion");
+
       if (newVersion > currentVersion) {
         Future.delayed(Duration(seconds: 2)).then((value) {
           Navigator.pushAndRemoveUntil(
-              AppConfig.getNavKey().currentState.overlay.context,
+              AppConfig.getNavKey()!.currentState!.overlay!.context,
               MaterialPageRoute(
                   builder: (context) => Container(
                         color: PlunesColors.LIGHTGREYCOLOR.withOpacity(0.5),
@@ -175,7 +184,8 @@ class _SplashScreenState extends State<SplashScreen> implements DialogCallBack {
           updateAlertDialog();
         });
       }
-    } on FetchThrottledException catch (exception) {
+    // }
+    // on FetchThrottledException catch (exception) {
       // Fetch throttled.
 //      print(exception);
     } catch (exception) {
@@ -186,7 +196,7 @@ class _SplashScreenState extends State<SplashScreen> implements DialogCallBack {
 
   updateAlertDialog() {
     showDialog(
-        context: AppConfig.getNavKey().currentState.overlay.context,
+        context: AppConfig.getNavKey()!.currentState!.overlay!.context,
         barrierDismissible: false,
         builder: (context) {
           return AlertDialog(
@@ -199,27 +209,27 @@ class _SplashScreenState extends State<SplashScreen> implements DialogCallBack {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
                   Container(
-                      padding: EdgeInsets.only(top: 3.5),
+                      padding: const EdgeInsets.only(top: 3.5),
                       width: AppConfig.horizontalBlockSize * 30,
                       height: AppConfig.verticalBlockSize * 15,
                       child: Image.asset(PlunesImages.updateApp)),
-                  SizedBox(height: 10),
-                  Text(
+                  const SizedBox(height: 10),
+                  const Text(
                     PlunesStrings.newVersionAvailable,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
                         color: PlunesColors.BLACKCOLOR),
                   ),
-                  SizedBox(height: 5),
-                  Text(
+                  const SizedBox(height: 5),
+                  const Text(
                     PlunesStrings.usingOlderVersion,
                     textAlign: TextAlign.center,
                     style:
                         TextStyle(fontSize: 15, color: PlunesColors.BLACKCOLOR),
                   ),
                   SizedBox(height: AppConfig.verticalBlockSize * 2),
-                  FlatButton(
+                  ElevatedButton(
                       onPressed: () {
                         if (Platform.isIOS) {
                           LauncherUtil.launchUrl(PlunesStrings.appleStoreUrl);
@@ -229,9 +239,8 @@ class _SplashScreenState extends State<SplashScreen> implements DialogCallBack {
                         }
                         return;
                       },
-                      color: PlunesColors.GREENCOLOR,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50)),
+                      // color: PlunesColors.GREENCOLOR,
+                      // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
                       child: Container(
                         width: AppConfig.horizontalBlockSize * 20,
                         child: Text(

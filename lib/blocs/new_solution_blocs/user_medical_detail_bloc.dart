@@ -7,44 +7,43 @@ import 'package:plunes/requester/request_states.dart';
 import 'package:rxdart/rxdart.dart';
 
 class UserMedicalDetailBloc extends BlocBase {
-  final _submitDetailStreamProvider = PublishSubject<RequestState>();
+  final _submitDetailStreamProvider = PublishSubject<RequestState?>();
 
-  Observable<RequestState> get submitDetailStream =>
+  Stream<RequestState?> get submitDetailStream =>
       _submitDetailStreamProvider.stream;
-  final _uploadFileStreamProvider = PublishSubject<RequestState>();
+  final _uploadFileStreamProvider = PublishSubject<RequestState?>();
 
-  Observable<RequestState> get uploadFileStream =>
+  Stream<RequestState?> get uploadFileStream =>
       _uploadFileStreamProvider.stream;
 
-  final _fetchDetailStreamProvider = PublishSubject<RequestState>();
+  final _fetchDetailStreamProvider = PublishSubject<RequestState?>();
 
-  Observable<RequestState> get fetchDetailStream =>
+  Stream<RequestState?> get fetchDetailStream =>
       _fetchDetailStreamProvider.stream;
 
   Future<RequestState> submitUserMedicalDetail(
       Map<String, dynamic> postData) async {
     addIntoSubmitMedicalDetailStream(RequestInProgress());
-    var result =
-        await SubmitMedicalDetailRepo().submitUserMedicalDetail(postData);
+    var result = await SubmitMedicalDetailRepo().submitUserMedicalDetail(postData);
     addIntoSubmitMedicalDetailStream(result);
     return result;
   }
 
   @override
   void dispose() {
-    _submitDetailStreamProvider?.close();
-    _uploadFileStreamProvider?.close();
-    _fetchDetailStreamProvider?.close();
+    _submitDetailStreamProvider.close();
+    _uploadFileStreamProvider.close();
+    _fetchDetailStreamProvider.close();
     super.dispose();
   }
 
-  void addIntoSubmitMedicalDetailStream(RequestState data) {
+  void addIntoSubmitMedicalDetailStream(RequestState? data) {
     super.addStateInGenericStream(_submitDetailStreamProvider, data);
   }
 
-  Future<RequestState> uploadFile(File file,
-      {String fileType,
-      Map<String, dynamic> fileData,
+  Future<RequestState> uploadFile(dynamic file,
+      {String? fileType,
+      Map<String, dynamic>? fileData,
       bool shouldShowUploadProgress = false}) async {
     addIntoSubmitFileStream(RequestInProgress());
     var result = await SubmitMedicalDetailRepo().uploadFile(file,
@@ -57,7 +56,7 @@ class UserMedicalDetailBloc extends BlocBase {
     return result;
   }
 
-  void addIntoSubmitFileStream(RequestState data) {
+  void addIntoSubmitFileStream(RequestState? data) {
     super.addStateInGenericStream(_uploadFileStreamProvider, data);
   }
 
@@ -69,7 +68,7 @@ class UserMedicalDetailBloc extends BlocBase {
     return result;
   }
 
-  void addIntoFetchMedicalDetailStream(RequestState data) {
+  void addIntoFetchMedicalDetailStream(RequestState? data) {
     super.addStateInGenericStream(_fetchDetailStreamProvider, data);
   }
 }

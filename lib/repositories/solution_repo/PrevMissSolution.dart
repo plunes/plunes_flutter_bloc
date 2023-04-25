@@ -12,25 +12,25 @@ class PrevMissSolutionRepo {
         url: Urls.PREV_SOLUTION_URL,
         requestType: HttpRequestMethods.HTTP_GET,
         headerIncluded: true);
-    if (result.isRequestSucceed) {
+    if (result!.isRequestSucceed!) {
       return RequestSuccess(
-          response: PrevSearchedSolution.fromJson(result.response.data));
+          response: PrevSearchedSolution.fromJson(result.response!.data));
     } else {
       return RequestFailed(failureCause: result.failureCause);
     }
   }
 
-  Future<RequestState> getUserReport(String userReportId) async {
+  Future<RequestState> getUserReport(String? userReportId) async {
     //602d1c5cd08fe0328bb8c7fb
     var result = await DioRequester().requestMethod(
         url: Urls.GET_REPORT_BY_REPORT_ID,
         requestType: HttpRequestMethods.HTTP_GET,
         queryParameter: {"userReportId": userReportId},
         headerIncluded: true);
-    if (result.isRequestSucceed) {
+    if (result!.isRequestSucceed!) {
       UserReportOuterModel _userReport;
       try {
-        _userReport = UserReportOuterModel.fromJson(result.response.data);
+        _userReport = UserReportOuterModel.fromJson(result.response!.data);
       } catch (e) {
         return RequestFailed(failureCause: plunesStrings.somethingWentWrong);
       }

@@ -17,7 +17,7 @@ class ExploreMainBloc extends BlocBase {
   }
 
   @override
-  void addIntoStream(RequestState result) {
+  void addIntoStream(RequestState? result) {
     super.addIntoStream(result);
   }
 

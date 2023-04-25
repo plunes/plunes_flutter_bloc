@@ -10,20 +10,23 @@ import 'package:plunes/res/ColorsFile.dart';
 
 // ignore: must_be_immutable
 class FacilityDetailScreen extends BaseActivity {
-  final String profId;
-  final String specialityId, speciality;
+  final String? profId;
+  final String? specialityId, speciality;
 
+  //
   FacilityDetailScreen({this.profId, this.specialityId, this.speciality});
 
   @override
   _FacilityDetailScreenState createState() => _FacilityDetailScreenState();
 }
 
-class _FacilityDetailScreenState extends BaseState<FacilityDetailScreen> {
-  UserBloc _userBloc;
-  ServiceDetailModel _serviceDetailModel;
+// class _FacilityDetailScreenState extends BaseState<FacilityDetailScreen> {
+class _FacilityDetailScreenState extends State<FacilityDetailScreen> {
+final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  UserBloc? _userBloc;
+  ServiceDetailModel? _serviceDetailModel;
 
-  String _failureCause;
+  String? _failureCause;
 
   @override
   void initState() {
@@ -42,18 +45,18 @@ class _FacilityDetailScreenState extends BaseState<FacilityDetailScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: widget.getAppBar(context, widget.speciality ?? "", true),
-        body: StreamBuilder<RequestState>(
-            stream: _userBloc.serviceRelatedToSpecialityStream,
+        appBar: widget.getAppBar(context, widget.speciality ?? "", true) as PreferredSizeWidget?,
+        body: StreamBuilder<RequestState?>(
+            stream: _userBloc!.serviceRelatedToSpecialityStream,
             initialData:
                 (_serviceDetailModel == null) ? RequestInProgress() : null,
             builder: (context, snapshot) {
               if (snapshot.data is RequestSuccess) {
-                RequestSuccess successObject = snapshot.data;
+                RequestSuccess successObject = snapshot.data as RequestSuccess;
                 _serviceDetailModel = successObject.response;
                 _userBloc?.addStateInServiceRelatedToSpecialityStream(null);
               } else if (snapshot.data is RequestFailed) {
-                RequestFailed _failedObj = snapshot.data;
+                RequestFailed? _failedObj = snapshot.data as RequestFailed?;
                 _failureCause = _failedObj?.failureCause;
                 _userBloc?.addStateInServiceRelatedToSpecialityStream(null);
               } else if (snapshot.data is RequestInProgress) {
@@ -62,11 +65,11 @@ class _FacilityDetailScreenState extends BaseState<FacilityDetailScreen> {
                 );
               }
               return (_serviceDetailModel == null ||
-                      (_serviceDetailModel.success != null &&
-                          !_serviceDetailModel.success) ||
-                      _serviceDetailModel.data == null ||
-                      _serviceDetailModel.data.services == null ||
-                      _serviceDetailModel.data.services.isEmpty)
+                      (_serviceDetailModel!.success != null &&
+                          !_serviceDetailModel!.success!) ||
+                      _serviceDetailModel!.data == null ||
+                      _serviceDetailModel!.data!.services == null ||
+                      _serviceDetailModel!.data!.services!.isEmpty)
                   ? Container(
                       margin: EdgeInsets.symmetric(
                           horizontal: AppConfig.horizontalBlockSize * 3),
@@ -91,7 +94,7 @@ class _FacilityDetailScreenState extends BaseState<FacilityDetailScreen> {
       child: ListView.builder(
         shrinkWrap: true,
         itemBuilder: (context, index) {
-          var serviceData = _serviceDetailModel?.data?.services[index];
+          ServiceDetailDataModel serviceData = _serviceDetailModel!.data!.services![index];
           return Card(
             margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 1.5),
             color: Color(CommonMethods.getColorHexFromStr("#FCFCFC")),
@@ -104,7 +107,7 @@ class _FacilityDetailScreenState extends BaseState<FacilityDetailScreen> {
                 children: [
                   InkWell(
                     onTap: () {
-                      serviceData.isExpanded = !serviceData.isExpanded;
+                      serviceData.isExpanded = !serviceData.isExpanded!;
                       _setState();
                     },
                     child: Row(
@@ -130,7 +133,7 @@ class _FacilityDetailScreenState extends BaseState<FacilityDetailScreen> {
                       ],
                     ),
                   ),
-                  (serviceData.isExpanded)
+                  serviceData.isExpanded!
                       ? Container(
                           margin: EdgeInsets.symmetric(
                               vertical: AppConfig.verticalBlockSize * 1.4),
@@ -139,13 +142,13 @@ class _FacilityDetailScreenState extends BaseState<FacilityDetailScreen> {
                           color: PlunesColors.GREYCOLOR,
                         )
                       : Container(),
-                  serviceData.isExpanded
+                  serviceData.isExpanded!
                       ? Container(
                           child: Column(
                             children: [
                               Row(
                                 children: [
-                                  Expanded(
+                                 null != serviceData?.duration && serviceData!.duration!.isNotEmpty ?  Expanded(
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -170,8 +173,8 @@ class _FacilityDetailScreenState extends BaseState<FacilityDetailScreen> {
                                         ),
                                       ],
                                     ),
-                                  ),
-                                  Expanded(
+                                  ) : Container(),
+                                  null != serviceData?.sittings &&  serviceData!.sittings!.isNotEmpty ? Expanded(
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -197,10 +200,10 @@ class _FacilityDetailScreenState extends BaseState<FacilityDetailScreen> {
                                         ),
                                       ],
                                     ),
-                                  ),
+                                  ) : Container(),
                                 ],
                               ),
-                              Container(
+                              null != serviceData?.definitions && serviceData!.definitions!.isNotEmpty ? Container(
                                 alignment: Alignment.topLeft,
                                 margin: EdgeInsets.only(
                                     top: AppConfig.verticalBlockSize * 2.5),
@@ -211,8 +214,8 @@ class _FacilityDetailScreenState extends BaseState<FacilityDetailScreen> {
                                       color: PlunesColors.BLACKCOLOR,
                                       fontWeight: FontWeight.normal),
                                 ),
-                              ),
-                              Row(
+                              ) : Container(),
+                              null != serviceData.definitions && serviceData.definitions!.isNotEmpty ? Row(
                                 children: [
                                   Flexible(
                                     child: Container(
@@ -221,7 +224,7 @@ class _FacilityDetailScreenState extends BaseState<FacilityDetailScreen> {
                                             top: AppConfig.verticalBlockSize *
                                                 2.5),
                                         child: Text(
-                                          serviceData?.definitions ?? "",
+                                          serviceData.definitions ?? "",
                                           textAlign: TextAlign.left,
                                           style: TextStyle(
                                               fontSize: 12,
@@ -232,20 +235,20 @@ class _FacilityDetailScreenState extends BaseState<FacilityDetailScreen> {
                                         )),
                                   ),
                                 ],
-                              ),
-                              Container(
+                              ) : Container(),
+                              null != serviceData?.dnd && serviceData!.dnd!.isNotEmpty ? Container(
                                 alignment: Alignment.topLeft,
                                 margin: EdgeInsets.only(
                                     top: AppConfig.verticalBlockSize * 2.5),
-                                child: Text(
+                                child: const Text(
                                   "Dos And Don'ts",
                                   style: TextStyle(
                                       fontSize: 14,
                                       color: PlunesColors.BLACKCOLOR,
                                       fontWeight: FontWeight.normal),
                                 ),
-                              ),
-                              Row(
+                              ) : Container(),
+                              null != serviceData.dnd && serviceData.dnd!.isNotEmpty ? Row(
                                 children: [
                                   Flexible(
                                     child: Container(
@@ -254,7 +257,7 @@ class _FacilityDetailScreenState extends BaseState<FacilityDetailScreen> {
                                             top: AppConfig.verticalBlockSize *
                                                 2.5),
                                         child: Text(
-                                          serviceData?.dnd ?? "",
+                                          serviceData.dnd.toString() ?? "",
                                           textAlign: TextAlign.left,
                                           style: TextStyle(
                                               fontSize: 12,
@@ -265,7 +268,7 @@ class _FacilityDetailScreenState extends BaseState<FacilityDetailScreen> {
                                         )),
                                   ),
                                 ],
-                              ),
+                              ) : Container(),
                             ],
                           ),
                         )
@@ -287,6 +290,6 @@ class _FacilityDetailScreenState extends BaseState<FacilityDetailScreen> {
   }
 
   void _getSpecialityDetail() {
-    _userBloc.getServicesOfSpeciality(widget.specialityId, widget.profId);
+    _userBloc!.getServicesOfSpeciality(widget.specialityId, widget.profId);
   }
 }

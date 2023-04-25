@@ -2,12 +2,12 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
-import 'package:connectivity/connectivity.dart';
-import 'package:device_info/device_info.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_holo_date_picker/flutter_holo_date_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:intro_slider/intro_slider.dart';
 import 'package:plunes/Utils/app_config.dart';
@@ -19,8 +19,8 @@ import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_holo_date_picker/flutter_holo_date_picker.dart';
 
 /*
  * Created by - Plunes Technologies .
@@ -29,9 +29,9 @@ import 'package:flutter_holo_date_picker/flutter_holo_date_picker.dart';
  */
 
 class CommonMethods {
-  static List<SpecialityModel> catalogueLists = new List();
+  static List<SpecialityModel>? catalogueLists = [];
   static bool checkOTPVerification = true; // true for production
-  static BuildContext globalContext;
+  static BuildContext? globalContext;
 
   ///Below method is to navigate the user to the received page.
   static Future<dynamic> goToPage(BuildContext buildContext, dynamic) async {
@@ -87,14 +87,16 @@ class CommonMethods {
   }
 
   static showLongToast(String message,
-      {bool centerGravity = false, Color bgColor}) {
-    Fluttertoast.showToast(
-        msg: message,
-        gravity: centerGravity ? ToastGravity.TOP : ToastGravity.BOTTOM,
-        backgroundColor: (bgColor == null) ? Colors.transparent : bgColor,
-        textColor: Colors.black,
-        toastLength: Toast.LENGTH_LONG,
-        timeInSecForIos: 2);
+      {bool centerGravity = false, Color? bgColor}) {
+    Toast.show(message, duration: Toast.lengthShort, gravity:  Toast.bottom);
+
+
+    // Fluttertoast.showToast(
+    //     msg: message,
+    //     gravity: centerGravity ? ToastGravity.TOP : ToastGravity.BOTTOM,
+    //     backgroundColor: (bgColor == null) ? Colors.transparent : bgColor,
+    //     textColor: Colors.black,
+    //     toastLength: Toast.LENGTH_LONG,);
   }
 
   ///Below method is here for convert string color code into Hex color code.
@@ -135,7 +137,7 @@ class CommonMethods {
   static Future<bool> checkInternetConnectivity() async {
     String connectionStatus;
     bool isConnected = false;
-    final Connectivity _connectivity = Connectivity();
+    final _connectivity = Connectivity();
     try {
       connectionStatus = (await _connectivity.checkConnectivity()).toString();
       if (await _connectivity.checkConnectivity() == ConnectivityResult.mobile)
@@ -215,7 +217,7 @@ class CommonMethods {
   static bool validateEmail(String value) {
     Pattern pattern =
         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-    RegExp regex = new RegExp(pattern);
+    RegExp regex = new RegExp(pattern as String);
     if (!regex.hasMatch(value))
       return false;
     else
@@ -241,7 +243,7 @@ class CommonMethods {
   static Future<String> selectDate(BuildContext context) async {
     var now = new DateTime.now();
     DateTime twelveYearsBack = now.subtract(new Duration(days: 0)); //3650
-    final DateTime picked = await showDatePicker(
+    final DateTime? picked = await showDatePicker(
         context: context,
         initialDate: twelveYearsBack,
         firstDate: new DateTime(1900),
@@ -258,7 +260,7 @@ class CommonMethods {
     if (isDoc) {
       twelveYearsBack = DateTime(now.year - 22, now.month, now.day);
     }
-    final DateTime picked = await DatePicker.showSimpleDatePicker(
+    final DateTime? picked = await DatePicker.showSimpleDatePicker(
       context,
       initialDate: twelveYearsBack,
       firstDate: new DateTime(1900),
@@ -277,13 +279,13 @@ class CommonMethods {
     TimeOfDay _startTime = TimeOfDay(
         hour: int.parse(time.split(":")[0]),
         minute: int.parse(time.split(":")[1].substring(0, 2)));
-    final TimeOfDay picker = await showTimePicker(
+    final TimeOfDay? picker = await showTimePicker(
       context: context,
       initialTime: _startTime,
-      builder: (BuildContext context, Widget child) {
+      builder: (BuildContext context, Widget? child) {
         return MediaQuery(
           data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
-          child: child,
+          child: child!,
         );
       },
     );
@@ -319,7 +321,7 @@ class CommonMethods {
         title: new Text(title),
         content: new Text(content),
         actions: <Widget>[
-          new FlatButton(
+          new ElevatedButton(
             onPressed: () {
               if (title == plunesStrings.success) {
                 Navigator.pop(context);
@@ -415,12 +417,11 @@ class CommonMethods {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Expanded(
-                          child: FlatButton(
-                              highlightColor: Colors.transparent,
-                              hoverColor: Colors.transparent,
-                              splashColor:
-                                  PlunesColors.SPARKLINGGREEN.withOpacity(.1),
-                              focusColor: Colors.transparent,
+                          child: ElevatedButton(
+                              // highlightColor: Colors.transparent,
+                              // hoverColor: Colors.transparent,
+                              // splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                              // focusColor: Colors.transparent,
                               onPressed: () =>
                                   callBack.dialogCallBackFunction('CANCEL'),
                               child: Container(
@@ -452,12 +453,11 @@ class CommonMethods {
                           width: 0.5,
                         ),
                         Expanded(
-                          child: FlatButton(
-                              highlightColor: Colors.transparent,
-                              hoverColor: Colors.transparent,
-                              splashColor:
-                                  PlunesColors.SPARKLINGGREEN.withOpacity(.1),
-                              focusColor: Colors.transparent,
+                          child: ElevatedButton(
+                              // highlightColor: Colors.transparent,
+                              // hoverColor: Colors.transparent,
+                              // splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                              // focusColor: Colors.transparent,
                               onPressed: () {
                                 callBack.dialogCallBackFunction('DONE');
                               },
@@ -510,7 +510,8 @@ class CommonMethods {
     );
   }
 
-  ///Below method is used for open Alert Dialog with Animation and callback.
+
+
   static confirmationDialog(
       BuildContext context, String action, DialogCallBack _callBack) {
     DialogCallBack callBack = _callBack;
@@ -538,7 +539,7 @@ class CommonMethods {
                         child: Text(
                           action,
                           textAlign: TextAlign.center,
-                          style: TextStyle(
+                          style: const TextStyle(
                               color: PlunesColors.BLACKCOLOR,
                               fontSize: 16,
                               fontWeight: FontWeight.normal),
@@ -598,23 +599,117 @@ class CommonMethods {
         barrierDismissible: true,
         barrierLabel: '',
         context: context,
-        pageBuilder: (context, animation1, animation2) {});
+        pageBuilder: (context, animation1, animation2) {
+          return Text("");
+        });
+  }
+
+  ///Below method is used for open Alert Dialog with Animation and callback.
+  static confirmationDialog2(
+      BuildContext context, String action, DialogCallBack _callBack) {
+    DialogCallBack callBack = _callBack;
+    return showGeneralDialog<bool>(
+        barrierColor: Colors.black.withOpacity(0.3),
+        transitionBuilder: (context, a1, a2, widget) {
+          final curvedValue = Curves.easeInOutBack.transform(a1.value) - 1.0;
+          return Transform(
+            transform: Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
+            child: Opacity(
+              opacity: a1.value,
+              child: Dialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16.0)),
+                elevation: 0.0,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        margin: EdgeInsets.symmetric(
+                            horizontal: AppConfig.horizontalBlockSize * 5,
+                            vertical: AppConfig.verticalBlockSize * 2.5),
+                        child: Text(
+                          action,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: PlunesColors.BLACKCOLOR,
+                              fontSize: 16,
+                              fontWeight: FontWeight.normal),
+                        ),
+                      ),
+                      CustomWidgets().getDoubleCommonButton(context, _callBack,
+                          'No', 'Yes', AppConfig.verticalBlockSize * 6),
+
+
+                      AlertDialog(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                                AppConfig.horizontalBlockSize * 3)),
+                        contentPadding: EdgeInsets.zero,
+                        content: Container(
+                            margin: EdgeInsets.symmetric(
+                                vertical: AppConfig.verticalBlockSize * 6,
+                                horizontal: AppConfig.horizontalBlockSize * 15),
+                            child: Text(
+                              action,
+                              style: TextStyle(fontSize: AppConfig.mediumFont),
+                            )),
+                        actions: <Widget>[
+                          ElevatedButton(
+                            child: Text("No", style: TextStyle(
+                                  fontSize: AppConfig.mediumFont, color: Colors.grey),
+                            ),
+                            onPressed: () {
+                              Navigator.pop(
+                                  context, false); // showDialog() returns false
+                              callBack.dialogCallBackFunction('CANCEL');
+                            },
+                          ),
+                          ElevatedButton(
+                            child: Text("Yes", style: TextStyle(
+                                  fontSize: AppConfig.mediumFont, color: Colors.black),
+                            ),
+                            onPressed: () {
+                              Navigator.pop(context);
+                              _callBack.dialogCallBackFunction('DONE');
+                            },
+                          ),
+                        ],
+                      ),
+
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+        transitionDuration: Duration(milliseconds: 400),
+        barrierDismissible: true,
+        barrierLabel: '',
+        context: context,
+        pageBuilder: (context, animation1, animation2) {
+
+        }
+        as Widget Function(BuildContext, Animation<double>, Animation<double>)
+    );
   }
 
   ///Below method is used for adding multiple images using arrayList into slide.
-  static List<Slide> addSlideImages() {
-    List<Slide> slides = new List();
-    for (var item in PlunesImages.imageArray) {
-      slides.add(new Slide(
-        backgroundColor: Colors.white,
-        backgroundOpacity: 0,
-        backgroundImageFit: BoxFit.contain,
-        backgroundOpacityColor: Colors.transparent,
-        backgroundImage: item,
-      ));
-    }
-    return slides;
-  }
+  // static List<Slide> addSlideImages() {
+  //   List<Slide> slides = new List();
+  //   for (var item in PlunesImages.imageArray) {
+  //     slides.add(new Slide(
+  //       backgroundColor: Colors.white,
+  //       backgroundOpacity: 0,
+  //       backgroundImageFit: BoxFit.contain,
+  //       backgroundOpacityColor: Colors.transparent,
+  //       backgroundImage: item,
+  //     ));
+  //   }
+  //   return slides;
+  // }
 
   ///Below method is used for generating Random OTP or 4 digit code for the OTP Verification.
   static String getRandomOTP() {
@@ -622,9 +717,9 @@ class CommonMethods {
   }
 
   ///Below method is used for fetch specific Device ID.
-  static Future<String> getDeviceId() async {
-    final DeviceInfoPlugin deviceInfoPlugin = new DeviceInfoPlugin();
-    Map<String, dynamic> deviceData;
+  static Future<String?> getDeviceId() async {
+    final deviceInfoPlugin = new DeviceInfoPlugin();
+    late Map<String, dynamic> deviceData;
     try {
       if (Platform.isAndroid)
         deviceData = _readAndroidBuildData(await deviceInfoPlugin.androidInfo);
@@ -645,7 +740,7 @@ class CommonMethods {
   ///Below method is used for fetch specific Device information.
   static Future<String> getDeviceInfo() async {
     final DeviceInfoPlugin deviceInfoPlugin = new DeviceInfoPlugin();
-    Map<String, dynamic> deviceData;
+    late Map<String, dynamic> deviceData;
     print("===this is device data");
     try {
       if (Platform.isAndroid) {
@@ -838,8 +933,8 @@ class CommonMethods {
     );
   }
 
-  static String getStringInCamelCase(String someValue) {
-    String stringToReturn = PlunesStrings.NA;
+  static String? getStringInCamelCase(String? someValue) {
+    String? stringToReturn = PlunesStrings.NA;
     try {
       if (someValue == null || someValue.trim().isEmpty) {
         return stringToReturn;
@@ -853,14 +948,14 @@ class CommonMethods {
           stringToReturn = element.substring(0, 1).toUpperCase();
           if (element.trim().length > 1) {
             stringToReturn =
-                stringToReturn + element.substring(1).toLowerCase();
+                stringToReturn! + element.substring(1).toLowerCase();
           }
         } else {
           stringToReturn =
-              stringToReturn + " " + element.substring(0, 1).toUpperCase();
+              stringToReturn! + " " + element.substring(0, 1).toUpperCase();
           if (element.trim().length > 1) {
             stringToReturn =
-                stringToReturn + element.substring(1).toLowerCase();
+                stringToReturn! + element.substring(1).toLowerCase();
           }
         }
       });
@@ -871,17 +966,25 @@ class CommonMethods {
     return stringToReturn?.replaceAll("( ", "(");
   }
 
-  static bool shouldShowProgressOnPrice(
-      Services service, bool shouldNegotiate) {
+  static bool shouldShowProgressOnPrice(Services service, bool? shouldNegotiate) {
+    print("shouldShowProgressOnPrice->1:${service.hasPrice}");
+    print("shouldShowProgressOnPrice->2:${service.price}");
+    print("shouldShowProgressOnPrice->3:${service.priceUpdated}");
+    print("shouldShowProgressOnPrice->4:${service.newPrice}");
+    print("shouldShowProgressOnPrice->5:${shouldNegotiate}");
+
     bool _shouldShowProgressOnPrice = false;
-    if (shouldNegotiate != null &&
-        shouldNegotiate &&
-        (service.priceUpdated != null && !(service.priceUpdated))) {
+
+    if (shouldNegotiate != null && shouldNegotiate &&
+        (service.priceUpdated != null && !service.priceUpdated!)) {
+
       _shouldShowProgressOnPrice = true;
     }
-    if (service.hasPrice != null && !(service.hasPrice)) {
+
+    if (service.hasPrice != null && !service.hasPrice!) {
       _shouldShowProgressOnPrice = true;
     }
+
     return _shouldShowProgressOnPrice;
   }
 

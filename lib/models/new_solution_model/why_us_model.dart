@@ -1,15 +1,15 @@
 class WhyUsModel {
-  bool success;
-  List<WhyUsInnerModel> data;
+  bool? success;
+  List<WhyUsInnerModel>? data;
 
   WhyUsModel({this.success, this.data});
 
   WhyUsModel.fromJson(Map<String, dynamic> json) {
     success = json['success'];
     if (json['data'] != null) {
-      data = new List<WhyUsInnerModel>();
+      data = [];
       json['data'].forEach((v) {
-        data.add(new WhyUsInnerModel.fromJson(v));
+        data!.add(new WhyUsInnerModel.fromJson(v));
       });
     }
   }
@@ -18,22 +18,22 @@ class WhyUsModel {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['success'] = this.success;
     if (this.data != null) {
-      data['data'] = this.data.map((v) => v.toJson()).toList();
+      data['data'] = this.data!.map((v) => v.toJson()).toList();
     }
     return data;
   }
 }
 
 class WhyUsInnerModel {
-  int createdAt;
-  int updateAt;
-  String sId;
-  List<Description> description;
-  String title;
-  String titleImage;
-  String sectionType;
-  int indexing;
-  int iV;
+  int? createdAt;
+  int? updateAt;
+  String? sId;
+  List<Description>? description;
+  String? title;
+  String? titleImage;
+  String? sectionType;
+  int? indexing;
+  int? iV;
 
   WhyUsInnerModel(
       {this.createdAt,
@@ -51,9 +51,9 @@ class WhyUsInnerModel {
     updateAt = json['updateAt'];
     sId = json['_id'];
     if (json['description'] != null) {
-      description = new List<Description>();
+      description = [];
       json['description'].forEach((v) {
-        description.add(new Description.fromJson(v));
+        description!.add(new Description.fromJson(v));
       });
     }
     title = json['title'];
@@ -69,7 +69,7 @@ class WhyUsInnerModel {
     data['updateAt'] = this.updateAt;
     data['_id'] = this.sId;
     if (this.description != null) {
-      data['description'] = this.description.map((v) => v.toJson()).toList();
+      data['description'] = this.description!.map((v) => v.toJson()).toList();
     }
     data['title'] = this.title;
     data['titleImage'] = this.titleImage;
@@ -81,9 +81,9 @@ class WhyUsInnerModel {
 }
 
 class Description {
-  String sId;
-  String image;
-  String content;
+  String? sId;
+  String? image;
+  String? content;
 
   Description({this.sId, this.image, this.content});
 
@@ -103,8 +103,8 @@ class Description {
 }
 
 class WhyUsByIdModel {
-  bool success;
-  WhyUsCardArrayData data;
+  bool? success;
+  WhyUsCardArrayData? data;
 
   WhyUsByIdModel({this.success, this.data});
 
@@ -119,22 +119,22 @@ class WhyUsByIdModel {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['success'] = this.success;
     if (this.data != null) {
-      data['data'] = this.data.toJson();
+      data['data'] = this.data!.toJson();
     }
     return data;
   }
 }
 
 class WhyUsCardArrayData {
-  int createdAt;
-  int updateAt;
-  String sId;
-  List<Description> description;
-  String title;
-  String titleImage;
-  String sectionType;
-  int indexing;
-  int iV;
+  int? createdAt;
+  int? updateAt;
+  String? sId;
+  List<Description>? description;
+  String? title;
+  String? titleImage;
+  String? sectionType;
+  int? indexing;
+  int? iV;
 
   WhyUsCardArrayData(
       {this.createdAt,
@@ -152,9 +152,9 @@ class WhyUsCardArrayData {
     updateAt = json['updateAt'];
     sId = json['_id'];
     if (json['description'] != null) {
-      description = new List<Description>();
+      description = [];
       json['description'].forEach((v) {
-        description.add(new Description.fromJson(v));
+        description!.add(new Description.fromJson(v));
       });
     }
     title = json['title'];
@@ -170,7 +170,7 @@ class WhyUsCardArrayData {
     data['updateAt'] = this.updateAt;
     data['_id'] = this.sId;
     if (this.description != null) {
-      data['description'] = this.description.map((v) => v.toJson()).toList();
+      data['description'] = this.description!.map((v) => v.toJson()).toList();
     }
     data['title'] = this.title;
     data['titleImage'] = this.titleImage;

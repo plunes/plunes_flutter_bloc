@@ -1,9 +1,8 @@
 import 'dart:async';
+
 import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/app_config.dart';
@@ -32,11 +31,13 @@ import 'package:plunes/ui/afterLogin/new_solution_screen/show_insurance_list_scr
 import 'package:readmore/readmore.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
+import '../../../models/new_solution_model/new_hos_facility_model.dart';
+
 // ignore: must_be_immutable
 class DoctorInfo extends BaseActivity {
-  final String userID, docId;
-  Function openEnterDetailScreen;
-  bool isDoc, isAlreadyInBookingProcess;
+  final String? userID, docId;
+  Function? openEnterDetailScreen;
+  bool? isDoc, isAlreadyInBookingProcess;
 
   DoctorInfo(this.userID,
       {this.isDoc,
@@ -48,24 +49,27 @@ class DoctorInfo extends BaseActivity {
   _DoctorInfoState createState() => _DoctorInfoState();
 }
 
-class _DoctorInfoState extends BaseState<DoctorInfo>
-    with TickerProviderStateMixin {
+// class _DoctorInfoState extends BaseState<DoctorInfo> with TickerProviderStateMixin {
+class _DoctorInfoState extends State<DoctorInfo> with TickerProviderStateMixin {
+  final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   int _selectedIndex = 0;
   double _currentDotPosition = 0.0;
-  UserBloc _userBloc;
-  LoginPost _profileResponse;
-  String _failureCause, _failureCauseForMediaContent, _failureForReview;
+  UserBloc? _userBloc;
+  LoginPost? _profileResponse;
+  String? _failureCause, _failureCauseForMediaContent, _failureForReview;
   final CarouselController _controller = CarouselController();
-  StreamController _streamController, _streamConForDocTiming;
-  MediaContentModel _mediaContent;
-  List<RateAndReview> _rateAndReviewList = [];
-  bool _reviewApiHitOnce = false, _mediaContentApiHitOnce = false, _isDoc;
-  List<SpecialityModel> _specialityList;
-  FacilityHaveModel _facilityHaveModel;
+  StreamController? _streamController, _streamConForDocTiming;
+  MediaContentModel? _mediaContent;
+  List<RateAndReview>? _rateAndReviewList = [];
+  bool? _reviewApiHitOnce = false, _mediaContentApiHitOnce = false, _isDoc;
+  List<SpecialityModel>? _specialityList;
+  FacilityHaveModel? _facilityHaveModel;
   List<Widget> _tabsForHospital = [];
-  String _failureMessageForFacilityHave;
-  HosFacilityData _hosFacilityData;
-  Timer _timerForEverySecond;
+  String? _failureMessageForFacilityHave;
+  // HosFacilityData? _hosFacilityData;
+  NewHosFacilityData? _hosFacilityData;
+  Timer? _timerForEverySecond;
+  late bool _isProcessing;
 
   @override
   void initState() {
@@ -85,7 +89,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
     _timerForEverySecond = Timer.periodic(Duration(seconds: 10), (timer) {
       _timerForEverySecond = timer;
       if (mounted) {
-        _streamConForDocTiming.add(null);
+        _streamConForDocTiming!.add(null);
       } else if (timer != null && timer.isActive) {
         timer.cancel();
       }
@@ -93,7 +97,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
   }
 
   _getServiceCategoryData() {
-    _userBloc.getServiceCategoryData(widget.userID).then((value) {
+    _userBloc!.getServiceCategoryData(widget.userID).then((value) {
       if (value is RequestSuccess) {
         RequestSuccess requestSuccess = value;
         _hosFacilityData = requestSuccess.response;
@@ -103,11 +107,11 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
   }
 
   void _getReviews() {
-    _userBloc.getRateAndReviews(widget.userID);
+    _userBloc!.getRateAndReviews(widget.userID);
   }
 
   void _getSpecialities() {
-    _userBloc.getUserSpecificSpecialities(widget.userID).then((value) {
+    _userBloc!.getUserSpecificSpecialities(widget.userID).then((value) {
       if (value is RequestSuccess) {
         RequestSuccess requestSuccess = value;
         _specialityList = requestSuccess.response;
@@ -126,52 +130,62 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
   }
 
   void _getUserDetails() {
-    _userBloc.getUserProfile(widget.userID,
-        isGenUser: false, docId: widget.docId);
+    _isProcessing = true;
+    _setState();
+    _userBloc!
+        .getUserProfile(widget.userID, isGenUser: false, docId: widget.docId)
+        .then((snapshot) {
+      _isProcessing = false;
+      if (snapshot is RequestInProgress) {
+        return CustomWidgets().getProgressIndicator();
+      } else if (snapshot is RequestSuccess) {
+        RequestSuccess? requestSuccess = snapshot as RequestSuccess?;
+        if (requestSuccess != null && requestSuccess.response != null) {
+          _profileResponse = requestSuccess.response;
+          if (_profileResponse!.user != null) {
+            Future.delayed(Duration(milliseconds: 10)).then((value) {
+              _getFacilitiesProvidedByHospitalOrDoc();
+              _getSpecialities();
+            });
+          }
+        }
+        _userBloc!.addIntoStream(null);
+      } else if (snapshot is RequestFailed) {
+        RequestFailed requestFailed = snapshot as RequestFailed;
+        _failureCause = requestFailed.failureCause;
+        _userBloc!.addIntoStream(null);
+      }
+
+      _setState();
+    });
   }
 
+  void _setState() {
+    if (mounted) setState(() {});
+  }
+
+  getUserData() {}
+
   void _getDirections() {
-    (_profileResponse.user?.latitude == null ||
-            _profileResponse.user.latitude.isEmpty ||
-            _profileResponse.user.latitude == null ||
-            _profileResponse.user.latitude.isEmpty)
+    (_profileResponse!.user?.latitude == null ||
+            _profileResponse!.user!.latitude!.isEmpty ||
+            _profileResponse!.user!.latitude == null ||
+            _profileResponse!.user!.latitude!.isEmpty)
         ? widget.showInSnackBar(PlunesStrings.locationNotAvailable,
-            PlunesColors.BLACKCOLOR, scaffoldKey)
-        : LauncherUtil.openMap(double.tryParse(_profileResponse.user.latitude),
-            double.tryParse(_profileResponse.user.longitude));
+            PlunesColors.BLACKCOLOR, scaffoldKey!)
+        : LauncherUtil.openMap(
+            double.tryParse(_profileResponse!.user!.latitude!),
+            double.tryParse(_profileResponse!.user!.longitude!));
   }
 
   Widget _getBodyWidget() {
-    return StreamBuilder<RequestState>(
-      stream: _userBloc.baseStream,
-      builder: (context, snapshot) {
-        if (snapshot.data is RequestInProgress) {
-          return CustomWidgets().getProgressIndicator();
-        } else if (snapshot.data is RequestSuccess) {
-          RequestSuccess requestSuccess = snapshot.data;
-          if (requestSuccess != null && requestSuccess.response != null) {
-            _profileResponse = requestSuccess.response;
-            if (_profileResponse.user != null) {
-              Future.delayed(Duration(milliseconds: 10)).then((value) {
-                _getFacilitiesProvidedByHospitalOrDoc();
-                _getSpecialities();
-              });
-            }
-          }
-          _userBloc.addIntoStream(null);
-        } else if (snapshot.data is RequestFailed) {
-          RequestFailed requestFailed = snapshot.data;
-          _failureCause = requestFailed.failureCause;
-          _userBloc.addIntoStream(null);
-        }
-        return _profileResponse == null
+    return _isProcessing
+        ? CustomWidgets().getProgressIndicator()
+        : _profileResponse == null
             ? CustomWidgets().errorWidget(
                 _failureCause ?? "Unable to get profile",
                 onTap: () => _getUserDetails())
             : _getMainBody();
-      },
-      initialData: _profileResponse == null ? RequestInProgress() : null,
-    );
   }
 
   @override
@@ -180,7 +194,8 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
       top: false,
       child: Scaffold(
           key: scaffoldKey,
-          appBar: widget.getAppBar(context, plunesStrings.profile, true),
+          appBar: widget.getAppBar(context, plunesStrings.profile, true)
+              as PreferredSizeWidget?,
           body: _getBodyWidget()),
     );
   }
@@ -207,38 +222,35 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                       children: [
                         Column(
                           children: [
-                            (_profileResponse.user.achievements != null &&
-                                    _profileResponse
-                                        .user.achievements.isNotEmpty)
+                            (_profileResponse!.user!.imageUrl != null &&
+                                    _profileResponse!
+                                        .user!.imageUrl!.isNotEmpty)
                                 ? Stack(
                                     children: [
                                       CarouselSlider.builder(
-                                          itemCount: (_profileResponse.user
-                                                      .achievements.length >
-                                                  5)
-                                              ? 5
-                                              : _profileResponse
-                                                  ?.user?.achievements?.length,
-                                          itemBuilder: (context, index) {
+                                          // itemCount: (_profileResponse.user.imageUrl.length > 5) ? 5
+                                          //     : _profileResponse?.user?.imageUrl?.length,
+                                          itemCount: 1,
+                                          itemBuilder: (context, child, index) {
                                             return InkWell(
                                               onTap: () {
                                                 List<Photo> photos = [];
-                                                _profileResponse
-                                                    .user.achievements
+                                                _profileResponse!
+                                                    .user!.achievements!
                                                     .forEach((element) {
-                                                  if (_profileResponse.user
-                                                                  .achievements[
+                                                  if (_profileResponse!.user!
+                                                                  .achievements![
                                                               index] ==
                                                           null ||
-                                                      _profileResponse
-                                                          .user
-                                                          .achievements[index]
-                                                          .imageUrl
+                                                      _profileResponse!
+                                                          .user!
+                                                          .achievements![index]
+                                                          .imageUrl!
                                                           .isEmpty ||
-                                                      !(_profileResponse
-                                                          .user
-                                                          .achievements[index]
-                                                          .imageUrl
+                                                      !(_profileResponse!
+                                                          .user!
+                                                          .achievements![index]
+                                                          .imageUrl!
                                                           .contains("http"))) {
                                                     photos.add(Photo(
                                                         assetName: plunesImages
@@ -251,19 +263,27 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                                                 });
                                                 if (photos != null &&
                                                     photos.isNotEmpty) {
+                                                  print(
+                                                      "------------there_no_image----------------navigation--------------------");
+                                                  print(
+                                                      "---->${_profileResponse!.user!.achievements![index].imageUrl}");
+
                                                   Navigator.push(
                                                       context,
                                                       MaterialPageRoute(
                                                           builder: (context) =>
                                                               PageSlider(photos,
                                                                   index)));
+                                                } else {
+                                                  print(
+                                                      "------------there_no_image------------------------------------");
                                                 }
                                               },
                                               child: CustomWidgets()
                                                   .getImageFromUrl(
-                                                      _profileResponse
-                                                          .user
-                                                          .achievements[index]
+                                                      _profileResponse!
+                                                          .user!
+                                                          //.imageUrl[index]
                                                           .imageUrl,
                                                       boxFit: BoxFit.fill),
                                             );
@@ -314,46 +334,49 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                                       //         );
                                       //       }),
                                       // ),
-                                      Positioned(
-                                        top: 0.0,
-                                        right:
-                                            AppConfig.horizontalBlockSize * 5,
-                                        child: StreamBuilder<Object>(
-                                            stream: _streamController.stream,
-                                            builder: (context, snapshot) {
-                                              return Chip(
-                                                  backgroundColor: Color(
-                                                          CommonMethods
-                                                              .getColorHexFromStr(
-                                                                  "#000000"))
-                                                      .withOpacity(0.5),
-                                                  label: Container(
-                                                    child: Center(
-                                                      child: Text(
-                                                        "${_currentDotPosition.toInt() + 1}/${(_profileResponse.user.achievements.length > 5) ? 5 : _profileResponse?.user?.achievements?.length}",
-                                                        style: TextStyle(
-                                                            color: PlunesColors
-                                                                .WHITECOLOR,
-                                                            fontSize: 15),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  padding: EdgeInsets.all(3));
-                                            }),
-                                      )
+                                      // Positioned(
+                                      //   top: 0.0,
+                                      //   right:
+                                      //       AppConfig.horizontalBlockSize * 5,
+                                      //   child: StreamBuilder<Object>(
+                                      //       stream: _streamController.stream,
+                                      //       builder: (context, snapshot) {
+                                      //         return Chip(
+                                      //             backgroundColor: Color(
+                                      //                     CommonMethods
+                                      //                         .getColorHexFromStr(
+                                      //                             "#000000"))
+                                      //                 .withOpacity(0.5),
+                                      //             label: Container(
+                                      //               child: Center(
+                                      //                 child: Text(
+                                      //                   "${_currentDotPosition.toInt() + 1}/${(_profileResponse.user.achievements.length > 5) ? 5 : _profileResponse?.user?.achievements?.length}",
+                                      //                   style: TextStyle(
+                                      //                       color: PlunesColors
+                                      //                           .WHITECOLOR,
+                                      //                       fontSize: 15),
+                                      //                 ),
+                                      //               ),
+                                      //             ),
+                                      //             padding: EdgeInsets.all(3));
+                                      //       }),
+                                      // )
                                     ],
                                   )
                                 : InkWell(
                                     onTap: () {
+                                      print("------>");
+                                      print(_profileResponse!.user!.imageUrl);
+
                                       List<Photo> photos = [];
-                                      if ((_profileResponse.user != null &&
-                                          _profileResponse.user.imageUrl !=
+                                      if ((_profileResponse!.user != null &&
+                                          _profileResponse!.user!.imageUrl !=
                                               null &&
-                                          _profileResponse
-                                              .user.imageUrl.isNotEmpty)) {
+                                          _profileResponse!
+                                              .user!.imageUrl!.isNotEmpty)) {
                                         photos.add(Photo(
-                                            assetName: _profileResponse
-                                                .user.imageUrl));
+                                            assetName: _profileResponse!
+                                                .user!.imageUrl));
                                       }
                                       if (photos != null && photos.isNotEmpty) {
                                         Navigator.push(
@@ -368,12 +391,13 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                                           .withOpacity(.5),
                                       height: AppConfig.verticalBlockSize * 35,
                                       width: double.infinity,
-                                      child: (_profileResponse
-                                                      .user.imageUrl ==
+                                      child: (_profileResponse!
+                                                      .user!.imageUrl ==
                                                   null ||
-                                              _profileResponse
-                                                  .user.imageUrl.isEmpty ||
-                                              !(_profileResponse.user.imageUrl
+                                              _profileResponse!
+                                                  .user!.imageUrl!.isEmpty ||
+                                              !(_profileResponse!
+                                                  .user!.imageUrl!
                                                   .contains("http")))
                                           ? Container(
                                               margin: EdgeInsets.all(
@@ -388,8 +412,8 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                                           : SizedBox.expand(
                                               child: CustomWidgets()
                                                   .getImageFromUrl(
-                                                      _profileResponse
-                                                          .user.imageUrl,
+                                                      _profileResponse!
+                                                          .user!.imageUrl,
                                                       boxFit: BoxFit.cover),
                                             ),
                                     ),
@@ -401,37 +425,34 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                       ],
                     ),
                     Container(
-                      margin: EdgeInsets.all(13),
+                      margin: const EdgeInsets.all(13),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           _getRatingAndPatientServedWidget(),
                           _getCentresWidgetList(),
-                          SizedBox(height: 13),
+                          const SizedBox(height: 13),
                           _getHeadingWidget(plunesStrings.introduction),
-                          SizedBox(height: 13),
+                          const SizedBox(height: 13),
                           ReadMoreText(
-                            _profileResponse.user?.biography ??
-                                _getEmptyString(),
+                            _profileResponse!.user?.biography ?? _getEmptyString(),
                             colorClickableText: PlunesColors.SPARKLINGGREEN,
                             trimLines: 4,
                             trimMode: TrimMode.Line,
                             trimCollapsedText: '  ...read more',
                             trimExpandedText: '  read less',
-                            style: TextStyle(
-                                color: PlunesColors.GREYCOLOR, fontSize: 14),
-                          ),
-                          SizedBox(height: 20),
+                            style: const TextStyle(color: PlunesColors.GREYCOLOR, fontSize: 14),),
+                          const SizedBox(height: 20),
                           _getHeadingWidget('This Facility Has'),
-                          SizedBox(height: 13),
+                          const SizedBox(height: 13),
                           _getFacilityHaveWidget(),
                           // _getTabBar(),
-                          (_profileResponse.user.hasMedia != null &&
-                                  _profileResponse.user.hasMedia)
+                          (_profileResponse!.user!.hasMedia != null &&
+                                  _profileResponse!.user!.hasMedia!)
                               ? Column(
                                   children: [
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 20,
                                     ),
                                     _getPhotoWidget(),
@@ -454,20 +475,21 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                                     profId: widget.userID)));
                       },
                     )),
-                    (_profileResponse.user.achievements != null &&
-                            _profileResponse.user.achievements.isNotEmpty)
-                        ? AchievementWidget(_profileResponse.user.achievements)
+                    (_profileResponse!.user!.achievements != null &&
+                            _profileResponse!.user!.achievements!.isNotEmpty)
+                        ? AchievementWidget(
+                            _profileResponse!.user!.achievements)
                         : Container(),
-                    (_specialityList != null && _specialityList.isNotEmpty)
+                    (_specialityList != null && _specialityList!.isNotEmpty)
                         ? Column(
                             children: [
-                              SizedBox(height: 20),
+                              const SizedBox(height: 20),
                               Container(
                                 alignment: Alignment.topLeft,
                                 margin: EdgeInsets.symmetric(horizontal: 13),
                                 child: _getHeadingWidget('Specialization'),
                               ),
-                              SizedBox(height: 13),
+                              const SizedBox(height: 13),
                               Container(
                                 child: SpecialisationWidget(
                                     _specialityList, widget.userID),
@@ -476,8 +498,8 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                             ],
                           )
                         : Container(),
-                    ((_profileResponse.user.hasReviews != null &&
-                            _profileResponse.user.hasReviews))
+                    _profileResponse!.user!.hasReviews != null &&
+                            _profileResponse!.user!.hasReviews!
                         ? _getRateAndReviewWidget()
                         : Container(),
                   ],
@@ -494,10 +516,10 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
   }
 
   Widget _getTimeSlotWidget() {
-    List<String> _slotArray = [];
-    if (_profileResponse.user == null ||
-        _profileResponse.user.timeSlots == null ||
-        _profileResponse.user.timeSlots.isEmpty) {
+    List<String?>? _slotArray = [];
+    if (_profileResponse!.user == null ||
+        _profileResponse!.user!.timeSlots == null ||
+        _profileResponse!.user!.timeSlots!.isEmpty) {
       return Container(
         height: 40,
         alignment: Alignment.center,
@@ -506,18 +528,18 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
       );
     }
     var now = DateTime.now();
-    _profileResponse.user.timeSlots.forEach((slot) {
-      if (slot.day
+    _profileResponse!.user!.timeSlots!.forEach((slot) {
+      if (slot.day!
           .toLowerCase()
           .contains(DateUtil.getDayAsString(now).toLowerCase())) {
-        if (!slot.closed &&
+        if (!slot.closed! &&
             slot.slotArray != null &&
-            slot.slotArray.isNotEmpty) {
+            slot.slotArray!.isNotEmpty) {
           _slotArray = slot.slotArray;
         }
       }
     });
-    return _slotArray == null || _slotArray.isEmpty
+    return _slotArray == null || _slotArray!.isEmpty
         ? Container(
             height: 40,
             alignment: Alignment.center,
@@ -529,7 +551,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
         : Container(
             height: 40,
             child: ListView.builder(
-              itemCount: _slotArray.length,
+              itemCount: _slotArray!.length,
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) => Container(
                 padding: EdgeInsets.all(10),
@@ -543,12 +565,12 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                         Border.all(color: PlunesColors.BLACKCOLOR, width: .8)),
                 alignment: Alignment.center,
                 child: Text(
-                  _slotArray[index] ?? "",
+                  _slotArray![index] ?? "",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: PlunesColors.BLACKCOLOR,
                       fontWeight: FontWeight.normal,
-                      fontSize: AppConfig.smallFont - 1),
+                      fontSize: AppConfig.smallFont! - 1),
                 ),
               ),
             ),
@@ -556,32 +578,32 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
   }
 
   void _getMediaContent() {
-    _userBloc.getMediaContent(widget.userID);
+    _userBloc!.getMediaContent(widget.userID);
   }
 
   Widget _getPhotoWidget() {
-    return StreamBuilder<RequestState>(
-        stream: _userBloc.mediaContentStream,
+    return StreamBuilder<RequestState?>(
+        stream: _userBloc!.mediaContentStream,
         builder: (context, snapshot) {
-          if (_mediaContentApiHitOnce == null || !_mediaContentApiHitOnce) {
+          if (_mediaContentApiHitOnce == null || !_mediaContentApiHitOnce!) {
             _mediaContentApiHitOnce = true;
             _getMediaContent();
           }
           if (snapshot.data is RequestInProgress) {
             return CustomWidgets().getProgressIndicator();
           } else if (snapshot.data is RequestSuccess) {
-            RequestSuccess _requestSuccess = snapshot.data;
+            RequestSuccess _requestSuccess = snapshot.data as RequestSuccess;
             _mediaContent = _requestSuccess.response;
-            _userBloc.addStateInMediaContentStream(null);
+            _userBloc!.addStateInMediaContentStream(null);
           } else if (snapshot.data is RequestFailed) {
-            RequestFailed _requestFailed = snapshot.data;
+            RequestFailed _requestFailed = snapshot.data as RequestFailed;
             _failureCauseForMediaContent = _requestFailed.failureCause;
-            _userBloc.addStateInMediaContentStream(null);
+            _userBloc!.addStateInMediaContentStream(null);
           }
           return (_failureCauseForMediaContent != null ||
                   _mediaContent == null ||
-                  _mediaContent.success == null ||
-                  !_mediaContent.success)
+                  _mediaContent!.success == null ||
+                  !_mediaContent!.success!)
               ? Container(
                   child: CustomWidgets().errorWidget(
                       _failureCauseForMediaContent ?? "No media found"),
@@ -593,23 +615,23 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
   }
 
   Widget _getRateAndReviewWidget() {
-    return StreamBuilder<RequestState>(
-        stream: _userBloc.rateAndReviewStream,
+    return StreamBuilder<RequestState?>(
+        stream: _userBloc!.rateAndReviewStream,
         builder: (context, snapshot) {
-          if (_reviewApiHitOnce == null || !_reviewApiHitOnce) {
+          if (_reviewApiHitOnce == null || !_reviewApiHitOnce!) {
             _reviewApiHitOnce = true;
             _getReviews();
           }
           if (snapshot.data is RequestInProgress) {
             return CustomWidgets().getProgressIndicator();
           } else if (snapshot.data is RequestSuccess) {
-            RequestSuccess _requestSuccess = snapshot.data;
+            RequestSuccess _requestSuccess = snapshot.data as RequestSuccess;
             _rateAndReviewList = _requestSuccess.response;
-            _userBloc.addStateInReviewStream(null);
+            _userBloc!.addStateInReviewStream(null);
           } else if (snapshot.data is RequestFailed) {
-            RequestFailed _requestFailed = snapshot.data;
+            RequestFailed _requestFailed = snapshot.data as RequestFailed;
             _failureForReview = _requestFailed.failureCause;
-            _userBloc.addStateInReviewStream(null);
+            _userBloc!.addStateInReviewStream(null);
           }
           return ReviewWidget(_rateAndReviewList);
         });
@@ -623,8 +645,8 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
   }
 
   Widget _getTeamOfExpertsWidget() {
-    return (_profileResponse.user.doctorsData == null ||
-            _profileResponse.user.doctorsData.isEmpty)
+    return (_profileResponse!.user!.doctorsData == null ||
+            _profileResponse!.user!.doctorsData!.isEmpty)
         ? Container(
             child: CustomWidgets().errorWidget(
                 _failureCauseForMediaContent ?? "No experts found"),
@@ -633,7 +655,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
         : Container(
             height: 250,
             child: ListView.builder(
-              itemCount: _profileResponse.user.doctorsData.length,
+              itemCount: _profileResponse!.user!.doctorsData!.length,
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) {
                 return Card(
@@ -641,7 +663,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                     child: InkWell(
                       splashColor: PlunesColors.GREENCOLOR.withOpacity(0.5),
                       onTap: () => _openDocDetails(
-                          _profileResponse.user.doctorsData[index]),
+                          _profileResponse!.user!.doctorsData![index]),
                       child: Container(
                         width: AppConfig.horizontalBlockSize * 42,
                         child: Column(
@@ -654,23 +676,23 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                                       topLeft: Radius.circular(16),
                                       topRight: Radius.circular(16)),
                                   child: CustomWidgets().getImageFromUrl(
-                                      _profileResponse
-                                          .user.doctorsData[index].imageUrl,
+                                      _profileResponse!
+                                          .user!.doctorsData![index].imageUrl,
                                       boxFit: BoxFit.fill,
                                       placeHolderPath:
                                           PlunesImages.doc_placeholder),
                                 ),
                               ),
                             ),
-                            SizedBox(height: 6),
+                            const SizedBox(height: 6),
                             Container(
                               padding: EdgeInsets.symmetric(
                                   horizontal:
                                       AppConfig.horizontalBlockSize * 2),
                               child: Text(
                                 CommonMethods.getStringInCamelCase(
-                                        _profileResponse
-                                            .user?.doctorsData[index]?.name) ??
+                                        _profileResponse!
+                                            .user?.doctorsData![index]?.name) ??
                                     _getEmptyString(),
                                 maxLines: 1,
                                 textAlign: TextAlign.center,
@@ -687,8 +709,8 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                                   horizontal:
                                       AppConfig.horizontalBlockSize * 2),
                               child: Text(
-                                _profileResponse
-                                        .user?.doctorsData[index].designation ??
+                                _profileResponse!.user?.doctorsData![index]
+                                        .designation ??
                                     PlunesStrings.emptyStr,
                                 textAlign: TextAlign.center,
                                 maxLines: 1,
@@ -731,32 +753,28 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
           );
   }
 
-  String _getExpr(int itemIndex) {
-    return _profileResponse.user.doctorsData[itemIndex].experience == null ||
-            _profileResponse.user.doctorsData[itemIndex].experience == "0"
+  String? _getExpr(int itemIndex) {
+    return _profileResponse!.user!.doctorsData![itemIndex].experience == null ||
+            _profileResponse!.user!.doctorsData![itemIndex].experience == "0"
         ? null
-        : "Expr ${_profileResponse.user.doctorsData[itemIndex].experience} years";
-  }
-
-  void _setState() {
-    if (mounted) setState(() {});
+        : "Expr ${_profileResponse!.user!.doctorsData![itemIndex].experience} years";
   }
 
   void _getFacilitiesProvidedByHospitalOrDoc() {
-    _userBloc.getFacilitiesProvidedByHospitalOrDoc(widget.userID);
+    _userBloc!.getFacilitiesProvidedByHospitalOrDoc(widget.userID);
   }
 
   Widget _getFacilityHaveWidget() {
-    return StreamBuilder<RequestState>(
-        stream: _userBloc.facilityOfHospitalStream,
+    return StreamBuilder<RequestState?>(
+        stream: _userBloc!.facilityOfHospitalStream,
         initialData: (_facilityHaveModel == null) ? RequestInProgress() : null,
         builder: (context, snapshot) {
           if (snapshot.data is RequestSuccess) {
-            RequestSuccess successObject = snapshot.data;
+            RequestSuccess successObject = snapshot.data as RequestSuccess;
             _facilityHaveModel = successObject.response;
             _userBloc?.addStateInFacilityProviderStream(null);
           } else if (snapshot.data is RequestFailed) {
-            RequestFailed _failedObj = snapshot.data;
+            RequestFailed? _failedObj = snapshot.data as RequestFailed?;
             _failureMessageForFacilityHave = _failedObj?.failureCause;
             _userBloc?.addStateInFacilityProviderStream(null);
           } else if (snapshot.data is RequestInProgress) {
@@ -765,11 +783,12 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
               height: AppConfig.verticalBlockSize * 25,
             );
           }
+          print("-----------failureCause-->$_failureMessageForFacilityHave");
           return (_facilityHaveModel == null ||
-                  (_facilityHaveModel.success != null &&
-                      !_facilityHaveModel.success) ||
-                  _facilityHaveModel.data == null ||
-                  _facilityHaveModel.data.isEmpty)
+                  (_facilityHaveModel!.success != null &&
+                      !_facilityHaveModel!.success!) ||
+                  _facilityHaveModel!.data == null ||
+                  _facilityHaveModel!.data!.isEmpty)
               ? Container(
                   height: AppConfig.verticalBlockSize * 38,
                   margin: EdgeInsets.symmetric(
@@ -783,7 +802,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                   height: 200,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: _facilityHaveModel.data.length ?? 0,
+                    itemCount: _facilityHaveModel!.data!.length ?? 0,
                     itemBuilder: (context, index) {
                       return Card(
                           elevation: 0,
@@ -795,10 +814,13 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                             focusColor: Colors.transparent,
                             onTap: () {
                               List<Photo> photos = [];
-                              _facilityHaveModel.data.forEach((element) {
+                              _facilityHaveModel!.data!.forEach((element) {
+                                print("element.title");
+                                print(element.title);
+                                print(element.titleImage);
                                 if (element.titleImage != null &&
-                                    element.titleImage.isNotEmpty &&
-                                    (element.titleImage.contains("http"))) {
+                                    element.titleImage!.isNotEmpty &&
+                                    (element.titleImage!.contains("http"))) {
                                   photos.add(
                                       Photo(assetName: element.titleImage));
                                 }
@@ -823,8 +845,8 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                                           topRight: Radius.circular(13)),
                                       child: Container(
                                         child: CustomWidgets().getImageFromUrl(
-                                            _facilityHaveModel
-                                                    .data[index]?.titleImage ??
+                                            _facilityHaveModel!
+                                                    .data![index]?.titleImage ??
                                                 '',
                                             boxFit: BoxFit.cover),
                                       ),
@@ -834,7 +856,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                                   Container(
                                     margin: EdgeInsets.symmetric(horizontal: 1),
                                     child: Text(
-                                      _facilityHaveModel.data[index]?.title ??
+                                      _facilityHaveModel!.data![index]?.title ??
                                           '',
                                       maxLines: 1,
                                       textAlign: TextAlign.center,
@@ -910,9 +932,9 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
     } else if (_tabsForHospital.isNotEmpty) {
       return _tabsForHospital;
     }
-    if (_profileResponse != null && _profileResponse.user != null) {
-      if ((_profileResponse.user.doctorsData != null &&
-          _profileResponse.user.doctorsData.isNotEmpty)) {
+    if (_profileResponse != null && _profileResponse!.user != null) {
+      if ((_profileResponse!.user!.doctorsData != null &&
+          _profileResponse!.user!.doctorsData!.isNotEmpty)) {
         _tabsForHospital.add(ClipRRect(
           borderRadius: BorderRadius.circular(30),
           child: Container(
@@ -925,8 +947,8 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
         _tabBodyItems.add(_getTeamOfExpertsWidget());
       }
 
-      if ((_profileResponse.user.hasMedia != null &&
-          _profileResponse.user.hasMedia)) {
+      if ((_profileResponse!.user!.hasMedia != null &&
+          _profileResponse!.user!.hasMedia!)) {
         _tabsForHospital.add(ClipRRect(
           borderRadius: BorderRadius.circular(30),
           child: Container(
@@ -939,8 +961,8 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
         _tabBodyItems.add(_getPhotoWidget());
       }
 
-      if ((_profileResponse.user.hasReviews != null &&
-          _profileResponse.user.hasReviews)) {
+      if ((_profileResponse!.user!.hasReviews != null &&
+          _profileResponse!.user!.hasReviews!)) {
         _tabsForHospital.add(ClipRRect(
           borderRadius: BorderRadius.circular(30),
           child: Container(
@@ -978,7 +1000,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                   Flexible(
                       child: Text(
                     CommonMethods.getStringInCamelCase(
-                        _profileResponse.user?.name),
+                        _profileResponse!.user?.name)!,
                     maxLines: 2,
                     textAlign: TextAlign.left,
                     style: TextStyle(color: Colors.black, fontSize: 18.0),
@@ -989,16 +1011,17 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                   )
                 ],
               ),
-              (_profileResponse.user.address != null &&
-                      _profileResponse.user.address.trim().isNotEmpty)
+              (_profileResponse!.user!.address != null &&
+                      _profileResponse!.user!.address!.trim().isNotEmpty)
                   ? Container(
                       margin: EdgeInsets.only(top: 8),
                       child: InkWell(
                         onTap: () {
                           if (_profileResponse != null &&
-                              _profileResponse.user != null &&
-                              _profileResponse.user.distanceFromUser != null &&
-                              _profileResponse.user.distanceFromUser >= 0)
+                              _profileResponse!.user != null &&
+                              _profileResponse!.user!.distanceFromUser !=
+                                  null &&
+                              _profileResponse!.user!.distanceFromUser! >= 0)
                             _getDirections();
                         },
                         onDoubleTap: () {},
@@ -1026,12 +1049,12 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                                           CrossAxisAlignment.center,
                                       children: [
                                         Icon(
-                                          Icons.location_on_outlined,
+                                          Icons.location_on,
                                           size: 20,
                                         ),
                                         Expanded(
                                             child: Text(
-                                          _profileResponse.user.address
+                                          _profileResponse!.user!.address
                                                   ?.trim() ??
                                               '',
                                           maxLines: 2,
@@ -1114,7 +1137,8 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                         Container(
                           margin: EdgeInsets.only(left: 3),
                           child: Text(
-                            _profileResponse.user?.rating?.toStringAsFixed(1) ??
+                            _profileResponse!.user?.rating
+                                    ?.toStringAsFixed(1) ??
                                 '4.5',
                             style: TextStyle(
                                 color: Colors.black,
@@ -1128,9 +1152,9 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                 ],
               ),
             ),
-            (_profileResponse.user != null &&
-                    _profileResponse.user.experience != null &&
-                    _profileResponse.user.experience.trim().isNotEmpty)
+            (_profileResponse!.user != null &&
+                    _profileResponse!.user!.experience != null &&
+                    _profileResponse!.user!.experience!.trim().isNotEmpty)
                 ? Container(
                     margin: EdgeInsets.only(left: 15),
                     padding: EdgeInsets.only(
@@ -1161,14 +1185,14 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Icon(
-                                Icons.group_add_outlined,
+                                Icons.group_add,
                                 color: PlunesColors.BLACKCOLOR,
                                 size: 18,
                               ),
                               Container(
                                 margin: EdgeInsets.only(left: 3),
                                 child: Text(
-                                  _profileResponse.user.experience.trim() +
+                                  _profileResponse!.user!.experience!.trim() +
                                       " Years",
                                   style: TextStyle(
                                       color: Colors.black,
@@ -1183,8 +1207,8 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                     ),
                   )
                 : Container(),
-            (_profileResponse.user != null &&
-                    _profileResponse.user.patientServed != null)
+            (_profileResponse!.user != null &&
+                    _profileResponse!.user!.patientServed != null)
                 ? Container(
                     margin: EdgeInsets.only(left: 15),
                     padding: EdgeInsets.only(
@@ -1222,7 +1246,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                               Container(
                                 margin: EdgeInsets.only(left: 3),
                                 child: Text(
-                                  _profileResponse.user.patientServed ?? '',
+                                  _profileResponse!.user!.patientServed ?? '',
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 16.0,
@@ -1243,9 +1267,9 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
   }
 
   Widget _getCentresWidgetList() {
-    if (_profileResponse.user == null ||
-        _profileResponse.user.centres == null ||
-        _profileResponse.user.centres.isEmpty) {
+    if (_profileResponse!.user == null ||
+        _profileResponse!.user!.centres == null ||
+        _profileResponse!.user!.centres!.isEmpty) {
       return Container();
     }
     return Column(
@@ -1265,15 +1289,15 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
                 onTap: () {
-                  if (_profileResponse.user.centres[index].id != null &&
-                      _profileResponse.user.centres[index].id
+                  if (_profileResponse!.user!.centres![index].id != null &&
+                      _profileResponse!.user!.centres![index].id!
                           .trim()
                           .isNotEmpty) {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => DoctorInfo(
-                                _profileResponse.user.centres[index].id,
+                                _profileResponse!.user!.centres![index].id,
                                 isDoc: true,
                                 isAlreadyInBookingProcess:
                                     widget.isAlreadyInBookingProcess)));
@@ -1293,7 +1317,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                       color:
                           Color(CommonMethods.getColorHexFromStr("#FAFAFA"))),
                   child: Text(
-                    _profileResponse.user.centres[index].name ?? "",
+                    _profileResponse!.user!.centres![index].name ?? "",
                     style: TextStyle(
                         color:
                             Color(CommonMethods.getColorHexFromStr("#303030")),
@@ -1302,7 +1326,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                 ),
               );
             },
-            itemCount: _profileResponse.user.centres.length,
+            itemCount: _profileResponse!.user!.centres!.length,
           ),
         ),
       ],
@@ -1310,9 +1334,8 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
   }
 
   Widget _getHeadingWidget(String text) {
-    return Text(
-      text,
-      style: TextStyle(color: Colors.black, fontSize: 20.0),
+    return Text(text,
+      style: const TextStyle(color: Colors.black, fontSize: 20.0),
     );
   }
 
@@ -1320,21 +1343,22 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
     return Column(
       children: [
         _getConsultationWidgetList(),
-        (_hosFacilityData == null ||
-                _hosFacilityData.data == null ||
-                (_hosFacilityData.data.procedure == null &&
-                    _hosFacilityData.data.test == null))
+        // (_hosFacilityData == null ||
+        //         _hosFacilityData!.data == null ||
+        //         (_hosFacilityData!.data!.procedure == null &&
+        //             _hosFacilityData!.data!.test == null))
+        (null == _hosFacilityData || null == _hosFacilityData!.data || _hosFacilityData!.data!.isEmpty)
             ? Container()
             : Column(
                 children: [
-                  _hosFacilityData.data.test == null ||
-                          _hosFacilityData.data.test.isEmpty
-                      ? Container()
-                      : _getTestWidgetList(),
-                  _hosFacilityData.data.procedure == null ||
-                          _hosFacilityData.data.procedure.isEmpty
-                      ? Container()
-                      : _getProcedureWidgetList(),
+                      //     _hosFacilityData!.data!.test == null ||
+                      //     _hosFacilityData!.data!.test!.isEmpty
+                      // ? Container() :
+                          _getTestWidgetList(),
+                      //     _hosFacilityData!.data!.procedure == null ||
+                      //     _hosFacilityData!.data!.procedure!.isEmpty
+                      // ? Container() :
+                  _getProcedureWidgetList(),
                 ],
               )
       ],
@@ -1343,23 +1367,23 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
 
   Widget _getConsultationWidgetList() {
     return (_profileResponse != null &&
-            _profileResponse.user != null &&
-            _profileResponse.user.doctorsData != null &&
-            _profileResponse.user.doctorsData.isNotEmpty)
+            _profileResponse!.user != null &&
+            _profileResponse!.user!.doctorsData != null &&
+            _profileResponse!.user!.doctorsData!.isNotEmpty)
         ? Container(
             child: Column(
               children: [
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Container(
-                  margin: EdgeInsets.symmetric(horizontal: 20),
+                  margin: const EdgeInsets.symmetric(horizontal: 20),
                   child: _getHeadingWidget("Book Consultation"),
                   alignment: Alignment.topLeft,
                 ),
-                SizedBox(height: 13),
+                const SizedBox(height: 13),
                 ListView.builder(
                   shrinkWrap: true,
                   padding: EdgeInsets.zero,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
                     return InkWell(
                       focusColor: Colors.transparent,
@@ -1367,9 +1391,9 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                       highlightColor: Colors.transparent,
                       onDoubleTap: () {},
                       onTap: () {
-                        if (_profileResponse.user.doctorsData[index].id !=
+                        if (_profileResponse!.user!.doctorsData![index].id !=
                                 null &&
-                            _profileResponse.user.doctorsData[index].id
+                            _profileResponse!.user!.doctorsData![index].id!
                                 .trim()
                                 .isNotEmpty) {
                           Navigator.push(
@@ -1380,39 +1404,39 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                                         isDoc: true,
                                         openEnterDetailScreen: () =>
                                             _calcConsultationDataAndOpenAdditionalDetailScreen(
-                                                _profileResponse
-                                                    .user.doctorsData[index]),
-                                        docId: _profileResponse
-                                            .user.doctorsData[index].id,
+                                                _profileResponse!
+                                                    .user!.doctorsData![index]),
+                                        docId: _profileResponse!
+                                            .user!.doctorsData![index].id,
                                         isAlreadyInBookingProcess:
                                             widget.isAlreadyInBookingProcess,
                                       )));
                         }
                       },
-                      child: StreamBuilder<Object>(
+                      child: StreamBuilder<Object?>(
                           stream: _streamConForDocTiming?.stream,
                           builder: (context, snapshot) {
                             return CommonWidgets().getConsultationWidget(
-                                _profileResponse.user.doctorsData,
+                                _profileResponse!.user!.doctorsData!,
                                 index,
                                 () =>
                                     _calcConsultationDataAndOpenAdditionalDetailScreen(
-                                        _profileResponse
-                                            .user.doctorsData[index]));
+                                        _profileResponse!
+                                            .user!.doctorsData![index]));
                           }),
                     );
                   },
-                  itemCount: _profileResponse.user.doctorsData.length > 3
+                  itemCount: _profileResponse!.user!.doctorsData!.length > 3
                       ? 3
-                      : _profileResponse.user.doctorsData.length,
+                      : _profileResponse!.user!.doctorsData!.length,
                 ),
-                _profileResponse.user.doctorsData.length > 3
+                _profileResponse!.user!.doctorsData!.length > 3
                     ? _getViewMoreButton(() {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => BookConsultationScreen(
-                                      _profileResponse.user.doctorsData,
+                                      _profileResponse!.user!.doctorsData,
                                       widget.userID,
                                       isAlreadyInBookingProcess:
                                           widget.isAlreadyInBookingProcess,
@@ -1428,7 +1452,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
 
   Widget _getViewMoreButton(Function func) {
     return Container(
-      margin: EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: 12),
       child: InkWell(
         onDoubleTap: () {},
         onTap: () {
@@ -1440,7 +1464,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
         child: Container(
-          padding: EdgeInsets.all(8),
+          padding: const EdgeInsets.all(8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -1452,7 +1476,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                     color: Color(CommonMethods.getColorHexFromStr("#25B281"))),
               ),
               Container(
-                margin: EdgeInsets.only(left: 3),
+                margin: const EdgeInsets.only(left: 3),
                 child: Icon(Icons.keyboard_arrow_down,
                     size: 18,
                     color: Color(CommonMethods.getColorHexFromStr("#25B281"))),
@@ -1464,39 +1488,42 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
     );
   }
 
+  // use .test here for existing - changed on 22-mar
   Widget _getTestWidgetList() {
     return Container(
       child: Column(
         children: [
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Container(
-            margin: EdgeInsets.symmetric(horizontal: 20),
+            margin: const EdgeInsets.symmetric(horizontal: 20),
             child: _getHeadingWidget("Book Test"),
             alignment: Alignment.topLeft,
           ),
-          SizedBox(height: 13),
+          const SizedBox(height: 13),
           ListView.builder(
             shrinkWrap: true,
             padding: EdgeInsets.zero,
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
-              return CommonWidgets().getBookTestWidget(
-                  _hosFacilityData.data.test,
+              return CommonWidgets().getBookTestWidgetNew(
+                  _hosFacilityData!.data!,
                   index,
-                  () => _calcTestDataAndOpenAdditionalDetailScr(
-                      _hosFacilityData.data.test[index]));
+                  () => _calcTestDataAndOpenAdditionalDetailScrNew(
+                      _hosFacilityData!.data![index]));
+                      // _hosFacilityData!.data!.test![index]));
             },
-            itemCount: (_hosFacilityData.data.test.length > 5)
+            itemCount: (_hosFacilityData!.data!.length > 5)
                 ? 5
-                : _hosFacilityData.data.test.length,
+                : _hosFacilityData!.data!.length,
           ),
-          _hosFacilityData.data.test.length > 5
+          _hosFacilityData!.data!.length > 5
               ? _getViewMoreButton(() {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => BookTestScreen(
-                                _hosFacilityData.data.test,
+                                _hosFacilityData!.data!,
+                                // _hosFacilityData!.data!.test,
                                 widget.userID,
                                 isAlreadyInBookingProcess:
                                     widget.isAlreadyInBookingProcess,
@@ -1513,34 +1540,36 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
     return Container(
       child: Column(
         children: [
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Container(
-              margin: EdgeInsets.symmetric(horizontal: 20),
+              margin: const EdgeInsets.symmetric(horizontal: 20),
               child: _getHeadingWidget("Book Procedure"),
               alignment: Alignment.topLeft),
-          SizedBox(height: 13),
+          const SizedBox(height: 13),
           ListView.builder(
             shrinkWrap: true,
             padding: EdgeInsets.zero,
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
-              return CommonWidgets().getBookProcedureWidget(
-                  _hosFacilityData.data.procedure,
+              return CommonWidgets().getBookProcedureWidgetNew(
+                  // _hosFacilityData!.data!.procedure!,
+                  _hosFacilityData!.data!,
                   index,
-                  () => _calcTestDataAndOpenAdditionalDetailScr(
-                      _hosFacilityData.data.procedure[index]));
+                  () => _calcTestDataAndOpenAdditionalDetailScrNew(
+                      _hosFacilityData!.data![index]));
             },
-            itemCount: (_hosFacilityData.data.procedure.length > 5)
+            itemCount: (_hosFacilityData!.data!.length > 5)
                 ? 5
-                : _hosFacilityData.data.procedure.length,
+                : _hosFacilityData!.data!.length,
           ),
-          _hosFacilityData.data.procedure.length > 5
+          _hosFacilityData!.data!.length > 5
               ? _getViewMoreButton(() {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => BookProcedureScreen(
-                                _hosFacilityData.data.procedure,
+                                _hosFacilityData!.data!,
+                                // _hosFacilityData!.data!.procedure,
                                 widget.userID,
                                 isAlreadyInBookingProcess:
                                     widget.isAlreadyInBookingProcess,
@@ -1564,12 +1593,33 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
   }
 
   _calcTestDataAndOpenAdditionalDetailScr(ServiceCategory procedure) {
-    num servicePrice = 0;
+    num? servicePrice = 0;
     if (procedure != null &&
         procedure.price != null &&
-        procedure.price.isNotEmpty &&
-        procedure.price.first > 0) {
-      servicePrice = procedure.price.first;
+        procedure.price!.isNotEmpty &&
+        procedure.price!.first! > 0) {
+      servicePrice = procedure.price!.first;
+    }
+    var data = CatalogueData(
+        category: procedure.category,
+        serviceId: procedure.serviceId,
+        service: procedure.service,
+        speciality: procedure.speciality,
+        family: procedure.service,
+        isFromProfileScreen: true,
+        profId: widget.userID,
+        servicePrice: servicePrice,
+        specialityId: procedure.specialityId);
+    _openEnterAdditionalUserDetailScr(data);
+  }
+
+  _calcTestDataAndOpenAdditionalDetailScrNew(NewServiceCategory procedure) {
+    num? servicePrice = 0;
+    if (procedure != null &&
+        procedure.price != null &&
+        procedure.price!.isNotEmpty &&
+        procedure.price!.first! > 0) {
+      servicePrice = procedure.price!.first;
     }
     var data = CatalogueData(
         category: procedure.category,
@@ -1585,15 +1635,15 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
   }
 
   _calcConsultationDataAndOpenAdditionalDetailScreen(DoctorsData doctorsData) {
-    num servicePrice = 0;
+    num? servicePrice = 0;
     if (doctorsData != null &&
         doctorsData.specialities != null &&
-        doctorsData.specialities.isNotEmpty &&
-        doctorsData.specialities.first.services != null &&
-        doctorsData.specialities.first.services.isNotEmpty &&
-        doctorsData.specialities.first.services.first.price != null &&
-        doctorsData.specialities.first.services.first.price > 0) {
-      servicePrice = doctorsData.specialities.first.services.first.price;
+        doctorsData.specialities!.isNotEmpty &&
+        doctorsData.specialities!.first.services != null &&
+        doctorsData.specialities!.first.services.isNotEmpty &&
+        doctorsData.specialities!.first.services.first.price != null &&
+        doctorsData.specialities!.first.services.first.price! > 0) {
+      servicePrice = doctorsData.specialities!.first.services.first.price;
     }
     var data = CatalogueData(
         serviceId: doctorsData?.specialities?.first?.services?.first?.id,
@@ -1618,7 +1668,8 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
             horizontal: AppConfig.horizontalBlockSize * 26),
         child: InkWell(
           onTap: () {
-            widget.openEnterDetailScreen();
+            print("------- open book oyour treatemnet");
+            widget.openEnterDetailScreen!();
           },
           onDoubleTap: () {},
           hoverColor: Colors.transparent,
@@ -1644,7 +1695,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
 
 // ignore: must_be_immutable
 class PhotosWidget extends StatefulWidget {
-  MediaContentModel mediaContent;
+  MediaContentModel? mediaContent;
 
   PhotosWidget(this.mediaContent);
 
@@ -1656,35 +1707,31 @@ class _PhotosWidgetState extends State<PhotosWidget> {
   @override
   Widget build(BuildContext context) {
     return ((widget.mediaContent == null ||
-                widget.mediaContent.data == null ||
-                widget.mediaContent.data.videos == null ||
-                widget.mediaContent.data.videos.isEmpty) &&
+                widget.mediaContent!.data == null ||
+                widget.mediaContent!.data!.videos == null ||
+                widget.mediaContent!.data!.videos!.isEmpty) &&
             (widget.mediaContent == null ||
-                widget.mediaContent.data == null ||
-                widget.mediaContent.data.hosPictures == null ||
-                widget.mediaContent.data.hosPictures.isEmpty))
+                widget.mediaContent!.data == null ||
+                widget.mediaContent!.data!.hosPictures == null ||
+                widget.mediaContent!.data!.hosPictures!.isEmpty))
         ? Container(
             child: CustomWidgets().errorWidget("No media found"),
-            margin:
-                EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 2),
-          )
+            margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 2),)
         : Container(
             child: Column(
               children: [
                 (widget.mediaContent == null ||
-                        widget.mediaContent.data == null ||
-                        widget.mediaContent.data.hosPictures == null ||
-                        widget.mediaContent.data.hosPictures.isEmpty)
+                        widget.mediaContent!.data == null ||
+                        widget.mediaContent!.data!.hosPictures == null ||
+                        widget.mediaContent!.data!.hosPictures!.isEmpty)
                     ? Container()
                     : Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Photos',
+                          const Text('Photos',
                             style: TextStyle(
-                                fontSize: 20, color: PlunesColors.BLACKCOLOR),
-                          ),
-                          SizedBox(
+                                fontSize: 20, color: PlunesColors.BLACKCOLOR),),
+                          const SizedBox(
                             height: 13,
                           ),
                           Container(
@@ -1696,11 +1743,15 @@ class _PhotosWidgetState extends State<PhotosWidget> {
                                       ?.length ??
                                   0,
                               itemBuilder: (context, index) {
-                                if (widget.mediaContent.data.hosPictures[index]
-                                            .imageUrl ==
+                                if (widget.mediaContent!.data!
+                                            .hosPictures![index].imageUrl ==
                                         null ||
-                                    widget.mediaContent.data.hosPictures[index]
-                                        .imageUrl.isEmpty) {
+                                    widget
+                                        .mediaContent!
+                                        .data!
+                                        .hosPictures![index]
+                                        .imageUrl!
+                                        .isEmpty) {
                                   return Container();
                                 }
                                 return Container(
@@ -1710,12 +1761,13 @@ class _PhotosWidgetState extends State<PhotosWidget> {
                                       child: InkWell(
                                         onTap: () {
                                           List<Photo> photos = [];
-                                          widget.mediaContent.data.hosPictures
+                                          widget
+                                              .mediaContent!.data!.hosPictures!
                                               .forEach((element) {
                                             if (element == null ||
                                                 element.imageUrl == null ||
-                                                element.imageUrl.isEmpty ||
-                                                !(element.imageUrl
+                                                element.imageUrl!.isEmpty ||
+                                                !(element.imageUrl!
                                                     .contains("http"))) {
                                             } else {
                                               photos.add(Photo(
@@ -1739,9 +1791,9 @@ class _PhotosWidgetState extends State<PhotosWidget> {
                                           child: CustomWidgets()
                                               .getImageFromUrl(
                                                   widget
-                                                          .mediaContent
-                                                          .data
-                                                          .hosPictures[index]
+                                                          .mediaContent!
+                                                          .data!
+                                                          .hosPictures![index]
                                                           .imageUrl ??
                                                       "",
                                                   boxFit: BoxFit.fill),
@@ -1757,7 +1809,7 @@ class _PhotosWidgetState extends State<PhotosWidget> {
                               },
                             ),
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           Container(
                             width: double.infinity,
                             color: PlunesColors.GREYCOLOR.withOpacity(0.3),
@@ -1766,25 +1818,26 @@ class _PhotosWidgetState extends State<PhotosWidget> {
                         ],
                       ),
                 (widget.mediaContent == null ||
-                        widget.mediaContent.data == null ||
-                        widget.mediaContent.data.videos == null ||
-                        widget.mediaContent.data.videos.isEmpty)
+                        widget.mediaContent!.data == null ||
+                        widget.mediaContent!.data!.videos == null ||
+                        widget.mediaContent!.data!.videos!.isEmpty)
                     ? Container()
                     : Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(height: 20),
-                          Text(
+                          const SizedBox(height: 20),
+                          const Text(
                             'Videos',
                             style: TextStyle(
                                 fontSize: 20, color: PlunesColors.BLACKCOLOR),
                           ),
-                          SizedBox(height: 13),
+                          const SizedBox(height: 13),
                           Container(
                             height: 170,
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
-                              itemCount: widget.mediaContent.data.videos.length,
+                              itemCount:
+                                  widget.mediaContent!.data!.videos!.length,
                               itemBuilder: (context, index) {
                                 return Container(
                                   width: AppConfig.horizontalBlockSize * 62,
@@ -1798,7 +1851,7 @@ class _PhotosWidgetState extends State<PhotosWidget> {
                                               Positioned.fill(
                                                 child: CustomWidgets()
                                                     .getImageFromUrl(
-                                                        "https://img.youtube.com/vi/${YoutubePlayer.convertUrlToId(widget.mediaContent.data.videos[index].videoUrl)}/0.jpg",
+                                                        "https://img.youtube.com/vi/${YoutubePlayer.convertUrlToId(widget.mediaContent!.data!.videos![index].videoUrl!)}/0.jpg",
                                                         boxFit: BoxFit.cover),
                                               ),
                                               Positioned.fill(
@@ -1819,9 +1872,9 @@ class _PhotosWidgetState extends State<PhotosWidget> {
                                                     builder: (context) =>
                                                         YoutubePlayerProvider(
                                                           widget
-                                                              .mediaContent
-                                                              .data
-                                                              .videos[index]
+                                                              .mediaContent!
+                                                              .data!
+                                                              .videos![index]
                                                               .videoUrl,
                                                           title: "Video",
                                                         )));
@@ -1835,7 +1888,7 @@ class _PhotosWidgetState extends State<PhotosWidget> {
                               },
                             ),
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           Container(
                             width: double.infinity,
                             color: PlunesColors.GREYCOLOR.withOpacity(0.3),
@@ -1851,7 +1904,7 @@ class _PhotosWidgetState extends State<PhotosWidget> {
 
 // ignore: must_be_immutable
 class ReviewWidget extends StatefulWidget {
-  List<RateAndReview> rateAndReviewList;
+  List<RateAndReview>? rateAndReviewList;
 
   ReviewWidget(this.rateAndReviewList);
 
@@ -1864,22 +1917,21 @@ class _ReviewWidgetState extends State<ReviewWidget> {
   Widget build(BuildContext context) {
     double c_width = MediaQuery.of(context).size.width * 0.8;
     return (widget.rateAndReviewList == null ||
-            widget.rateAndReviewList.isEmpty)
+            widget.rateAndReviewList!.isEmpty)
         ? Container(
             child: CustomWidgets().errorWidget("No reviews found"),
-            margin:
-                EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 2),
+            margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 2),
           )
         : Container(
-            margin: EdgeInsets.symmetric(horizontal: 20),
+            margin: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 20),
-                Text('Patient review',
+                const SizedBox(height: 20),
+                const Text('Patient review',
                     style: TextStyle(
                         fontSize: 20, color: PlunesColors.BLACKCOLOR)),
-                SizedBox(
+                const SizedBox(
                   height: 13,
                 ),
                 Container(
@@ -1890,9 +1942,9 @@ class _ReviewWidgetState extends State<ReviewWidget> {
                     itemBuilder: (context, index) {
                       return Card(
                           child: Container(
-                            padding: EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(8.0),
                             width: c_width,
-                            margin: EdgeInsets.only(right: 20),
+                            margin: const EdgeInsets.only(right: 20),
                             child: Row(
                               children: [
                                 Flexible(
@@ -1909,7 +1961,7 @@ class _ReviewWidgetState extends State<ReviewWidget> {
                                           child: CustomWidgets()
                                               .getImageFromUrl(
                                                   widget
-                                                      .rateAndReviewList[index]
+                                                      .rateAndReviewList![index]
                                                       .userImage,
                                                   boxFit: BoxFit.cover),
                                         ),
@@ -1917,7 +1969,7 @@ class _ReviewWidgetState extends State<ReviewWidget> {
                                     ],
                                   ),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   width: 20,
                                 ),
                                 Expanded(
@@ -1930,8 +1982,8 @@ class _ReviewWidgetState extends State<ReviewWidget> {
                                       Container(
                                         child: Text(
                                           CommonMethods.getStringInCamelCase(
-                                              widget.rateAndReviewList[index]
-                                                  .userName),
+                                              widget.rateAndReviewList![index]
+                                                  .userName)!,
                                           softWrap: true,
                                           style: TextStyle(
                                             color: Color(0xff4E4E4E),
@@ -1945,7 +1997,7 @@ class _ReviewWidgetState extends State<ReviewWidget> {
                                       Container(
                                         width: c_width * 0.5,
                                         child: Text(
-                                          widget.rateAndReviewList[index]
+                                          widget.rateAndReviewList![index]
                                                   .description ??
                                               "",
                                           softWrap: true,
@@ -1980,7 +2032,7 @@ class _ReviewWidgetState extends State<ReviewWidget> {
 }
 
 class AchievementWidget extends StatefulWidget {
-  final List<AchievementsData> achievements;
+  final List<AchievementsData>? achievements;
 
   AchievementWidget(this.achievements);
 
@@ -2014,10 +2066,10 @@ class _AchievementWidgetState extends State<AchievementWidget> {
                       child: InkWell(
                         onTap: () {
                           List<Photo> photos = [];
-                          widget.achievements.forEach((element) {
-                            if (widget.achievements[index] == null ||
-                                widget.achievements[index].imageUrl.isEmpty ||
-                                !(widget.achievements[index].imageUrl
+                          widget.achievements!.forEach((element) {
+                            if (widget.achievements![index] == null ||
+                                widget.achievements![index].imageUrl!.isEmpty ||
+                                !(widget.achievements![index].imageUrl!
                                     .contains("http"))) {
                               photos.add(Photo(
                                   assetName: plunesImages.achievementIcon));
@@ -2042,11 +2094,11 @@ class _AchievementWidgetState extends State<AchievementWidget> {
                                     bottomRight: Radius.circular(6),
                                     topLeft: Radius.circular(13),
                                     topRight: Radius.circular(13)),
-                                child: (widget.achievements[index] == null ||
-                                        widget.achievements[index].imageUrl
+                                child: (widget.achievements![index] == null ||
+                                        widget.achievements![index].imageUrl!
                                                 .isEmpty &&
                                             !(widget
-                                                .achievements[index].imageUrl
+                                                .achievements![index].imageUrl!
                                                 .contains("http")))
                                     ? Container(
                                         margin: EdgeInsets.symmetric(
@@ -2059,7 +2111,7 @@ class _AchievementWidgetState extends State<AchievementWidget> {
                                           plunesImages.achievementIcon,
                                         ))
                                     : CustomWidgets().getImageFromUrl(
-                                        widget.achievements[index].imageUrl,
+                                        widget.achievements![index].imageUrl,
                                         boxFit: BoxFit.cover),
                               ),
                             ),
@@ -2084,8 +2136,8 @@ class _AchievementWidgetState extends State<AchievementWidget> {
 
 // ignore: must_be_immutable
 class SpecialisationWidget extends StatefulWidget {
-  List<SpecialityModel> specialityList;
-  final String profId;
+  List<SpecialityModel>? specialityList;
+  final String? profId;
 
   SpecialisationWidget(this.specialityList, this.profId);
 
@@ -2098,28 +2150,28 @@ class _SpecialisationWidgetState extends State<SpecialisationWidget> {
   Widget build(BuildContext context) {
     return Container(
       height: AppConfig.verticalBlockSize * 20,
-      margin: EdgeInsets.only(bottom: 8),
+      margin: const EdgeInsets.only(bottom: 8),
       child: ListView.builder(
-        itemCount: widget.specialityList.length,
+        itemCount: widget.specialityList!.length,
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
           return Card(
-              margin: EdgeInsets.only(right: 20, bottom: 2),
+              margin: const EdgeInsets.only(right: 20, bottom: 2),
               child: Container(
                 width: AppConfig.horizontalBlockSize * 45,
                 child: InkWell(
                   onTap: () {
-                    if (widget.specialityList[index].id != null &&
-                        widget.specialityList[index].id.isNotEmpty) {
+                    if (widget.specialityList![index].id != null &&
+                        widget.specialityList![index].id!.isNotEmpty) {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => FacilityDetailScreen(
                                     profId: widget.profId,
-                                    speciality:
-                                        widget.specialityList[index].speciality,
+                                    speciality: widget
+                                        .specialityList![index].speciality,
                                     specialityId:
-                                        widget.specialityList[index].id,
+                                        widget.specialityList![index].id,
                                   )));
                     }
                   },
@@ -2154,7 +2206,8 @@ class _SpecialisationWidgetState extends State<SpecialisationWidget> {
                                 topLeft: Radius.circular(13),
                                 topRight: Radius.circular(13)),
                             child: CustomWidgets().getImageFromUrl(
-                                widget.specialityList[index].specialityImageUrl,
+                                widget
+                                    .specialityList![index].specialityImageUrl,
                                 boxFit: BoxFit.fill),
                           ),
                         ),
@@ -2164,7 +2217,7 @@ class _SpecialisationWidgetState extends State<SpecialisationWidget> {
                         margin: EdgeInsets.symmetric(horizontal: 1),
                         alignment: Alignment.center,
                         child: Text(
-                          widget.specialityList[index].speciality ?? "",
+                          widget.specialityList![index].speciality ?? "",
                           maxLines: 1,
                           textAlign: TextAlign.center,
                           style: TextStyle(color: Colors.black, fontSize: 16.0),

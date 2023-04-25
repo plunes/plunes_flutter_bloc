@@ -18,12 +18,14 @@ class FillCoupon extends BaseActivity {
   _FillCouponState createState() => _FillCouponState();
 }
 
-class _FillCouponState extends BaseState<FillCoupon> {
-  TextEditingController _couponController;
-  CouponBloc _couponBloc;
-  CouponTextResponseModel _couponTextResponseModel;
-  String _failureCause;
-  ConfettiController _confettiController;
+// class _FillCouponState extends BaseState<FillCoupon> {
+class _FillCouponState extends State<FillCoupon> {
+  final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  TextEditingController? _couponController;
+  CouponBloc? _couponBloc;
+  CouponTextResponseModel? _couponTextResponseModel;
+  String? _failureCause;
+  late ConfettiController _confettiController;
 
   @override
   void initState() {
@@ -68,27 +70,27 @@ class _FillCouponState extends BaseState<FillCoupon> {
             title: widget.createTextViews(plunesStrings.coupons, 18,
                 colorsFile.black, TextAlign.center, FontWeight.w500)),
         body: Builder(builder: (context) {
-          return StreamBuilder<RequestState>(
+          return StreamBuilder<RequestState?>(
               builder: (context, snapShot) {
                 if (snapShot.data is RequestInProgress) {
                   return CustomWidgets().getProgressIndicator();
                 } else if (snapShot.data is RequestSuccess) {
-                  RequestSuccess requestSuccess = snapShot.data;
+                  RequestSuccess requestSuccess = snapShot.data as RequestSuccess;
                   _couponTextResponseModel = requestSuccess.response;
-                  _couponBloc.addIntoCouponTextProviderStream(null);
+                  _couponBloc!.addIntoCouponTextProviderStream(null);
                 } else if (snapShot.data is RequestFailed) {
-                  RequestFailed requestFailed = snapShot.data;
+                  RequestFailed requestFailed = snapShot.data as RequestFailed;
                   _failureCause = requestFailed.failureCause;
-                  _couponBloc.addIntoCouponTextProviderStream(null);
+                  _couponBloc!.addIntoCouponTextProviderStream(null);
                 }
                 return (_couponTextResponseModel == null ||
-                        _couponTextResponseModel.success == null ||
-                        !(_couponTextResponseModel.success))
+                        _couponTextResponseModel!.success == null ||
+                        !_couponTextResponseModel!.success!)
                     ? CustomWidgets().errorWidget(_failureCause,
                         onTap: () => _getCouponText())
                     : _getCouponWidget();
               },
-              stream: _couponBloc.couponTextStream,
+              stream: _couponBloc!.couponTextStream,
               initialData: RequestInProgress());
         }),
       ),
@@ -172,17 +174,17 @@ class _FillCouponState extends BaseState<FillCoupon> {
               margin: EdgeInsets.symmetric(
                   horizontal: AppConfig.horizontalBlockSize * 30),
               child: StreamBuilder<RequestState>(
-                  stream: _couponBloc.baseStream,
+                  stream: _couponBloc!.baseStream,
                   builder: (context, snapshot) {
                     if (snapshot.data is RequestInProgress) {
                       return CustomWidgets().getProgressIndicator();
                     } else if (snapshot.data is RequestSuccess) {
-                      _couponBloc.addIntoStream(null);
+                      _couponBloc!.addIntoStream(null);
                       Future.delayed(Duration(milliseconds: 200))
                           .then((value) => _openSuccessDialog());
                     } else if (snapshot.data is RequestFailed) {
-                      RequestFailed failedObj = snapshot.data;
-                      _couponBloc.addIntoStream(null);
+                      RequestFailed? failedObj = snapshot.data as RequestFailed?;
+                      _couponBloc!.addIntoStream(null);
                       Future.delayed(Duration(milliseconds: 200)).then((value) {
                         _openFailureDialog();
                         // _confettiController.play();
@@ -190,13 +192,13 @@ class _FillCouponState extends BaseState<FillCoupon> {
                     }
                     return InkWell(
                       onTap: () {
-                        if (_couponController.text.trim().isEmpty) {
+                        if (_couponController!.text.trim().isEmpty) {
                           _showMessages(PlunesStrings.pleaseEnterYourCoupon);
-                          _couponBloc.addIntoStream(null);
+                          _couponBloc!.addIntoStream(null);
                           return;
                         }
-                        _couponBloc
-                            .sendCouponDetails(_couponController.text.trim());
+                        _couponBloc!
+                            .sendCouponDetails(_couponController!.text.trim());
                       },
                       onDoubleTap: () {},
                       child: CustomWidgets().getRoundedButton(
@@ -280,12 +282,11 @@ class _FillCouponState extends BaseState<FillCoupon> {
                           borderRadius: BorderRadius.only(
                               bottomLeft: Radius.circular(16),
                               bottomRight: Radius.circular(16)),
-                          child: FlatButton(
-                              highlightColor: Colors.transparent,
-                              hoverColor: Colors.transparent,
-                              splashColor:
-                                  PlunesColors.SPARKLINGGREEN.withOpacity(.1),
-                              focusColor: Colors.transparent,
+                          child: ElevatedButton(
+                              // highlightColor: Colors.transparent,
+                              // hoverColor: Colors.transparent,
+                              // splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                              // focusColor: Colors.transparent,
                               onPressed: () {
                                 Navigator.of(context).pop();
                                 // _confettiController.stop();
@@ -376,7 +377,7 @@ class _FillCouponState extends BaseState<FillCoupon> {
 //            ),
           );
         }).then((value) {
-      _couponController.clear();
+      _couponController!.clear();
     });
   }
 
@@ -512,16 +513,16 @@ class _FillCouponState extends BaseState<FillCoupon> {
 //            ),
           );
         }).then((value) {
-      _couponController.clear();
+      _couponController!.clear();
     });
   }
 
   _showMessages(String message) {
-    widget.showInSnackBar(message, PlunesColors.BLACKCOLOR, scaffoldKey);
+    widget.showInSnackBar(message, PlunesColors.BLACKCOLOR, scaffoldKey!);
   }
 
   void _getCouponText() {
     _failureCause = null;
-    _couponBloc.getCouponText();
+    _couponBloc!.getCouponText();
   }
 }

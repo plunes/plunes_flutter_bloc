@@ -1,10 +1,10 @@
 class CatalogueData {
-  String service;
-  String details;
-  List<String> dnd;
-  List<ServiceChildren> serviceChildren;
-  String category;
-  bool isSelected = false,
+  String? service;
+  String? details;
+  List<String?>? dnd;
+  List<ServiceChildren>? serviceChildren;
+  String? category;
+  bool? isSelected = false,
       isActive,
       topSearch,
       toShowSearched,
@@ -12,22 +12,22 @@ class CatalogueData {
       hasUserReport,
       isFromProfileScreen,
       isServiceChildrenAvailable;
-  String speciality;
-  String specialityId;
-  String serviceId, profId, doctorId;
-  String sitting, expirationMessage, userReportId;
-  String family, technique, specialityPicture, familyName;
+  String? speciality;
+  String? specialityId;
+  String? serviceId, profId, doctorId;
+  String? sitting, expirationMessage, userReportId;
+  String? family, technique, specialityPicture, familyName;
 
   @override
   String toString() {
     return 'CatalogueData{service: $service, details: $details, dnd: $dnd, category: $category, isSelected: $isSelected, isActive: $isActive, speciality: $speciality, specialityId: $specialityId, serviceId: $serviceId, sitting: $sitting, duration: $duration, iV: $iV, createdAt: $createdAt, maxDiscount: $maxDiscount, isFromNotification: $isFromNotification, solutionId: $solutionId}';
   }
 
-  String duration;
-  int iV, createdAt, solutionExpiredAt;
-  num maxDiscount, servicePrice;
-  bool isFromNotification, booked;
-  String solutionId;
+  String? duration;
+  int? iV, createdAt, solutionExpiredAt;
+  num? maxDiscount, servicePrice;
+  bool? isFromNotification, booked;
+  String? solutionId;
 
   CatalogueData(
       {this.service,
@@ -74,13 +74,13 @@ class CatalogueData {
     if (json['dnd'] != null && json['dnd'].runtimeType == [].runtimeType) {
       dnd = [];
       for (var value in json['dnd']) {
-        dnd.add(value?.toString());
+        dnd!.add(value?.toString());
       }
     }
     if (json['serviceChildren'] != null) {
-      serviceChildren = new List<ServiceChildren>();
+      serviceChildren = [];
       json['serviceChildren'].forEach((v) {
-        serviceChildren.add(new ServiceChildren.fromJson(v));
+        serviceChildren!.add(new ServiceChildren.fromJson(v));
       });
     }
     isServiceChildrenAvailable = json['isServiceChildren'];
@@ -124,9 +124,9 @@ class CatalogueData {
 }
 
 class ServiceChildren {
-  String sId;
-  String bodyPart;
-  String sessionGrafts;
+  String? sId;
+  String? bodyPart;
+  String? sessionGrafts;
 
   ServiceChildren({this.sId, this.bodyPart, this.sessionGrafts});
 

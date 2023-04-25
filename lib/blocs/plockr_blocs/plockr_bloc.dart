@@ -8,21 +8,21 @@ import 'package:rxdart/rxdart.dart';
 class PlockrBloc extends BlocBase {
   final _uploadStreamProvider = PublishSubject<RequestState>();
 
-  Observable<RequestState> get uploadStream => _uploadStreamProvider.stream;
+  Stream<RequestState> get uploadStream => _uploadStreamProvider.stream;
 
-  final _getPlockrFileStreamProvider = PublishSubject<RequestState>();
+  final _getPlockrFileStreamProvider = PublishSubject<RequestState?>();
 
-  Observable<RequestState> get getPlockrFileStream =>
+  Stream<RequestState?> get getPlockrFileStream =>
       _getPlockrFileStreamProvider.stream;
 
-  final _getSharebleFileLinkStreamProvider = PublishSubject<RequestState>();
+  final _getSharebleFileLinkStreamProvider = PublishSubject<RequestState?>();
 
-  Observable<RequestState> get getPlockrFileLinkStream =>
+  Stream<RequestState?> get getPlockrFileLinkStream =>
       _getSharebleFileLinkStreamProvider.stream;
 
-  final _deletePlockrFileStreamProvider = PublishSubject<RequestState>();
+  final _deletePlockrFileStreamProvider = PublishSubject<RequestState?>();
 
-  Observable<RequestState> get deletePlockrFileStream =>
+  Stream<RequestState?> get deletePlockrFileStream =>
       _deletePlockrFileStreamProvider.stream;
 
   @override
@@ -58,7 +58,7 @@ class PlockrBloc extends BlocBase {
     return result;
   }
 
-  deleteFileAndData(String id) async {
+  deleteFileAndData(String? id) async {
     addStateInGenericStream(
         _deletePlockrFileStreamProvider, RequestInProgress());
     var result = await PlockrRepo().deletePlockrFile(id);
@@ -66,7 +66,7 @@ class PlockrBloc extends BlocBase {
     return result;
   }
 
-  void addStateInPlockerReportStream(RequestState requestState) {
+  void addStateInPlockerReportStream(RequestState? requestState) {
     addStateInGenericStream(_getPlockrFileStreamProvider, requestState);
   }
 }

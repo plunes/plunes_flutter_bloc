@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
@@ -21,8 +23,8 @@ import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/network/Urls.dart';
 
 class UserManager {
-  static UserManager _instance;
-  CentreResponse _centreResponse;
+  static UserManager? _instance;
+  CentreResponse? _centreResponse;
 
   UserManager._init();
 
@@ -30,7 +32,7 @@ class UserManager {
     if (_instance == null) {
       _instance = UserManager._init();
     }
-    return _instance;
+    return _instance!;
   }
 
   bool getIsUserInServiceLocation() {
@@ -52,7 +54,7 @@ class UserManager {
     Preferences().setPreferencesString(Constants.LONGITUDE, long.toString());
   }
 
-  CentreResponse get centreData => _centreResponse;
+  CentreResponse? get centreData => _centreResponse;
 
   User getUserDetails() {
     Preferences preferences = Preferences();
@@ -110,7 +112,7 @@ class UserManager {
   }
 
   Future<RequestState> isUserInServiceLocation(var latitude, var longitude,
-      {String address, bool isFromPopup = false, String region}) async {
+      {String? address, bool isFromPopup = false, String? region}) async {
     if (longitude == null ||
         longitude.isEmpty ||
         latitude == null ||
@@ -128,13 +130,13 @@ class UserManager {
       requestType: HttpRequestMethods.HTTP_POST,
     );
     RequestState requestState;
-    if (result.isRequestSucceed) {
+    if (result!.isRequestSucceed!) {
       CheckLocationResponse checkLocationResponse =
-          CheckLocationResponse.fromJson(result.response.data);
+          CheckLocationResponse.fromJson(result.response!.data);
       if (checkLocationResponse != null &&
           checkLocationResponse.success != null &&
-          checkLocationResponse.success) {
-        setIsUserInServiceLocation(checkLocationResponse.success);
+          checkLocationResponse.success!) {
+        setIsUserInServiceLocation(checkLocationResponse.success!);
         setLanLong(latitude, longitude);
         setAddress(address);
         setRegion(region);
@@ -157,12 +159,22 @@ class UserManager {
     return requestState;
   }
 
-  Future<RequestState> getUserProfile(String userId,
-      {bool shouldSaveInfo = false, bool isUser = true, String docId}) async {
+  Future<RequestState> getUserProfile(String? userId,
+      {bool shouldSaveInfo = false, bool isUser = true, String? docId}) async {
     if (!isUser && docId != null && docId.trim().isNotEmpty) {
       return getDocProfileRelatedToHospital(userId,
           doctorId: docId, shouldSaveInfo: shouldSaveInfo);
     }
+
+    print("useridasfsdfsdfddddd");
+    print(userId);
+    print(docId);
+    print(shouldSaveInfo);
+    print(isUser);
+    print(urls.userBaseUrl);
+    print(Urls.profDetails);
+    print(isUser ? urls.userBaseUrl : Urls.profDetails);
+
     var result = await DioRequester().requestMethod(
         url: isUser ? urls.userBaseUrl : Urls.profDetails,
         headerIncluded: true,
@@ -172,13 +184,20 @@ class UserManager {
           "lattitude": UserManager().getUserDetails().latitude,
           "longitude": UserManager().getUserDetails().longitude
         });
-    if (result.isRequestSucceed) {
-      LoginPost _loginPost = LoginPost.fromJson(result.response.data);
+
+
+    print("-----user_profile----1>$isUser");
+    // print("-----user_profile----2>${result.isRequestSucceed}");
+    // print("-----user_profile----3>${result.response}");
+    // print("-----user_profile----4>${result.statusCode}");
+    if (result!.isRequestSucceed!) {
+      print("-----user_profile----if");
+      LoginPost _loginPost = LoginPost.fromJson(result.response!.data);
 //      print(_loginPost == null);
       if (shouldSaveInfo) {
         if (_loginPost != null &&
             _loginPost.user != null &&
-            (_loginPost.token == null || _loginPost.token.trim().isEmpty)) {
+            (_loginPost.token == null || _loginPost.token!.trim().isEmpty)) {
           _loginPost = LoginPost(
               token: getUserDetails().accessToken, user: _loginPost.user);
         }
@@ -186,12 +205,13 @@ class UserManager {
       }
       return RequestSuccess(response: _loginPost);
     } else {
+      print("-----user_profile----else");
       return RequestFailed(failureCause: result.failureCause);
     }
   }
 
-  Future<RequestState> getDocProfileRelatedToHospital(String userId,
-      {bool shouldSaveInfo = false, String doctorId}) async {
+  Future<RequestState> getDocProfileRelatedToHospital(String? userId,
+      {bool shouldSaveInfo = false, String? doctorId}) async {
     var result = await DioRequester().requestMethod(
         url: Urls.profDetails + "/doctor",
         headerIncluded: true,
@@ -202,13 +222,13 @@ class UserManager {
           "lattitude": UserManager().getUserDetails().latitude,
           "longitude": UserManager().getUserDetails().longitude
         });
-    if (result.isRequestSucceed) {
-      LoginPost _loginPost = LoginPost.fromJson(result.response.data);
+    if (result!.isRequestSucceed!) {
+      LoginPost _loginPost = LoginPost.fromJson(result.response!.data);
 //      print(_loginPost == null);
       if (shouldSaveInfo) {
         if (_loginPost != null &&
             _loginPost.user != null &&
-            (_loginPost.token == null || _loginPost.token.trim().isEmpty)) {
+            (_loginPost.token == null || _loginPost.token!.trim().isEmpty)) {
           _loginPost = LoginPost(
               token: getUserDetails().accessToken, user: _loginPost.user);
         }
@@ -220,15 +240,24 @@ class UserManager {
     }
   }
 
-  Future<RequestState> getGenerateOtp(String mobileNumber,
+  Future<RequestState> getGenerateOtp(String? mobileNumber,
       {bool iFromForgotPassword = false,
-      String signature,
+      String? signature,
       bool isProfessional = false}) async {
+    print('iFromForgotPassword');
     String key = iFromForgotPassword
         ? isProfessional
             ? "mobileNumber"
             : 'userId'
         : 'mobileNumber';
+
+
+    print(key);
+    print(iFromForgotPassword
+        ? (isProfessional)
+        ? Urls.forgotPasswordProf
+        : Urls.FORGOT_PASSWORD_URL
+        : Urls.GENERATE_OTP_URL);
     var result = await DioRequester().requestMethod(
         url: iFromForgotPassword
             ? (isProfessional)
@@ -238,15 +267,15 @@ class UserManager {
         headerIncluded: false,
         requestType: HttpRequestMethods.HTTP_POST,
         postData: {key: mobileNumber, "signature": signature});
-    if (result.isRequestSucceed) {
-      GetOtpModel _getOtp = GetOtpModel.fromJson(result.response.data);
+    if (result!.isRequestSucceed!) {
+      GetOtpModel _getOtp = GetOtpModel.fromJson(result.response!.data);
       return RequestSuccess(response: _getOtp);
     } else {
       return RequestFailed(response: result.failureCause);
     }
   }
 
-  Future<RequestState> getVerifyOtp(String mobileNumber, var otp,
+  Future<RequestState> getVerifyOtp(String? mobileNumber, var otp,
       {bool iFromForgotPassword = false, bool isProfessional = false}) async {
     var queryParam;
     if (iFromForgotPassword) {
@@ -259,9 +288,9 @@ class UserManager {
         headerIncluded: false,
         requestType: HttpRequestMethods.HTTP_GET,
         queryParameter: queryParam);
-    if (result.isRequestSucceed) {
+    if (result!.isRequestSucceed!) {
       VerifyOtpResponse _verifyOtp =
-          VerifyOtpResponse.fromJson(result.response.data);
+          VerifyOtpResponse.fromJson(result.response!.data);
 //      print(_verifyOtp);
       return RequestSuccess(response: _verifyOtp);
     } else {
@@ -278,10 +307,10 @@ class UserManager {
       requestType: HttpRequestMethods.HTTP_PUT,
       postData: userData,
     );
-    if (result.isRequestSucceed) {
-      LoginPost loginPost;
+    if (result!.isRequestSucceed!) {
+      LoginPost? loginPost;
       try {
-        loginPost = LoginPost.fromJson(result.response.data);
+        loginPost = LoginPost.fromJson(result.response!.data);
 //        print("user, ${loginPost.user.toString()}");
         Bloc().saveDataInPreferences(loginPost, null, null);
       } catch (err) {
@@ -299,13 +328,13 @@ class UserManager {
       requestType: HttpRequestMethods.HTTP_GET,
       url: Urls.GET_SPECIALITIES_URL,
     );
-    if (result.isRequestSucceed) {
-      List<SpecialityModel> specialityList = new List();
+    if (result!.isRequestSucceed!) {
+      List<SpecialityModel>? specialityList = [];
       SpecialityOuterModel signUpSpecialityModel =
-          SpecialityOuterModel.fromJson(result.response.data);
+          SpecialityOuterModel.fromJson(result.response!.data);
       if (signUpSpecialityModel != null &&
           signUpSpecialityModel.data != null &&
-          signUpSpecialityModel.data.isNotEmpty) {
+          signUpSpecialityModel.data!.isNotEmpty) {
         CommonMethods.catalogueLists = specialityList;
         CommonMethods.catalogueLists = signUpSpecialityModel.data;
         specialityList = signUpSpecialityModel.data;
@@ -329,7 +358,7 @@ class UserManager {
         headerIncluded: true,
         postData: postData,
         requestType: HttpRequestMethods.HTTP_POST);
-    if (result.isRequestSucceed) {
+    if (result!.isRequestSucceed!) {
       setDeviceToken(token);
       return RequestSuccess();
     } else {
@@ -345,7 +374,7 @@ class UserManager {
         queryParameter: {"deviceId": getDeviceToken(), "op": isOn},
         requestType: HttpRequestMethods.HTTP_GET,
         headerIncluded: true);
-    if (result.isRequestSucceed) {
+    if (result!.isRequestSucceed!) {
       setNotificationStatus(isOn);
       return RequestSuccess();
     } else {
@@ -353,19 +382,20 @@ class UserManager {
     }
   }
 
-  Future<RequestState> getUserSpecificSpecialities(String userId) async {
+  Future<RequestState> getUserSpecificSpecialities(String? userId) async {
+    print("professionalId_userid:$userId");
     var result = await DioRequester().requestMethod(
         requestType: HttpRequestMethods.HTTP_GET,
         url: Urls.GET_USER_SPECIFIC_SPECIALITY,
         headerIncluded: true,
         queryParameter: {"professionalId": userId});
-    if (result.isRequestSucceed) {
-      List<SpecialityModel> specialityList = new List();
+    if (result!.isRequestSucceed!) {
+      List<SpecialityModel>? specialityList = [];
       SpecialityOuterModel signUpSpecialityModel =
-          SpecialityOuterModel.fromJson(result.response.data);
+          SpecialityOuterModel.fromJson(result.response!.data);
       if (signUpSpecialityModel != null &&
           signUpSpecialityModel.data != null &&
-          signUpSpecialityModel.data.isNotEmpty) {
+          signUpSpecialityModel.data!.isNotEmpty) {
         specialityList = signUpSpecialityModel.data;
       }
       return RequestSuccess(response: specialityList);
@@ -384,10 +414,10 @@ class UserManager {
         requestType: HttpRequestMethods.HTTP_GET,
         headerIncluded: true,
         url: Urls.GET_SPECIALITY_RELATED_SERVICE);
-    if (result.isRequestSucceed) {
+    if (result!.isRequestSucceed!) {
       List<CatalogueData> _serviceList = [];
-      if (result.response.data['data'] != null) {
-        result.response.data['data'].forEach((v) {
+      if (result.response!.data['data'] != null) {
+        result.response!.data['data'].forEach((v) {
           _serviceList.add(CatalogueData.fromJson(v));
         });
       }
@@ -398,7 +428,7 @@ class UserManager {
   }
 
   Future<RequestState> resetPassword(
-      String phoneNumber, String otp, String password,
+      String? phoneNumber, String? otp, String password,
       {bool isProf = false}) async {
     var result = await DioRequester().requestMethod(
         url: isProf ? Urls.resetPasswordProf : Urls.RESET_PASSWORD_URL,
@@ -411,7 +441,7 @@ class UserManager {
             ? HttpRequestMethods.HTTP_PATCH
             : HttpRequestMethods.HTTP_PUT,
         headerIncluded: false);
-    if (result.isRequestSucceed) {
+    if (result!.isRequestSucceed!) {
       return RequestSuccess();
     } else {
       return RequestFailed(failureCause: result.failureCause);
@@ -428,7 +458,7 @@ class UserManager {
         postData: {"oldPassword": oldPassword, "newPassword": newPassword},
         requestType: HttpRequestMethods.HTTP_PATCH,
         headerIncluded: true);
-    if (result.isRequestSucceed) {
+    if (result!.isRequestSucceed!) {
       return RequestSuccess();
     } else {
       return RequestFailed(failureCause: result.failureCause);
@@ -439,9 +469,9 @@ class UserManager {
     var result = await DioRequester().requestMethod(
         url: Urls.GET_HELPLINE_NUMBER_URL,
         requestType: HttpRequestMethods.HTTP_GET);
-    if (result.isRequestSucceed) {
+    if (result!.isRequestSucceed!) {
       HelpLineNumberModel _helpNumberModel =
-          HelpLineNumberModel.fromJson(result.response.data);
+          HelpLineNumberModel.fromJson(result.response!.data);
       return RequestSuccess(response: _helpNumberModel);
     } else {
       return RequestFailed(failureCause: result.failureCause);
@@ -452,8 +482,8 @@ class UserManager {
     var result = await DioRequester().requestMethod(
         url: urls.checkUserExistence + phoneNumber,
         requestType: HttpRequestMethods.HTTP_GET);
-    if (result.isRequestSucceed) {
-      return RequestSuccess(response: result.response.data);
+    if (result!.isRequestSucceed!) {
+      return RequestSuccess(response: result.response!.data);
     } else {
       return RequestFailed(
           failureCause: result.failureCause, requestCode: result.statusCode);
@@ -462,18 +492,27 @@ class UserManager {
 
   Future<RequestState> login(
       String phoneNumber, String password, bool isProfessional) async {
+
+    var postData = {
+    "mobileNumber": phoneNumber,
+    "password": password,
+    "deviceId": Constants.DEVICE_TOKEN
+    };
+
+
     var result = await DioRequester().requestMethod(
         url: (isProfessional != null && isProfessional)
             ? Urls.profLogin
             : urls.login,
+
         requestType: HttpRequestMethods.HTTP_POST,
-        postData: {
-          'mobileNumber': phoneNumber,
-          'password': password,
-          'deviceId': Constants.DEVICE_TOKEN
-        });
-    if (result.isRequestSucceed) {
-      return RequestSuccess(response: LoginPost.fromJson(result.response.data));
+        postData:  jsonEncode(postData));
+    print("result.toString()");
+    print(result!.isRequestSucceed!.toString());
+    print(result.toString());
+    print(postData.toString());
+    if (result.isRequestSucceed!) {
+      return RequestSuccess(response: LoginPost.fromJson(result.response!.data));
     } else {
       return RequestFailed(failureCause: result.failureCause);
     }
@@ -484,8 +523,8 @@ class UserManager {
         url: urls.signUp,
         requestType: HttpRequestMethods.HTTP_POST,
         postData: body);
-    if (result.isRequestSucceed) {
-      return RequestSuccess(response: LoginPost.fromJson(result.response.data));
+    if (result!.isRequestSucceed!) {
+      return RequestSuccess(response: LoginPost.fromJson(result.response!.data));
     } else {
       return RequestFailed(failureCause: result.failureCause);
     }
@@ -496,10 +535,10 @@ class UserManager {
         url: Urls.GET_CENTRES_DATA,
         headerIncluded: true,
         requestType: HttpRequestMethods.HTTP_GET);
-    if (result.isRequestSucceed) {
-      CentreResponse centreResponse;
+    if (result!.isRequestSucceed!) {
+      CentreResponse? centreResponse;
       try {
-        centreResponse = CentreResponse.fromJson(result.response.data);
+        centreResponse = CentreResponse.fromJson(result.response!.data);
       } catch (e) {
         print("error $e");
       }
@@ -514,18 +553,18 @@ class UserManager {
     _centreResponse = null;
   }
 
-  Future<RequestState> getRateAndReviews(String profId,
+  Future<RequestState> getRateAndReviews(String? profId,
       {int initialIndex = 0}) async {
     var result = await DioRequester().requestMethod(
         url: Urls.RATE_AND_REVIEW,
         requestType: HttpRequestMethods.HTTP_GET,
         queryParameter: {"professionalId": profId},
         headerIncluded: true);
-    if (result.isRequestSucceed) {
-      List<RateAndReview> _list = [];
-      if (result.response.data != null &&
-          result.response.data["data"] != null) {
-        Iterable items = result.response.data["data"];
+    if (result!.isRequestSucceed!) {
+      List<RateAndReview>? _list = [];
+      if (result.response!.data != null &&
+          result.response!.data["data"] != null) {
+        Iterable? items = result.response!.data["data"];
         _list = items
             ?.map((e) => RateAndReview.fromJson(e))
             ?.toList(growable: true);
@@ -536,13 +575,13 @@ class UserManager {
     }
   }
 
-  void setRegion(String region) {
+  void setRegion(String? region) {
     if (region != null && region.isNotEmpty) {
       Preferences().setPreferencesString(Constants.REGION, region);
     }
   }
 
-  void setAddress(String address) {
+  void setAddress(String? address) {
     if (address != null && address.isNotEmpty) {
       Preferences().setPreferencesString(Constants.GOOGLE_LOCATION, address);
     }
@@ -556,21 +595,21 @@ class UserManager {
     return Preferences().setPreferencesBoolean(key, status);
   }
 
-  Future<RequestState> uploadPicture(File image) async {
+  Future<RequestState?> uploadPicture(File image) async {
     Map<String, dynamic> postData = {
-      "file": await MultipartFile.fromFile(image.path?.toString())
+      "file": await MultipartFile.fromFile(image.path.toString())
     };
     var result = await DioRequester().requestMethod(
         url: Urls.CHANGE_PROFILE_URL,
         headerIncluded: true,
         requestType: HttpRequestMethods.HTTP_POST,
         postData: FormData.fromMap(postData));
-    if (result.isRequestSucceed) {
-      RequestState updateResult;
-      if (result.response.data != null &&
-          result.response.data['imageUrl'] != null) {
+    if (result!.isRequestSucceed!) {
+      RequestState? updateResult;
+      if (result.response!.data != null &&
+          result.response!.data['imageUrl'] != null) {
         updateResult = await updateUserData(
-            User(imageUrl: result.response.data['imageUrl']?.toString())
+            User(imageUrl: result.response!.data['imageUrl']?.toString())
                 .toJson());
       }
       return updateResult;
@@ -579,41 +618,41 @@ class UserManager {
     }
   }
 
-  Future<RequestState> getMediaContent(String profId) async {
+  Future<RequestState> getMediaContent(String? profId) async {
     //5f6eee7464b4fe7d98a04e4f
     var result = await DioRequester().requestMethod(
         url: Urls.MEDIA_CONTENT_URL,
         requestType: HttpRequestMethods.HTTP_GET,
         queryParameter: {"professionalId": profId},
         headerIncluded: true);
-    if (result.isRequestSucceed) {
+    if (result!.isRequestSucceed!) {
       MediaContentModel _mediaContentModel =
-          MediaContentModel.fromJson(result.response.data);
+          MediaContentModel.fromJson(result.response!.data);
       return RequestSuccess(response: _mediaContentModel);
     } else {
       return RequestFailed(failureCause: result.failureCause);
     }
   }
 
-  Future<RequestState> getInsuranceList(String profId) async {
+  Future<RequestState> getInsuranceList(String? profId) async {
     //5df0982dfb5abb03b4ea6d96 5df0982efb5abb03b4ea6dac
     var result = await DioRequester().requestMethod(
         url: Urls.GET_INSURANCE_NAMES_URL,
         requestType: HttpRequestMethods.HTTP_GET,
         queryParameter: {"professionalId": profId},
         headerIncluded: true);
-    if (result.isRequestSucceed) {
+    if (result!.isRequestSucceed!) {
       InsuranceModel _mediaContentModel =
-          InsuranceModel.fromJson(result.response.data);
+          InsuranceModel.fromJson(result.response!.data);
       return RequestSuccess(response: _mediaContentModel);
     } else {
       return RequestFailed(failureCause: result.failureCause);
     }
   }
 
-  Future<RequestState> uploadInsuranceFile(File file, {String fileType}) async {
+  Future<RequestState> uploadInsuranceFile(File file, bool isImage,{String? fileType}) async {
     Map<String, dynamic> postData = {
-      "file": await MultipartFile.fromFile(file.path?.toString())
+      "file": await MultipartFile.fromFile(file.path.toString())
     };
     var result = await DioRequester().requestMethod(
         url: Urls.UPLOAD_INSURANCE_URL,
@@ -622,14 +661,28 @@ class UserManager {
         queryParameter: {"insuranceType": fileType},
         requestType: HttpRequestMethods.HTTP_POST,
         postData: FormData.fromMap(postData));
-    if (result.isRequestSucceed) {
-      String imageUrl;
-      // print("upload file response ${result?.response?.data}");
-      if (result.response.data != null &&
-          result.response.data["data"] != null &&
-          result.response.data["data"]["reports"] != null &&
-          result.response.data["data"]["reports"]["url"] != null) {
-        imageUrl = result.response.data["data"]["reports"]["url"];
+    if (result!.isRequestSucceed!) {
+      String? imageUrl;
+      // print("upload file response ${result?.response?.data}
+
+      try {
+        if (isImage) {
+          if (result.response!.data != null &&
+              result.response!.data["data"] != null &&
+              result.response!.data["data"]["reports"] != null &&
+              result.response!.data["data"]["reports"][0]["url"] != null) {
+            imageUrl = result.response!.data["data"]["reports"][0]["url"];
+          }
+        } else {
+          if (result.response!.data != null &&
+              result.response!.data["data"] != null &&
+              result.response!.data["data"]["reports"] != null &&
+              result.response!.data["data"]["reports"]["url"] != null) {
+            imageUrl = result.response!.data["data"]["reports"]["url"];
+          }
+        }
+      } catch (e) {
+        imageUrl = "";
       }
       return RequestSuccess(response: imageUrl);
     } else {
@@ -638,7 +691,7 @@ class UserManager {
   }
 
   Future<RequestState> getServicesOfSpeciality(
-      String profId, String specialityId) async {
+      String? profId, String? specialityId) async {
     var result = await DioRequester().requestMethod(
         url: (profId == null)
             ? Urls.SPECIALITY_RELATED_SERVICES_URL
@@ -649,9 +702,9 @@ class UserManager {
           "specialityId": specialityId
         },
         headerIncluded: true);
-    if (result.isRequestSucceed) {
+    if (result!.isRequestSucceed!) {
       ServiceDetailModel _mediaContentModel =
-          ServiceDetailModel.fromJson(result.response.data);
+          ServiceDetailModel.fromJson(result.response!.data);
       return RequestSuccess(response: _mediaContentModel);
     } else {
       return RequestFailed(failureCause: result.failureCause);
@@ -659,14 +712,14 @@ class UserManager {
   }
 
   Future<RequestState> getFacilitiesProvidedByHospitalOrDoc(
-      String profId) async {
+      String? profId) async {
     var result = await DioRequester().requestMethodWithNoBaseUrl(
         url: Urls.FACILITY_HAVE_URL,
         requestType: HttpRequestMethods.HTTP_GET,
         headerIncluded: true);
-    if (result.isRequestSucceed) {
+    if (result!.isRequestSucceed!) {
       FacilityHaveModel _mediaContentModel =
-          FacilityHaveModel.fromJson(result.response.data);
+          FacilityHaveModel.fromJson(result.response!.data);
       return RequestSuccess(response: _mediaContentModel);
     } else {
       return RequestFailed(failureCause: result.failureCause);
@@ -680,9 +733,9 @@ class UserManager {
         requestType: HttpRequestMethods.HTTP_GET,
         queryParameter: {"isAboutUsPage": isFromAboutUsScreen},
         headerIncluded: true);
-    if (result.isRequestSucceed) {
+    if (result!.isRequestSucceed!) {
       PremiumBenefitsModel _mediaContentModel =
-          PremiumBenefitsModel.fromJson(result.response.data);
+          PremiumBenefitsModel.fromJson(result.response!.data);
       return RequestSuccess(response: _mediaContentModel);
     } else {
       return RequestFailed(failureCause: result.failureCause);
@@ -703,24 +756,32 @@ class UserManager {
         url: Urls.BANK_OFFER_URL,
         requestType: HttpRequestMethods.HTTP_GET,
         headerIncluded: true);
-    if (result.isRequestSucceed) {
+    if (result!.isRequestSucceed!) {
       BankOfferModel _mediaContentModel =
-          BankOfferModel.fromJson(result.response.data);
+          BankOfferModel.fromJson(result.response!.data);
       return RequestSuccess(response: _mediaContentModel);
     } else {
       return RequestFailed(failureCause: result.failureCause);
     }
   }
 
-  Future<RequestState> getServiceCategoryData({String profId}) async {
+  Future<RequestState> getServiceCategoryData({String? profId}) async {
+    print("widget.userID-->${profId}");
+    print("widget.url-->${Urls.getServiceByProfessionalId}");
+
+
     var result = await DioRequester().requestMethod(
         url: Urls.getServiceByProfessionalId,
         queryParameter: {"professionalId": profId},
         requestType: HttpRequestMethods.HTTP_GET,
         headerIncluded: true);
-    if (result.isRequestSucceed) {
+
+    print("widget.result-->${result}");
+
+
+    if (result!.isRequestSucceed!) {
       HosFacilityData hosFacilityData =
-          HosFacilityData.fromJson(result.response.data);
+          HosFacilityData.fromJson(result.response!.data);
       return RequestSuccess(response: hosFacilityData);
     } else {
       return RequestFailed(failureCause: result.failureCause);

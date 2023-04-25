@@ -17,7 +17,8 @@ class AddBankDetails extends BaseActivity {
   _AddBankDetailsState createState() => _AddBankDetailsState();
 }
 
-class _AddBankDetailsState extends BaseState<AddBankDetails> {
+// class _AddBankDetailsState extends BaseState<AddBankDetails> {
+class _AddBankDetailsState extends State<AddBankDetails> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   bool isValidName = true;
@@ -33,15 +34,15 @@ class _AddBankDetailsState extends BaseState<AddBankDetails> {
   TextEditingController accountHolderNameController =
       new TextEditingController();
   bool progress = true;
-  ManagePaymentBloc _managePaymentBloc;
+  ManagePaymentBloc? _managePaymentBloc;
 
   @override
   void dispose() {
-    bankNameController?.dispose();
-    accountNumberController?.dispose();
-    ifscCodeController?.dispose();
-    panNumberController?.dispose();
-    accountHolderNameController?.dispose();
+    bankNameController.dispose();
+    accountNumberController.dispose();
+    ifscCodeController.dispose();
+    panNumberController.dispose();
+    accountHolderNameController.dispose();
     _managePaymentBloc?.dispose();
     super.dispose();
   }
@@ -56,7 +57,7 @@ class _AddBankDetailsState extends BaseState<AddBankDetails> {
         ifscCode: ifscCodeController.text.trim(),
         panNumber: panNumberController.text.trim());
     var result =
-        await _managePaymentBloc.setBankDetails(User(bankDetails: details));
+        await _managePaymentBloc!.setBankDetails(User(bankDetails: details));
     progress = false;
     _setState();
     if (result is RequestSuccess) {
@@ -80,18 +81,18 @@ class _AddBankDetailsState extends BaseState<AddBankDetails> {
   }
 
   _getBankDetails() async {
-    var result = await _managePaymentBloc.getBankDetails();
+    var result = await _managePaymentBloc!.getBankDetails();
     progress = false;
     _setState();
     if (result is RequestSuccess) {
-      BankDetails bankDetails = result.response;
+      BankDetails? bankDetails = result.response;
       if (bankDetails != null) {
         accountNumberController.clear();
         ifscCodeController.clear();
         panNumberController.clear();
         bankNameController.clear();
         accountHolderNameController.clear();
-        accountHolderNameController.text = bankDetails.accountHolderName;
+        accountHolderNameController.text = bankDetails.accountHolderName!;
         accountNumberController.text = bankDetails.accountNumber ?? "";
         ifscCodeController.text = bankDetails.ifscCode ?? "";
         panNumberController.text = bankDetails.panNumber ?? "";
@@ -124,7 +125,7 @@ class _AddBankDetailsState extends BaseState<AddBankDetails> {
     final account_number = Container(
       margin: EdgeInsets.only(left: 38, right: 38),
       child: TextField(
-        inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         onChanged: (val) {
           setState(() {
             if (val.trim().isEmpty) {
@@ -286,7 +287,7 @@ class _AddBankDetailsState extends BaseState<AddBankDetails> {
       },
       child: Scaffold(
           appBar: widget.getAppBar(context, PlunesStrings.bankDetails, true,
-              func: () => _hideKeyboard()),
+              func: () => _hideKeyboard()) as PreferredSizeWidget?,
           key: _scaffoldKey,
           backgroundColor: Colors.white,
           body: form),

@@ -15,16 +15,18 @@ class CatalogueViewScreen extends BaseActivity {
   _CatalogueViewScreenState createState() => _CatalogueViewScreenState();
 }
 
-class _CatalogueViewScreenState extends BaseState<CatalogueViewScreen> {
-  CatalogueServiceBloc _catalogueServiceBloc;
-  CatalogueServiceModel _catalogueServiceData;
-  String _errorMessage;
-  String _selectedSpeciality;
-  List<DocServiceCatalogue> _catalogueList;
+// class _CatalogueViewScreenState extends BaseState<CatalogueViewScreen> {
+class _CatalogueViewScreenState extends State<CatalogueViewScreen> {
+final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  CatalogueServiceBloc? _catalogueServiceBloc;
+  CatalogueServiceModel? _catalogueServiceData;
+  String? _errorMessage;
+  String? _selectedSpeciality;
+  List<DocServiceCatalogue>? _catalogueList;
   List<String> _variances = ["45", "35", "25", "0"];
-  List<TextEditingController> _priceList;
-  List<String> __varianceInputs;
-  bool _isEditModeEnabled;
+  late List<TextEditingController> _priceList;
+  late List<String?> __varianceInputs;
+  late bool _isEditModeEnabled;
 
   @override
   void initState() {
@@ -50,29 +52,29 @@ class _CatalogueViewScreenState extends BaseState<CatalogueViewScreen> {
         bottom: false,
         child: Scaffold(
           key: scaffoldKey,
-          appBar: widget.getAppBar(context, plunesStrings.catalogue, true),
+          appBar: widget.getAppBar(context, plunesStrings.catalogue, true) as PreferredSizeWidget?,
           body: Builder(builder: (context) {
             return Container(
               child: StreamBuilder<RequestState>(
                 builder: (context, snapShot) {
                   if (snapShot.data is RequestSuccess) {
-                    RequestSuccess _successObject = snapShot.data;
+                    RequestSuccess _successObject = snapShot.data as RequestSuccess;
                     _catalogueServiceData = _successObject.response;
-                    _catalogueServiceBloc.addIntoStream(null);
+                    _catalogueServiceBloc!.addIntoStream(null);
                   } else if (snapShot.data is RequestFailed) {
-                    RequestFailed _failedObject = snapShot.data;
+                    RequestFailed _failedObject = snapShot.data as RequestFailed;
                     _errorMessage = _failedObject.failureCause;
-                    _catalogueServiceBloc.addIntoStream(null);
+                    _catalogueServiceBloc!.addIntoStream(null);
                   }
                   if (snapShot.data is RequestInProgress) {
                     return CustomWidgets().getProgressIndicator();
                   }
-                  return (_errorMessage != null && _errorMessage.isNotEmpty)
+                  return (_errorMessage != null && _errorMessage!.isNotEmpty)
                       ? CustomWidgets().errorWidget(_errorMessage)
                       : _getBodyView();
                 },
                 initialData: _hasNoData() ? RequestInProgress() : null,
-                stream: _catalogueServiceBloc.baseStream,
+                stream: _catalogueServiceBloc!.baseStream,
               ),
             );
           }),
@@ -80,13 +82,13 @@ class _CatalogueViewScreenState extends BaseState<CatalogueViewScreen> {
   }
 
   void _getServicesData() {
-    _catalogueServiceBloc.getServiceCatalogues();
+    _catalogueServiceBloc!.getServiceCatalogues();
   }
 
   bool _hasNoData() {
     return (_catalogueServiceData == null ||
-        _catalogueServiceData.data == null ||
-        _catalogueServiceData.data.isEmpty);
+        _catalogueServiceData!.data == null ||
+        _catalogueServiceData!.data!.isEmpty);
   }
 
   Widget _getBodyView() {
@@ -120,7 +122,7 @@ class _CatalogueViewScreenState extends BaseState<CatalogueViewScreen> {
                                   color: PlunesColors.GREYCOLOR),
                             ),
                           )
-                        : _catalogueList == null || _catalogueList.isEmpty
+                        : _catalogueList == null || _catalogueList!.isEmpty
                             ? Center(
                                 child: Text(
                                   "You haven't added any services in your $_selectedSpeciality catalogue yet.",
@@ -239,18 +241,18 @@ class _CatalogueViewScreenState extends BaseState<CatalogueViewScreen> {
   }
 
   String _getVarianceText(int innerItemIndex) {
-    if (_catalogueList[innerItemIndex] != null &&
-        _catalogueList[innerItemIndex].variance != null) {
-      return _catalogueList[innerItemIndex].variance.toString() + "%";
+    if (_catalogueList![innerItemIndex] != null &&
+        _catalogueList![innerItemIndex].variance != null) {
+      return _catalogueList![innerItemIndex].variance.toString() + "%";
     } else {
       return PlunesStrings.NA;
     }
   }
 
   String _getPriceText(int innerItemIndex) {
-    if (_catalogueList[innerItemIndex] != null &&
-        _catalogueList[innerItemIndex].price != null) {
-      return "\u20B9 " + _catalogueList[innerItemIndex].price.toString();
+    if (_catalogueList![innerItemIndex] != null &&
+        _catalogueList![innerItemIndex].price != null) {
+      return "\u20B9 " + _catalogueList![innerItemIndex].price.toString();
     } else {
       return PlunesStrings.NA;
     }
@@ -263,13 +265,13 @@ class _CatalogueViewScreenState extends BaseState<CatalogueViewScreen> {
   Widget _getDropDown() {
     if (_selectedSpeciality == null) {
       _selectedSpeciality =
-          _catalogueServiceData.data.first?.speciality ?? PlunesStrings.NA;
+          _catalogueServiceData!.data!.first?.speciality ?? PlunesStrings.NA;
       _catalogueList =
-          _catalogueServiceData.data.first.services ?? <DocServiceCatalogue>[];
+          _catalogueServiceData!.data!.first.services ?? <DocServiceCatalogue>[];
     }
     return DropdownButton<String>(
         isExpanded: true,
-        items: _catalogueServiceData.data.map((data) {
+        items: _catalogueServiceData!.data!.map((data) {
           return DropdownMenuItem(
             child: Text(data.speciality ?? PlunesStrings.NA),
             value: data.speciality ?? PlunesStrings.NA,
@@ -278,8 +280,8 @@ class _CatalogueViewScreenState extends BaseState<CatalogueViewScreen> {
         value: _selectedSpeciality,
         onChanged: (value) {
           _selectedSpeciality = value;
-          _catalogueServiceData.data.forEach((object) {
-            if (object.speciality.contains(_selectedSpeciality)) {
+          _catalogueServiceData!.data!.forEach((object) {
+            if (object.speciality!.contains(_selectedSpeciality!)) {
               _catalogueList = object.services ?? <DocServiceCatalogue>[];
             }
           });
@@ -299,7 +301,7 @@ class _CatalogueViewScreenState extends BaseState<CatalogueViewScreen> {
                 children: <Widget>[
                   Expanded(
                     child: Text(
-                      _catalogueList[itemIndex]?.service ?? PlunesStrings.NA,
+                      _catalogueList![itemIndex]?.service ?? PlunesStrings.NA,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       textAlign: TextAlign.start,
@@ -349,12 +351,12 @@ class _CatalogueViewScreenState extends BaseState<CatalogueViewScreen> {
           ],
         );
       },
-      itemCount: _catalogueList.length,
+      itemCount: _catalogueList!.length,
     );
   }
 
   Widget _renderServiceCatalogueEditableList() {
-    List<DropdownMenuItem<String>> _varianceDropDownItems = new List();
+    List<DropdownMenuItem<String>> _varianceDropDownItems = [];
     for (String variance in _variances) {
       _varianceDropDownItems.add(new DropdownMenuItem(
         value: variance,
@@ -374,7 +376,7 @@ class _CatalogueViewScreenState extends BaseState<CatalogueViewScreen> {
     return ListView.builder(
       itemBuilder: (context, itemIndex) {
         _priceList.add(TextEditingController(
-            text: _catalogueList[itemIndex]?.price?.toString() ?? ""));
+            text: _catalogueList![itemIndex]?.price?.toString() ?? ""));
         __varianceInputs.add(_variances.first);
         return Column(
           children: <Widget>[
@@ -385,7 +387,7 @@ class _CatalogueViewScreenState extends BaseState<CatalogueViewScreen> {
                 children: <Widget>[
                   Expanded(
                     child: Text(
-                      _catalogueList[itemIndex]?.service ?? PlunesStrings.NA,
+                      _catalogueList![itemIndex]?.service ?? PlunesStrings.NA,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       textAlign: TextAlign.start,
@@ -397,7 +399,9 @@ class _CatalogueViewScreenState extends BaseState<CatalogueViewScreen> {
                     child: TextField(
                       controller: _priceList[itemIndex],
                       inputFormatters: [
-                        WhitelistingTextInputFormatter.digitsOnly
+                        FilteringTextInputFormatter.digitsOnly
+
+                        // WhitelistingTextInputFormatter.digitsOnly
                       ],
                       keyboardType: TextInputType.number,
                       style: TextStyle(fontSize: AppConfig.mediumFont),
@@ -411,7 +415,7 @@ class _CatalogueViewScreenState extends BaseState<CatalogueViewScreen> {
                   Expanded(
                     child: DropdownButtonFormField(
                       items: _varianceDropDownItems,
-                      onChanged: (value) {
+                      onChanged: (dynamic value) {
                         __varianceInputs[itemIndex] = value;
                         _setState();
                       },
@@ -435,7 +439,7 @@ class _CatalogueViewScreenState extends BaseState<CatalogueViewScreen> {
           ],
         );
       },
-      itemCount: _catalogueList.length,
+      itemCount: _catalogueList!.length,
     );
   }
 }

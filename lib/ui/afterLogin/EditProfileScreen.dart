@@ -72,7 +72,7 @@ class _EditProfileState extends State<EditProfileScreen>
   final educationController = TextEditingController();
   final collegeController = TextEditingController();
   final manualAddressController = TextEditingController();
-  List<dynamic> _selectedItemId = List(), _selectedSpecializationData = List();
+  List<dynamic>? _selectedItemId = [], _selectedSpecializationData = [];
   FocusNode nameFocusNode = new FocusNode(),
       educationFocusNode = new FocusNode(),
       professionalFocusNode = new FocusNode(),
@@ -92,13 +92,13 @@ class _EditProfileState extends State<EditProfileScreen>
   String user_token = "";
   String user_id = "";
 
-  UserBloc _userBloc;
-  User _user;
-  String _region;
+  late UserBloc _userBloc;
+  late User _user;
+  String? _region;
 
   @override
   void dispose() {
-    _emailController?.dispose();
+    _emailController.dispose();
     bloc.disposeEditStream();
     super.dispose();
   }
@@ -118,7 +118,7 @@ class _EditProfileState extends State<EditProfileScreen>
 
     return Scaffold(
         key: _scaffoldKey,
-        appBar: widget.getAppBar(context, plunesStrings.editProfile, true),
+        appBar: widget.getAppBar(context, plunesStrings.editProfile, true) as PreferredSizeWidget?,
         backgroundColor: Colors.white,
         body: GestureDetector(
             onTap: () => CommonMethods.hideSoftKeyboard(), child: bodyView()));
@@ -310,7 +310,7 @@ class _EditProfileState extends State<EditProfileScreen>
                   : ((controller == experienceController) ? 2 : null),
               textCapitalization: textCapitalization,
               keyboardType: inputType,
-              readOnly: (_user.isCentre != null && _user.isCentre)
+              readOnly: (_user.isCentre != null && _user.isCentre!)
                   ? (controller == nameController ||
                           controller == manualAddressController)
                       ? false
@@ -320,7 +320,7 @@ class _EditProfileState extends State<EditProfileScreen>
                   ? TextInputAction.done
                   : TextInputAction.next,
               onSubmitted: (String value) {
-                setFocus(controller).unfocus();
+                setFocus(controller)!.unfocus();
                 FocusScope.of(context).requestFocus(setTargetFocus(controller));
               },
               onChanged: (writtenText) {
@@ -357,8 +357,8 @@ class _EditProfileState extends State<EditProfileScreen>
     );
   }
 
-  FocusNode setFocus(TextEditingController controller) {
-    FocusNode focusNode;
+  FocusNode? setFocus(TextEditingController controller) {
+    FocusNode? focusNode;
     if (controller == nameController) {
       focusNode = nameFocusNode;
     } else if (controller == educationController) {
@@ -377,8 +377,8 @@ class _EditProfileState extends State<EditProfileScreen>
     return focusNode;
   }
 
-  FocusNode setTargetFocus(TextEditingController controller) {
-    FocusNode focusNode;
+  FocusNode? setTargetFocus(TextEditingController controller) {
+    FocusNode? focusNode;
     if (controller == nameController) {
       focusNode = educationFocusNode;
     } else if (controller == educationController) {
@@ -404,7 +404,7 @@ class _EditProfileState extends State<EditProfileScreen>
       if (val == null || val.toString().isEmpty) {
         return;
       }
-      var addressControllerList = new List();
+      var addressControllerList = [];
       addressControllerList = val.toString().split(":");
       locationController.text = addressControllerList[0] +
           ' ' +
@@ -430,9 +430,9 @@ class _EditProfileState extends State<EditProfileScreen>
     dobController.text = widget.dateOfBirth;
     educationController.text = widget.education;
     collegeController.text = widget.college;
-    professionRegController.text = _user.profRegistrationNumber;
-    experienceController.text = _user.experience;
-    aboutController.text = _user.about;
+    professionRegController.text = _user.profRegistrationNumber ?? "";
+    experienceController.text = _user.experience!;
+    aboutController.text = _user.about!;
 //    if (_user.userType == Constants.user) {
 //      locationController.text = widget.location;
 //    } else {
@@ -544,13 +544,13 @@ class _EditProfileState extends State<EditProfileScreen>
   void _getGoogleAddress() async {
     var details = UserManager().getUserDetails();
     if (details.latitude != null &&
-        details.latitude.isNotEmpty &&
+        details.latitude!.isNotEmpty &&
         details.latitude != "0.0" &&
         details.longitude != null &&
-        details.longitude.isNotEmpty &&
+        details.longitude!.isNotEmpty &&
         details.longitude != "0.0")
       LocationUtil()
-          .getFullAddress(details.latitude, details.longitude)
+          .getFullAddress(details.latitude!, details.longitude!)
           .then((value) {
         if (value != null && value.trim().isNotEmpty) {
           locationController.text = value;
@@ -559,7 +559,7 @@ class _EditProfileState extends State<EditProfileScreen>
       });
   }
 
-  _showInSnackBar(String message, {bool shouldPop = false}) {
+  _showInSnackBar(String? message, {bool shouldPop = false}) {
     showDialog(
         context: context,
         builder: (context) {

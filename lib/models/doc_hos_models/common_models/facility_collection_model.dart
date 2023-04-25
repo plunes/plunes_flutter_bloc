@@ -1,7 +1,7 @@
 class FacilityCollection {
-  bool success;
-  int size;
-  List<Facility> data;
+  bool? success;
+  int? size;
+  List<Facility>? data;
 
   FacilityCollection({this.success, this.size, this.data});
 
@@ -9,9 +9,9 @@ class FacilityCollection {
     success = json['success'];
     size = json['size'];
     if (json['data'] != null) {
-      data = new List<Facility>();
+      data = [];
       json['data'].forEach((v) {
-        data.add(new Facility.fromJson(v));
+        data!.add(new Facility.fromJson(v));
       });
     }
   }
@@ -21,20 +21,20 @@ class FacilityCollection {
     data['success'] = this.success;
     data['size'] = this.size;
     if (this.data != null) {
-      data['data'] = this.data.map((v) => v.toJson()).toList();
+      data['data'] = this.data!.map((v) => v.toJson()).toList();
     }
     return data;
   }
 }
 
 class Facility {
-  String sId;
-  String imageUrl;
-  String name;
-  String address;
-  String userType;
-  String locality;
-  String subLocality;
+  String? sId;
+  String? imageUrl;
+  String? name;
+  String? address;
+  String? userType;
+  String? locality;
+  String? subLocality;
 
   Facility(
       {this.sId,

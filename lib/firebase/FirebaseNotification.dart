@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -32,7 +33,7 @@ import 'package:shared_preferences/shared_preferences.dart';
  */
 
 class FirebaseNotification {
-  static FirebaseNotification _firebaseNotification;
+  static FirebaseNotification? _firebaseNotification;
 
   FirebaseNotification._init();
 
@@ -40,17 +41,17 @@ class FirebaseNotification {
     if (_firebaseNotification == null) {
       _firebaseNotification = FirebaseNotification._init();
     }
-    return _firebaseNotification;
+    return _firebaseNotification!;
   }
 
-  FirebaseMessaging _firebaseMessaging;
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+  late FirebaseMessaging _firebaseMessaging;
+  late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
   String title = '', body = '';
-  BuildContext _buildContext;
-  GlobalKey<ScaffoldState> _scaffoldKeyNotification;
-  GlobalKey<NavigatorState> _navKey;
-  FacebookAppEvents _facebookAppEvents;
-  FirebaseAnalytics _analytics;
+  late BuildContext _buildContext;
+  GlobalKey<ScaffoldState>? _scaffoldKeyNotification;
+  late GlobalKey<NavigatorState> _navKey;
+  FacebookAppEvents? _facebookAppEvents;
+  FirebaseAnalytics? _analytics;
 
   static const String homeScreenName = "HomeScreen";
   static const String cartScreenName = "CartScreen";
@@ -60,49 +61,49 @@ class FirebaseNotification {
   static const String reviewScreen = "review";
   static const String activityScreen = "activity";
   static const String solutionViewScreen = "ShowSolution";
-  static String _currentScreenName;
-  int _notificationCount = 0, _cartCount = 0;
+  static String? _currentScreenName;
+  int? _notificationCount = 0, _cartCount = 0;
 
-  static setScreenName(String screenName) {
+  static setScreenName(String? screenName) {
     _currentScreenName = screenName;
   }
 
-  static String getCurrentScreenName() => _currentScreenName;
+  static String? getCurrentScreenName() => _currentScreenName;
 
-  int getCartCount() {
+  int? getCartCount() {
     return _cartCount;
   }
 
-  FacebookAppEvents getFbInstance() {
+  FacebookAppEvents? getFbInstance() {
     return _facebookAppEvents;
   }
 
-  FirebaseAnalytics getAnalyticsInstance() {
+  FirebaseAnalytics? getAnalyticsInstance() {
     return _analytics;
   }
 
-  int getNotificationCount() {
+  int? getNotificationCount() {
     return _notificationCount;
   }
 
-  void setCartCount(int count) {
+  void setCartCount(int? count) {
     _cartCount = count;
-    _notificationListener?.add(count);
+    _notificationListener.add(count);
   }
 
   void setNotificationCount(int count) {
     _notificationCount = count;
-    _notificationListener?.add(count);
+    _notificationListener.add(count);
     if (count != null && count == 0) {
       NotificationBloc().setUnreadCountToZero();
     }
   }
 
-  Observable<int> get notificationStream => _notificationListener.stream;
+  Stream<int?> get notificationStream => _notificationListener.stream;
 
   // for doc/hos/lab
   static const String insightScreen = "insight";
-  var _notificationListener = PublishSubject<int>();
+  var _notificationListener = PublishSubject<int?>();
 
   /// call this method to configure fireBase messaging in the app for push notification
   init(BuildContext context, GlobalKey<ScaffoldState> _scaffoldKey, var key,
@@ -112,23 +113,24 @@ class FirebaseNotification {
     _scaffoldKeyNotification = _scaffoldKey;
     _facebookAppEvents = fbInstance;
     _analytics = analytics;
-    _firebaseMessaging = FirebaseMessaging();
-    var initializationSettingsAndroid =
-        new AndroidInitializationSettings('mipmap/ic_launcher');
-    var initializationSettingsIOS = new IOSInitializationSettings(
-        defaultPresentSound: true,
-        onDidReceiveLocalNotification: onDidReceiveLocalNotification);
-    var initializationSettings = new InitializationSettings(
-        initializationSettingsAndroid, initializationSettingsIOS);
+    _firebaseMessaging = FirebaseMessaging.instance;
+    var initializationSettingsAndroid = AndroidInitializationSettings('mipmap/ic_launcher');
+
+    // var initializationSettingsIOS = new IOSInitializationSettings(
+    //     defaultPresentSound: true,
+    //     onDidReceiveLocalNotification: onDidReceiveLocalNotification);
+    var initializationSettings = InitializationSettings();
+        // initializationSettingsAndroid, initializationSettingsIOS);
     flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
     flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onSelectNotification: onSelectNotification);
+        // onSelectNotification: onSelectNotification
+    );
     fireBaseCloudMessagingListeners();
   }
 
   Future onSelectNotification(String payLoad) async {
 //    print(json.decode(payLoad));
-    Map<String, dynamic> msg = json.decode(payLoad);
+    Map<String, dynamic>? msg = json.decode(payLoad);
     handleRedirection(msg);
   }
 
@@ -150,9 +152,9 @@ class FirebaseNotification {
     );
   }
 
-  void handleRedirection(Map<String, dynamic> payLoad) async {
+  void handleRedirection(Map<String, dynamic>? payLoad) async {
     bool isHomeScreen = false;
-    Widget widget;
+    Widget? widget;
     if (Platform.isIOS) {
       payLoad = {"data": payLoad};
     }
@@ -228,12 +230,12 @@ class FirebaseNotification {
     }
     if (widget != null) {
       if (isHomeScreen) {
-        _navKey.currentState.pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => widget), (_) => false);
+        _navKey.currentState!.pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => widget!), (_) => false);
       } else {
         await Future.delayed(Duration(milliseconds: 20));
-        _navKey.currentState
-            .push(MaterialPageRoute(builder: (context) => widget));
+        _navKey.currentState!
+            .push(MaterialPageRoute(builder: (context) => widget!));
       }
     }
   }
@@ -250,29 +252,30 @@ class FirebaseNotification {
       _updateToken(token);
     });
     // _firebaseMessaging.subscribeToTopic("Testing12346");
-    _firebaseMessaging.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        // print('==firebase==onMessage== $message');
-        setNotificationCount(1);
-        _notifyListeners(message);
-        _showNotificationWithDefaultSound(message);
-      },
-      onResume: (Map<String, dynamic> message) async {
-//        print('==firebase==onResume== $message');
-        showLocalNotification(message);
-      },
-      onLaunch: (Map<String, dynamic> message) async {
-//        print('==firebase==onLaunch== $message');
-        showLocalNotification(message);
-      },
-    );
+//     _firebaseMessaging.configure(
+//       onMessage: (Map<String, dynamic> message) async {
+//         // print('==firebase==onMessage== $message');
+//         setNotificationCount(1);
+//         _notifyListeners(message);
+//         _showNotificationWithDefaultSound(message);
+//       },
+//       onResume: (Map<String, dynamic> message) async {
+// //        print('==firebase==onResume== $message');
+//         showLocalNotification(message);
+//       },
+//       onLaunch: (Map<String, dynamic> message) async {
+// //        print('==firebase==onLaunch== $message');
+//         showLocalNotification(message);
+//       },
+//     );
   }
 
   Future _showNotificationWithDefaultSound(Map<String, dynamic> msg) async {
     var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
-        'your channel id', 'your channel name', 'your channel description',
-        importance: Importance.Max,
-        priority: Priority.High,
+        'your channel id', 'your channel name',
+        // 'your channel description',
+        importance: Importance.max,
+        priority: Priority.high,
 //        style: AndroidNotificationStyle.BigText,
         icon: "@drawable/ic_launcher",
         ledOffMs: 500,
@@ -280,10 +283,9 @@ class FirebaseNotification {
         ledColor: Colors.green,
         color: Colors.green,
         styleInformation: BigTextStyleInformation(''));
-    var iOSPlatformChannelSpecifics =
-        new IOSNotificationDetails(presentAlert: true);
-    var platformChannelSpecifics = new NotificationDetails(
-        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+    // var iOSPlatformChannelSpecifics = new IOSNotificationDetails(presentAlert: true);
+    var platformChannelSpecifics = new NotificationDetails();
+        // androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
     await flutterLocalNotificationsPlugin.show(
       0,
       Platform.isIOS
@@ -298,95 +300,96 @@ class FirebaseNotification {
   }
 
   iOSPermission() {
-    _firebaseMessaging.requestNotificationPermissions(
-        IosNotificationSettings(sound: true, badge: true, alert: true));
-    _firebaseMessaging.onIosSettingsRegistered
-        .listen((IosNotificationSettings settings) {
+    _firebaseMessaging.requestPermission(
+        sound: true, badge: true, alert: true);
+
+    // _firebaseMessaging.onIosSettingsRegistered
+    //     .listen((IosNotificationSettings settings) {
 //      print("Settings registered: $settings");
-    });
+//     });
   }
 
   Future _handleNavigation(PostsData notificationModel) async {
     bool isHomeScreen = false;
     Widget widget;
 //    print(notificationModel.notificationType);
-    if (notificationModel.notificationType == homeScreenName) {
-      isHomeScreen = true;
-      widget = HomeScreen(
-        screenNo: Constants.homeScreenNumber,
-      );
-    } else if (notificationModel.notificationType == exploreScreen) {
-      if (_currentScreenName != null && _currentScreenName == exploreScreen) {
-        return;
-      }
-      isHomeScreen = true;
-      widget = HomeScreen(
-        screenNo: Constants.exploreScreenNumber,
-      );
-    } else if (notificationModel.notificationType == activityScreen) {
-      if (_currentScreenName != null && _currentScreenName == activityScreen) {
-        return;
-      }
-      isHomeScreen = true;
-      widget = HomeScreen(
-        screenNo: Constants.activityScreenNumber,
-      );
-    } else if (notificationModel.notificationType == bookingScreen) {
-      if (_currentScreenName != null && _currentScreenName == bookingScreen) {
-        return;
-      }
-      widget = AppointmentMainScreen(
-        bookingId: notificationModel.id,
-      );
-    } else if (notificationModel.notificationType == reviewScreen) {
-      widget = AppointmentMainScreen(
-        bookingId: notificationModel.id,
-        shouldOpenReviewPopup: true,
-      );
-    } else if (notificationModel.notificationType == insightScreen) {
-      isHomeScreen = true;
-      widget = HomeScreen(
-        screenNo: Constants.homeScreenNumber,
-      );
-    } else if (notificationModel.notificationType == solutionScreen) {
-      await Future.delayed(Duration(milliseconds: 50));
-      if (_currentScreenName != null && _currentScreenName == solutionScreen) {
-        return;
-      }
-      if (notificationModel.id != null && notificationModel.id.isNotEmpty) {
-        widget = SolutionShowPriceScreen(
-          catalogueData: CatalogueData(
-              solutionId: notificationModel.id, isFromNotification: true),
-        );
-      }
-    } else if (notificationModel.notificationType == solutionViewScreen) {
-      await Future.delayed(Duration(milliseconds: 50));
-      if (_currentScreenName != null &&
-          _currentScreenName == solutionViewScreen) {
-        return;
-      }
-      if (notificationModel.id != null && notificationModel.id.isNotEmpty) {
-        widget = ViewSolutionsScreen(
-          catalogueData: CatalogueData(
-              solutionId: notificationModel.id, isFromNotification: true),
-        );
-      }
-    } else if (notificationModel.notificationType == cartScreenName) {
-      if (_currentScreenName != null && _currentScreenName == cartScreenName) {
-        return;
-      }
-      widget = AddToCartMainScreen(hasAppBar: true);
-    }
-    if (widget != null) {
-      await Future.delayed(Duration(seconds: 3));
-      if (isHomeScreen) {
-        _navKey.currentState.pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => widget), (_) => false);
-      } else {
-        _navKey.currentState
-            .push(MaterialPageRoute(builder: (context) => widget));
-      }
-    }
+//     if (notificationModel.notificationType == homeScreenName) {
+//       isHomeScreen = true;
+//       widget = HomeScreen(
+//         screenNo: Constants.homeScreenNumber,
+//       );
+//     } else if (notificationModel.notificationType == exploreScreen) {
+//       if (_currentScreenName != null && _currentScreenName == exploreScreen) {
+//         return;
+//       }
+//       isHomeScreen = true;
+//       widget = HomeScreen(
+//         screenNo: Constants.exploreScreenNumber,
+//       );
+//     } else if (notificationModel.notificationType == activityScreen) {
+//       if (_currentScreenName != null && _currentScreenName == activityScreen) {
+//         return;
+//       }
+//       isHomeScreen = true;
+//       widget = HomeScreen(
+//         screenNo: Constants.activityScreenNumber,
+//       );
+//     } else if (notificationModel.notificationType == bookingScreen) {
+//       if (_currentScreenName != null && _currentScreenName == bookingScreen) {
+//         return;
+//       }
+//       widget = AppointmentMainScreen(
+//         bookingId: notificationModel.id,
+//       );
+//     } else if (notificationModel.notificationType == reviewScreen) {
+//       widget = AppointmentMainScreen(
+//         bookingId: notificationModel.id,
+//         shouldOpenReviewPopup: true,
+//       );
+//     } else if (notificationModel.notificationType == insightScreen) {
+//       isHomeScreen = true;
+//       widget = HomeScreen(
+//         screenNo: Constants.homeScreenNumber,
+//       );
+//     } else if (notificationModel.notificationType == solutionScreen) {
+//       await Future.delayed(Duration(milliseconds: 50));
+//       if (_currentScreenName != null && _currentScreenName == solutionScreen) {
+//         return;
+//       }
+//       if (notificationModel.id != null && notificationModel.id.isNotEmpty) {
+//         widget = SolutionShowPriceScreen(
+//           catalogueData: CatalogueData(
+//               solutionId: notificationModel.id, isFromNotification: true),
+//         );
+//       }
+//     } else if (notificationModel.notificationType == solutionViewScreen) {
+//       await Future.delayed(Duration(milliseconds: 50));
+//       if (_currentScreenName != null &&
+//           _currentScreenName == solutionViewScreen) {
+//         return;
+//       }
+//       if (notificationModel.id != null && notificationModel.id.isNotEmpty) {
+//         widget = ViewSolutionsScreen(
+//           catalogueData: CatalogueData(
+//               solutionId: notificationModel.id, isFromNotification: true),
+//         );
+//       }
+//     } else if (notificationModel.notificationType == cartScreenName) {
+//       if (_currentScreenName != null && _currentScreenName == cartScreenName) {
+//         return;
+//       }
+//       widget = AddToCartMainScreen(hasAppBar: true);
+//     }
+//     if (widget != null) {
+//       await Future.delayed(Duration(seconds: 3));
+//       if (isHomeScreen) {
+//         _navKey.currentState.pushAndRemoveUntil(
+//             MaterialPageRoute(builder: (context) => widget), (_) => false);
+//       } else {
+//         _navKey.currentState
+//             .push(MaterialPageRoute(builder: (context) => widget));
+//       }
+//     }
   }
 
   showLocalNotification(Map<String, dynamic> message) {
@@ -406,13 +409,13 @@ class FirebaseNotification {
   }
 
   close() {
-    _notificationListener?.close();
+    _notificationListener.close();
   }
 
   void _notifyListeners(Map<String, dynamic> payLoad) async {
     if (Platform.isIOS) {
-      String screenName, id;
-      Widget widget;
+      String? screenName, id;
+      Widget? widget;
       if (payLoad != null &&
           payLoad.containsKey("screen") &&
           payLoad['screen'] != null &&
@@ -451,18 +454,18 @@ class FirebaseNotification {
         }
         if (screenName != null && screenName.isNotEmpty) {
           EventProvider()
-              .getSessionEventBus()
+              .getSessionEventBus()!
               .fire(ScreenRefresher(screenName: screenName));
           if (id != null && widget != null) {
             await Future.delayed(Duration(milliseconds: 10));
-            _navKey.currentState
-                .push(MaterialPageRoute(builder: (context) => widget));
+            _navKey.currentState!
+                .push(MaterialPageRoute(builder: (context) => widget!));
           }
         }
       }
     } else {
-      String screenName, id;
-      Widget widget;
+      String? screenName, id;
+      Widget? widget;
       // print("ssss ${payLoad["data"]['screen']}");
       if (payLoad != null &&
           payLoad.containsKey("data") &&
@@ -504,12 +507,12 @@ class FirebaseNotification {
         if (screenName != null && screenName.isNotEmpty) {
           // print("fired$screenName");
           EventProvider()
-              .getSessionEventBus()
+              .getSessionEventBus()!
               .fire(ScreenRefresher(screenName: screenName));
           if (id != null && widget != null) {
             await Future.delayed(Duration(milliseconds: 10));
-            _navKey.currentState
-                .push(MaterialPageRoute(builder: (context) => widget));
+            _navKey.currentState!
+                .push(MaterialPageRoute(builder: (context) => widget!));
           }
         }
       }

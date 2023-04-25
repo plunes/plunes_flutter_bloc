@@ -8,18 +8,18 @@ class ExploreMainRepo {
   Future<RequestState> getExploreData() async {
     var result = await DioRequester().requestMethod(
         url: Urls.EXPLORE_URL, requestType: HttpRequestMethods.HTTP_GET);
-    ExploreOuterModel _exploreModel;
-    if (result.isRequestSucceed) {
+    ExploreOuterModel? _exploreModel;
+    if (result!.isRequestSucceed!) {
       try {
-        _exploreModel = ExploreOuterModel.fromJson(result.response.data);
+        _exploreModel = ExploreOuterModel.fromJson(result.response!.data);
       } catch (e) {
         print("error occur ExploreMainRepo $e");
       }
       if (_exploreModel != null &&
           _exploreModel.success != null &&
-          _exploreModel.success &&
+          _exploreModel.success! &&
           _exploreModel.data != null &&
-          _exploreModel.data.isNotEmpty) {
+          _exploreModel.data!.isNotEmpty) {
         return RequestSuccess(response: _exploreModel);
       } else {
         return RequestFailed(

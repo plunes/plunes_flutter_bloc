@@ -1,8 +1,8 @@
 class BankOfferModel {
-  bool success;
-  String confirmTitle;
-  String benefitDescription;
-  List<BankOffer> data;
+  bool? success;
+  String? confirmTitle;
+  String? benefitDescription;
+  List<BankOffer>? data;
 
   BankOfferModel(
       {this.success, this.confirmTitle, this.benefitDescription, this.data});
@@ -12,9 +12,9 @@ class BankOfferModel {
     confirmTitle = json['confirmTitle'];
     benefitDescription = json['benefitDescription'];
     if (json['data'] != null) {
-      data = new List<BankOffer>();
+      data = [];
       json['data'].forEach((v) {
-        data.add(new BankOffer.fromJson(v));
+        data!.add(new BankOffer.fromJson(v));
       });
     }
   }
@@ -25,24 +25,24 @@ class BankOfferModel {
     data['confirmTitle'] = this.confirmTitle;
     data['benefitDescription'] = this.benefitDescription;
     if (this.data != null) {
-      data['data'] = this.data.map((v) => v.toJson()).toList();
+      data['data'] = this.data!.map((v) => v.toJson()).toList();
     }
     return data;
   }
 }
 
 class BankOffer {
-  int createdAt;
-  int updateAt;
-  String sId;
-  String title;
-  String titleImage;
-  String bankOffer;
-  String percentageDiscount;
-  String amountLimit;
-  String sectionType;
-  int indexing;
-  int iV;
+  int? createdAt;
+  int? updateAt;
+  String? sId;
+  String? title;
+  String? titleImage;
+  String? bankOffer;
+  String? percentageDiscount;
+  String? amountLimit;
+  String? sectionType;
+  int? indexing;
+  int? iV;
 
   BankOffer(
       {this.createdAt,

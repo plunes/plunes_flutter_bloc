@@ -4,42 +4,42 @@ import 'package:plunes/requester/request_states.dart';
 import 'package:rxdart/rxdart.dart';
 
 class HomeScreenMainBloc extends BlocBase {
-  final _categoryStreamProvider = PublishSubject<RequestState>();
+  final _categoryStreamProvider = PublishSubject<RequestState?>();
 
-  Observable<RequestState> get getHomeScreenDetailStream =>
+  Stream<RequestState?> get getHomeScreenDetailStream =>
       _categoryStreamProvider.stream;
-  final _whyUsStreamProvider = PublishSubject<RequestState>();
+  final _whyUsStreamProvider = PublishSubject<RequestState?>();
 
-  Observable<RequestState> get getWhyUsStream => _whyUsStreamProvider.stream;
+  Stream<RequestState?> get getWhyUsStream => _whyUsStreamProvider.stream;
 
-  final _whyUsCardByIdStreamProvider = PublishSubject<RequestState>();
+  final _whyUsCardByIdStreamProvider = PublishSubject<RequestState?>();
 
-  Observable<RequestState> get getWhyUsCardByIdStream =>
+  Stream<RequestState?> get getWhyUsCardByIdStream =>
       _whyUsCardByIdStreamProvider.stream;
-  final _knowYourProcedureStreamProvider = PublishSubject<RequestState>();
+  final _knowYourProcedureStreamProvider = PublishSubject<RequestState?>();
 
-  Observable<RequestState> get knowYourProcedureStream =>
+  Stream<RequestState?> get knowYourProcedureStream =>
       _knowYourProcedureStreamProvider.stream;
   final _getProfessionalForServiceStreamProvider =
-      PublishSubject<RequestState>();
+      PublishSubject<RequestState?>();
 
-  Observable<RequestState> get professionalForServiceStream =>
+  Stream<RequestState?> get professionalForServiceStream =>
       _getProfessionalForServiceStreamProvider.stream;
-  final _getCommonSpecialityDataStreamProvider = PublishSubject<RequestState>();
+  final _getCommonSpecialityDataStreamProvider = PublishSubject<RequestState?>();
 
-  Observable<RequestState> get commonSpecialityStream =>
+  Stream<RequestState?> get commonSpecialityStream =>
       _getCommonSpecialityDataStreamProvider.stream;
-  final _mediaStreamProvider = PublishSubject<RequestState>();
+  final _mediaStreamProvider = PublishSubject<RequestState?>();
 
-  Observable<RequestState> get mediaStream => _mediaStreamProvider.stream;
+  Stream<RequestState?> get mediaStream => _mediaStreamProvider.stream;
 
-  final _topSearchStreamProvider = PublishSubject<RequestState>();
+  final _topSearchStreamProvider = PublishSubject<RequestState?>();
 
-  Observable<RequestState> get topSearchStream =>
+  Stream<RequestState?> get topSearchStream =>
       _topSearchStreamProvider.stream;
-  final _topFacilityStreamProvider = PublishSubject<RequestState>();
+  final _topFacilityStreamProvider = PublishSubject<RequestState?>();
 
-  Observable<RequestState> get topFacilityStream =>
+  Stream<RequestState?> get topFacilityStream =>
       _topFacilityStreamProvider.stream;
 
   @override
@@ -63,7 +63,7 @@ class HomeScreenMainBloc extends BlocBase {
     return result;
   }
 
-  void addIntoSolutionHomePageCategoryData(RequestState state) {
+  void addIntoSolutionHomePageCategoryData(RequestState? state) {
     addStateInGenericStream(_categoryStreamProvider, state);
   }
 
@@ -74,7 +74,7 @@ class HomeScreenMainBloc extends BlocBase {
     return result;
   }
 
-  void addIntoGetWhyUsDataStream(RequestState state) {
+  void addIntoGetWhyUsDataStream(RequestState? state) {
     addStateInGenericStream(_whyUsStreamProvider, state);
   }
 
@@ -96,22 +96,22 @@ class HomeScreenMainBloc extends BlocBase {
     return result;
   }
 
-  void addIntoKnowYourProcedureDataStream(RequestState state) {
+  void addIntoKnowYourProcedureDataStream(RequestState? state) {
     addStateInGenericStream(_knowYourProcedureStreamProvider, state);
   }
 
-  Future<RequestState> getProfessionalsForService(String familyId,
+  Future<RequestState> getProfessionalsForService(String? familyId,String? familyName,
       {bool shouldHitSpecialityApi = false,
-      bool shouldShowNearFacilities}) async {
+      required bool shouldShowNearFacilities}) async {
     addIntoGetProfessionalForServiceDataStream(RequestInProgress());
-    var result = await HomeScreenMainRepo().getProfessionalsForService(familyId,
+    var result = await HomeScreenMainRepo().getProfessionalsForService(familyId,familyName,
         shouldHitSpecialityApi: shouldHitSpecialityApi,
         shouldShowNearFacilities: shouldShowNearFacilities);
     addIntoGetProfessionalForServiceDataStream(result);
     return result;
   }
 
-  void addIntoGetProfessionalForServiceDataStream(RequestState state) {
+  void addIntoGetProfessionalForServiceDataStream(RequestState? state) {
     addStateInGenericStream(_getProfessionalForServiceStreamProvider, state);
   }
 
@@ -122,11 +122,11 @@ class HomeScreenMainBloc extends BlocBase {
     return result;
   }
 
-  void addIntoGetCommonSpecialitiesDataStream(RequestState state) {
+  void addIntoGetCommonSpecialitiesDataStream(RequestState? state) {
     addStateInGenericStream(_getCommonSpecialityDataStreamProvider, state);
   }
 
-  Future<RequestState> getMediaContent({String mediaType}) async {
+  Future<RequestState> getMediaContent({String? mediaType}) async {
     addIntoMediaStream(RequestInProgress());
     var result =
         await HomeScreenMainRepo().getMediaContent(mediaType: mediaType);
@@ -134,7 +134,7 @@ class HomeScreenMainBloc extends BlocBase {
     return result;
   }
 
-  void addIntoMediaStream(RequestState state) {
+  void addIntoMediaStream(RequestState? state) {
     addStateInGenericStream(_mediaStreamProvider, state);
   }
 
@@ -145,14 +145,14 @@ class HomeScreenMainBloc extends BlocBase {
     return result;
   }
 
-  void addIntoTopSearchStream(RequestState state) {
+  void addIntoTopSearchStream(RequestState? state) {
     addStateInGenericStream(_topSearchStreamProvider, state);
   }
 
   Future<RequestState> getTopFacilities(
-      {String specialityId,
-      bool shouldSortByNearest,
-      String facilityType,
+      {String? specialityId,
+      bool? shouldSortByNearest,
+      String? facilityType,
       bool isInitialRequest = false,
       bool isFromHomeScreen = false}) async {
     addIntoTopFacilityStream(RequestInProgress());
@@ -171,7 +171,7 @@ class HomeScreenMainBloc extends BlocBase {
     return result;
   }
 
-  void addIntoTopFacilityStream(RequestState state) {
+  void addIntoTopFacilityStream(RequestState? state) {
     addStateInGenericStream(_topFacilityStreamProvider, state);
   }
 }

@@ -26,8 +26,10 @@ import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/profile_screen.dart';
 import 'package:readmore/readmore.dart';
 
+import '../../../models/new_solution_model/new_hos_facility_model.dart';
+
 class CommonWidgets {
-  static CommonWidgets _instance;
+  static CommonWidgets? _instance;
 
   CommonWidgets._init();
 
@@ -35,7 +37,7 @@ class CommonWidgets {
     if (_instance == null) {
       _instance = CommonWidgets._init();
     }
-    return _instance;
+    return _instance!;
   }
 
   final CarouselController _controller = CarouselController();
@@ -64,7 +66,7 @@ class CommonWidgets {
   }
 
   Widget getSolutionViewWidget(
-      Services service, CatalogueData catalogueData, Function openProfile) {
+      Services service, CatalogueData? catalogueData, Function openProfile) {
     return Card(
       margin: EdgeInsets.only(
           bottom: AppConfig.verticalBlockSize * 2.8,
@@ -90,10 +92,10 @@ class CommonWidgets {
               height: AppConfig.verticalBlockSize * 20,
               child: (service != null &&
                       service.professionalPhotos != null &&
-                      service.professionalPhotos.isNotEmpty)
+                      service.professionalPhotos!.isNotEmpty)
                   ? _getImageArrayOfProfessional(service)
                   : ClipRRect(
-                      borderRadius: BorderRadius.only(
+                      borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(16),
                           topRight: Radius.circular(16)),
                       child: SizedBox.expand(
@@ -120,15 +122,15 @@ class CommonWidgets {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            CommonMethods.getStringInCamelCase(service?.name),
-                            style: TextStyle(
+                            CommonMethods.getStringInCamelCase(service?.name)!,
+                            style: const TextStyle(
                               fontSize: 20,
                               color: PlunesColors.BLACKCOLOR,
                             ),
                           ),
                           (service != null &&
                                   service.address != null &&
-                                  service.address.trim().isNotEmpty)
+                                  service.address!.trim().isNotEmpty)
                               ? Container(
                                   margin: EdgeInsets.only(top: 5),
                                   child: Row(
@@ -137,8 +139,8 @@ class CommonWidgets {
                                         CrossAxisAlignment.center,
                                     children: [
                                       Container(
-                                        margin: EdgeInsets.only(right: 5),
-                                        child: Icon(
+                                        margin: const EdgeInsets.only(right: 5),
+                                        child: const Icon(
                                           Icons.location_on,
                                           size: 18,
                                           color: PlunesColors.BLACKCOLOR,
@@ -164,13 +166,13 @@ class CommonWidgets {
                       Container(
                         child: Row(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.star,
                               color: Colors.yellow,
                             ),
                             Text(
                               " ${service?.rating?.toStringAsFixed(1) ?? 4.5}",
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 18,
                                 color: PlunesColors.BLACKCOLOR,
                               ),
@@ -206,13 +208,13 @@ class CommonWidgets {
                               catalogueData?.speciality ?? "",
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 16, color: PlunesColors.BLACKCOLOR),
                             )
                           ],
                         ),
                       ),
-                      (service.experience == null || service.experience <= 0)
+                      (service.experience == null || service.experience! <= 0)
                           ? Container()
                           : Expanded(
                               child: Column(
@@ -248,8 +250,11 @@ class CommonWidgets {
     );
   }
 
-  Widget getSolutionViewWidgetPopUp(Services service,
-      CatalogueData catalogueData, Function openProfile, BuildContext context) {
+  Widget getSolutionViewWidgetPopUp(
+      Services service,
+      CatalogueData? catalogueData,
+      Function openProfile,
+      BuildContext context) {
     return Card(
       margin: EdgeInsets.only(
           bottom: AppConfig.verticalBlockSize * 2.8,
@@ -275,7 +280,7 @@ class CommonWidgets {
               height: AppConfig.verticalBlockSize * 20,
               child: (service != null &&
                       service.professionalPhotos != null &&
-                      service.professionalPhotos.isNotEmpty)
+                      service.professionalPhotos!.isNotEmpty)
                   ? _getImageArrayOfProfessional(service)
                   : ClipRRect(
                       borderRadius: BorderRadius.only(
@@ -305,7 +310,7 @@ class CommonWidgets {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            CommonMethods.getStringInCamelCase(service?.name),
+                            CommonMethods.getStringInCamelCase(service?.name)!,
                             style: TextStyle(
                               fontSize: 20,
                               color: PlunesColors.BLACKCOLOR,
@@ -313,7 +318,7 @@ class CommonWidgets {
                           ),
                           (service != null &&
                                   service.address != null &&
-                                  service.address.trim().isNotEmpty)
+                                  service.address!.trim().isNotEmpty)
                               ? Container(
                                   margin: EdgeInsets.only(top: 5),
                                   child: Row(
@@ -397,7 +402,7 @@ class CommonWidgets {
                           ],
                         ),
                       ),
-                      (service.experience == null || service.experience <= 0)
+                      (service.experience == null || service.experience! <= 0)
                           ? Container()
                           : Expanded(
                               child: Column(
@@ -435,7 +440,7 @@ class CommonWidgets {
   }
 
   Widget getSolutionViewWidgetForHospitalDoc(Services service,
-      CatalogueData catalogueData, Function openProfile, int docIndex) {
+      CatalogueData? catalogueData, Function openProfile, int docIndex) {
     return Card(
       margin: EdgeInsets.only(
           bottom: AppConfig.verticalBlockSize * 2.8,
@@ -461,7 +466,7 @@ class CommonWidgets {
               height: AppConfig.verticalBlockSize * 20,
               child: (service != null &&
                       service.professionalPhotos != null &&
-                      service.professionalPhotos.isNotEmpty)
+                      service.professionalPhotos!.isNotEmpty)
                   ? _getImageArrayOfProfessional(service)
                   : ClipRRect(
                       borderRadius: BorderRadius.only(
@@ -469,7 +474,7 @@ class CommonWidgets {
                           topRight: Radius.circular(16)),
                       child: SizedBox.expand(
                         child: CustomWidgets().getImageFromUrl(
-                            service.doctors[docIndex].imageUrl ?? "",
+                            service.doctors![docIndex].imageUrl ?? "",
                             boxFit: BoxFit.cover),
                       ),
                     ),
@@ -492,14 +497,14 @@ class CommonWidgets {
                         children: [
                           Text(
                             CommonMethods.getStringInCamelCase(
-                                service.doctors[docIndex].name),
+                                service.doctors![docIndex].name)!,
                             style: TextStyle(
                               fontSize: 20,
                               color: PlunesColors.BLACKCOLOR,
                             ),
                           ),
                           Text(
-                            CommonMethods.getStringInCamelCase(service.name),
+                            CommonMethods.getStringInCamelCase(service.name)!,
                             style: TextStyle(
                               fontSize: 18,
                               color: Color(
@@ -508,7 +513,7 @@ class CommonWidgets {
                           ),
                           (service != null &&
                                   service.address != null &&
-                                  service.address.trim().isNotEmpty)
+                                  service.address!.trim().isNotEmpty)
                               ? Container(
                                   margin: EdgeInsets.only(top: 5),
                                   child: Row(
@@ -592,8 +597,8 @@ class CommonWidgets {
                           ],
                         ),
                       ),
-                      (service.doctors[docIndex].experience == null ||
-                              service.doctors[docIndex].experience <= 0)
+                      (service.doctors![docIndex].experience == null ||
+                              service.doctors![docIndex].experience! <= 0)
                           ? Container()
                           : Expanded(
                               child: Column(
@@ -608,7 +613,7 @@ class CommonWidgets {
                                                 "#707070"))),
                                   ),
                                   Text(
-                                    "${service.doctors[docIndex]?.experience} year",
+                                    "${service.doctors![docIndex]?.experience} year",
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
@@ -631,7 +636,7 @@ class CommonWidgets {
 
   Widget getSolutionViewWidgetForHospitalDocPopup(
       Services service,
-      CatalogueData catalogueData,
+      CatalogueData? catalogueData,
       Function openProfile,
       int docIndex,
       BuildContext context) {
@@ -660,7 +665,7 @@ class CommonWidgets {
               height: AppConfig.verticalBlockSize * 20,
               child: (service != null &&
                       service.professionalPhotos != null &&
-                      service.professionalPhotos.isNotEmpty)
+                      service.professionalPhotos!.isNotEmpty)
                   ? _getImageArrayOfProfessional(service)
                   : ClipRRect(
                       borderRadius: BorderRadius.only(
@@ -668,7 +673,7 @@ class CommonWidgets {
                           topRight: Radius.circular(16)),
                       child: SizedBox.expand(
                         child: CustomWidgets().getImageFromUrl(
-                            service.doctors[docIndex].imageUrl ?? "",
+                            service.doctors![docIndex].imageUrl ?? "",
                             placeHolderPath: PlunesImages.doc_placeholder,
                             boxFit: BoxFit.cover),
                       ),
@@ -692,14 +697,14 @@ class CommonWidgets {
                         children: [
                           Text(
                             CommonMethods.getStringInCamelCase(
-                                service.doctors[docIndex].name),
+                                service.doctors![docIndex].name)!,
                             style: TextStyle(
                               fontSize: 20,
                               color: PlunesColors.BLACKCOLOR,
                             ),
                           ),
                           Text(
-                            CommonMethods.getStringInCamelCase(service.name),
+                            CommonMethods.getStringInCamelCase(service.name)!,
                             style: TextStyle(
                               fontSize: 18,
                               color: Color(
@@ -708,7 +713,7 @@ class CommonWidgets {
                           ),
                           (service != null &&
                                   service.address != null &&
-                                  service.address.trim().isNotEmpty)
+                                  service.address!.trim().isNotEmpty)
                               ? Container(
                                   margin: EdgeInsets.only(top: 5),
                                   child: Row(
@@ -792,8 +797,8 @@ class CommonWidgets {
                           ],
                         ),
                       ),
-                      (service.doctors[docIndex].experience == null ||
-                              service.doctors[docIndex].experience <= 0)
+                      (service.doctors![docIndex].experience == null ||
+                              service.doctors![docIndex].experience! <= 0)
                           ? Container()
                           : Expanded(
                               child: Column(
@@ -808,7 +813,7 @@ class CommonWidgets {
                                                 "#707070"))),
                                   ),
                                   Text(
-                                    "${service.doctors[docIndex]?.experience} year",
+                                    "${service.doctors![docIndex]?.experience} year",
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
@@ -831,8 +836,11 @@ class CommonWidgets {
   }
 
   Widget getProfessionalWidgetForSearchDesiredServiceScreen(
-      int index, ProfData profData, String specialization,
-      {Function onTap}) {
+      BuildContext context,
+      int index,
+      ProfData profData,
+      String? specialization,
+      {Function? onTap}) {
     return Card(
       margin: EdgeInsets.only(
           bottom: AppConfig.verticalBlockSize * 2.8,
@@ -857,12 +865,12 @@ class CommonWidgets {
             Container(
               height: AppConfig.verticalBlockSize * 20,
               child: ClipRRect(
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(16),
                     topRight: Radius.circular(16)),
                 child: SizedBox.expand(
                   child: CustomWidgets().getImageFromUrl(
-                      profData?.imageUrl ?? "",
+                      profData.imageUrl ?? "",
                       boxFit: BoxFit.cover),
                 ),
               ),
@@ -884,18 +892,18 @@ class CommonWidgets {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            CommonMethods.getStringInCamelCase(profData?.name),
-                            style: TextStyle(
+                            CommonMethods.getStringInCamelCase(profData.name)!,
+                            style: const TextStyle(
                               fontSize: 20,
                               color: PlunesColors.BLACKCOLOR,
                             ),
                           ),
                           (profData.address != null &&
-                                  profData.address.trim().isNotEmpty)
+                                  profData.address!.trim().isNotEmpty)
                               ? Container(
-                                  margin: EdgeInsets.only(top: 2),
+                                  margin: const EdgeInsets.only(top: 2),
                                   child: Text(
-                                    profData.address,
+                                    profData.address!,
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
@@ -912,13 +920,13 @@ class CommonWidgets {
                       Container(
                         child: Row(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.star,
                               color: Colors.yellow,
                             ),
                             Text(
-                              " ${profData?.rating?.toStringAsFixed(1) ?? 4.5}",
-                              style: TextStyle(
+                              " ${profData.rating?.toStringAsFixed(1) ?? 4.5}",
+                              style: const TextStyle(
                                 fontSize: 18,
                                 color: PlunesColors.BLACKCOLOR,
                               ),
@@ -958,7 +966,7 @@ class CommonWidgets {
                                 specialization ?? "",
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontSize: 16,
                                     color: PlunesColors.BLACKCOLOR),
                               )
@@ -967,19 +975,46 @@ class CommonWidgets {
                         ),
                         (profData != null &&
                                 profData.userType != null &&
-                                profData.userType.toLowerCase() ==
+                                profData.userType!.toLowerCase() ==
                                     Constants.doctor.toString().toLowerCase())
                             ? Container()
                             : Expanded(
-                                child: Container(
-                                  alignment: Alignment.centerRight,
-                                  child: Text(
-                                    "View Profile",
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        color: PlunesColors.GREENCOLOR),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => DoctorInfo(
+                                                profData.professionalId,
+                                                // profData.name == "RG Stone Urology & Laparoscopy Hospital" ? "5f0026141429b961951111aa" :
+                                                // profData.name == "Artemis Hospital" ? "5ef08a56a40fa92a2b25f05a" :
+                                                // profData.name == "Columbia Asia Hospital" ? "5ec91c1eeb9fc84cef7795f1" :
+                                                // profData.name == "Medeor Hospital" ? "6052ee258260c5082eaf537d" :
+                                                // profData.name == "Aakash Health Care" ? "5ec784c2eb9fc84cef779420" :
+                                                // profData.name == "Park Hospital" ? "5ef07eb7a40fa92a2b25eff6" :
+                                                // profData.name == "Vimhans Nayati Super Speciality Hospital" ? "5ef986b534fca41358369405" :
+                                                // profData.name == "Saroj Super Speciality Hospital" ? "6002d7c3f66a421030fbfc31" :
+                                                // profData.name == "IndoGulf Hospital & Diagnostics" ? "5f226fbb666b9c3405ee13aa" :
+                                                // profData.name == "SCI International Hospital" ? "5fdde06a3aea61390dd1eade" :
+                                                // profData.name == "Signature Hospital" ? "5ef43b8fa40fa92a2b263cb5" :
+                                                // profData.name == "Primus Super Speciality Hospital" ? "5ef491c0863b3a5968662c4d" : profData.professionalId,
+                                                isDoc: (profData.userType!
+                                                        .toLowerCase() ==
+                                                    Constants.doctor
+                                                        .toString()
+                                                        .toLowerCase()))));
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.all(4),
+                                    alignment: Alignment.centerRight,
+                                    child: Text(
+                                      "View Profile",
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          color: PlunesColors.GREENCOLOR),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -988,7 +1023,7 @@ class CommonWidgets {
                   ),
                   (profData != null &&
                           profData.userType != null &&
-                          profData.userType.toLowerCase() ==
+                          profData.userType!.toLowerCase() ==
                               Constants.doctor.toString().toLowerCase())
                       ? Container(
                           margin: EdgeInsets.only(
@@ -997,7 +1032,7 @@ class CommonWidgets {
                       : Container(),
                   (profData != null &&
                           profData.userType != null &&
-                          profData.userType.toLowerCase() ==
+                          profData.userType!.toLowerCase() ==
                               Constants.doctor.toString().toLowerCase())
                       ? Row(
                           children: [
@@ -1014,7 +1049,7 @@ class CommonWidgets {
                                                 "#707070"))),
                                   ),
                                   Text(
-                                    "${(profData.experience != null && profData.experience > 0) ? profData.experience : 1} year",
+                                    "${(profData.experience != null && profData.experience! > 0) ? profData.experience : 1} year",
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
@@ -1051,7 +1086,7 @@ class CommonWidgets {
 
   Widget getManualBiddingProfessionalWidget(
       List<MoreFacility> catalogues, int index,
-      {bool isSelected = false, Function onTap, Function onProfileTap}) {
+      {bool isSelected = false, Function? onTap, Function? onProfileTap}) {
     Widget profWidget = _getProfessionalDetailWidget(
         catalogues, index, PlunesImages.unselectedFacilityIcon);
     return Card(
@@ -1171,7 +1206,7 @@ class CommonWidgets {
                     children: [
                       Expanded(
                         child: (catalogues[index].experience != null &&
-                                catalogues[index].experience > 0)
+                                catalogues[index].experience! > 0)
                             ? Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -1221,7 +1256,7 @@ class CommonWidgets {
 
   Widget getHorizontalProfessionalWidget(
       List<MoreFacility> catalogues, int index,
-      {bool isSelected = false, Function onTap, Function onProfileTap}) {
+      {bool isSelected = false, Function? onTap, Function? onProfileTap}) {
     Widget profWidget = _getProfessionalDetailWidget(
         catalogues, index, PlunesImages.selectedFacilityIcon);
     return Card(
@@ -1284,13 +1319,13 @@ class CommonWidgets {
   }
 
   Widget getSearchBarForManualBidding(
-      {@required final TextEditingController searchController,
-      @required final String hintText,
+      {required final TextEditingController? searchController,
+      required final String hintText,
       bool hasFocus = false,
       isRounded = true,
-      FocusNode focusNode,
+      FocusNode? focusNode,
       double searchBarHeight = 6,
-      Function onTextClear}) {
+      Function? onTextClear}) {
     return StatefulBuilder(builder: (context, newState) {
       return Card(
         elevation: 3.0,
@@ -1337,7 +1372,7 @@ class CommonWidgets {
                           fontSize: 16)),
                 ),
               ),
-              searchController.text.trim().isEmpty
+              searchController!.text.trim().isEmpty
                   ? Container()
                   : InkWell(
                       onTap: () {
@@ -1366,7 +1401,7 @@ class CommonWidgets {
       Function openProfile,
       Function bookAppointment,
       Function checkInsurance,
-      DocHosSolution solution) {
+      DocHosSolution? solution) {
     return Card(
       margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2.8),
       color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
@@ -1395,7 +1430,7 @@ class CommonWidgets {
                         topRight: Radius.circular(16)),
                     child: (service != null &&
                             service.professionalPhotos != null &&
-                            service.professionalPhotos.isNotEmpty)
+                            service.professionalPhotos!.isNotEmpty)
                         ? _getImageArrayOfProfessional(service)
                         : SizedBox.expand(
                             child: CustomWidgets().getImageFromUrl(
@@ -1417,10 +1452,10 @@ class CommonWidgets {
                       children: [
                         Expanded(
                           child: Text(
-                            CommonMethods.getStringInCamelCase(service?.name),
+                            CommonMethods.getStringInCamelCase(service?.name)!,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 18,
                               color: PlunesColors.BLACKCOLOR,
                             ),
@@ -1459,7 +1494,7 @@ class CommonWidgets {
                             ),
                           ),
                         ),
-                        (service.experience != null && service.experience > 0)
+                        (service.experience != null && service.experience! > 0)
                             ? Flexible(
                                 child: Container(
                                   alignment: Alignment.centerRight,
@@ -1480,7 +1515,7 @@ class CommonWidgets {
                     ),
                     (service != null &&
                             service.address != null &&
-                            service.address.trim().isNotEmpty)
+                            service.address!.trim().isNotEmpty)
                         ? Container(
                             margin: EdgeInsets.only(
                                 top: AppConfig.verticalBlockSize * 1),
@@ -1527,7 +1562,7 @@ class CommonWidgets {
                       child: Row(
                         children: [
                           CommonMethods.shouldShowProgressOnPrice(
-                                  service, solution.shouldNegotiate)
+                                  service, solution!.shouldNegotiate)
                               ? Expanded(
                                   flex: 3,
                                   child: Column(
@@ -1560,11 +1595,11 @@ class CommonWidgets {
                                         CrossAxisAlignment.start,
                                     children: [
                                       (service.price != null &&
-                                              service.price.isNotEmpty &&
+                                              service.price!.isNotEmpty &&
                                               service.newPrice != null &&
-                                              service.newPrice.isNotEmpty &&
-                                              service.price.first !=
-                                                  service.newPrice.first)
+                                              service.newPrice!.isNotEmpty &&
+                                              service.price!.first !=
+                                                  service.newPrice!.first)
                                           ? RichText(
                                               textAlign: TextAlign.left,
                                               text: TextSpan(children: [
@@ -1578,7 +1613,7 @@ class CommonWidgets {
                                                 ),
                                                 TextSpan(
                                                     text:
-                                                        "${service.price.first?.toStringAsFixed(1) ?? ""}",
+                                                        "${service.price!.first?.toStringAsFixed(1) ?? ""}",
                                                     style: TextStyle(
                                                         fontSize: 16,
                                                         decoration:
@@ -1590,13 +1625,13 @@ class CommonWidgets {
                                               ]))
                                           : Container(),
                                       (service.newPrice != null &&
-                                              service.newPrice.isNotEmpty)
+                                              service.newPrice!.isNotEmpty)
                                           ? Container(
-                                              margin: EdgeInsets.only(top: 2.5),
+                                              margin: const EdgeInsets.only(top: 2.5),
                                               child: RichText(
                                                   textAlign: TextAlign.left,
                                                   text: TextSpan(children: [
-                                                    TextSpan(
+                                                    const TextSpan(
                                                         text: "\u20B9",
                                                         style: TextStyle(
                                                             fontSize: 22,
@@ -1604,8 +1639,8 @@ class CommonWidgets {
                                                                 .BLACKCOLOR)),
                                                     TextSpan(
                                                         text:
-                                                            "${service.newPrice.first?.toStringAsFixed(1) ?? ""}",
-                                                        style: TextStyle(
+                                                            "${service.newPrice!.first?.toStringAsFixed(1) ?? ""}",
+                                                        style: const TextStyle(
                                                             fontSize: 22,
                                                             color: PlunesColors
                                                                 .BLACKCOLOR)),
@@ -1617,7 +1652,7 @@ class CommonWidgets {
                                 ),
                           Flexible(
                               child: Container(
-                            margin: EdgeInsets.only(left: 3),
+                            margin: const EdgeInsets.only(left: 3),
                             alignment: Alignment.centerRight,
                             child: InkWell(
                               focusColor: Colors.transparent,
@@ -1625,11 +1660,14 @@ class CommonWidgets {
                               highlightColor: Colors.transparent,
                               hoverColor: Colors.transparent,
                               onTap: () {
-                                if (CommonMethods.shouldShowProgressOnPrice(
-                                    service, solution.shouldNegotiate)) {
+                                print("clicked------->");
+                                if (CommonMethods.shouldShowProgressOnPrice(service, solution.shouldNegotiate)) {
+                                  print("clicked------->11");
+
                                   return;
                                 }
                                 if (bookAppointment != null) {
+                                  print("clicked------->12");
                                   bookAppointment();
                                 }
                               },
@@ -1658,7 +1696,7 @@ class CommonWidgets {
                         children: [
                           Flexible(
                             child: (service.homeCollection != null &&
-                                    service.homeCollection)
+                                    service.homeCollection!)
                                 ? Container(
                                     child: Text(
                                       PlunesStrings.homeCollectionAvailable,
@@ -1672,11 +1710,11 @@ class CommonWidgets {
                                 : Container(),
                           ),
                           (service.insuranceAvailable == null ||
-                                  !(service.insuranceAvailable))
+                                  !service.insuranceAvailable!)
                               ? Container()
                               : Flexible(
                                   child: Container(
-                                    margin: EdgeInsets.only(left: 2),
+                                    margin: const EdgeInsets.only(left: 2),
                                     width: double.infinity,
                                     alignment: Alignment.centerRight,
                                     child: InkWell(
@@ -1704,19 +1742,19 @@ class CommonWidgets {
                       ),
                     ),
                     (service.specialOffers != null &&
-                            service.specialOffers.isNotEmpty)
+                            service.specialOffers!.isNotEmpty)
                         ? getSingleLine()
                         : Container(),
                     (service.specialOffers != null &&
-                            service.specialOffers.isNotEmpty &&
-                            service.isExpanded)
+                            service.specialOffers!.isNotEmpty &&
+                            service.isExpanded!)
                         ? Container(
                             margin: EdgeInsets.only(
                                 bottom: AppConfig.verticalBlockSize * 1.8))
                         : Container(),
                     (service.specialOffers != null &&
-                            service.specialOffers.isNotEmpty &&
-                            service.isExpanded)
+                            service.specialOffers!.isNotEmpty &&
+                            service.isExpanded!)
                         ? Column(
                             children: [
                               Container(
@@ -1755,7 +1793,7 @@ class CommonWidgets {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                  service.specialOffers[index]
+                                                  service.specialOffers![index]
                                                           ?.values?.first ??
                                                       "",
                                                   textAlign: TextAlign.left,
@@ -1767,8 +1805,11 @@ class CommonWidgets {
                                                 alignment: Alignment.centerLeft,
                                                 margin: EdgeInsets.only(top: 3),
                                                 child: Text(
-                                                    service.specialOffers[index]
-                                                            ?.keys?.first ??
+                                                    service
+                                                            .specialOffers![
+                                                                index]
+                                                            ?.keys
+                                                            ?.first ??
                                                         "",
                                                     textAlign: TextAlign.left,
                                                     style: TextStyle(
@@ -1789,15 +1830,15 @@ class CommonWidgets {
                           )
                         : Container(),
                     (service.specialOffers != null &&
-                            service.specialOffers.isNotEmpty)
+                            service.specialOffers!.isNotEmpty)
                         ? Container(
                             alignment: Alignment.center,
                             margin: EdgeInsets.symmetric(
                                 vertical: AppConfig.verticalBlockSize * 2),
-                            child: !service.isExpanded
+                            child: !service.isExpanded!
                                 ? InkWell(
                                     onTap: () {
-                                      service.isExpanded = !service.isExpanded;
+                                      service.isExpanded = !service.isExpanded!;
                                       newState(() {});
                                     },
                                     onDoubleTap: () {},
@@ -1828,7 +1869,7 @@ class CommonWidgets {
                                   )
                                 : InkWell(
                                     onTap: () {
-                                      service.isExpanded = !service.isExpanded;
+                                      service.isExpanded = !service.isExpanded!;
                                       newState(() {});
                                     },
                                     onDoubleTap: () {},
@@ -1874,7 +1915,7 @@ class CommonWidgets {
       Function bookAppointment,
       BuildContext context,
       Function checkInsurance,
-      DocHosSolution solution) {
+      DocHosSolution? solution) {
     return Card(
       margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2.8),
       color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
@@ -1899,7 +1940,7 @@ class CommonWidgets {
                   height: AppConfig.verticalBlockSize * 25,
                   child: (service != null &&
                           service.professionalPhotos != null &&
-                          service.professionalPhotos.isNotEmpty)
+                          service.professionalPhotos!.isNotEmpty)
                       ? _getImageArrayOfProfessional(service)
                       : ClipRRect(
                           borderRadius: BorderRadius.only(
@@ -1925,7 +1966,7 @@ class CommonWidgets {
                       children: [
                         Expanded(
                           child: Text(
-                            CommonMethods.getStringInCamelCase(service?.name),
+                            CommonMethods.getStringInCamelCase(service?.name)!,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
@@ -1967,7 +2008,7 @@ class CommonWidgets {
                             ),
                           ),
                         ),
-                        (service.experience != null && service.experience > 0)
+                        (service.experience != null && service.experience! > 0)
                             ? Flexible(
                                 child: Container(
                                   alignment: Alignment.centerRight,
@@ -1988,7 +2029,7 @@ class CommonWidgets {
                     ),
                     (service != null &&
                             service.address != null &&
-                            service.address.trim().isNotEmpty)
+                            service.address!.trim().isNotEmpty)
                         ? Container(
                             margin: EdgeInsets.only(
                                 top: AppConfig.verticalBlockSize * 1),
@@ -2035,7 +2076,7 @@ class CommonWidgets {
                       child: Row(
                         children: [
                           CommonMethods.shouldShowProgressOnPrice(
-                                  service, solution.shouldNegotiate)
+                                  service, solution!.shouldNegotiate)
                               ? Expanded(
                                   flex: 3,
                                   child: Column(
@@ -2068,11 +2109,11 @@ class CommonWidgets {
                                         CrossAxisAlignment.start,
                                     children: [
                                       (service.price != null &&
-                                              service.price.isNotEmpty &&
+                                              service.price!.isNotEmpty &&
                                               service.newPrice != null &&
-                                              service.newPrice.isNotEmpty &&
-                                              service.price.first !=
-                                                  service.newPrice.first)
+                                              service.newPrice!.isNotEmpty &&
+                                              service.price!.first !=
+                                                  service.newPrice!.first)
                                           ? RichText(
                                               textAlign: TextAlign.left,
                                               text: TextSpan(children: [
@@ -2086,7 +2127,7 @@ class CommonWidgets {
                                                 ),
                                                 TextSpan(
                                                     text:
-                                                        "${service.price.first?.toStringAsFixed(1) ?? ""}",
+                                                        "${service.price!.first?.toStringAsFixed(1) ?? ""}",
                                                     style: TextStyle(
                                                         fontSize: 16,
                                                         decoration:
@@ -2098,7 +2139,7 @@ class CommonWidgets {
                                               ]))
                                           : Container(),
                                       (service.newPrice != null &&
-                                              service.newPrice.isNotEmpty)
+                                              service.newPrice!.isNotEmpty)
                                           ? Container(
                                               margin: EdgeInsets.only(top: 2.5),
                                               child: RichText(
@@ -2112,7 +2153,7 @@ class CommonWidgets {
                                                                 .BLACKCOLOR)),
                                                     TextSpan(
                                                         text:
-                                                            "${service.newPrice.first?.toStringAsFixed(1) ?? ""}",
+                                                            "${service.newPrice!.first?.toStringAsFixed(1) ?? ""}",
                                                         style: TextStyle(
                                                             fontSize: 22,
                                                             color: PlunesColors
@@ -2166,7 +2207,7 @@ class CommonWidgets {
                         children: [
                           Flexible(
                             child: (service.homeCollection != null &&
-                                    service.homeCollection)
+                                    service.homeCollection!)
                                 ? Container(
                                     child: Text(
                                       PlunesStrings.homeCollectionAvailable,
@@ -2180,7 +2221,7 @@ class CommonWidgets {
                                 : Container(),
                           ),
                           (service.insuranceAvailable == null ||
-                                  !(service.insuranceAvailable))
+                                  !service.insuranceAvailable!)
                               ? Container()
                               : Flexible(
                                   child: Container(
@@ -2212,19 +2253,19 @@ class CommonWidgets {
                       ),
                     ),
                     (service.specialOffers != null &&
-                            service.specialOffers.isNotEmpty)
+                            service.specialOffers!.isNotEmpty)
                         ? getSingleLine()
                         : Container(),
                     (service.specialOffers != null &&
-                            service.specialOffers.isNotEmpty &&
-                            service.isExpanded)
+                            service.specialOffers!.isNotEmpty &&
+                            service.isExpanded!)
                         ? Container(
                             margin: EdgeInsets.only(
                                 bottom: AppConfig.verticalBlockSize * 1.8))
                         : Container(),
                     (service.specialOffers != null &&
-                            service.specialOffers.isNotEmpty &&
-                            service.isExpanded)
+                            service.specialOffers!.isNotEmpty &&
+                            service.isExpanded!)
                         ? Container(
                             height: AppConfig.verticalBlockSize * 10,
                             child: ListView.builder(
@@ -2256,7 +2297,7 @@ class CommonWidgets {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                              service.specialOffers[index]
+                                              service.specialOffers![index]
                                                       ?.values?.first ??
                                                   "",
                                               textAlign: TextAlign.left,
@@ -2268,7 +2309,7 @@ class CommonWidgets {
                                             alignment: Alignment.centerLeft,
                                             margin: EdgeInsets.only(top: 3),
                                             child: Text(
-                                                service.specialOffers[index]
+                                                service.specialOffers![index]
                                                         ?.keys?.first ??
                                                     "",
                                                 textAlign: TextAlign.left,
@@ -2289,15 +2330,15 @@ class CommonWidgets {
                           )
                         : Container(),
                     (service.specialOffers != null &&
-                            service.specialOffers.isNotEmpty)
+                            service.specialOffers!.isNotEmpty)
                         ? Container(
                             alignment: Alignment.center,
                             margin: EdgeInsets.symmetric(
                                 vertical: AppConfig.verticalBlockSize * 2),
-                            child: !service.isExpanded
+                            child: !service.isExpanded!
                                 ? InkWell(
                                     onTap: () {
-                                      service.isExpanded = !service.isExpanded;
+                                      service.isExpanded = !service.isExpanded!;
                                       newState(() {});
                                     },
                                     onDoubleTap: () {},
@@ -2328,7 +2369,7 @@ class CommonWidgets {
                                   )
                                 : InkWell(
                                     onTap: () {
-                                      service.isExpanded = !service.isExpanded;
+                                      service.isExpanded = !service.isExpanded!;
                                       newState(() {});
                                     },
                                     onDoubleTap: () {},
@@ -2376,7 +2417,7 @@ class CommonWidgets {
       int docIndex,
       Function bookAppointment,
       Function checkInsurance,
-      DocHosSolution solution) {
+      DocHosSolution? solution) {
     return Card(
       margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2.8),
       color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
@@ -2405,11 +2446,11 @@ class CommonWidgets {
                         topRight: Radius.circular(16)),
                     child: (service != null &&
                             service.professionalPhotos != null &&
-                            service.professionalPhotos.isNotEmpty)
+                            service.professionalPhotos!.isNotEmpty)
                         ? _getImageArrayOfProfessional(service)
                         : SizedBox.expand(
                             child: CustomWidgets().getImageFromUrl(
-                                service.doctors[docIndex]?.imageUrl ?? "",
+                                service.doctors![docIndex]?.imageUrl ?? "",
                                 placeHolderPath: PlunesImages.doc_placeholder,
                                 boxFit: BoxFit.cover),
                           ),
@@ -2429,27 +2470,27 @@ class CommonWidgets {
                         Expanded(
                           child: Text(
                             CommonMethods.getStringInCamelCase(
-                                service.doctors[docIndex].name),
+                                service.doctors![docIndex].name)!,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 18,
                               color: PlunesColors.BLACKCOLOR,
                             ),
                           ),
                         ),
-                        (service.doctors[docIndex].rating != null &&
-                                service.doctors[docIndex].rating > 0)
+                        (service.doctors![docIndex].rating != null &&
+                                service.doctors![docIndex].rating! > 0)
                             ? Container(
                                 child: Row(
                                   children: [
-                                    Icon(
+                                    const Icon(
                                       Icons.star,
                                       color: Colors.yellow,
                                     ),
                                     Text(
-                                      "${service.doctors[docIndex].rating?.toStringAsFixed(1) ?? 4.5}",
-                                      style: TextStyle(
+                                      "${service.doctors![docIndex].rating?.toStringAsFixed(1) ?? 4.5}",
+                                      style: const TextStyle(
                                         fontSize: 18,
                                         color: PlunesColors.BLACKCOLOR,
                                       ),
@@ -2465,26 +2506,26 @@ class CommonWidgets {
                       children: [
                         Expanded(
                           child: Text(
-                            CommonMethods.getStringInCamelCase(service.name),
+                            CommonMethods.getStringInCamelCase(service.name)!,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 14,
                               color: PlunesColors.BLACKCOLOR,
                             ),
                           ),
                         ),
-                        (service.doctors[docIndex].experience != null &&
-                                service.doctors[docIndex].experience > 0)
+                        (service.doctors![docIndex].experience != null &&
+                                service.doctors![docIndex].experience! > 0)
                             ? Flexible(
                                 child: Container(
                                   alignment: Alignment.centerRight,
                                   margin: EdgeInsets.only(left: 3),
                                   child: Text(
-                                    "${service.doctors[docIndex].experience} Years Experience",
+                                    "${service.doctors![docIndex].experience} Years Experience",
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 14,
                                       color: PlunesColors.BLACKCOLOR,
                                     ),
@@ -2496,7 +2537,7 @@ class CommonWidgets {
                     ),
                     (service != null &&
                             service.address != null &&
-                            service.address.trim().isNotEmpty)
+                            service.address!.trim().isNotEmpty)
                         ? Container(
                             margin: EdgeInsets.only(
                                 top: AppConfig.verticalBlockSize * 1),
@@ -2505,8 +2546,8 @@ class CommonWidgets {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Container(
-                                  margin: EdgeInsets.only(right: 5),
-                                  child: Icon(
+                                  margin: const EdgeInsets.only(right: 5),
+                                  child: const Icon(
                                     Icons.location_on,
                                     size: 18,
                                     color: PlunesColors.BLACKCOLOR,
@@ -2543,7 +2584,7 @@ class CommonWidgets {
                       child: Row(
                         children: [
                           CommonMethods.shouldShowProgressOnPrice(
-                                  service, solution.shouldNegotiate)
+                                  service, solution!.shouldNegotiate)
                               ? Expanded(
                                   flex: 3,
                                   child: Column(
@@ -2575,19 +2616,19 @@ class CommonWidgets {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      (service.doctors[docIndex].price !=
+                                      (service.doctors![docIndex].price !=
                                                   null &&
-                                              service.doctors[docIndex].price
+                                              service.doctors![docIndex].price!
                                                   .isNotEmpty &&
-                                              service.doctors[docIndex]
+                                              service.doctors![docIndex]
                                                       .newPrice !=
                                                   null &&
-                                              service.doctors[docIndex].newPrice
-                                                  .isNotEmpty &&
-                                              service.doctors[docIndex].price
+                                              service.doctors![docIndex]
+                                                  .newPrice!.isNotEmpty &&
+                                              service.doctors![docIndex].price!
                                                       .first !=
-                                                  service.doctors[docIndex]
-                                                      .newPrice.first)
+                                                  service.doctors![docIndex]
+                                                      .newPrice!.first)
                                           ? RichText(
                                               textAlign: TextAlign.left,
                                               text: TextSpan(children: [
@@ -2601,7 +2642,7 @@ class CommonWidgets {
                                                 ),
                                                 TextSpan(
                                                     text:
-                                                        "${service.doctors[docIndex].price.first?.toStringAsFixed(1)}",
+                                                        "${service.doctors![docIndex].price!.first?.toStringAsFixed(1)}",
                                                     style: TextStyle(
                                                         fontSize: 16,
                                                         decoration:
@@ -2612,10 +2653,10 @@ class CommonWidgets {
                                                                 "#A2A2A2")))),
                                               ]))
                                           : Container(),
-                                      (service.doctors[docIndex].newPrice !=
+                                      (service.doctors![docIndex].newPrice !=
                                                   null &&
-                                              service.doctors[docIndex].newPrice
-                                                  .isNotEmpty)
+                                              service.doctors![docIndex]
+                                                  .newPrice!.isNotEmpty)
                                           ? Container(
                                               margin: EdgeInsets.only(top: 2.5),
                                               child: RichText(
@@ -2629,7 +2670,7 @@ class CommonWidgets {
                                                                 .BLACKCOLOR)),
                                                     TextSpan(
                                                         text:
-                                                            "${service.doctors[docIndex].newPrice.first?.toStringAsFixed(1)}",
+                                                            "${service.doctors![docIndex].newPrice!.first?.toStringAsFixed(1)}",
                                                         style: TextStyle(
                                                             fontSize: 22,
                                                             color: PlunesColors
@@ -2682,9 +2723,9 @@ class CommonWidgets {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Flexible(
-                            child: (service.doctors[docIndex].homeCollection !=
+                            child: (service.doctors![docIndex].homeCollection !=
                                         null &&
-                                    service.doctors[docIndex].homeCollection)
+                                    service.doctors![docIndex].homeCollection!)
                                 ? Container(
                                     margin: EdgeInsets.only(top: 2.5),
                                     child: Text(
@@ -2699,7 +2740,7 @@ class CommonWidgets {
                                 : Container(),
                           ),
                           (service.insuranceAvailable == null ||
-                                  !(service.insuranceAvailable))
+                                  !service.insuranceAvailable!)
                               ? Container()
                               : Flexible(
                                   child: Container(
@@ -2731,19 +2772,19 @@ class CommonWidgets {
                       ),
                     ),
                     (service.specialOffers != null &&
-                            service.specialOffers.isNotEmpty)
+                            service.specialOffers!.isNotEmpty)
                         ? getSingleLine()
                         : Container(),
                     (service.specialOffers != null &&
-                            service.specialOffers.isNotEmpty &&
-                            service.isExpanded)
+                            service.specialOffers!.isNotEmpty &&
+                            service.isExpanded!)
                         ? Container(
                             margin: EdgeInsets.only(
                                 bottom: AppConfig.verticalBlockSize * 1.8))
                         : Container(),
                     (service.specialOffers != null &&
-                            service.specialOffers.isNotEmpty &&
-                            service.isExpanded)
+                            service.specialOffers!.isNotEmpty &&
+                            service.isExpanded!)
                         ? Container(
                             height: AppConfig.verticalBlockSize * 10,
                             child: ListView.builder(
@@ -2776,7 +2817,7 @@ class CommonWidgets {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                              service.specialOffers[index]
+                                              service.specialOffers![index]
                                                       ?.values?.first ??
                                                   "",
                                               textAlign: TextAlign.left,
@@ -2788,7 +2829,7 @@ class CommonWidgets {
                                             alignment: Alignment.centerLeft,
                                             margin: EdgeInsets.only(top: 3),
                                             child: Text(
-                                                service.specialOffers[index]
+                                                service.specialOffers![index]
                                                         ?.keys?.first ??
                                                     "",
                                                 textAlign: TextAlign.left,
@@ -2809,15 +2850,15 @@ class CommonWidgets {
                           )
                         : Container(),
                     (service.specialOffers != null &&
-                            service.specialOffers.isNotEmpty)
+                            service.specialOffers!.isNotEmpty)
                         ? Container(
                             alignment: Alignment.center,
                             margin: EdgeInsets.symmetric(
                                 vertical: AppConfig.verticalBlockSize * 2),
-                            child: !service.isExpanded
+                            child: !service.isExpanded!
                                 ? InkWell(
                                     onTap: () {
-                                      service.isExpanded = !service.isExpanded;
+                                      service.isExpanded = !service.isExpanded!;
                                       newState(() {});
                                     },
                                     onDoubleTap: () {},
@@ -2848,7 +2889,7 @@ class CommonWidgets {
                                   )
                                 : InkWell(
                                     onTap: () {
-                                      service.isExpanded = !service.isExpanded;
+                                      service.isExpanded = !service.isExpanded!;
                                       newState(() {});
                                     },
                                     onDoubleTap: () {},
@@ -2895,7 +2936,7 @@ class CommonWidgets {
       Function bookAppointment,
       BuildContext context,
       Function checkInsurance,
-      DocHosSolution solution) {
+      DocHosSolution? solution) {
     return Card(
       margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2.8),
       color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
@@ -2924,11 +2965,11 @@ class CommonWidgets {
                         topRight: Radius.circular(16)),
                     child: (service != null &&
                             service.professionalPhotos != null &&
-                            service.professionalPhotos.isNotEmpty)
+                            service.professionalPhotos!.isNotEmpty)
                         ? _getImageArrayOfProfessional(service)
                         : SizedBox.expand(
                             child: CustomWidgets().getImageFromUrl(
-                                service.doctors[docIndex]?.imageUrl ?? "",
+                                service.doctors![docIndex]?.imageUrl ?? "",
                                 placeHolderPath: PlunesImages.doc_placeholder,
                                 boxFit: BoxFit.cover),
                           ),
@@ -2948,7 +2989,7 @@ class CommonWidgets {
                         Expanded(
                           child: Text(
                             CommonMethods.getStringInCamelCase(
-                                service.doctors[docIndex].name),
+                                service.doctors![docIndex].name)!,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
@@ -2957,8 +2998,8 @@ class CommonWidgets {
                             ),
                           ),
                         ),
-                        (service.doctors[docIndex].rating != null &&
-                                service.doctors[docIndex].rating > 0)
+                        (service.doctors![docIndex].rating != null &&
+                                service.doctors![docIndex].rating! > 0)
                             ? Container(
                                 child: Row(
                                   children: [
@@ -2967,7 +3008,7 @@ class CommonWidgets {
                                       color: Colors.yellow,
                                     ),
                                     Text(
-                                      "${service.doctors[docIndex].rating?.toStringAsFixed(1) ?? 4.5}",
+                                      "${service.doctors![docIndex].rating?.toStringAsFixed(1) ?? 4.5}",
                                       style: TextStyle(
                                         fontSize: 18,
                                         color: PlunesColors.BLACKCOLOR,
@@ -2984,7 +3025,7 @@ class CommonWidgets {
                       children: [
                         Expanded(
                           child: Text(
-                            CommonMethods.getStringInCamelCase(service.name),
+                            CommonMethods.getStringInCamelCase(service.name)!,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
@@ -2993,14 +3034,14 @@ class CommonWidgets {
                             ),
                           ),
                         ),
-                        (service.doctors[docIndex].experience != null &&
-                                service.doctors[docIndex].experience > 0)
+                        (service.doctors![docIndex].experience != null &&
+                                service.doctors![docIndex].experience! > 0)
                             ? Flexible(
                                 child: Container(
                                   alignment: Alignment.centerRight,
                                   margin: EdgeInsets.only(left: 3),
                                   child: Text(
-                                    "${service.doctors[docIndex].experience} Years Experience",
+                                    "${service.doctors![docIndex].experience} Years Experience",
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
@@ -3015,7 +3056,7 @@ class CommonWidgets {
                     ),
                     (service != null &&
                             service.address != null &&
-                            service.address.trim().isNotEmpty)
+                            service.address!.trim().isNotEmpty)
                         ? Container(
                             margin: EdgeInsets.only(
                                 top: AppConfig.verticalBlockSize * 1),
@@ -3062,7 +3103,7 @@ class CommonWidgets {
                       child: Row(
                         children: [
                           CommonMethods.shouldShowProgressOnPrice(
-                                  service, solution.shouldNegotiate)
+                                  service, solution!.shouldNegotiate)
                               ? Expanded(
                                   flex: 3,
                                   child: Column(
@@ -3094,19 +3135,19 @@ class CommonWidgets {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      (service.doctors[docIndex].price !=
+                                      (service.doctors![docIndex].price !=
                                                   null &&
-                                              service.doctors[docIndex].price
+                                              service.doctors![docIndex].price!
                                                   .isNotEmpty &&
-                                              service.doctors[docIndex]
+                                              service.doctors![docIndex]
                                                       .newPrice !=
                                                   null &&
-                                              service.doctors[docIndex].newPrice
-                                                  .isNotEmpty &&
-                                              service.doctors[docIndex].price
+                                              service.doctors![docIndex]
+                                                  .newPrice!.isNotEmpty &&
+                                              service.doctors![docIndex].price!
                                                       .first !=
-                                                  service.doctors[docIndex]
-                                                      .newPrice.first)
+                                                  service.doctors![docIndex]
+                                                      .newPrice!.first)
                                           ? RichText(
                                               textAlign: TextAlign.left,
                                               text: TextSpan(children: [
@@ -3120,7 +3161,7 @@ class CommonWidgets {
                                                 ),
                                                 TextSpan(
                                                     text:
-                                                        "${service.doctors[docIndex].price.first?.toStringAsFixed(1)}",
+                                                        "${service.doctors![docIndex].price!.first?.toStringAsFixed(1)}",
                                                     style: TextStyle(
                                                         fontSize: 16,
                                                         decoration:
@@ -3131,10 +3172,10 @@ class CommonWidgets {
                                                                 "#A2A2A2")))),
                                               ]))
                                           : Container(),
-                                      (service.doctors[docIndex].newPrice !=
+                                      (service.doctors![docIndex].newPrice !=
                                                   null &&
-                                              service.doctors[docIndex].newPrice
-                                                  .isNotEmpty)
+                                              service.doctors![docIndex]
+                                                  .newPrice!.isNotEmpty)
                                           ? Container(
                                               margin: EdgeInsets.only(top: 2.5),
                                               child: RichText(
@@ -3148,7 +3189,7 @@ class CommonWidgets {
                                                                 .BLACKCOLOR)),
                                                     TextSpan(
                                                         text:
-                                                            "${service.doctors[docIndex].newPrice.first?.toStringAsFixed(1)}",
+                                                            "${service.doctors![docIndex].newPrice!.first?.toStringAsFixed(1)}",
                                                         style: TextStyle(
                                                             fontSize: 22,
                                                             color: PlunesColors
@@ -3201,9 +3242,9 @@ class CommonWidgets {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Flexible(
-                            child: (service.doctors[docIndex].homeCollection !=
+                            child: (service.doctors![docIndex].homeCollection !=
                                         null &&
-                                    service.doctors[docIndex].homeCollection)
+                                    service.doctors![docIndex].homeCollection!)
                                 ? Container(
                                     margin: EdgeInsets.only(top: 2.5),
                                     child: Text(
@@ -3218,7 +3259,7 @@ class CommonWidgets {
                                 : Container(),
                           ),
                           (service.insuranceAvailable == null ||
-                                  !(service.insuranceAvailable))
+                                  !service.insuranceAvailable!)
                               ? Container()
                               : Flexible(
                                   child: Container(
@@ -3250,19 +3291,19 @@ class CommonWidgets {
                       ),
                     ),
                     (service.specialOffers != null &&
-                            service.specialOffers.isNotEmpty)
+                            service.specialOffers!.isNotEmpty)
                         ? getSingleLine()
                         : Container(),
                     (service.specialOffers != null &&
-                            service.specialOffers.isNotEmpty &&
-                            service.isExpanded)
+                            service.specialOffers!.isNotEmpty &&
+                            service.isExpanded!)
                         ? Container(
                             margin: EdgeInsets.only(
                                 bottom: AppConfig.verticalBlockSize * 1.8))
                         : Container(),
                     (service.specialOffers != null &&
-                            service.specialOffers.isNotEmpty &&
-                            service.isExpanded)
+                            service.specialOffers!.isNotEmpty &&
+                            service.isExpanded!)
                         ? Container(
                             height: AppConfig.verticalBlockSize * 10,
                             child: ListView.builder(
@@ -3295,7 +3336,7 @@ class CommonWidgets {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                              service.specialOffers[index]
+                                              service.specialOffers![index]
                                                       ?.values?.first ??
                                                   "",
                                               textAlign: TextAlign.left,
@@ -3307,7 +3348,7 @@ class CommonWidgets {
                                             alignment: Alignment.centerLeft,
                                             margin: EdgeInsets.only(top: 3),
                                             child: Text(
-                                                service.specialOffers[index]
+                                                service.specialOffers![index]
                                                         ?.keys?.first ??
                                                     "",
                                                 textAlign: TextAlign.left,
@@ -3328,15 +3369,15 @@ class CommonWidgets {
                           )
                         : Container(),
                     (service.specialOffers != null &&
-                            service.specialOffers.isNotEmpty)
+                            service.specialOffers!.isNotEmpty)
                         ? Container(
                             alignment: Alignment.center,
                             margin: EdgeInsets.symmetric(
                                 vertical: AppConfig.verticalBlockSize * 2),
-                            child: !service.isExpanded
+                            child: !service.isExpanded!
                                 ? InkWell(
                                     onTap: () {
-                                      service.isExpanded = !service.isExpanded;
+                                      service.isExpanded = !service.isExpanded!;
                                       newState(() {});
                                     },
                                     onDoubleTap: () {},
@@ -3367,7 +3408,7 @@ class CommonWidgets {
                                   )
                                 : InkWell(
                                     onTap: () {
-                                      service.isExpanded = !service.isExpanded;
+                                      service.isExpanded = !service.isExpanded!;
                                       newState(() {});
                                     },
                                     onDoubleTap: () {},
@@ -3417,9 +3458,9 @@ class CommonWidgets {
           children: [
             CarouselSlider.builder(
               carouselController: _controller,
-              itemCount: service.professionalPhotos.length > 10
+              itemCount: service.professionalPhotos!.length > 10
                   ? 10
-                  : service.professionalPhotos.length,
+                  : service.professionalPhotos!.length,
               options: CarouselOptions(
                   height: AppConfig.verticalBlockSize * 28,
                   aspectRatio: 16 / 9,
@@ -3427,7 +3468,7 @@ class CommonWidgets {
                   enableInfiniteScroll: false,
                   pageSnapping: true,
                   autoPlay:
-                      (service.professionalPhotos.length == 1) ? false : true,
+                      (service.professionalPhotos!.length == 1) ? false : true,
                   reverse: false,
                   enlargeCenterPage: true,
                   viewportFraction: 1.0,
@@ -3438,7 +3479,7 @@ class CommonWidgets {
                     newState(() {});
                   },
                   scrollDirection: Axis.horizontal),
-              itemBuilder: (BuildContext context, int itemIndex) => Container(
+              itemBuilder: (context, child, itemIndex) => Container(
                 width: double.infinity,
                 child: Container(
                   child: ClipRRect(
@@ -3446,7 +3487,7 @@ class CommonWidgets {
                         topLeft: Radius.circular(16),
                         topRight: Radius.circular(16)),
                     child: CustomWidgets().getImageFromUrl(
-                        service.professionalPhotos[itemIndex] ?? '',
+                        service.professionalPhotos![itemIndex] ?? '',
                         boxFit: BoxFit.cover),
                   ),
                 ),
@@ -3457,9 +3498,9 @@ class CommonWidgets {
               right: 0.0,
               bottom: 5,
               child: DotsIndicator(
-                dotsCount: service.professionalPhotos.length > 10
+                dotsCount: service.professionalPhotos!.length > 10
                     ? 10
-                    : service.professionalPhotos.length,
+                    : service.professionalPhotos!.length,
                 position: _currentDotPosition,
                 axis: Axis.horizontal,
                 decorator: _decorator,
@@ -3471,7 +3512,7 @@ class CommonWidgets {
     );
   }
 
-  Widget getEncryptionPopup(GlobalKey<ScaffoldState> globalKey) {
+  Widget getEncryptionPopup(GlobalKey<ScaffoldState>? globalKey) {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       elevation: 0.0,
@@ -3509,13 +3550,13 @@ class CommonWidgets {
                 borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(16),
                     bottomRight: Radius.circular(16)),
-                child: FlatButton(
-                    highlightColor: Colors.transparent,
-                    hoverColor: Colors.transparent,
-                    splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
-                    focusColor: Colors.transparent,
+                child: ElevatedButton(
+                    // highlightColor: Colors.transparent,
+                    // hoverColor: Colors.transparent,
+                    // splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                    // focusColor: Colors.transparent,
                     onPressed: () =>
-                        Navigator.of(globalKey.currentState.context).pop(),
+                        Navigator.of(globalKey!.currentState!.context).pop(),
                     child: Container(
                         height: AppConfig.verticalBlockSize * 6,
                         width: double.infinity,
@@ -3540,17 +3581,17 @@ class CommonWidgets {
       List<DoctorsData> doctorsData, int index, Function func) {
     print("called again");
     var docData = doctorsData[index];
-    String nextAvlText = _getSlotsInfo(docData?.timeSlots);
-    String price;
+    String? nextAvlText = _getSlotsInfo(docData?.timeSlots);
+    String? price;
     if (docData != null &&
         docData.specialities != null &&
-        docData.specialities.isNotEmpty &&
-        docData.specialities.first.services != null &&
-        docData.specialities.first.services.isNotEmpty &&
-        docData.specialities.first.services.first.price != null &&
-        docData.specialities.first.services.first.price > 0) {
+        docData.specialities!.isNotEmpty &&
+        docData.specialities!.first.services != null &&
+        docData.specialities!.first.services.isNotEmpty &&
+        docData.specialities!.first.services.first.price != null &&
+        docData.specialities!.first.services.first.price! > 0) {
       price =
-          docData.specialities.first.services.first.price.toStringAsFixed(0);
+          docData.specialities!.first.services.first.price!.toStringAsFixed(0);
     }
     return Card(
       margin: EdgeInsets.only(left: 20, right: 20, bottom: index == 4 ? 20 : 8),
@@ -3584,7 +3625,7 @@ class CommonWidgets {
                     children: [
                       Container(
                         child: Text(
-                          CommonMethods.getStringInCamelCase(docData?.name),
+                          CommonMethods.getStringInCamelCase(docData?.name)!,
                           maxLines: 2,
                           style: TextStyle(
                               fontSize: 18, color: PlunesColors.BLACKCOLOR),
@@ -3614,8 +3655,9 @@ class CommonWidgets {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Flexible(
-                              child: RatingBar(
-                                initialRating: docData?.rating ?? 4.6,
+                              child: RatingBar.builder(
+                                initialRating:
+                                    docData?.rating as double? ?? 4.6,
                                 ignoreGestures: true,
                                 minRating: 1,
                                 direction: Axis.horizontal,
@@ -3646,11 +3688,11 @@ class CommonWidgets {
                         ),
                       ),
                       (docData.experience != null &&
-                              docData.experience.trim().isNotEmpty)
+                              docData.experience!.trim().isNotEmpty)
                           ? Container(
                               margin: EdgeInsets.only(top: 10),
                               child: Text(
-                                "${docData.experience} year of experience",
+                                "${docData.experience} years of experience",
                                 maxLines: 2,
                                 style: TextStyle(
                                     fontSize: 16,
@@ -3669,7 +3711,7 @@ class CommonWidgets {
                                   Flexible(
                                     child: Text(
                                       "Consultation Fees ",
-                                      maxLines: 2,
+                                      maxLines: 1,
                                       style: TextStyle(
                                           fontSize: 16,
                                           color: Color(
@@ -3677,18 +3719,19 @@ class CommonWidgets {
                                                   "#000000"))),
                                     ),
                                   ),
-                                  Flexible(
-                                    child: Text(
-                                      ": \u20B9 $price",
-                                      maxLines: 2,
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500,
-                                          color: Color(
-                                              CommonMethods.getColorHexFromStr(
-                                                  "#000000"))),
-                                    ),
+                                  // Flexible(
+                                  //   child:
+                                  Text(
+                                    ": \u20B9 $price",
+                                    maxLines: 2,
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                        color: Color(
+                                            CommonMethods.getColorHexFromStr(
+                                                "#000000"))),
                                   ),
+                                  // ),
                                 ],
                               ),
                             ),
@@ -3741,8 +3784,11 @@ class CommonWidgets {
                             onDoubleTap: () {},
                             onTap: () {
                               if (func != null) {
+                                print("-2-22------ open book oyour treatemnet");
                                 func();
                               }
+                              print(
+                                  "-2else-22------ open book oyour treatemnet");
                             },
                             focusColor: Colors.transparent,
                             splashColor: Colors.transparent,
@@ -3830,7 +3876,84 @@ class CommonWidgets {
                               fontSize: 16,
                               color: Color(CommonMethods.getColorHexFromStr(
                                   "#595959")))),
-                      (data.price != null && data.price.isNotEmpty)
+                      (data.price != null && data.price!.isNotEmpty)
+                          ? Container(
+                              margin: EdgeInsets.only(top: 4),
+                              child: Text(
+                                  data?.price?.first?.toStringAsFixed(0) ?? "",
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: Color(
+                                          CommonMethods.getColorHexFromStr(
+                                              "#2A2A2A")))),
+                            )
+                          : Container()
+                    ],
+                  ),
+                ),
+              ),
+              Text(
+                PlunesStrings.book,
+                style: TextStyle(
+                    fontSize: 16,
+                    color: Color(CommonMethods.getColorHexFromStr("#25B281"))),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget getBookTestWidgetNew(List<NewServiceCategory> test, int index, Function func,
+      {bool isFromIndividualScreen = false}) {
+    var data = test[index];
+    return Card(
+      margin: EdgeInsets.only(
+          left: 20,
+          right: 20,
+          bottom: isFromIndividualScreen
+              ? 8
+              : index == 4
+                  ? 20
+                  : 8),
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8))),
+      child: Container(
+        margin: const EdgeInsets.only(top: 8, bottom: 8, right: 8, left: 5),
+        child: InkWell(
+          onTap: () {
+            if (func != null) {
+              func();
+            }
+          },
+          onDoubleTap: () {},
+          focusColor: Colors.transparent,
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          hoverColor: Colors.transparent,
+          child: Row(
+            children: [
+              Container(
+                height: 50,
+                width: 50,
+                color: Colors.transparent,
+                child: CustomWidgets().getImageFromUrl(
+                    data?.specialityImageIcon ?? "",
+                    boxFit: BoxFit.cover),
+              ),
+              Expanded(
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(data?.serviceName ?? "",
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: Color(CommonMethods.getColorHexFromStr(
+                                  "#595959")))),
+                      (data.price != null && data.price!.isNotEmpty)
                           ? Container(
                               margin: EdgeInsets.only(top: 4),
                               child: Text(
@@ -3922,8 +4045,71 @@ class CommonWidgets {
     );
   }
 
+  Widget getBookProcedureWidgetNew(
+      List<NewServiceCategory> procedures, int index, Function func,
+      {bool isFromIndividualScreen = false}) {
+    var data = procedures[index];
+    return Card(
+      margin: EdgeInsets.only(
+          left: 20,
+          right: 20,
+          bottom: isFromIndividualScreen
+              ? 8
+              : index == 4
+                  ? 20
+                  : 8),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8))),
+      child: Container(
+        margin: EdgeInsets.only(top: 8, bottom: 8, right: 8, left: 5),
+        child: InkWell(
+          onTap: () {
+            if (func != null) {
+              func();
+            }
+          },
+          onDoubleTap: () {},
+          focusColor: Colors.transparent,
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          hoverColor: Colors.transparent,
+          child: Row(
+            children: [
+              Container(
+                height: 50,
+                width: 50,
+                color: Colors.transparent,
+                child: CustomWidgets().getImageFromUrl(
+                    data?.specialityImageIcon ?? "",
+                    boxFit: BoxFit.cover),
+              ),
+              Expanded(
+                child: Container(
+                  alignment: Alignment.topLeft,
+                  margin: EdgeInsets.symmetric(horizontal: 10),
+                  child: Text(data?.serviceName ?? "",
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: Color(
+                              CommonMethods.getColorHexFromStr("#595959")))),
+                ),
+              ),
+              Text(
+                PlunesStrings.book,
+                style: TextStyle(
+                    fontSize: 16,
+                    color: Color(CommonMethods.getColorHexFromStr("#25B281"))),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget getSearchBarForTestConsProcedureScreens(
-      TextEditingController textController,
+      TextEditingController? textController,
       String hintText,
       Function onTextClear) {
     return StatefulBuilder(builder: (context, newState) {
@@ -3971,7 +4157,7 @@ class CommonWidgets {
                           fontSize: 16)),
                 ),
               ),
-              textController.text.trim().isEmpty
+              textController!.text.trim().isEmpty
                   ? Container()
                   : InkWell(
                       onTap: () {
@@ -4005,22 +4191,23 @@ class CommonWidgets {
 
   Widget getHospitalCard(
       String imageUrl,
-      String label,
+      String? label,
       String text,
-      double rating,
+      double? rating,
       TopFacility topFacilityData,
-      StreamController streamController,
+      StreamController? streamController,
       Function openInsuranceScreen) {
+    print("----------img====->$imageUrl");
+
     return Container(
-      margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 1),
+      margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2.5),
       child: Card(
-        elevation: 2.0,
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+        elevation: 9.0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         child: Column(
           children: [
             (topFacilityData.achievements != null &&
-                    topFacilityData.achievements.isNotEmpty)
+                    topFacilityData.achievements!.isNotEmpty)
                 ? ClipRRect(
                     borderRadius: BorderRadius.only(
                         topRight: Radius.circular(10),
@@ -4028,22 +4215,24 @@ class CommonWidgets {
                     child: Stack(
                       children: [
                         CarouselSlider.builder(
-                            itemCount: (topFacilityData.achievements.length > 5)
-                                ? 5
-                                : topFacilityData.achievements?.length,
-                            itemBuilder: (context, index) {
-                              return CustomWidgets().getImageFromUrl(
-                                  topFacilityData.achievements[index].imageUrl,
+                            itemCount:
+                                (topFacilityData.achievements!.length > 5)
+                                    ? 5
+                                    : topFacilityData.achievements?.length,
+                            itemBuilder: (context, child, index) {
+                              return CustomWidgets().getImageFromUrl(imageUrl,
+                                  // topFacilityData.achievements[index].imageUrl,
                                   boxFit: BoxFit.fill);
                             },
                             carouselController: _topFacilityController,
                             options: CarouselOptions(
                                 autoPlay: true,
-                                autoPlayInterval: Duration(seconds: 5),
+                                autoPlayInterval: const Duration(seconds: 5),
                                 height: AppConfig.verticalBlockSize * 26,
                                 viewportFraction: 1.0,
                                 onPageChanged: (index, _) {
-                                  if (topFacilityData.dotsPositionForTopFacility
+                                  if (topFacilityData
+                                          .dotsPositionForTopFacility!
                                           .toInt() !=
                                       index) {
                                     topFacilityData.dotsPositionForTopFacility =
@@ -4055,15 +4244,15 @@ class CommonWidgets {
                           bottom: 0.0,
                           left: 0.0,
                           right: 0.0,
-                          child: StreamBuilder<Object>(
-                              stream: streamController.stream,
+                          child: StreamBuilder<Object?>(
+                              stream: streamController!.stream,
                               builder: (context, snapshot) {
                                 return DotsIndicator(
-                                  dotsCount:
-                                      (topFacilityData.achievements.length > 5)
-                                          ? 5
-                                          : topFacilityData
-                                              .achievements?.length,
+                                  dotsCount: ((topFacilityData
+                                              .achievements!.length >
+                                          5)
+                                      ? 5
+                                      : topFacilityData.achievements?.length)!,
                                   position: topFacilityData
                                           .dotsPositionForTopFacility
                                           ?.toDouble() ??
@@ -4105,7 +4294,7 @@ class CommonWidgets {
                                           ),
                                         ),
                                         Text(
-                                          "${topFacilityData.distance.toStringAsFixed(1).length > 3 ? topFacilityData.distance.toStringAsFixed(1).substring(0, 3) : topFacilityData?.distance?.toStringAsFixed(1) ?? ''} kms",
+                                          "${topFacilityData.distance!.toStringAsFixed(1).length > 3 ? topFacilityData.distance!.toStringAsFixed(1).substring(0, 3) : topFacilityData?.distance?.toStringAsFixed(1) ?? ''} kms",
                                           maxLines: 2,
                                           style: TextStyle(
                                             fontSize: 14,
@@ -4135,7 +4324,7 @@ class CommonWidgets {
               margin: EdgeInsets.only(
                   left: AppConfig.horizontalBlockSize * 2,
                   right: AppConfig.horizontalBlockSize * 2,
-                  top: AppConfig.verticalBlockSize * 0.3),
+                  top: AppConfig.verticalBlockSize * 1.1),
               child: Row(
                 children: [
                   Expanded(
@@ -4183,22 +4372,10 @@ class CommonWidgets {
                     trimCollapsedText: " ..Read More",
                     colorClickableText: Color(0xff107C6F),
                     trimMode: TrimMode.Line,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 12,
                       color: Color(0xff444444),
                     )),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(
-                  horizontal: AppConfig.horizontalBlockSize * 2),
-              padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
-              alignment: Alignment.topLeft,
-              child: Text(
-                "${topFacilityData.hospitalType != null ? "${topFacilityData.hospitalType} |" : ""}${topFacilityData.locality != null ? "${topFacilityData.locality}" : ""}",
-                style: TextStyle(
-                    color: Color(CommonMethods.getColorHexFromStr("#434343")),
-                    fontSize: 16),
               ),
             ),
             Container(
@@ -4210,7 +4387,7 @@ class CommonWidgets {
                 children: [
                   Expanded(
                     child: (topFacilityData.doctorCount != null &&
-                            topFacilityData.doctorCount > 0)
+                            topFacilityData.doctorCount! > 0)
                         ? Container(
                             alignment: Alignment.centerLeft,
                             child: Text(
@@ -4225,7 +4402,7 @@ class CommonWidgets {
                   ),
                   Expanded(
                     child: (topFacilityData.insuranceAvailable != null &&
-                            topFacilityData.insuranceAvailable)
+                            topFacilityData.insuranceAvailable!)
                         ? InkWell(
                             focusColor: Colors.transparent,
                             splashColor: Colors.transparent,
@@ -4240,6 +4417,7 @@ class CommonWidgets {
                               alignment: Alignment.centerRight,
                               child: Text("Check insurance",
                                   style: TextStyle(
+                                      fontWeight: FontWeight.bold,
                                       decoration: TextDecoration.underline,
                                       decorationThickness: 3.0,
                                       decorationColor: Color(
@@ -4257,7 +4435,7 @@ class CommonWidgets {
               ),
             ),
             topFacilityData.accreditationList == null ||
-                    topFacilityData.accreditationList.isEmpty
+                    topFacilityData.accreditationList!.isEmpty
                 ? Container()
                 : Container(
                     margin: EdgeInsets.symmetric(
@@ -4268,6 +4446,8 @@ class CommonWidgets {
                     height: AppConfig.verticalBlockSize * 5,
                     child: ListView.builder(
                       itemBuilder: (context, index) {
+                        print("-----images");
+                        print(topFacilityData.accreditationImage);
                         return Container(
                           margin: EdgeInsets.only(right: 10),
                           child: Row(
@@ -4279,13 +4459,19 @@ class CommonWidgets {
                                   height: 24,
                                   width: 24,
                                   alignment: Alignment.centerLeft,
-                                  child: CustomWidgets().getImageFromUrl(
-                                      topFacilityData.accreditationImage ??
-                                          "")),
+                                  child: null !=
+                                          topFacilityData.accreditationImage
+                                      ? CustomWidgets().getImageFromUrl(
+                                          topFacilityData.accreditationImage ??
+                                              "")
+                                      : CustomWidgets().getImageFromAsset(
+                                          index == 0
+                                              ? PlunesImages.nabhImages
+                                              : PlunesImages.jciImages)),
                               Container(
                                 alignment: Alignment.centerLeft,
                                 child: Text(
-                                    " ${topFacilityData?.accreditationList[index]}",
+                                    "   ${topFacilityData?.accreditationList![index]}",
                                     style: TextStyle(
                                         color: Color(
                                             CommonMethods.getColorHexFromStr(
@@ -4301,9 +4487,35 @@ class CommonWidgets {
                       shrinkWrap: true,
                       scrollDirection: Axis.horizontal,
                     )),
+           null != topFacilityData.locality && topFacilityData!.locality!.isNotEmpty
+            ? Align(
+              alignment: Alignment.centerLeft,
+              child: FittedBox(
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 2, vertical: 8),
+                  padding: EdgeInsets.only(
+                      top: AppConfig.verticalBlockSize * .8,
+                      left: 10,
+                      right: 10,
+                      bottom: AppConfig.verticalBlockSize * .8),
+                  // width: 90,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                      color: PlunesColors.DIMWHITECOLOR,
+                      border: Border.all(color: PlunesColors.GREYCOLOR, width: .5),
+                      borderRadius: BorderRadius.circular(4)),
+                  child: Text(
+                    "${topFacilityData.hospitalType != null ? "${topFacilityData.hospitalType} |" : ""}${topFacilityData.locality != null ? "${topFacilityData.locality}" : ""}",
+                    style: TextStyle(
+                        color: Color(CommonMethods.getColorHexFromStr("#434343")),
+                        fontSize: 16),
+                  ),
+                ),
+              ),
+            ) : const SizedBox.shrink(),
             (topFacilityData == null ||
                     topFacilityData.centres == null ||
-                    topFacilityData.centres.isEmpty)
+                    topFacilityData.centres!.isEmpty)
                 ? Container()
                 : Container(
                     alignment: Alignment.topLeft,
@@ -4321,15 +4533,15 @@ class CommonWidgets {
                           splashColor: Colors.transparent,
                           highlightColor: Colors.transparent,
                           onTap: () {
-                            if (topFacilityData.centres[index].id != null &&
-                                topFacilityData.centres[index].id
+                            if (topFacilityData.centres![index].id != null &&
+                                topFacilityData.centres![index].id!
                                     .trim()
                                     .isNotEmpty) {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => DoctorInfo(
-                                          topFacilityData.centres[index].id,
+                                          topFacilityData.centres![index].id,
                                           isDoc: true)));
                             }
                           },
@@ -4349,7 +4561,7 @@ class CommonWidgets {
                                         CommonMethods.getColorHexFromStr(
                                             "#D8D8D887")))),
                             child: Text(
-                              topFacilityData.centres[index].name ?? "",
+                              topFacilityData.centres![index].name ?? "",
                               style: TextStyle(
                                   color: Color(CommonMethods.getColorHexFromStr(
                                       "#434343")),
@@ -4358,7 +4570,7 @@ class CommonWidgets {
                           ),
                         );
                       },
-                      itemCount: topFacilityData.centres.length,
+                      itemCount: topFacilityData.centres!.length,
                     ),
                   ),
             SizedBox(height: 15)
@@ -4373,26 +4585,26 @@ class CommonWidgets {
   }
 
   // _getSlotsInfo(DateUtil.getDayAsString()
-  String _getSlotsInfo(List<TimeSlots> timeSlots) {
+  String? _getSlotsInfo(List<TimeSlots>? timeSlots) {
     if (timeSlots == null || timeSlots.isEmpty) {
       return null;
     }
     DateTime _currentDate = DateTime.now();
-    String _selectedTimeSlot;
+    String? _selectedTimeSlot;
     try {
       timeSlots.forEach((slot) {
-        if (slot.day
+        if (slot.day!
             .toLowerCase()
             .contains(DateUtil.getDayAsString(_currentDate).toLowerCase())) {
-          if (!slot.closed &&
+          if (!slot.closed! &&
               slot.slotArray != null &&
-              slot.slotArray.isNotEmpty) {
-            slot.slotArray.forEach((element) {
+              slot.slotArray!.isNotEmpty) {
+            slot.slotArray!.forEach((element) {
               if (_selectedTimeSlot == null) {
                 _selectedTimeSlot =
-                    _checkSelectedSlot(element, _currentDate, slot.slotArray);
+                    _checkSelectedSlot(element!, _currentDate, slot.slotArray!);
                 if (_selectedTimeSlot != null) {
-                  _selectedTimeSlot = _selectedTimeSlot + ", ${slot.day}";
+                  _selectedTimeSlot = _selectedTimeSlot! + ", ${slot.day}";
                 }
               }
             });
@@ -4418,10 +4630,10 @@ class CommonWidgets {
                   break;
                 }
                 TimeSlots innerSlot = reArrangedSlots[lIndex];
-                if (!innerSlot.closed &&
+                if (!innerSlot.closed! &&
                     innerSlot.slotArray != null &&
-                    innerSlot.slotArray.isNotEmpty) {
-                  _selectedTimeSlot = innerSlot.slotArray.first +
+                    innerSlot.slotArray!.isNotEmpty) {
+                  _selectedTimeSlot = innerSlot.slotArray!.first! +
                       ", on Upcoming ${innerSlot.day}";
                 }
               }
@@ -4435,9 +4647,9 @@ class CommonWidgets {
     return _selectedTimeSlot;
   }
 
-  String _checkSelectedSlot(
-      String selectedTime, DateTime _selectedDate, List<String> _slotArray) {
-    String _selectedTimeSlot;
+  String? _checkSelectedSlot(
+      String selectedTime, DateTime _selectedDate, List<String?> _slotArray) {
+    String? _selectedTimeSlot;
     try {
       var _currentDateTime = DateTime.now();
       List<String> splitTime = selectedTime.split(":");
@@ -4454,9 +4666,9 @@ class CommonWidgets {
         _shouldDecreaseDay = true;
       }
       List<String> lastTimeOfBooking =
-          _slotArray[_slotArray.length - 1].split(":");
+          _slotArray[_slotArray.length - 1]!.split(":");
       int _pmTimeLastSlot = 0;
-      if (_slotArray[_slotArray.length - 1].contains("PM") &&
+      if (_slotArray[_slotArray.length - 1]!.contains("PM") &&
           lastTimeOfBooking.first != "12") {
         _pmTimeLastSlot = 12;
         lastTimeOfBooking.first =
@@ -4480,9 +4692,9 @@ class CommonWidgets {
             _currentDateTime.year,
             _currentDateTime.month,
             _currentDateTime.day,
-            int.tryParse(_currentTimeOfBooking.first),
+            int.tryParse(_currentTimeOfBooking.first)!,
             int.tryParse(_currentTimeOfBooking[1]
-                .substring(0, _currentTimeOfBooking[1].indexOf(" "))));
+                .substring(0, _currentTimeOfBooking[1].indexOf(" ")))!);
 //        print("$lastTimeOfBooking lastTimeOfBooking hello $splitTime");
         var _selectedDateTime = DateTime(
             _currentDateTime.year,
@@ -4490,15 +4702,16 @@ class CommonWidgets {
             _shouldDecreaseDay
                 ? _currentDateTime.day - 1
                 : _currentDateTime.day,
-            int.tryParse(splitTime.first),
-            int.tryParse(splitTime[1].substring(0, splitTime[1].indexOf(" "))));
+            int.tryParse(splitTime.first)!,
+            int.tryParse(
+                splitTime[1].substring(0, splitTime[1].indexOf(" ")))!);
         var _todayLatBookingDateTime = DateTime(
             _currentDateTime.year,
             _currentDateTime.month,
             _currentDateTime.day,
-            int.tryParse(lastTimeOfBooking.first),
+            int.tryParse(lastTimeOfBooking.first)!,
             int.tryParse(lastTimeOfBooking[1]
-                .substring(0, lastTimeOfBooking[1].indexOf(" "))));
+                .substring(0, lastTimeOfBooking[1].indexOf(" ")))!);
 //        print(
 //            "_selectedDateTime $_selectedDateTime  _currentDateTime $_currentDateTime _todayLatBookingDateTime $_todayLatBookingDateTime");
 //        print(
@@ -4512,9 +4725,9 @@ class CommonWidgets {
               _selectedDate.year,
               _selectedDate.month,
               _selectedDate.day,
-              (int.tryParse(splitTime.first)),
+              int.tryParse(splitTime.first)!,
               int.tryParse(
-                  splitTime[1].substring(0, splitTime[1].indexOf(" "))));
+                  splitTime[1].substring(0, splitTime[1].indexOf(" ")))!);
 //          print("valid");
         } else if ((_selectedDateTime.isBefore(_todayLatBookingDateTime) ||
                 (_selectedDateTime.difference(_todayLatBookingDateTime))
@@ -4526,9 +4739,9 @@ class CommonWidgets {
               _selectedDate.year,
               _selectedDate.month,
               _selectedDate.day,
-              (int.tryParse(splitTime.first)),
+              int.tryParse(splitTime.first)!,
               int.tryParse(
-                  splitTime[1].substring(0, splitTime[1].indexOf(" "))));
+                  splitTime[1].substring(0, splitTime[1].indexOf(" ")))!);
 //          print("valid");
         } else {
 //          print("invalid slot");
@@ -4540,8 +4753,9 @@ class CommonWidgets {
             _selectedDate.year,
             _selectedDate.month,
             _selectedDate.day,
-            (int.tryParse(splitTime.first)),
-            int.tryParse(splitTime[1].substring(0, splitTime[1].indexOf(" "))));
+            int.tryParse(splitTime.first)!,
+            int.tryParse(
+                splitTime[1].substring(0, splitTime[1].indexOf(" ")))!);
       }
     } catch (e, s) {
       _selectedTimeSlot = null;

@@ -11,6 +11,7 @@ import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
+
 //import 'package:simple_url_preview/simple_url_preview.dart';
 
 import '../../OpenMap.dart';
@@ -26,13 +27,14 @@ class AboutUs extends BaseActivity {
   _AboutUsState createState() => _AboutUsState();
 }
 
-class _AboutUsState extends BaseState<AboutUs> {
-  List<dynamic> aboutUsUser = new List();
-  List<dynamic> aboutUsHosp = new List();
+// class _AboutUsState extends BaseState<AboutUs> {
+class _AboutUsState extends State<AboutUs> {
+  List<dynamic> aboutUsUser = [];
+  List<dynamic> aboutUsHosp = [];
   String _userVideoUrl = "https://youtu.be/QwCxu5BgJQg";
   String _hospVideoUrl = "https://youtu.be/eEQGGzplZ7w";
-  PremiumBenefitsModel _premiumBenefitsModel;
-  UserBloc _userBloc;
+  PremiumBenefitsModel? _premiumBenefitsModel;
+  UserBloc? _userBloc;
 
 //  YoutubePlayerController _controller;
 
@@ -52,7 +54,7 @@ class _AboutUsState extends BaseState<AboutUs> {
   }
 
   _getPremiumBenefitsForUsers() {
-    _userBloc
+    _userBloc!
         .getPremiumBenefitsForUsers(isFromAboutUsScreen: true)
         .then((value) {
       if (value is RequestSuccess) {
@@ -67,7 +69,7 @@ class _AboutUsState extends BaseState<AboutUs> {
     CommonMethods.globalContext = context;
     return Scaffold(
       backgroundColor: PlunesColors.WHITECOLOR,
-      appBar: widget.getAppBar(context, plunesStrings.aboutUs, true),
+      appBar: widget.getAppBar(context, plunesStrings.aboutUs, true) as PreferredSizeWidget?,
       body: _getBody(),
     );
 //      WebviewScaffold(
@@ -436,8 +438,8 @@ class _AboutUsState extends BaseState<AboutUs> {
 
   Widget _getPremiumBenefitsWidget() {
     if (_premiumBenefitsModel == null ||
-        _premiumBenefitsModel.data == null ||
-        _premiumBenefitsModel.data.isEmpty) {
+        _premiumBenefitsModel!.data == null ||
+        _premiumBenefitsModel!.data!.isEmpty) {
       return Container();
     }
     return Column(
@@ -475,15 +477,15 @@ class _AboutUsState extends BaseState<AboutUs> {
                 child: Container(
                   color: Colors.transparent,
                   child: ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                    borderRadius: const BorderRadius.all(Radius.circular(16)),
                     child: CustomWidgets().getImageFromUrl(
-                        _premiumBenefitsModel.data[index]?.titleImage ?? '',
+                        _premiumBenefitsModel!.data![index].titleImage ?? '',
                         boxFit: BoxFit.cover),
                   ),
                 ),
               );
             },
-            itemCount: _premiumBenefitsModel.data.length,
+            itemCount: _premiumBenefitsModel!.data!.length,
           ),
         )
       ],

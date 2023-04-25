@@ -25,12 +25,13 @@ class WhyUsCardsByIdScreen extends BaseActivity {
   _WhyUsCardsByIdScreenState createState() => _WhyUsCardsByIdScreenState();
 }
 
-class _WhyUsCardsByIdScreenState extends BaseState<WhyUsCardsByIdScreen> {
-  HomeScreenMainBloc _homeScreenMainBloc;
-  WhyUsByIdModel _whyUsByIdModel;
-  int _currentPage;
-  String _failedMessage;
-  StreamController _dotStreamUpdater;
+class _WhyUsCardsByIdScreenState extends State<WhyUsCardsByIdScreen> {
+  final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  HomeScreenMainBloc? _homeScreenMainBloc;
+  WhyUsByIdModel? _whyUsByIdModel;
+  late int _currentPage;
+  String? _failedMessage;
+  StreamController? _dotStreamUpdater;
 
   @override
   void initState() {
@@ -51,28 +52,28 @@ class _WhyUsCardsByIdScreenState extends BaseState<WhyUsCardsByIdScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: widget.getAppBar(context, PlunesStrings.whyUs, true),
-      body: StreamBuilder<RequestState>(
+      appBar: widget.getAppBar(context, PlunesStrings.whyUs, true) as PreferredSizeWidget?,
+      body: StreamBuilder<RequestState?>(
           initialData: RequestInProgress(),
-          stream: _homeScreenMainBloc.getWhyUsCardByIdStream,
+          stream: _homeScreenMainBloc!.getWhyUsCardByIdStream,
           builder: (context, snapshot) {
             if (snapshot.data is RequestSuccess) {
-              RequestSuccess successObject = snapshot.data;
+              RequestSuccess successObject = snapshot.data as RequestSuccess;
               _whyUsByIdModel = successObject.response;
               _homeScreenMainBloc?.addIntoGetWhyUsDataStream(null);
             } else if (snapshot.data is RequestFailed) {
-              RequestFailed _failedObj = snapshot.data;
+              RequestFailed? _failedObj = snapshot.data as RequestFailed?;
               _failedMessage = _failedObj?.failureCause;
               _homeScreenMainBloc?.addIntoGetWhyUsDataStream(null);
             } else if (snapshot.data is RequestInProgress) {
               return CustomWidgets().getProgressIndicator();
             }
             return (_whyUsByIdModel == null ||
-                    (_whyUsByIdModel.success != null &&
-                        !_whyUsByIdModel.success) ||
-                    _whyUsByIdModel.data == null ||
-                    _whyUsByIdModel.data.description == null ||
-                    _whyUsByIdModel.data.description.isEmpty)
+                    (_whyUsByIdModel!.success != null &&
+                        !_whyUsByIdModel!.success!) ||
+                    _whyUsByIdModel!.data == null ||
+                    _whyUsByIdModel!.data!.description == null ||
+                    _whyUsByIdModel!.data!.description!.isEmpty)
                 ? CustomWidgets().errorWidget(_failedMessage,
                     onTap: () => _getCardsData(), isSizeLess: true)
                 : _getBody();
@@ -87,7 +88,7 @@ class _WhyUsCardsByIdScreenState extends BaseState<WhyUsCardsByIdScreen> {
         _dotStreamUpdater?.add(null);
       },
       children:
-          _whyUsByIdModel.data.description.map((e) => _getPage(e)).toList(),
+          _whyUsByIdModel!.data!.description!.map((e) => _getPage(e)).toList(),
     );
   }
 
@@ -111,7 +112,7 @@ class _WhyUsCardsByIdScreenState extends BaseState<WhyUsCardsByIdScreen> {
                 right: AppConfig.horizontalBlockSize * 4),
             // width: AppConfig.horizontalBlockSize * 80,
             child: Text(
-              _whyUsByIdModel.data.title ?? "",
+              _whyUsByIdModel!.data!.title ?? "",
               // maxLines: 3,
               textAlign: TextAlign.left,
               style: TextStyle(
@@ -150,11 +151,11 @@ class _WhyUsCardsByIdScreenState extends BaseState<WhyUsCardsByIdScreen> {
           margin: EdgeInsets.only(
             bottom: AppConfig.verticalBlockSize * 1,
           ),
-          child: StreamBuilder<Object>(
-              stream: _dotStreamUpdater.stream,
+          child: StreamBuilder<Object?>(
+              stream: _dotStreamUpdater!.stream,
               builder: (context, snapshot) {
                 return DotsIndicator(
-                    position: _currentPage?.toDouble(),
+                    position: _currentPage.toDouble(),
                     decorator: DotsDecorator(
                         activeColor: PlunesColors.BLACKCOLOR,
                         color: PlunesColors.GREYCOLOR),
@@ -173,7 +174,7 @@ class _WhyUsCardsByIdScreenState extends BaseState<WhyUsCardsByIdScreen> {
   }
 
   void _getCardsData() {
-    _homeScreenMainBloc.getWhyUsDataById(widget.id);
+    _homeScreenMainBloc!.getWhyUsDataById(widget.id);
   }
 }
 

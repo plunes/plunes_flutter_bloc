@@ -10,6 +10,7 @@ import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
+
 import 'CheckOTP.dart';
 
 /*
@@ -26,13 +27,13 @@ class ForgetPassword extends BaseActivity {
   _ForgetPasswordState createState() => _ForgetPasswordState();
 }
 
-class _ForgetPasswordState extends BaseState<ForgetPassword>
+class _ForgetPasswordState extends State<ForgetPassword>
     implements DialogCallBack {
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final phoneNumberController = new TextEditingController();
   bool progress = false, isValidNumber = true, _isProfessional = false;
   var globalHeight, globalWidth;
-  UserBloc _userBloc;
+  UserBloc? _userBloc;
 
   @override
   void initState() {
@@ -57,7 +58,7 @@ class _ForgetPasswordState extends BaseState<ForgetPassword>
         key: _scaffoldKey,
         backgroundColor: Colors.white,
         appBar:
-            widget.getAppBar(context, plunesStrings.forgotPasswordTitle, true),
+            widget.getAppBar(context, plunesStrings.forgotPasswordTitle, true) as PreferredSizeWidget?,
         body: GestureDetector(
           onTap: () => CommonMethods.hideSoftKeyboard(),
           child: getBodyView(),
@@ -147,7 +148,7 @@ class _ForgetPasswordState extends BaseState<ForgetPassword>
             keyboardType: inputType,
             maxLength: 10,
             inputFormatters: <TextInputFormatter>[
-              WhitelistingTextInputFormatter.digitsOnly
+              FilteringTextInputFormatter.digitsOnly
             ],
             onChanged: (text) {
               setState(() {
@@ -186,11 +187,17 @@ class _ForgetPasswordState extends BaseState<ForgetPassword>
       progress = true;
       _setState();
       await Future.delayed(Duration(milliseconds: 200));
-      var result =
-          await _userBloc.checkUserExistence(phoneNumberController.text.trim());
+      var result = await _userBloc!.checkUserExistence(phoneNumberController.text.trim());
+      debugPrint("forgetPassword->${result.toString()}");
+      // progress = false;
+      // _setState();
       if (result is RequestSuccess) {
+        debugPrint("forgetPassword-if>${result.toString()}");
+
         _getUserExistenceData(result.response);
       } else if (result is RequestFailed) {
+        debugPrint("forgetPassword-else>${result.toString()}");
+
         progress = false;
         _setState();
         await Future.delayed(Duration(milliseconds: 200));
@@ -207,9 +214,13 @@ class _ForgetPasswordState extends BaseState<ForgetPassword>
   }
 
   _getUserExistenceData(data) async {
-    String signature = await AppConfig.getAppSignature();
+    String? signature = await AppConfig.getAppSignature();
     if (data['success'] != null && data['success']) {
-      var requestState = await _userBloc.getGenerateOtp(
+      debugPrint("forgetPassword----iiiihgfh");
+      debugPrint("forgetPassword----$signature");
+      debugPrint("forgetPassword----$_isProfessional");
+
+      var requestState = await _userBloc!.getGenerateOtp(
           phoneNumberController.text.trim(),
           iFromForgotPassword: true,
           isProfessional: _isProfessional,
@@ -217,7 +228,11 @@ class _ForgetPasswordState extends BaseState<ForgetPassword>
       progress = false;
       _setState();
       await Future.delayed(Duration(milliseconds: 200));
+      debugPrint("forgetPassword---->${requestState.toString()}");
+
       if (requestState is RequestSuccess) {
+        debugPrint("forgetPassword-1--->${requestState.toString()}");
+
         Navigator.push(
             context,
             MaterialPageRoute(
@@ -225,10 +240,15 @@ class _ForgetPasswordState extends BaseState<ForgetPassword>
                     phone: phoneNumberController.text,
                     from: plunesStrings.forgotPasswordTitle)));
       } else if (requestState is RequestFailed) {
+        debugPrint("forgetPassword---2->${requestState.toString()}");
+        debugPrint("forgetPassword---2->${requestState.failureCause.toString()}");
+
         widget.showInSnackBar(
             requestState.failureCause, PlunesColors.BLACKCOLOR, _scaffoldKey);
       }
     } else if (!data['success']) {
+      debugPrint("forgetPassword---3->67");
+
       progress = false;
       _setState();
       await Future.delayed(Duration(milliseconds: 200));

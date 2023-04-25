@@ -1,4 +1,4 @@
-import 'package:plunes/Utils/Constants.dart';
+
 
 /*
  * Created by - Plunes Technologies .
@@ -15,25 +15,25 @@ class Urls {
   ///'Plunes is the sender id'
   get sendOTPUrl =>
       'https://control.msg91.com/api/sendotp.php?authkey=278069AIdfPwGj5ce79990&mobile=91';
-  static const String googleApiKey = 'AIzaSyBsy04mUPFZvE2jp2qW6ytyexI5ZLeO1Uc';
+  static const String googleApiKeyOld = 'AIzaSyBsy04mUPFZvE2jp2qW6ytyexI5ZLeO1Uc';
+  // static const String googleApiKey = 'AIzaSyBCcbW6_iSuUS_25IcZ8HnJRYk4rlQVo3w'; // commentd on 22-mar-23
+  static const String googleApiKey = 'AIzaSyAqn7q_9-GV3balsnk94-FgODIu_8lT3oM';
 
-  // static const String baseUrl =
-  //     'https://api.plunes.com/v9/'; // production server
-  static const String baseUrl =
-      'https://devapi.plunes.com/staging/'; // staging server
+  static const String baseUrl = 'https://api.plunes.com/v10/'; // production server
+  // static const String baseUrl = 'https://devapi.plunes.com/v10/'; // staging server
 
-  // static const String customBaseUrl =
-  //     'https://api.plunes.com/'; // production server
-  static const String customBaseUrl =
-      'https://devapi.plunes.com/'; // staging server
+  static const String customBaseUrl = 'https://api.plunes.com/'; // production server
+  // static const String customBaseUrl = 'https://devapi.plunes.com/'; // staging server
 
-  // static const String socketUrl = 'https://api.plunes.com'; // production server
-  static const String socketUrl = 'https://devapi.plunes.com'; // staging server
+  static const String socketUrl = 'https://api.plunes.com'; // production server
+  // static const String socketUrl = 'https://devapi.plunes.com'; // staging server
 
-  // static const String mcmBaseUrl =
-  //     "https://api.plunes.com/mcm/"; // production server
-  static const String mcmBaseUrl =
-      "https://devapi.plunes.com/mcm/"; // staging server
+  static const String mcmBaseUrl = "https://api.plunes.com/mcm/"; // production server
+  // static const String mcmBaseUrl = "https://devapi.plunes.com/mcm/"; // staging server
+
+  static const String PAYMENT_WEB_VIEW_URL = "https://api.plunes.com/payment"; //production
+  // static const String PAYMENT_WEB_VIEW_URL = 'https://devapi.plunes.com/payment'; //'https://plunes.co/payment'; //dev
+
 
   get catalogue => baseUrl + 'catalogue';
 
@@ -75,10 +75,7 @@ class Urls {
   static const String BOOKING_URL = 'booking';
   static const String PROF_BOOKING_URL = "professionalBooking";
 
-  // static const String PAYMENT_WEB_VIEW_URL =
-  //     "https://api.plunes.com/payment"; //production
-  static const String PAYMENT_WEB_VIEW_URL =
-      'https://devapi.plunes.com/payment'; //'https://plunes.co/payment'; //dev
+
   static const String ZEST_MONEY_URL =
       PAYMENT_WEB_VIEW_URL + "Control/zestMoney";
   static const String cancelPaymentUrl =
@@ -152,6 +149,10 @@ class Urls {
   static const String EDIT_CART_DETAIL_URL = "booking/editPatient";
   static const String PAY_CART_ITEMS_BILL_URL = "cart/checkout";
   static const String UPI_PAYMENT_URL = customBaseUrl + "paymentControl/";
+  static String PAY_VIA_INSURANCE_PAYMENT_URL(var bookingID) => "paymentControl/payViaInsurance/$bookingID";
+
+
+
   static const String CAPTURE_UPI_PAYMENT_URL =
       "$UPI_PAYMENT_URL" + "captureUPIPayment";
   static const String CART_COUNT_URL = "cart/count/";
@@ -188,6 +189,14 @@ class Urls {
       "catalogue/getServiceBySpecialityId";
   static const String GET_PROFESSIONAL_FOR_COMMON_SPECIALITY =
       "user/getProfessionalsFromCommonSpeciality";
+
+
+  static String getProfessionalForCommaSpeciality(String? serviceName, [String? lat, String? long]){
+    return "solution/exploreForMap?speciality=$serviceName&serviceId=&locality=All&lat=$lat&lng=$long";
+  }
+
+  static const String GET_PROFESSIONAL_FOR_COMMON_SPECIALITY2 =
+      "solution/exploreForMap?speciality=Proctology&serviceId=&locality=All&lat=&lng=";
   static const String GET_REPORT_BY_REPORT_ID = "user/getReportByReportId";
   static const String BANK_OFFER_URL = mcmBaseUrl + "plunes/getBankOffers";
   static const String GET_FORM_DATA_ON_FILL_MEDICAL_DETAIL_SCREEN =
@@ -206,4 +215,7 @@ class Urls {
   static const String POPULAR_CITIES_AND_SERVICES_URL =
       "catalogue/getPopularCitesAndService";
   static const String FamilyCatalogueUrl = "catalogue/getServicesbyfamily";
+
+  static const String uploadImage = "https://devapi.plunes.com/v10/user/uploadInsurance?insuranceType=CARD";
+  static const String sendImageUrl = "https://devapi.plunes.com/v10/booking/editInsurance";
 }

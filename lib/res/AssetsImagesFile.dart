@@ -70,7 +70,8 @@ class PlunesImages {
   static const String manualBiddingSuccessImage =
       "assets/images/biddingAddedSuccessImage.png";
   static const String plunesPlaceHolderAndErrorLogo =
-      "assets/images/plunesPlaceHolderAndErrorLogo.png";
+      // "assets/images/plunesPlaceHolderAndErrorLogo.png";
+      "assets/plunes.png";
   static const String informativeIcon = "assets/images/informativeIcon.png";
   static const String noActionableInsightIcon =
       "assets/images/noActionableInsightIcon.png";
@@ -349,4 +350,11 @@ class PlunesImages {
   get checkIcon => 'assets/images/bid/check.png';
 
   get unCheckIcon => 'assets/images/bid/uncheck.png';
+
+  get bookingLostEmoji_ => "assets/images/bookingLostEmoji.png";
+
+
+  static String nabhImages = 'assets/images/nabh_logo.png';
+ static String jciImages = 'assets/images/jci_logo.png';
+
 }

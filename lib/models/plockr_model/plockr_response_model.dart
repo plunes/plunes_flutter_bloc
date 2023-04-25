@@ -1,8 +1,8 @@
 class PlockrResponseModel {
-  bool success;
-  List<UploadedReports> uploadedReports;
-  List<UploadedReports> sharedReports;
-  String webviewUrl, message;
+  bool? success;
+  List<UploadedReports>? uploadedReports;
+  List<UploadedReports>? sharedReports;
+  String? webviewUrl, message;
 
   PlockrResponseModel(
       {this.success,
@@ -14,15 +14,15 @@ class PlockrResponseModel {
   PlockrResponseModel.fromJson(Map<String, dynamic> json) {
     success = json['success'];
     if (json['data'] != null && json['data']['uploadedReports'] != null) {
-      uploadedReports = new List<UploadedReports>();
+      uploadedReports = [];
       json['data']['uploadedReports'].forEach((v) {
-        uploadedReports.add(new UploadedReports.fromJson(v));
+        uploadedReports!.add(new UploadedReports.fromJson(v));
       });
     }
     if (json['data'] != null && json['data']['sharedReports'] != null) {
-      sharedReports = new List<UploadedReports>();
+      sharedReports = [];
       json['data']['sharedReports'].forEach((v) {
-        sharedReports.add(new UploadedReports.fromJson(v));
+        sharedReports!.add(new UploadedReports.fromJson(v));
       });
     }
     webviewUrl = (json['data'] != null && json['data']['webviewUrl'] != null)
@@ -35,11 +35,11 @@ class PlockrResponseModel {
     data['success'] = this.success;
     if (this.uploadedReports != null) {
       data['uploadedReports'] =
-          this.uploadedReports.map((v) => v.toJson()).toList();
+          this.uploadedReports!.map((v) => v.toJson()).toList();
     }
     if (this.sharedReports != null) {
       data['sharedReports'] =
-          this.sharedReports.map((v) => v.toJson()).toList();
+          this.sharedReports!.map((v) => v.toJson()).toList();
     }
     data['webviewUrl'] = this.webviewUrl;
     return data;
@@ -47,8 +47,8 @@ class PlockrResponseModel {
 }
 
 class UploadedReports {
-  bool self;
-  String sId;
+  bool? self;
+  String? sId;
 
   @override
   bool operator ==(Object other) =>
@@ -59,26 +59,26 @@ class UploadedReports {
 
   @override
   int get hashCode => sId.hashCode;
-  String userId;
-  String uploader;
-  String reportName;
-  String reportDisplayName;
-  String remarks;
+  String? userId;
+  String? uploader;
+  String? reportName;
+  String? reportDisplayName;
+  String? remarks;
 
   // List<UploadedReports> accessList;
-  int createdTime;
-  int iV;
-  String userName;
-  String userAddress;
-  String reportUrl;
-  String reportThumbnail;
-  String fileType;
-  String reasonDiagnosis;
-  String medicines;
-  String test;
-  String consumptionDiet;
-  String avoidDiet;
-  String precautions;
+  int? createdTime;
+  int? iV;
+  String? userName;
+  String? userAddress;
+  String? reportUrl;
+  String? reportThumbnail;
+  String? fileType;
+  String? reasonDiagnosis;
+  String? medicines;
+  String? test;
+  String? consumptionDiet;
+  String? avoidDiet;
+  String? precautions;
   static const String dicomFile = ".dcm";
   static const String jpgFile = '.jpg';
   static const String pdfFile = '.pdf';

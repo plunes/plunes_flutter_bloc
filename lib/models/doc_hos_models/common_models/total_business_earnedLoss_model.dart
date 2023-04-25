@@ -1,10 +1,10 @@
 class TotalBusinessEarnedModel {
-  num businessGained;
-  num businessLost;
+  num? businessGained;
+  num? businessLost;
 
   TotalBusinessEarnedModel({this.businessGained, this.businessLost});
 
-  TotalBusinessEarnedModel.fromJson(Map<String, dynamic> json) {
+  TotalBusinessEarnedModel.fromJson(Map<String, dynamic>? json) {
     if (json != null && json["data"] != null) {
       businessGained = json["data"]['businessGained'];
       businessLost = json["data"]['businessLost'];

@@ -48,26 +48,28 @@ class NewSolutionHomePage extends BaseActivity {
   _NewSolutionHomePageState createState() => _NewSolutionHomePageState();
 }
 
-class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
-  HomeScreenMainBloc _homeScreenMainBloc;
-  SolutionHomeScreenModel _solutionHomeScreenModel;
-  WhyUsModel _whyUsModel;
-  KnowYourProcedureModel _knowYourProcedureModel;
-  NewSpecialityModel _newSpecialityModel;
-  MediaContentPlunes _mediaContentPlunes;
-  TopSearchOuterModel _topSearchOuterModel;
-  TopFacilityModel _topFacilityModel;
-  String _failedMessage;
+// class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
+class _NewSolutionHomePageState extends State<NewSolutionHomePage> {
+final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  HomeScreenMainBloc? _homeScreenMainBloc;
+  SolutionHomeScreenModel? _solutionHomeScreenModel;
+  WhyUsModel? _whyUsModel;
+  KnowYourProcedureModel? _knowYourProcedureModel;
+  NewSpecialityModel? _newSpecialityModel;
+  MediaContentPlunes? _mediaContentPlunes;
+  TopSearchOuterModel? _topSearchOuterModel;
+  TopFacilityModel? _topFacilityModel;
+  String? _failedMessage;
   GlobalKey _one = GlobalKey();
   GlobalKey _two = GlobalKey();
-  CartMainBloc _cartBloc;
-  String _failedMessageForWhyUsSection;
-  String _failedMessageForKnowYourProcedureSection;
-  bool _isProcedureListOpened, _isTopFacilityExpanded;
-  String _failedMessageForCommonSpeciality;
-  String _mediaFailedMessage;
-  String _failedMessageTopSearch;
-  String _failedMessageTopFacility, _specialityApiFailureCause;
+  CartMainBloc? _cartBloc;
+  String? _failedMessageForWhyUsSection;
+  String? _failedMessageForKnowYourProcedureSection;
+  bool? _isProcedureListOpened, _isTopFacilityExpanded;
+  String? _failedMessageForCommonSpeciality;
+  String? _mediaFailedMessage;
+  String? _failedMessageTopSearch;
+  String? _failedMessageTopFacility, _specialityApiFailureCause;
   List<DropdownMenuItem<String>> _specialityDropDownItems = [];
   List<SpecialityModel> _specialityItems = [];
   List<DropdownMenuItem<String>> facilityTypeWidget = [
@@ -99,10 +101,10 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   static final String _nearMeKey = "Near me";
   static final String _allKey = "All";
 
-  String _userTypeFilter;
-  String _locationFilter = _nearMeKey;
-  String _selectedSpeciality;
-  StreamController _streamControllerForTopFacility;
+  String? _userTypeFilter;
+  String? _locationFilter = _nearMeKey;
+  String? _selectedSpeciality;
+  StreamController? _streamControllerForTopFacility;
 
   List<DropdownMenuItem<String>> _facilityLocationDropDownItems = [
     DropdownMenuItem(
@@ -121,13 +123,13 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
     SpecialityModel(speciality: "All", id: _allKey)
   ];
 
-  bool _hasSearchBar;
-  String _selectedSpecialityName;
-  String _userTypeFilterName;
-  String _locationFilterName;
-  bool _hasCalledTopFacilityApi;
+  late bool _hasSearchBar;
+  String? _selectedSpecialityName;
+  String? _userTypeFilterName;
+  String? _locationFilterName;
+  bool? _hasCalledTopFacilityApi;
 
-  ScrollController _gridViewScrollController, _specialityScrollController;
+  ScrollController? _gridViewScrollController, _specialityScrollController;
 
   @override
   void initState() {
@@ -141,7 +143,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
     _homeScreenMainBloc = HomeScreenMainBloc();
     _getCategoryData();
     _getUserDetails();
-    EventProvider().getSessionEventBus().on<ScreenRefresher>().listen((event) {
+    EventProvider().getSessionEventBus()!.on<ScreenRefresher>().listen((event) {
       if (event != null &&
           event.screenName == EditProfileScreen.tag &&
           mounted) {
@@ -154,20 +156,20 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
 
   _getUserDetails() async {
     var user = UserManager().getUserDetails();
-    if (user?.latitude != null &&
-        user?.longitude != null &&
-        user.latitude.isNotEmpty &&
-        user.longitude.isNotEmpty &&
+    if (user.latitude != null &&
+        user.longitude != null &&
+        user.latitude!.isNotEmpty &&
+        user.longitude!.isNotEmpty &&
         user.latitude != "0.0" &&
         user.latitude != "0" &&
         user.longitude != "0.0" &&
         user.longitude != "0") {
-      _checkUserLocation(user?.latitude, user?.longitude);
+      _checkUserLocation(user.latitude, user.longitude);
     }
   }
 
   _checkUserLocation(var latitude, var longitude,
-      {String address, String region}) async {
+      {String? address, String? region}) async {
     UserBloc()
         .isUserInServiceLocation(latitude, longitude,
             address: address, region: region)
@@ -177,7 +179,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   }
 
   void _getCartCount() {
-    _cartBloc.getCartCount();
+    _cartBloc!.getCartCount();
   }
 
   @override
@@ -192,7 +194,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   }
 
   _getCategoryData() {
-    _homeScreenMainBloc.getSolutionHomePageCategoryData();
+    _homeScreenMainBloc!.getSolutionHomePageCategoryData();
   }
 
   _onConsultationButtonClick() {
@@ -203,7 +205,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
     });
   }
 
-  _onTestAndProcedureButtonClick(String title, bool isProcedure) {
+  _onTestAndProcedureButtonClick(String? title, bool isProcedure) {
     return Navigator.push(
         context,
         MaterialPageRoute(
@@ -224,15 +226,12 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
           child: Column(
             children: [
               Container(
-                child: StreamBuilder<Object>(
-                    stream: _homeScreenMainBloc.getHomeScreenDetailStream,
+                child: StreamBuilder<Object?>(
+                    stream: _homeScreenMainBloc!.getHomeScreenDetailStream,
                     builder: (context, snapshot) {
                       return HomePageAppBar(
-                        widget.func,
-                        () {},
-                        () {},
-                        one: _one,
-                        two: _two,
+                        widget.func, () {}, () {},
+                        one: _one, two: _two,
                         hasSearchBar: false,
                         searchBarText: _solutionHomeScreenModel?.searchBarText,
                         refreshCartItems: () => _getCartCount(),
@@ -240,29 +239,26 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                     }),
               ),
               Expanded(
-                child: StreamBuilder<RequestState>(
-                    stream: _homeScreenMainBloc.getHomeScreenDetailStream,
+                child: StreamBuilder<RequestState?>(
+                    stream: _homeScreenMainBloc!.getHomeScreenDetailStream,
                     initialData: (_solutionHomeScreenModel == null)
-                        ? RequestInProgress()
-                        : null,
+                        ? RequestInProgress() : null,
                     builder: (context, snapshot) {
                       if (snapshot.data is RequestSuccess) {
-                        RequestSuccess successObject = snapshot.data;
+                        RequestSuccess successObject = snapshot.data as RequestSuccess;
                         _solutionHomeScreenModel = successObject.response;
                         _getOtherData();
-                        _homeScreenMainBloc
-                            ?.addIntoSolutionHomePageCategoryData(null);
+                        _homeScreenMainBloc?.addIntoSolutionHomePageCategoryData(null);
                       } else if (snapshot.data is RequestFailed) {
-                        RequestFailed _failedObj = snapshot.data;
+                        RequestFailed? _failedObj = snapshot.data as RequestFailed?;
                         _failedMessage = _failedObj?.failureCause;
-                        _homeScreenMainBloc
-                            ?.addIntoSolutionHomePageCategoryData(null);
+                        _homeScreenMainBloc?.addIntoSolutionHomePageCategoryData(null);
                       } else if (snapshot.data is RequestInProgress) {
                         return CustomWidgets().getProgressIndicator();
                       }
                       return (_solutionHomeScreenModel == null ||
-                              (_solutionHomeScreenModel.success != null &&
-                                  !_solutionHomeScreenModel.success))
+                              (_solutionHomeScreenModel!.success != null &&
+                                  !_solutionHomeScreenModel!.success!))
                           ? CustomWidgets().errorWidget(_failedMessage,
                               onTap: () => _getCategoryData(), isSizeLess: true)
                           : _getBody();
@@ -275,25 +271,27 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
     );
   }
 
-  String _getTextAfterFirstWord(String text) {
+  String? _getTextAfterFirstWord(String text) {
     if (text == null || text.isEmpty || text.split(" ").length == 0) {
       return "Your Medical Treatment";
     } else {
       List<String> texts = text.split(" ");
-      String newText;
+      String? newText;
       texts.forEach((element) {
         if (newText == null) {
           newText = '';
         } else {
-          newText = newText + " $element";
+          newText = newText! + " $element";
         }
       });
       return newText;
     }
   }
 
+  // top rated facilities with us
   Widget _getTopFacilitiesWidget() {
     return Container(
+      color: PlunesColors.WHITECOLOR,
       margin: EdgeInsets.only(
           bottom: AppConfig.verticalBlockSize * 1.4,
           left: AppConfig.horizontalBlockSize * 2.8,
@@ -305,7 +303,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
             margin: EdgeInsets.symmetric(
                 vertical: AppConfig.verticalBlockSize * 2.2),
             child: _sectionHeading(
-                _solutionHomeScreenModel?.topFacilities ?? 'Top facilities'),
+                _solutionHomeScreenModel!.topFacilities!+"" ?? 'Top facilities'),
           ),
           StatefulBuilder(builder: (context, newState) {
             return FutureBuilder<RequestState>(
@@ -317,7 +315,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                       height: AppConfig.verticalBlockSize * 25,
                     );
                   } else if (snapShot.data is RequestFailed) {
-                    RequestFailed _failedObj = snapShot.data;
+                    RequestFailed? _failedObj = snapShot.data as RequestFailed?;
                     _specialityApiFailureCause = _failedObj?.response;
                   } else if (snapShot.data is RequestSuccess) {
                     if (_hasCalledTopFacilityApi == null)
@@ -325,7 +323,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                     _hasCalledTopFacilityApi = true;
                   }
                   return CommonMethods.catalogueLists == null ||
-                          CommonMethods.catalogueLists.isEmpty
+                          CommonMethods.catalogueLists!.isEmpty
                       ? Container(
                           height: AppConfig.verticalBlockSize * 38,
                           child: CustomWidgets().errorWidget(
@@ -337,7 +335,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                       : _getTopFacilityStreamBuilderWidget();
                 },
                 initialData: (CommonMethods.catalogueLists == null ||
-                        CommonMethods.catalogueLists.isEmpty)
+                        CommonMethods.catalogueLists!.isEmpty)
                     ? RequestInProgress()
                     : null);
           }),
@@ -389,7 +387,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                 ),
                 Flexible(
                   child: Container(
-                    padding: EdgeInsets.only(bottom: 2),
+                    padding: const EdgeInsets.only(bottom: 2),
                     child: IgnorePointer(
                       ignoring: true,
                       child: TextField(
@@ -431,14 +429,15 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                   children: [
                     // background image container
                     Container(
-                        height: AppConfig.verticalBlockSize * 34,
+                        height: AppConfig.verticalBlockSize * 35,
                         width: AppConfig.horizontalBlockSize * 100,
-                        child: _imageFittedBox(
-                            _solutionHomeScreenModel?.backgroundImage ?? "",
-                            boxFit: BoxFit.cover)),
+                        child: Image.asset("assets/new_home_banner.jpg",
+                            // _solutionHomeScreenModel?.backgroundImage ?? "",
+                            // boxFit: BoxFit.cover
+                        )),
                     Container(
                       margin:
-                          EdgeInsets.only(top: AppConfig.verticalBlockSize * 8),
+                          EdgeInsets.only(top: AppConfig.verticalBlockSize * 13.55),
                       child: Column(
                         children: [
                           Container(
@@ -452,7 +451,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                                 text: TextSpan(children: [
                                   TextSpan(
                                       text: _getHeading(),
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           color: PlunesColors.BLACKCOLOR,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 23))
@@ -475,7 +474,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                             },
                             child: Container(
                               margin: EdgeInsets.only(
-                                  top: AppConfig.verticalBlockSize * 2,
+                                  top: AppConfig.verticalBlockSize * 2.85,
                                   left: AppConfig.verticalBlockSize * 2,
                                   right: AppConfig.verticalBlockSize * 2),
                               height: AppConfig.verticalBlockSize * 6,
@@ -542,19 +541,19 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                               ),
                             ),
                           ),
-                          StreamBuilder<Object>(
+                          StreamBuilder<Object?>(
                               stream:
                                   _homeScreenMainBloc?.commonSpecialityStream,
                               builder: (context, snapshot) {
                                 return (_newSpecialityModel == null ||
-                                        _newSpecialityModel.data == null ||
-                                        _newSpecialityModel.data.isEmpty)
+                                        _newSpecialityModel!.data == null ||
+                                        _newSpecialityModel!.data!.isEmpty)
                                     ? Container()
                                     : Container(
                                         height:
                                             AppConfig.verticalBlockSize * 4.5,
                                         margin: EdgeInsets.only(
-                                          top: AppConfig.verticalBlockSize * 2,
+                                          top: AppConfig.verticalBlockSize * 2.5,
                                           left: AppConfig.verticalBlockSize * 2,
                                           right:
                                               AppConfig.verticalBlockSize * 2,
@@ -566,28 +565,21 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                                             return InkWell(
                                               onTap: () {
                                                 var specialityData =
-                                                    _newSpecialityModel
-                                                        .data[index];
+                                                    _newSpecialityModel!
+                                                        .data![index];
                                                 ProcedureData procedureData =
                                                     ProcedureData(
-                                                        sId: specialityData
-                                                            ?.specialityId,
+                                                        sId: specialityData.specialityId,
                                                         defination:
-                                                            specialityData
-                                                                ?.definition,
+                                                            specialityData.definition,
                                                         speciality:
-                                                            specialityData
-                                                                ?.speciality,
-                                                        familyImage: specialityData
-                                                            ?.specailizationImage,
+                                                            specialityData.speciality,
+                                                        familyImage: specialityData.specailizationImage,
                                                         specialityId:
-                                                            specialityData
-                                                                ?.specialityId,
-                                                        details: specialityData
-                                                            ?.definition,
+                                                            specialityData.specialityId,
+                                                        details: specialityData.definition,
                                                         familyName:
-                                                            specialityData
-                                                                ?.speciality);
+                                                            specialityData.speciality);
                                                 Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
@@ -604,10 +596,9 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                                               onDoubleTap: () {},
                                               child: Container(
                                                 alignment: Alignment.center,
-                                                padding: EdgeInsets.symmetric(
+                                                padding: const EdgeInsets.symmetric(
                                                     horizontal: 10),
-                                                margin:
-                                                    EdgeInsets.only(right: 5),
+                                                margin: const EdgeInsets.only(right: 5),
                                                 decoration: BoxDecoration(
                                                     border: Border.all(
                                                         color: Colors.grey,
@@ -619,11 +610,12 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                                                         .getColorHexFromStr(
                                                             "#FAFBFD"))),
                                                 child: Text(
-                                                  _newSpecialityModel
-                                                          .data[index]
+                                                  _newSpecialityModel!
+                                                          .data![index]
                                                           .speciality ??
                                                       "",
                                                   style: TextStyle(
+                                                    fontWeight: FontWeight.w600,
                                                       color: Color(CommonMethods
                                                           .getColorHexFromStr(
                                                               "#303030")),
@@ -632,7 +624,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                                               ),
                                             );
                                           },
-                                          itemCount: _newSpecialityModel
+                                          itemCount: _newSpecialityModel!
                                                   .data?.length ??
                                               0,
                                         ),
@@ -643,8 +635,18 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                     )
                   ],
                 ),
+                Container(
+                  alignment: Alignment.topLeft,
+                  margin: EdgeInsets.symmetric(
+                    horizontal: AppConfig.horizontalBlockSize * 4,
+                      vertical: AppConfig.verticalBlockSize * 2.2),
+                  child: _sectionHeading(
+                      _solutionHomeScreenModel?.knowYourProcedure ??
+                          'Know your procedure'),
+                ),
                 // services box row
                 _servicesRow(),
+
                 _getProcedureWidget(),
                 // heading - why us
                 _getWhyUsSection(),
@@ -685,7 +687,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
       ],
     );
   }
-
+// consultation proced, test row
   Widget _servicesRow() {
     return Container(
       color: PlunesColors.WHITECOLOR,
@@ -705,16 +707,17 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
     );
   }
 
-  Widget _servicesButtonCard(String url, String label, HomeScreenButtonInfo e) {
+  //consultation procedures test box
+  Widget _servicesButtonCard(String? url, String? label, HomeScreenButtonInfo e) {
     return Expanded(
       child: InkWell(
         onTap: () {
           if (e.category != null &&
-              e.category.isNotEmpty &&
+              e.category!.isNotEmpty &&
               e.category == Constants.consultationKey) {
             _onConsultationButtonClick();
           } else if (e.category != null &&
-              e.category.isNotEmpty &&
+              e.category!.isNotEmpty &&
               (e.category == Constants.procedureKey ||
                   e.category == Constants.testKey)) {
             _onTestAndProcedureButtonClick(
@@ -722,7 +725,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
           }
         },
         child: Container(
-          margin: EdgeInsets.symmetric(horizontal: 10),
+          margin: const EdgeInsets.symmetric(horizontal: 10),
           child: Column(
             children: [
               Card(
@@ -731,11 +734,11 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                     borderRadius: BorderRadius.circular(10.0)),
                 child: Container(
                   height: 78,
-                  padding: EdgeInsets.symmetric(horizontal: 13, vertical: 13),
+                  padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 13),
                   child: SizedBox.expand(
                     child: ClipRRect(
                       child: _imageFittedBox(url, boxFit: BoxFit.contain),
-                      borderRadius: BorderRadius.only(
+                      borderRadius: const BorderRadius.only(
                           topRight: Radius.circular(10),
                           topLeft: Radius.circular(10)),
                     ),
@@ -773,15 +776,15 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   }
 
   void _getWhyUsData() {
-    _homeScreenMainBloc.getWhyUsData();
+    _homeScreenMainBloc!.getWhyUsData();
   }
 
   void _getKnowYourProcedureData() {
-    _homeScreenMainBloc.getKnowYourProcedureData();
+    _homeScreenMainBloc!.getKnowYourProcedureData();
   }
 
   void _getTopFacilities({bool isInitialRequest = false}) {
-    _homeScreenMainBloc.getTopFacilities(
+    _homeScreenMainBloc!.getTopFacilities(
         specialityId: _selectedSpeciality,
         shouldSortByNearest: (_locationFilter == _allKey) ? false : true,
         facilityType: _userTypeFilter,
@@ -790,15 +793,15 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   }
 
   void _getTopSearch() {
-    _homeScreenMainBloc.getTopSearches();
+    _homeScreenMainBloc!.getTopSearches();
   }
 
   void _getSpecialities() {
-    _homeScreenMainBloc.getCommonSpecialities();
+    _homeScreenMainBloc!.getCommonSpecialities();
   }
 
   void _getVideos() {
-    _homeScreenMainBloc.getMediaContent();
+    _homeScreenMainBloc!.getMediaContent();
   }
 
   void _getReviews() {}
@@ -806,7 +809,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   Widget _getWhyUsSection() {
     return Container(
       color: PlunesColors.WHITECOLOR,
-      margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 1.4),
+      padding : EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 1.4),
       child: Container(
         margin: EdgeInsets.symmetric(
             horizontal: AppConfig.horizontalBlockSize * 2.8),
@@ -822,25 +825,25 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
             // horizontal list view of cards
             Container(
               height: AppConfig.verticalBlockSize * 44,
-              child: StreamBuilder<RequestState>(
-                  stream: _homeScreenMainBloc.getWhyUsStream,
+              child: StreamBuilder<RequestState?>(
+                  stream: _homeScreenMainBloc!.getWhyUsStream,
                   builder: (context, snapshot) {
                     if (snapshot.data is RequestSuccess) {
-                      RequestSuccess successObject = snapshot.data;
+                      RequestSuccess successObject = snapshot.data as RequestSuccess;
                       _whyUsModel = successObject.response;
                       _homeScreenMainBloc?.addIntoGetWhyUsDataStream(null);
                     } else if (snapshot.data is RequestFailed) {
-                      RequestFailed _failedObj = snapshot.data;
+                      RequestFailed? _failedObj = snapshot.data as RequestFailed?;
                       _failedMessageForWhyUsSection = _failedObj?.failureCause;
                       _homeScreenMainBloc?.addIntoGetWhyUsDataStream(null);
                     } else if (snapshot.data is RequestInProgress) {
                       return CustomWidgets().getProgressIndicator();
                     }
                     return (_whyUsModel == null ||
-                            (_whyUsModel.success != null &&
-                                !_whyUsModel.success) ||
-                            _whyUsModel.data == null ||
-                            _whyUsModel.data.isEmpty)
+                            (_whyUsModel!.success != null &&
+                                !_whyUsModel!.success!) ||
+                            _whyUsModel!.data == null ||
+                            _whyUsModel!.data!.isEmpty)
                         ? CustomWidgets().errorWidget(
                             _failedMessageForWhyUsSection,
                             onTap: () => _getWhyUsData(),
@@ -851,9 +854,9 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                             scrollDirection: Axis.horizontal,
                             itemBuilder: (context, index) {
                               return _getWhyUsCard(
-                                  _whyUsModel.data[index].titleImage,
-                                  _whyUsModel.data[index].title ?? "",
-                                  _whyUsModel.data[index].sId);
+                                  _whyUsModel!.data![index].titleImage,
+                                  _whyUsModel!.data![index].title ?? "",
+                                  _whyUsModel!.data![index].sId);
                             },
                             itemCount: _whyUsModel?.data?.length ?? 0,
                           );
@@ -865,7 +868,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
     );
   }
 
-  Widget _getWhyUsCard(String imageUrl, String heading, String id) {
+  Widget _getWhyUsCard(String? imageUrl, String heading, String? id) {
     return Container(
       width: AppConfig.horizontalBlockSize * 62,
       margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
@@ -918,36 +921,37 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
     );
   }
 
+  // most booked treatments
   Widget _getProcedureWidget() {
     return Container(
       color: PlunesColors.WHITECOLOR,
-      margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 1.4),
+      padding: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 1.4),
       child: Container(
         margin: EdgeInsets.symmetric(
             horizontal: AppConfig.horizontalBlockSize * 2.8),
         child: Column(
           children: [
-            Container(
-              alignment: Alignment.topLeft,
-              margin: EdgeInsets.symmetric(
-                  vertical: AppConfig.verticalBlockSize * 2.2),
-              child: _sectionHeading(
-                  _solutionHomeScreenModel?.knowYourProcedure ??
-                      'Know your procedure'),
-            ),
-            StreamBuilder<RequestState>(
-                stream: _homeScreenMainBloc.knowYourProcedureStream,
+            // Container(
+            //   alignment: Alignment.topLeft,
+            //   margin: EdgeInsets.symmetric(
+            //       vertical: AppConfig.verticalBlockSize * 2.2),
+            //   child: _sectionHeading(
+            //       _solutionHomeScreenModel?.knowYourProcedure ??
+            //           'Know your procedure'),
+            // ),
+            StreamBuilder<RequestState?>(
+                stream: _homeScreenMainBloc!.knowYourProcedureStream,
                 initialData: _knowYourProcedureModel == null
                     ? RequestInProgress()
                     : null,
                 builder: (context, snapshot) {
                   if (snapshot.data is RequestSuccess) {
-                    RequestSuccess successObject = snapshot.data;
+                    RequestSuccess successObject = snapshot.data as RequestSuccess;
                     _knowYourProcedureModel = successObject.response;
                     _homeScreenMainBloc
                         ?.addIntoKnowYourProcedureDataStream(null);
                   } else if (snapshot.data is RequestFailed) {
-                    RequestFailed _failedObj = snapshot.data;
+                    RequestFailed? _failedObj = snapshot.data as RequestFailed?;
                     _failedMessageForKnowYourProcedureSection =
                         _failedObj?.failureCause;
                     _homeScreenMainBloc
@@ -960,8 +964,8 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                     );
                   }
                   return (_knowYourProcedureModel == null ||
-                          _knowYourProcedureModel.data == null ||
-                          _knowYourProcedureModel.data.isEmpty)
+                          _knowYourProcedureModel!.data == null ||
+                          _knowYourProcedureModel!.data!.isEmpty)
                       ? Container(
                           height: AppConfig.verticalBlockSize * 40,
                           color: PlunesColors.WHITECOLOR,
@@ -989,16 +993,16 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   Widget _proceduresGrid() {
     return Center(
       child: Container(
-        height: AppConfig.verticalBlockSize * 56,
-        margin: EdgeInsets.only(bottom: 5),
+        height: AppConfig.verticalBlockSize * 65,
+        margin: const EdgeInsets.only(bottom: 5),
         child: GridView.count(
             shrinkWrap: true,
             controller: _gridViewScrollController,
             crossAxisCount: 2,
             crossAxisSpacing: 4,
             mainAxisSpacing: 14,
-            padding: EdgeInsets.only(bottom: 15),
-            childAspectRatio: 1.2,
+            padding: const EdgeInsets.only(bottom: 15),
+            childAspectRatio: 1.05,
             scrollDirection: Axis.horizontal,
             // physics: NeverScrollableScrollPhysics(),
             children: _getProcedureAlteredList()),
@@ -1030,7 +1034,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
               horizontal: AppConfig.horizontalBlockSize * 2,
               vertical: AppConfig.verticalBlockSize * 2.2),
           child: Text(
-            _isProcedureListOpened ? "View less" : "View more",
+            _isProcedureListOpened! ? "View less" : "View more",
             style: TextStyle(color: PlunesColors.GREENCOLOR, fontSize: 13),
           ),
         ),
@@ -1041,9 +1045,9 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   List<Widget> _getProcedureAlteredList() {
     List<Widget> list = [];
     // if (_isProcedureListOpened) {
-    int length = _knowYourProcedureModel.data.length;
+    int length = _knowYourProcedureModel!.data!.length;
     for (int index = 0; index < length; index++) {
-      var data = _knowYourProcedureModel.data[index];
+      var data = _knowYourProcedureModel!.data![index];
       list.add(_proceduresCard(data.familyImage ?? "", data.familyName ?? "",
           data.details ?? "", data));
     }
@@ -1069,15 +1073,15 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
             context,
             MaterialPageRoute(
                 builder: (context) => ViewProcedureAndProfessional(
-                    procedureData: procedureData))).then((value) {
+                    procedureData: procedureData,
+                  shouldUseSpecializationApi: true,))).then((value) {
           _getCartCount();
         });
       },
       onDoubleTap: () {},
       child: Card(
-        elevation: 2.0,
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+        elevation: 6.0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         child: Container(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1088,7 +1092,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                   height: AppConfig.verticalBlockSize * 15,
                   width: double.infinity,
                 ),
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(10),
                     topRight: Radius.circular(10)),
               ),
@@ -1102,9 +1106,8 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                   child: Text(
                     label ?? "",
                     textAlign: TextAlign.left,
-                    maxLines: 2,
-                    style:
-                        TextStyle(fontSize: 15, color: PlunesColors.BLACKCOLOR),
+                    maxLines: 1,
+                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: PlunesColors.BLACKCOLOR),
                   ),
                 ),
               ),
@@ -1123,8 +1126,9 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                         trimCollapsedText: " ..Read More",
                         colorClickableText: Color(0xff107C6F),
                         trimMode: TrimMode.Line,
-                        style: TextStyle(
-                          fontSize: 12,
+                        style: const TextStyle(
+                          fontSize: 11.5,
+                          wordSpacing: 1.8,
                           color: Color(0xff444444),
                         )),
                   ),
@@ -1137,10 +1141,12 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
     );
   }
 
+
+  // choose speciality method
   Widget _getSpecialityWidget() {
     return Container(
       color: PlunesColors.WHITECOLOR,
-      margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 1.4),
+      padding: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 1.4),
       child: Container(
         margin: EdgeInsets.only(
             right: AppConfig.horizontalBlockSize * 2.8,
@@ -1153,23 +1159,32 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
               alignment: Alignment.centerLeft,
               margin: EdgeInsets.symmetric(
                   vertical: AppConfig.verticalBlockSize * 2.2),
-              child: _sectionHeading(
-                  _solutionHomeScreenModel?.speciality ?? 'Speciality'),
+              child:Text(
+                _solutionHomeScreenModel?.speciality ?? 'Speciality' ?? "",
+                maxLines: 2,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xff000000),
+                ),
+              )
+
+              // _sectionHeading(_solutionHomeScreenModel?.speciality ?? 'Speciality'),
             ),
 
             // horizontal list view of specialities
-            StreamBuilder<RequestState>(
-                stream: _homeScreenMainBloc.commonSpecialityStream,
+            StreamBuilder<RequestState?>(
+                stream: _homeScreenMainBloc!.commonSpecialityStream,
                 initialData:
                     _newSpecialityModel == null ? RequestInProgress() : null,
                 builder: (context, snapshot) {
                   if (snapshot.data is RequestSuccess) {
-                    RequestSuccess successObject = snapshot.data;
+                    RequestSuccess successObject = snapshot.data as RequestSuccess;
                     _newSpecialityModel = successObject.response;
                     _homeScreenMainBloc
                         ?.addIntoGetCommonSpecialitiesDataStream(null);
                   } else if (snapshot.data is RequestFailed) {
-                    RequestFailed _failedObj = snapshot.data;
+                    RequestFailed? _failedObj = snapshot.data as RequestFailed?;
                     _failedMessageForCommonSpeciality =
                         _failedObj?.failureCause;
                     _homeScreenMainBloc
@@ -1181,8 +1196,8 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                     );
                   }
                   return (_newSpecialityModel == null ||
-                          _newSpecialityModel.data == null ||
-                          _newSpecialityModel.data.isEmpty)
+                          _newSpecialityModel!.data == null ||
+                          _newSpecialityModel!.data!.isEmpty)
                       ? Container(
                           child: CustomWidgets().errorWidget(
                               _newSpecialityModel?.message ??
@@ -1191,29 +1206,27 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                               isSizeLess: true),
                         )
                       : Container(
-                          height: AppConfig.verticalBlockSize * 40,
+                          height: AppConfig.verticalBlockSize * 45,
                           child: GridView.builder(
                             controller: _specialityScrollController,
-                            padding: EdgeInsets.only(bottom: 15),
+                            padding: const EdgeInsets.only(bottom: 15),
                             itemBuilder: (context, index) {
                               return _specialCard(
-                                  _newSpecialityModel
-                                          .data[index]?.specialityIconImage ??
+                                  _newSpecialityModel!.data![index].specialityIconImage ?? "",
+                                  _newSpecialityModel!.data![index].speciality,
+                                  _newSpecialityModel!.data![index].definition ??
                                       "",
-                                  _newSpecialityModel.data[index]?.speciality,
-                                  _newSpecialityModel.data[index]?.definition ??
-                                      "",
-                                  _newSpecialityModel.data[index]);
+                                  _newSpecialityModel!.data![index]);
                             },
                             scrollDirection: Axis.horizontal,
                             shrinkWrap: true,
                             gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
+                            const SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 2,
                                     childAspectRatio: 1.3,
                                     mainAxisSpacing: 20,
                                     crossAxisSpacing: 1),
-                            itemCount: _newSpecialityModel.data.length ?? 0,
+                            itemCount: _newSpecialityModel!.data!.length ?? 0,
                           ),
                         );
                 }),
@@ -1243,15 +1256,15 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                     _solutionHomeScreenModel?.videos ?? 'Video')),
 
             // vedio card
-            StreamBuilder<RequestState>(
-                stream: _homeScreenMainBloc.mediaStream,
+            StreamBuilder<RequestState?>(
+                stream: _homeScreenMainBloc!.mediaStream,
                 builder: (context, snapshot) {
                   if (snapshot.data is RequestSuccess) {
-                    RequestSuccess successObject = snapshot.data;
+                    RequestSuccess successObject = snapshot.data as RequestSuccess;
                     _mediaContentPlunes = successObject.response;
                     _homeScreenMainBloc?.addIntoMediaStream(null);
                   } else if (snapshot.data is RequestFailed) {
-                    RequestFailed _failedObj = snapshot.data;
+                    RequestFailed? _failedObj = snapshot.data as RequestFailed?;
                     _mediaFailedMessage = _failedObj?.failureCause;
                     _homeScreenMainBloc?.addIntoMediaStream(null);
                   } else if (snapshot.data is RequestInProgress) {
@@ -1261,8 +1274,8 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                     );
                   }
                   return (_mediaContentPlunes == null ||
-                          _mediaContentPlunes.data == null ||
-                          _mediaContentPlunes.data.isEmpty)
+                          _mediaContentPlunes!.data == null ||
+                          _mediaContentPlunes!.data!.isEmpty)
                       ? Container(
                           child: CustomWidgets().errorWidget(
                               _mediaFailedMessage,
@@ -1274,12 +1287,12 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                           child: ListView.builder(
                             itemBuilder: (context, index) {
                               return _getVideoCard(
-                                  "https://img.youtube.com/vi/${YoutubePlayer.convertUrlToId(_mediaContentPlunes.data[index]?.mediaUrl ?? "")}/0.jpg",
-                                  _mediaContentPlunes.data[index]?.service ??
-                                      _mediaContentPlunes.data[index]?.name ??
+                                  "https://img.youtube.com/vi/${YoutubePlayer.convertUrlToId(_mediaContentPlunes!.data![index].mediaUrl ?? "")}/0.jpg",
+                                  _mediaContentPlunes!.data![index].service ??
+                                      _mediaContentPlunes!.data![index].name ??
                                       "",
-                                  _mediaContentPlunes.data[index].testimonial,
-                                  _mediaContentPlunes.data[index]?.mediaUrl);
+                                  _mediaContentPlunes!.data![index].testimonial,
+                                  _mediaContentPlunes!.data![index].mediaUrl);
                             },
                             shrinkWrap: true,
                             padding: EdgeInsets.zero,
@@ -1295,7 +1308,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   }
 
   Widget _getVideoCard(
-      String imageUrl, String label, String text, String mediaUrl) {
+      String imageUrl, String label, String? text, String? mediaUrl) {
     return Container(
       margin: EdgeInsets.only(right: 4),
       width: AppConfig.horizontalBlockSize * 82,
@@ -1384,6 +1397,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
     );
   }
 
+  // top searched services
   Widget _getTopSearchWidget() {
     return Container(
       color: PlunesColors.WHITECOLOR,
@@ -1405,15 +1419,15 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
             ),
 
             // horizontal list view of top search cards
-            StreamBuilder<RequestState>(
-                stream: _homeScreenMainBloc.topSearchStream,
+            StreamBuilder<RequestState?>(
+                stream: _homeScreenMainBloc!.topSearchStream,
                 builder: (context, snapshot) {
                   if (snapshot.data is RequestSuccess) {
-                    RequestSuccess successObject = snapshot.data;
+                    RequestSuccess successObject = snapshot.data as RequestSuccess;
                     _topSearchOuterModel = successObject.response;
                     _homeScreenMainBloc?.addIntoTopSearchStream(null);
                   } else if (snapshot.data is RequestFailed) {
-                    RequestFailed _failedObj = snapshot.data;
+                    RequestFailed? _failedObj = snapshot.data as RequestFailed?;
                     _failedMessageTopSearch = _failedObj?.failureCause;
                     _homeScreenMainBloc?.addIntoTopSearchStream(null);
                   } else if (snapshot.data is RequestInProgress) {
@@ -1423,10 +1437,10 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                     );
                   }
                   return (_topSearchOuterModel == null ||
-                          (_topSearchOuterModel.success != null &&
-                              !_topSearchOuterModel.success) ||
-                          _topSearchOuterModel.data == null ||
-                          _topSearchOuterModel.data.isEmpty)
+                          (_topSearchOuterModel!.success != null &&
+                              !_topSearchOuterModel!.success!) ||
+                          _topSearchOuterModel!.data == null ||
+                          _topSearchOuterModel!.data!.isEmpty)
                       ? Container(
                           height: AppConfig.verticalBlockSize * 38,
                           child: CustomWidgets().errorWidget(
@@ -1440,14 +1454,14 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                             padding: EdgeInsets.zero,
                             itemBuilder: (context, index) {
                               return _topSearchCard(
-                                  _topSearchOuterModel
-                                          .data[index].specializationImage ??
+                                  _topSearchOuterModel!
+                                          .data![index].specializationImage ??
                                       "",
-                                  _topSearchOuterModel.data[index].service ??
+                                  _topSearchOuterModel!.data![index].service ??
                                       "",
-                                  _topSearchOuterModel.data[index]);
+                                  _topSearchOuterModel!.data![index]);
                             },
-                            itemCount: _topSearchOuterModel.data.length,
+                            itemCount: _topSearchOuterModel!.data!.length,
                             shrinkWrap: true,
                             scrollDirection: Axis.horizontal,
                           ),
@@ -1459,13 +1473,13 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
     );
   }
 
-  String _getHeading() {
+  String? _getHeading() {
     if (_solutionHomeScreenModel == null ||
-        _solutionHomeScreenModel.heading == null ||
-        _solutionHomeScreenModel.heading.trim().isEmpty) {
+        _solutionHomeScreenModel!.heading == null ||
+        _solutionHomeScreenModel!.heading!.trim().isEmpty) {
       return 'Book Your Medical Treatment';
     } else {
-      return _solutionHomeScreenModel.heading;
+      return _solutionHomeScreenModel!.heading;
     }
   }
 
@@ -1473,19 +1487,20 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
     if (mounted) setState(() {});
   }
 
+  // choose speciality card itemview
   Widget _specialCard(
-      String imageUrl, String label, String text, SpecData specialityData) {
+      String imageUrl, String? label, String text, SpecData specialityData) {
     return Container(
       child: InkWell(
         onTap: () {
           ProcedureData procedureData = ProcedureData(
-              sId: specialityData?.specialityId,
-              defination: specialityData?.definition,
-              speciality: specialityData?.speciality,
-              familyImage: specialityData?.specailizationImage,
-              specialityId: specialityData?.specialityId,
-              details: specialityData?.definition,
-              familyName: specialityData?.speciality);
+              sId: specialityData.specialityId,
+              defination: specialityData.definition,
+              speciality: specialityData.speciality,
+              familyImage: specialityData.specailizationImage,
+              specialityId: specialityData.specialityId,
+              details: specialityData.definition,
+              familyName: specialityData.speciality);
           Navigator.push(
               context,
               MaterialPageRoute(
@@ -1497,6 +1512,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
         },
         onDoubleTap: () {},
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Card(
               elevation: 2.0,
@@ -1505,33 +1521,30 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
               ),
               child: Container(
                 width: 102,
-                height: AppConfig.verticalBlockSize * 12,
-                padding: EdgeInsets.all(15),
+                height: AppConfig.verticalBlockSize * 14,
+                padding: const EdgeInsets.all(14),
                 child: ClipRRect(
-                  child: _imageFittedBox(imageUrl, boxFit: BoxFit.fill),
-                  borderRadius: BorderRadius.only(
+                  child: Image.network(imageUrl),
+                  // child: _imageFittedBox(imageUrl, boxFit: BoxFit.fill),
+                  borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(10),
                       topRight: Radius.circular(10)),
                 ),
               ),
             ),
             Flexible(
-              child: Container(
-                alignment: Alignment.center,
-                width: double.infinity,
-                margin: EdgeInsets.symmetric(
-                    horizontal: AppConfig.horizontalBlockSize * 2, vertical: 3),
-                child: FittedBox(
-                  fit: BoxFit.fill,
-                  child: Text(
-                    label ?? "",
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
+              child: Padding(
+                padding: const EdgeInsets.only(top: 5),
+                child: Text(
+                      label ?? "",
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16),
+                    ),
               ),
-            )
+               )
           ],
         ),
       ),
@@ -1551,17 +1564,17 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
         child: InkWell(
           onTap: () {
             ProcedureData procedureData = ProcedureData(
-                sId: specialityData?.specialityId,
-                duration: specialityData?.duration,
-                category: specialityData?.category,
-                sittings: specialityData?.sittings,
-                defination: specialityData?.definition,
-                speciality: specialityData?.speciality,
-                familyImage: specialityData?.specializationImage,
-                specialityId: specialityData?.specialityId,
-                details: specialityData?.definition,
+                sId: specialityData.specialityId,
+                duration: specialityData.duration,
+                category: specialityData.category,
+                sittings: specialityData.sittings,
+                defination: specialityData.definition,
+                speciality: specialityData.speciality,
+                familyImage: specialityData.specializationImage,
+                specialityId: specialityData.specialityId,
+                details: specialityData.definition,
                 dnd: specialityData.dnd,
-                familyName: specialityData?.speciality);
+                familyName: specialityData.speciality);
             Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -1604,16 +1617,16 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   }
 
   Widget _getTopFacilityStreamBuilderWidget() {
-    return StreamBuilder<RequestState>(
-        stream: _homeScreenMainBloc.topFacilityStream,
+    return StreamBuilder<RequestState?>(
+        stream: _homeScreenMainBloc!.topFacilityStream,
         initialData: (_topFacilityModel == null) ? RequestInProgress() : null,
         builder: (context, snapshot) {
           if (snapshot.data is RequestSuccess) {
-            RequestSuccess successObject = snapshot.data;
+            RequestSuccess successObject = snapshot.data as RequestSuccess;
             _topFacilityModel = successObject.response;
             _homeScreenMainBloc?.addIntoTopFacilityStream(null);
           } else if (snapshot.data is RequestFailed) {
-            RequestFailed _failedObj = snapshot.data;
+            RequestFailed? _failedObj = snapshot.data as RequestFailed?;
             _failedMessageTopFacility = _failedObj?.failureCause;
             _homeScreenMainBloc?.addIntoTopFacilityStream(null);
           } else if (snapshot.data is RequestInProgress) {
@@ -1622,11 +1635,21 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
               height: AppConfig.verticalBlockSize * 25,
             );
           }
+
+          print("_topFacilityModel.res");
+          print(_topFacilityModel!.data);
+          print(_topFacilityModel!.data.toString());
+          _topFacilityModel!.data!.forEach((element) {
+
+            print(element.name);
+            print(element.professionalId);
+          });
+
           return (_topFacilityModel == null ||
-                  (_topFacilityModel.success != null &&
-                      !_topFacilityModel.success) ||
-                  _topFacilityModel.data == null ||
-                  _topFacilityModel.data.isEmpty)
+                  (_topFacilityModel!.success != null &&
+                      !_topFacilityModel!.success!) ||
+                  _topFacilityModel!.data == null ||
+                  _topFacilityModel!.data!.isEmpty)
               ? Container(
                   height: AppConfig.verticalBlockSize * 38,
                   child: CustomWidgets().errorWidget(_failedMessageTopFacility,
@@ -1860,25 +1883,42 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                       // ),
                       ListView.builder(
                         padding: EdgeInsets.zero,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
                           return InkWell(
                             onTap: () {
-                              if (_topFacilityModel.data[index] != null &&
-                                  _topFacilityModel.data[index].userType !=
+                              if (_topFacilityModel!.data![index] != null &&
+                                  _topFacilityModel!.data![index].userType !=
                                       null &&
-                                  _topFacilityModel
-                                          .data[index].professionalId !=
+                                  _topFacilityModel!
+                                          .data![index].professionalId !=
                                       null) {
+
+
+                                print("--------clickedHospital");
+                                print(_topFacilityModel!
+                                    .data![index].professionalId);
+                                print(_topFacilityModel!
+                                    .data![index].userType);
+
+                                print("--------clickedHospital--------------->");
+                                print(_topFacilityModel!
+                                    .data![index].userType!
+                                    .toLowerCase() ==
+                                    Constants.doctor
+                                        .toString()
+                                        .toLowerCase());
+
+
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => DoctorInfo(
-                                            _topFacilityModel
-                                                .data[index].professionalId,
-                                            isDoc: (_topFacilityModel
-                                                    .data[index].userType
+                                            _topFacilityModel!
+                                                .data![index].professionalId,
+                                            isDoc: (_topFacilityModel!
+                                                    .data![index].userType!
                                                     .toLowerCase() ==
                                                 Constants.doctor
                                                     .toString()
@@ -1887,23 +1927,23 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                             },
                             onDoubleTap: () {},
                             child: CommonWidgets().getHospitalCard(
-                                _topFacilityModel.data[index]?.imageUrl ?? '',
+                                _topFacilityModel!.data![index]?.imageUrl ?? '',
                                 CommonMethods.getStringInCamelCase(
-                                    _topFacilityModel.data[index].name),
-                                _topFacilityModel.data[index].biography ?? '',
-                                _topFacilityModel.data[index]?.rating,
-                                _topFacilityModel.data[index],
+                                    _topFacilityModel!.data![index].name),
+                                _topFacilityModel!.data![index].biography ?? '',
+                                _topFacilityModel!.data![index]?.rating,
+                                _topFacilityModel!.data![index],
                                 _streamControllerForTopFacility,
                                 () => _openInsuranceScreen(
-                                    _topFacilityModel.data[index])),
+                                    _topFacilityModel!.data![index])),
                           );
                         },
-                        itemCount: ((_topFacilityModel.data.length > 6) &&
-                                (!_isTopFacilityExpanded))
+                        itemCount: ((_topFacilityModel!.data!.length > 6) &&
+                                (!_isTopFacilityExpanded!))
                             ? 5
-                            : _topFacilityModel.data.length,
+                            : _topFacilityModel!.data!.length,
                       ),
-                      (_topFacilityModel.data.length > 6)
+                      (_topFacilityModel!.data!.length > 6)
                           ? Container(
                               width: double.infinity,
                               alignment: Alignment.center,
@@ -1911,7 +1951,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                                 onDoubleTap: () {},
                                 onTap: () {
                                   _isTopFacilityExpanded =
-                                      !_isTopFacilityExpanded;
+                                      !_isTopFacilityExpanded!;
                                   _homeScreenMainBloc
                                       ?.addIntoTopFacilityStream(null);
                                 },
@@ -1922,7 +1962,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                                       vertical:
                                           AppConfig.verticalBlockSize * 2.2),
                                   child: Text(
-                                    _isTopFacilityExpanded
+                                    _isTopFacilityExpanded!
                                         ? "View less"
                                         : "View more",
                                     style: TextStyle(
@@ -1942,7 +1982,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   _openInsuranceScreen(TopFacility service) {
     if (service != null &&
         service.professionalId != null &&
-        service.professionalId.trim().isNotEmpty) {
+        service.professionalId!.trim().isNotEmpty) {
       Navigator.push(
               context,
               MaterialPageRoute(
@@ -1954,7 +1994,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
 
   Future<RequestState> _getSpecialityList() async {
     if (CommonMethods.catalogueLists == null ||
-        CommonMethods.catalogueLists.isEmpty) {
+        CommonMethods.catalogueLists!.isEmpty) {
       var result = await UserManager().getSpecialities();
       return result;
     } else {
@@ -1972,16 +2012,16 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
       return _specialityDropDownItems;
     }
     _specialityDropDownItems = [];
-    CommonMethods.catalogueLists.forEach((element) {
+    CommonMethods.catalogueLists!.forEach((element) {
       if (element.speciality != null &&
-          element.speciality.trim().isNotEmpty &&
+          element.speciality!.trim().isNotEmpty &&
           element.id != null &&
-          element.id.trim().isNotEmpty) {
+          element.id!.trim().isNotEmpty) {
         // if (_selectedSpeciality == null) {
         //   _selectedSpeciality = element.id;
         // }
         _specialityDropDownItems.add(DropdownMenuItem(
-          child: Text(_getItem(element.speciality)),
+          child: Text(_getItem(element.speciality!)),
           value: element.id,
         ));
       }
@@ -1994,11 +2034,11 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
       return _specialityItems;
     }
     _specialityItems = [];
-    CommonMethods.catalogueLists.forEach((element) {
+    CommonMethods.catalogueLists!.forEach((element) {
       if (element.speciality != null &&
-          element.speciality.trim().isNotEmpty &&
+          element.speciality!.trim().isNotEmpty &&
           element.id != null &&
-          element.id.trim().isNotEmpty) {
+          element.id!.trim().isNotEmpty) {
         _specialityItems.add(element);
       }
     });
@@ -2245,7 +2285,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                     ],
                   ),
                 ),
-                Text(
+                const Text(
                   "Facility Location",
                   style: TextStyle(fontSize: 24, color: Colors.black),
                 ),
@@ -2276,7 +2316,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                               vertical: AppConfig.verticalBlockSize * 0.7),
                           child: Text(
                             _selectedLocationList[index].speciality ?? "NA",
-                            style: TextStyle(fontSize: 20, color: Colors.black),
+                            style: const TextStyle(fontSize: 20, color: Colors.black),
                           ),
                         ),
                       );
@@ -2298,7 +2338,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
 
 // Functions
 
-Widget _imageFittedBox(String imageUrl, {BoxFit boxFit = BoxFit.cover}) {
+Widget _imageFittedBox(String? imageUrl, {BoxFit boxFit = BoxFit.cover}) {
   return CustomWidgets().getImageFromUrl(imageUrl, boxFit: boxFit);
 }
 
@@ -2306,7 +2346,7 @@ Widget _sectionHeading(String text) {
   return Text(
     text ?? "",
     maxLines: 2,
-    style: TextStyle(
+    style: const TextStyle(
       fontSize: 20,
       fontWeight: FontWeight.w500,
       color: Color(0xff000000),

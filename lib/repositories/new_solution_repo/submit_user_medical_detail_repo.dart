@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:plunes/models/new_solution_model/form_data_response_model.dart';
 import 'package:plunes/models/new_solution_model/medical_file_upload_response_model.dart';
@@ -9,7 +10,7 @@ import 'package:plunes/res/Http_constants.dart';
 import 'package:plunes/resources/network/Urls.dart';
 
 class SubmitMedicalDetailRepo {
-  static SubmitMedicalDetailRepo _instance;
+  static SubmitMedicalDetailRepo? _instance;
 
   SubmitMedicalDetailRepo._init();
 
@@ -17,7 +18,7 @@ class SubmitMedicalDetailRepo {
     if (_instance == null) {
       _instance = SubmitMedicalDetailRepo._init();
     }
-    return _instance;
+    return _instance!;
   }
 
   Future<RequestState> submitUserMedicalDetail(
@@ -27,19 +28,20 @@ class SubmitMedicalDetailRepo {
         url: Urls.SUBMIT_USER_MEDICAL_DETAIL_URL,
         headerIncluded: true,
         postData: postData);
-    if (result.isRequestSucceed) {
-      bool isSuccess = false;
-      String reportData;
+    if (result!.isRequestSucceed!) {
+      bool? isSuccess = false;
+      String? reportData;
+
       if (result.response != null &&
-          result.response.data != null &&
-          result.response.data["success"] != null) {
-        isSuccess = result.response.data["success"];
+          result.response!.data != null &&
+          result.response!.data["success"] != null) {
+        isSuccess = result.response!.data["success"];
       }
       if (result.response != null &&
-          result.response.data != null &&
-          result.response.data["data"] != null &&
-          result.response.data["data"]['_id'] != null) {
-        reportData = result.response.data["data"]['_id'];
+          result.response!.data != null &&
+          result.response!.data["data"] != null &&
+          result.response!.data["data"]['_id'] != null) {
+        reportData = result.response!.data["data"]['_id'];
       }
       return RequestSuccess(response: isSuccess, additionalData: reportData);
     } else {
@@ -48,7 +50,7 @@ class SubmitMedicalDetailRepo {
   }
 
   Future<RequestState> uploadFile(File file,
-      {String fileType, Function fileUploadProgress}) async {
+      {String? fileType, Function? fileUploadProgress}) async {
     MultipartFile value = await MultipartFile.fromFile(file.path);
     Map<String, dynamic> fileData = {"file": value};
     var result = await DioRequester().requestMethod(
@@ -60,12 +62,14 @@ class SubmitMedicalDetailRepo {
       queryParameter: {"reportType": fileType},
       postData: FormData.fromMap(fileData),
     );
-    if (result.isRequestSucceed) {
+    if (result!.isRequestSucceed!) {
       MedicalFileResponseModel _medicalFileResponseModel =
-          MedicalFileResponseModel.fromJson(result.response.data);
+          MedicalFileResponseModel.fromJson(result.response!.data);
+
       return RequestSuccess(
           response: _medicalFileResponseModel, additionalData: fileType);
     } else {
+      // print("result___error:${result.failureCause.toString()}");
       return RequestFailed(
           failureCause: result.failureCause, response: fileType);
     }
@@ -73,7 +77,14 @@ class SubmitMedicalDetailRepo {
 
   Future<RequestState> fetchUserMedicalDetail(
       CatalogueData catalogueData) async {
-    Map<String,dynamic> queryData = {"id": catalogueData.serviceId};
+
+    print("catalogueData-service->${catalogueData.service}");
+    print("catalogueData-serviceId->${catalogueData.serviceId}");
+    print("catalogueData-profId->${catalogueData.profId}");
+    print("catalogueData-profId->${Urls.GET_FORM_DATA_ON_FILL_MEDICAL_DETAIL_SCREEN}");
+
+    Map<String,dynamic> queryData = {
+      "id": catalogueData.serviceId};
     if (catalogueData.profId != null) {
       queryData["professionalId"] = catalogueData.profId;
     }
@@ -82,11 +93,18 @@ class SubmitMedicalDetailRepo {
         url: Urls.GET_FORM_DATA_ON_FILL_MEDICAL_DETAIL_SCREEN,
         headerIncluded: true,
         queryParameter: queryData);
-    if (result.isRequestSucceed) {
-      FormDataModel _formDataModel =
-          FormDataModel.fromJson(result.response.data);
+
+    print("catalogueData-service-1>${result}");
+    print("catalogueData-service-2>${result!.statusCode.toString()}");
+    print("catalogueData-service-3>${result.response.toString()}");
+
+
+    if (result!.isRequestSucceed!) {
+      FormDataModel _formDataModel = FormDataModel.fromJson(result.response!.data);
       return RequestSuccess(response: _formDataModel);
     } else {
+      print("catalogueData-error->${result.failureCause}");
+
       return RequestFailed(failureCause: result.failureCause);
     }
   }

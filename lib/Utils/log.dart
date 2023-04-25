@@ -1,4 +1,6 @@
-import 'package:flutter/foundation.dart';
+
+
+import 'package:flutter/cupertino.dart';
 
 class AppLog {
   static printLog(var msg) {
@@ -6,7 +8,7 @@ class AppLog {
   }
 
   static debugLog(var msg) {
-    // debugPrint("Debug Log : $msg");
+    debugPrint("DebugLog : $msg");
   }
 
   static printError(var msg) {

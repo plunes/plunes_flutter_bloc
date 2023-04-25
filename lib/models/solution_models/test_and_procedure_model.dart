@@ -1,6 +1,6 @@
 class TestAndProcedureResponseModel {
-  String sId;
-  String specialityId;
+  String? sId;
+  String? specialityId;
 
   TestAndProcedureResponseModel({this.sId, this.specialityId});
 

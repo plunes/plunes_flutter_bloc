@@ -7,9 +7,9 @@ import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 
 class PopupChoose extends StatefulWidget {
-  final num bookInPrice;
-  final String totalPrice;
-  final Services services;
+  final num? bookInPrice;
+  final String? totalPrice;
+  final Services? services;
 
   PopupChoose({this.bookInPrice, this.totalPrice, this.services});
 
@@ -18,7 +18,7 @@ class PopupChoose extends StatefulWidget {
 }
 
 class _PopupChooseState extends State<PopupChoose> {
-  List<PaymentSelector> _paymentSelectionOptions;
+  List<PaymentSelector>? _paymentSelectionOptions;
 
   @override
   void initState() {
@@ -45,15 +45,15 @@ class _PopupChooseState extends State<PopupChoose> {
 //      }
 //    } else {
     for (int pIndex = 0;
-        pIndex < widget.services.paymentOptions.length;
+        pIndex < widget.services!.paymentOptions!.length;
         pIndex++) {
-      _paymentSelectionOptions.add(PaymentSelector(
+      _paymentSelectionOptions!.add(PaymentSelector(
           isInPercent: true,
           isSelected: pIndex == 0 ? true : false,
-          paymentUnit: "${widget.services.paymentOptions[pIndex].toString()}"));
+          paymentUnit: "${widget.services!.paymentOptions![pIndex].toString()}"));
     }
-    if (widget.services.zestMoney != null && widget.services.zestMoney) {
-      _paymentSelectionOptions.add(PaymentSelector(
+    if (widget.services!.zestMoney != null && widget.services!.zestMoney!) {
+      _paymentSelectionOptions!.add(PaymentSelector(
           isInPercent: false,
           isSelected: false,
           paymentUnit: PlunesStrings.zestMoney));
@@ -111,10 +111,10 @@ class _PopupChooseState extends State<PopupChoose> {
                   child: GestureDetector(
                     onTap: () {
                       setState(() {
-                        _paymentSelectionOptions.forEach((paymentOption) {
+                        _paymentSelectionOptions!.forEach((paymentOption) {
                           paymentOption.isSelected = false;
                         });
-                        _paymentSelectionOptions[count].isSelected = true;
+                        _paymentSelectionOptions![count].isSelected = true;
                       });
                     },
                     onDoubleTap: () {},
@@ -122,7 +122,7 @@ class _PopupChooseState extends State<PopupChoose> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        _paymentSelectionOptions[count].isSelected
+                        _paymentSelectionOptions![count].isSelected!
                             ? Image.asset(
                                 plunesImages.checkIcon,
                                 height: 20,
@@ -140,17 +140,17 @@ class _PopupChooseState extends State<PopupChoose> {
                             width: 150,
                             child: Text(
                                 (widget.bookInPrice != null && count == 0)
-                                    ? '${PlunesStrings.bookIn} ${_paymentSelectionOptions[count].paymentUnit}'
-                                    : (_paymentSelectionOptions[count]
+                                    ? '${PlunesStrings.bookIn} ${_paymentSelectionOptions![count].paymentUnit}'
+                                    : (_paymentSelectionOptions![count]
                                                 .paymentUnit ==
                                             PlunesStrings.zestMoney)
-                                        ? _paymentSelectionOptions[count]
-                                            .paymentUnit
+                                        ? _paymentSelectionOptions![count]
+                                            .paymentUnit!
                                         : count !=
-                                                _paymentSelectionOptions
+                                                _paymentSelectionOptions!
                                                         .length -
                                                     1
-                                            ? 'Pay ${_paymentSelectionOptions[count].paymentUnit}%'
+                                            ? 'Pay ${_paymentSelectionOptions![count].paymentUnit}%'
                                             : 'Pay full. No Hassle',
                                 style: TextStyle(fontSize: 16.0))),
                       ],
@@ -158,7 +158,7 @@ class _PopupChooseState extends State<PopupChoose> {
                   ),
                 );
               },
-              itemCount: _paymentSelectionOptions.length ?? 0,
+              itemCount: _paymentSelectionOptions!.length ?? 0,
             ),
 
             Container(
@@ -178,12 +178,11 @@ class _PopupChooseState extends State<PopupChoose> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Expanded(
-                      child: FlatButton(
-                          highlightColor: Colors.transparent,
-                          hoverColor: Colors.transparent,
-                          splashColor:
-                              PlunesColors.SPARKLINGGREEN.withOpacity(.1),
-                          focusColor: Colors.transparent,
+                      child: ElevatedButton(
+                          // highlightColor: Colors.transparent,
+                          // hoverColor: Colors.transparent,
+                          // splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                          // focusColor: Colors.transparent,
                           onPressed: () {
                             Navigator.pop(context);
                             return;
@@ -209,18 +208,17 @@ class _PopupChooseState extends State<PopupChoose> {
                       width: 0.5,
                     ),
                     Expanded(
-                      child: FlatButton(
-                          highlightColor: Colors.transparent,
-                          hoverColor: Colors.transparent,
-                          splashColor:
-                              PlunesColors.SPARKLINGGREEN.withOpacity(.1),
-                          focusColor: Colors.transparent,
+                      child: ElevatedButton(
+                          // highlightColor: Colors.transparent,
+                          // hoverColor: Colors.transparent,
+                          // splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                          // focusColor: Colors.transparent,
                           onPressed: () {
-                            PaymentSelector _paymentSelector;
+                            PaymentSelector? _paymentSelector;
                             if (_paymentSelectionOptions != null &&
-                                _paymentSelectionOptions.isNotEmpty) {
-                              _paymentSelectionOptions.forEach((paymentObj) {
-                                if (paymentObj.isSelected) {
+                                _paymentSelectionOptions!.isNotEmpty) {
+                              _paymentSelectionOptions!.forEach((paymentObj) {
+                                if (paymentObj.isSelected!) {
                                   _paymentSelector = paymentObj;
                                 }
                               });
@@ -284,15 +282,15 @@ class _PopupChooseState extends State<PopupChoose> {
 }
 
 class PaymentSelector {
-  String paymentUnit;
+  String? paymentUnit;
 
   @override
   String toString() {
     return 'PaymentSelector{paymentUnit: $paymentUnit, isSelected: $isSelected, isInPercent: $isInPercent}';
   }
 
-  bool isSelected;
-  bool isInPercent;
+  bool? isSelected;
+  bool? isInPercent;
 
   PaymentSelector({this.isSelected, this.paymentUnit, this.isInPercent});
 }

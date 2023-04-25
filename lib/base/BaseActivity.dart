@@ -1,21 +1,21 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
-import 'package:plunes/Utils/Preferences.dart';
+import 'package:plunes/Utils/event_bus.dart';
+import 'package:plunes/blocs/base_bloc.dart';
 import 'package:plunes/blocs/bloc.dart';
+import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
+import 'package:plunes/res/Http_constants.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/network/Urls.dart';
 import 'package:plunes/ui/afterLogin/GalleryScreen.dart';
 import 'package:plunes/ui/beforeLogin/Registration.dart';
-import 'dart:async';
-import 'package:plunes/Utils/event_bus.dart';
-import 'package:plunes/blocs/base_bloc.dart';
-import 'package:plunes/requester/request_states.dart';
-import 'package:plunes/res/Http_constants.dart';
+import 'package:toast/toast.dart';
 
 /*
  * Created by - Plunes Technologies .
@@ -25,13 +25,13 @@ import 'package:plunes/res/Http_constants.dart';
 
 // ignore: must_be_immutable
 class BaseActivity extends StatefulWidget {
-  String applicationType = '',
+  String? applicationType = '',
       machineID = '',
       domain = '',
       name = '',
       deviceId = '';
 
-  BaseActivity({Key key}) : super(key: key);
+  BaseActivity({Key? key}) : super(key: key);
 
   final usersType = [
     Constants.generalUser,
@@ -39,20 +39,17 @@ class BaseActivity extends StatefulWidget {
     Constants.hospital,
     Constants.labDiagnosticCenter
   ]; //, Constants.diagnosticCenter
-  PasswordCallback onTap;
-
-  @override
-  State<StatefulWidget> createState() => null;
+  PasswordCallback? onTap;
 
   void showInSnackBar(
-      String value, Color color, GlobalKey<ScaffoldState> _scaffoldKey) {
-    _scaffoldKey.currentState.showSnackBar(new SnackBar(
-      content: new Text(value ?? plunesStrings.somethingWentWrong),
-      backgroundColor: color,
-    ));
+      String? value, Color color, GlobalKey<ScaffoldState> _scaffoldKey) {
+    // _scaffoldKey.currentState!.showSnackBar(new SnackBar(
+    //   content: new Text(value ?? plunesStrings.somethingWentWrong),
+    //   backgroundColor: color,
+    // ));
   }
 
-  Widget createTextViews(String label, double fontSize, String colorCode,
+  Widget createTextViews(String label, double? fontSize, String colorCode,
       TextAlign textAlign, FontWeight fontWeight) {
     return Text(label,
         textAlign: textAlign,
@@ -118,7 +115,7 @@ class BaseActivity extends StatefulWidget {
         visible: _isAddFetch,
         child: Container(
           height: 5,
-          child: LinearProgressIndicator(),
+          child: const LinearProgressIndicator(),
         ),
       ),
     );
@@ -161,7 +158,7 @@ class BaseActivity extends StatefulWidget {
           controller: controller,
           maxLength: 250,
           maxLines: null,
-          maxLengthEnforced: true,
+          // maxLengthEnforced: true,
           cursorColor:
               Color(CommonMethods.getColorHexFromStr(colorsFile.black)),
           style: TextStyle(
@@ -181,12 +178,12 @@ class BaseActivity extends StatefulWidget {
   InputDecoration myInputBoxDecoration(
       String focusColor,
       String enableColor,
-      String label,
-      String errorText,
+      String? label,
+      String? errorText,
       bool flag,
-      TextEditingController passwordController,
-      [TextEditingController controller,
-      String hint]) {
+      TextEditingController? passwordController,
+      [TextEditingController? controller,
+      String? hint]) {
     return InputDecoration(
       labelText: label,
       labelStyle: TextStyle(
@@ -237,8 +234,8 @@ class BaseActivity extends StatefulWidget {
       String errorText,
       bool flag,
       TextEditingController passwordController,
-      [TextEditingController controller,
-      String hint]) {
+      [TextEditingController? controller,
+      String? hint]) {
     return InputDecoration(
       labelText: label,
       labelStyle: TextStyle(
@@ -293,36 +290,36 @@ class BaseActivity extends StatefulWidget {
   }
 
   Widget getDefaultButton(
-      String text, double _width, double _height, void Function() sendOtp) {
+      String text, double? _width, double _height, void Function() sendOtp) {
     return Container(
       width: _width,
       height: _height /*text == stringsFile.upload? 35: 42.0*/,
-      child: FlatButton(
+      child: ElevatedButton(
         onPressed: sendOtp,
-        color: Color(hexColorCode.defaultGreen),
+        //color: Color(hexColorCode.defaultGreen),
         child: Center(
             child: createTextViews(text, 18, colorsFile.white, TextAlign.center,
                 FontWeight.normal)),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+        // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
       ),
     );
   }
 
-  Widget getBorderButton(String text, double _width, void Function() sendOtp) {
+  Widget getBorderButton(String text, double? _width, void Function() sendOtp) {
     return Container(
       width: _width,
       height: text == plunesStrings.upload ? 35 : 42.0,
-      child: FlatButton(
+      child: ElevatedButton(
         onPressed: sendOtp,
-        color: Colors.white,
+        //color: Colors.white,
         child: Center(
             child: createTextViews(text, 18, colorsFile.black0,
                 TextAlign.center, FontWeight.normal)),
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(50),
-            side: BorderSide(
-                color: Color(
-                    CommonMethods.getColorHexFromStr(colorsFile.lightGrey3)))),
+        // shape: RoundedRectangleBorder(
+        //     borderRadius: BorderRadius.circular(50),
+        //     side: BorderSide(
+        //         color: Color(
+        //             CommonMethods.getColorHexFromStr(colorsFile.lightGrey3)))),
       ),
     );
   }
@@ -336,8 +333,8 @@ class BaseActivity extends StatefulWidget {
           onTap: () {
             Navigator.pop(context);
           },
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
+          child: const Padding(
+            padding: EdgeInsets.all(12.0),
             child: Icon(
               Icons.arrow_back_ios,
               color: Colors.black,
@@ -363,7 +360,7 @@ class BaseActivity extends StatefulWidget {
   }
 
   Widget getAppBar(BuildContext context, String title, bool isIosBackButton,
-      {Function func}) {
+      {Function? func}) {
     return AppBar(
         automaticallyImplyLeading: isIosBackButton,
         backgroundColor: Colors.white,
@@ -387,7 +384,7 @@ class BaseActivity extends StatefulWidget {
   }
 
   Widget getHomeAppBar(BuildContext context, String title, bool isSelected,
-      List<String> selectedPositions, String from, _homeScreenState,
+      List<String>? selectedPositions, String from, _homeScreenState,
       {bool isSolutionPageSelected = false}) {
     return AppBar(
         backgroundColor:
@@ -419,7 +416,7 @@ class BaseActivity extends StatefulWidget {
           (isSelected && from == plunesStrings.notification)
               ? Padding(
                   padding: EdgeInsets.fromLTRB(0.0, 20, 20, 20),
-                  child: Text('${selectedPositions.length}'),
+                  child: Text('${selectedPositions!.length}'),
                 )
               : Container()
         ]);
@@ -458,13 +455,21 @@ class BaseActivity extends StatefulWidget {
   }
 
   List<DropdownMenuItem<String>> getDropDownMenuItems() {
-    List<DropdownMenuItem<String>> items = new List();
-    for (String user in usersType) {
-      items.add(new DropdownMenuItem(
-          value: user,
-          child: createTextViews(user, 16, colorsFile.black0, TextAlign.center,
+    List<DropdownMenuItem<String>> items = [];
+
+    usersType.forEach((element) {
+      items.add(DropdownMenuItem(
+          value: element.toString(),
+          child: createTextViews(element.toString(), 16, colorsFile.black0, TextAlign.center,
               FontWeight.normal)));
-    }
+    });
+    // 6-apr-2023
+    // for (String user in usersType as Iterable<String>) {
+    //   items.add(DropdownMenuItem(
+    //       value: user,
+    //       child: createTextViews(user, 16, colorsFile.black0, TextAlign.center,
+    //           FontWeight.normal)));
+    // }
     return items;
   }
 
@@ -491,7 +496,7 @@ class BaseActivity extends StatefulWidget {
   }
 
   getDeviceId() {
-    CommonMethods.getDeviceId().then((String deviceId) {
+    CommonMethods.getDeviceId().then((String? deviceId) {
       this.deviceId = deviceId;
     });
   }
@@ -515,42 +520,56 @@ class BaseActivity extends StatefulWidget {
   }
 
   showLongToast(String message) {
-    Fluttertoast.showToast(
-        msg: message,
-        gravity: ToastGravity.BOTTOM,
-        backgroundColor: Colors.transparent,
-        textColor: Colors.grey,
-        toastLength: Toast.LENGTH_LONG,
-        timeInSecForIos: 2);
+    Toast.show(message, duration: Toast.lengthShort, gravity: Toast.bottom);
+
+    // Fluttertoast.showToast(
+    //     msg: message,
+    //     gravity: ToastGravity.BOTTOM,
+    //     backgroundColor: Colors.transparent,
+    //     textColor: Colors.grey,
+    //     toastLength: Toast.LENGTH_LONG,);
   }
 
   showToast(String message, Color color) {
-    Fluttertoast.showToast(
-        msg: message,
-        gravity: ToastGravity.BOTTOM,
-        textColor: color ?? PlunesColors.WHITECOLOR,
-        toastLength: Toast.LENGTH_LONG,
-        timeInSecForIos: 3);
+    Toast.show(message, duration: Toast.lengthShort, gravity: Toast.bottom);
+
+    // Fluttertoast.showToast(
+    //     msg: message,
+    //     gravity: ToastGravity.BOTTOM,
+    //     textColor: color ?? PlunesColors.WHITECOLOR,
+    //     toastLength: Toast.LENGTH_LONG,);
+  }
+
+  @override
+  State<StatefulWidget> createState() {
+    return test();
+  }
+}
+
+class test extends State<BaseActivity> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold();
   }
 }
 
 ///Base State class
 abstract class BaseState<T extends BaseActivity> extends State<T>
     with WidgetsBindingObserver {
-  GlobalKey<ScaffoldState> scaffoldKey;
+  GlobalKey<ScaffoldState>? scaffoldKey;
   final BlocBase bloc;
-  PersistentBottomSheetController _controller2;
+  PersistentBottomSheetController? _controller2;
 
-  BaseState({@required this.bloc});
+  BaseState({required this.bloc});
 
-  StreamSubscription _loginSubscription;
+  StreamSubscription? _loginSubscription;
 
   @override
   @mustCallSuper
   void initState() {
     WidgetsBinding.instance.addObserver(this);
     scaffoldKey = GlobalKey<ScaffoldState>();
-    bloc?.baseStream?.listen((response) {
+    bloc.baseStream?.listen((response) {
       if (response is RequestFailed) {
         RequestFailed requestFailed = response;
         if (requestFailed.requestCode == HttpResponseCode.UNAUTHORIZED) {
@@ -561,12 +580,12 @@ abstract class BaseState<T extends BaseActivity> extends State<T>
 
     ///Event bus to handle unauthorized user
     _loginSubscription =
-        EventProvider().getSessionEventBus().on<RequestState>().listen((data) {
+        EventProvider().getSessionEventBus()!.on<RequestState>().listen((data) {
       if (data is RequestFailed) {
         RequestFailed requestFailed = data;
         if (requestFailed.requestCode == HttpResponseCode.UNAUTHORIZED) {
           handleAuthTokenExpired(
-              buildContext: scaffoldKey.currentState.context,
+              buildContext: scaffoldKey!.currentState!.context,
               errorMessage: requestFailed.failureCause);
         }
       }
@@ -599,7 +618,7 @@ abstract class BaseState<T extends BaseActivity> extends State<T>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    bloc?.dispose();
+    bloc.dispose();
     super.dispose();
   }
 
@@ -618,7 +637,7 @@ abstract class BaseState<T extends BaseActivity> extends State<T>
 //          icon: isSuccess ? Icons.done : null);
     });
     Future.delayed(Duration(milliseconds: 1500), () async {
-      if (_controller2 != null) _controller2.close();
+      if (_controller2 != null) _controller2!.close();
     });
   }
 
@@ -632,7 +651,7 @@ abstract class BaseState<T extends BaseActivity> extends State<T>
   /// @Params buildContext, widget context
   /// @Params errorMessage, the message which will be visible in dialog
   void handleAuthTokenExpired(
-      {BuildContext buildContext, String errorMessage}) {
+      {BuildContext? buildContext, String? errorMessage}) {
 //    showDialog(
 //      context: scaffoldKey.currentState.context,
 //      barrierDismissible: false,

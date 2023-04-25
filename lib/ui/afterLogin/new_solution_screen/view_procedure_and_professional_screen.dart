@@ -24,8 +24,8 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 // ignore: must_be_immutable
 class ViewProcedureAndProfessional extends BaseActivity {
-  ProcedureData procedureData;
-  bool shouldUseSpecializationApi;
+  ProcedureData? procedureData;
+  bool? shouldUseSpecializationApi;
 
   ViewProcedureAndProfessional(
       {this.procedureData, this.shouldUseSpecializationApi});
@@ -35,18 +35,19 @@ class ViewProcedureAndProfessional extends BaseActivity {
       _ViewProcedureAndProfessionalState();
 }
 
-class _ViewProcedureAndProfessionalState
-    extends BaseState<ViewProcedureAndProfessional>
-    with TickerProviderStateMixin {
-  HomeScreenMainBloc _homeScreenMainBloc;
-  ProfessionDataModel _professionDataModel;
-  MediaContentPlunes _mediaContentPlunes;
+// class _ViewProcedureAndProfessionalState extends BaseState<ViewProcedureAndProfessional> with TickerProviderStateMixin {
+class _ViewProcedureAndProfessionalState extends State<ViewProcedureAndProfessional> with TickerProviderStateMixin {
 
-  String _mediaFailedMessage;
+final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+HomeScreenMainBloc? _homeScreenMainBloc;
+  ProfessionDataModel? _professionDataModel;
+  MediaContentPlunes? _mediaContentPlunes;
 
-  String _professionalFailedMessage;
+  String? _mediaFailedMessage;
 
-  int _selectedIndex;
+  String? _professionalFailedMessage;
+
+  int? _selectedIndex;
 
   @override
   void dispose() {
@@ -69,15 +70,16 @@ class _ViewProcedureAndProfessionalState
   }
 
   _getProfessionals() {
-    _homeScreenMainBloc.getProfessionalsForService(widget.procedureData.sId,
-        shouldHitSpecialityApi: (widget.shouldUseSpecializationApi != null &&
-            widget.shouldUseSpecializationApi),
-        shouldShowNearFacilities:
-            (_selectedIndex != null && _selectedIndex == 1));
+    print("-----widget.shouldUseSpecializationApi--->${widget.shouldUseSpecializationApi}");
+
+    _homeScreenMainBloc!.getProfessionalsForService(widget.procedureData!.sId,
+        widget.procedureData!.familyName,
+        shouldHitSpecialityApi: (widget.shouldUseSpecializationApi != null && widget.shouldUseSpecializationApi!),
+        shouldShowNearFacilities: (_selectedIndex != null && _selectedIndex == 1));
   }
 
   _getVideos() {
-    _homeScreenMainBloc.getMediaContent(mediaType: Constants.USER_TESTIMONIAL);
+    _homeScreenMainBloc!.getMediaContent(mediaType: Constants.USER_TESTIMONIAL);
   }
 
   _getReviews() {}
@@ -98,7 +100,7 @@ class _ViewProcedureAndProfessionalState
 
   Widget _getBody() {
     return Container(
-      margin: EdgeInsets.only(top: AppConfig.getMediaQuery().padding.top),
+      margin: EdgeInsets.only(top: AppConfig.getMediaQuery()!.padding.top),
       child: Column(
         children: [
           _getAppAndSearchBarWidget(),
@@ -135,24 +137,23 @@ class _ViewProcedureAndProfessionalState
                 Container(
                     child: IconButton(
                   padding: EdgeInsets.zero,
-                  splashRadius: 2,
+                  // splashRadius: 2,
                   onPressed: () {
                     Navigator.pop(context, false);
                     return;
                   },
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.arrow_back_ios,
                     color: PlunesColors.BLACKCOLOR,
                   ),
                 )),
-                Expanded(
+                const Expanded(
                   child: Text(
                     "Know Your Medical Procedure",
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.left,
-                    style:
-                        TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 20),
+                    style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 20),
                   ),
                 ),
               ],
@@ -164,7 +165,7 @@ class _ViewProcedureAndProfessionalState
               child: Card(
                 elevation: 4.0,
                 color: Colors.white,
-                shape: RoundedRectangleBorder(
+                shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(24))),
                 margin: EdgeInsets.symmetric(
                     horizontal: AppConfig.horizontalBlockSize * 8),
@@ -183,7 +184,7 @@ class _ViewProcedureAndProfessionalState
                     padding: EdgeInsets.symmetric(
                         horizontal: AppConfig.horizontalBlockSize * 6,
                         vertical: AppConfig.verticalBlockSize * 1.6),
-                    child: Text(
+                    child: const Text(
                       "Search Desired Medical service",
                       textAlign: TextAlign.left,
                       overflow: TextOverflow.ellipsis,
@@ -219,6 +220,8 @@ class _ViewProcedureAndProfessionalState
   }
 
   Widget _getProcedureDetailWidget() {
+    print("image----->");
+    print(widget.procedureData!.familyImage);
     return Container(
       child: Column(
         children: [
@@ -227,9 +230,9 @@ class _ViewProcedureAndProfessionalState
             width: double.infinity,
             child: ClipRRect(
               child: CustomWidgets().getImageFromUrl(
-                  widget.procedureData.familyImage,
+                  widget.procedureData!.familyImage,
                   boxFit: BoxFit.cover),
-              borderRadius: BorderRadius.all(Radius.circular(10)),
+              borderRadius: const BorderRadius.all(Radius.circular(10)),
             ),
           ),
           Container(
@@ -237,7 +240,7 @@ class _ViewProcedureAndProfessionalState
             margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.5),
             child: Text(
               widget.procedureData?.familyName ?? "",
-              style: TextStyle(
+              style: const TextStyle(
                   fontSize: 18,
                   color: PlunesColors.BLACKCOLOR,
                   fontWeight: FontWeight.normal),
@@ -248,8 +251,8 @@ class _ViewProcedureAndProfessionalState
                 EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 2),
             child: Row(
               children: [
-                (widget.procedureData.duration == null ||
-                        widget.procedureData.duration.isEmpty)
+                (widget.procedureData!.duration == null ||
+                        widget.procedureData!.duration!.isEmpty)
                     ? Container()
                     : Expanded(
                         child: Card(
@@ -264,7 +267,7 @@ class _ViewProcedureAndProfessionalState
                                   widget.procedureData?.duration ?? "",
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontSize: 18,
                                       color: PlunesColors.BLACKCOLOR,
                                       fontWeight: FontWeight.normal),
@@ -283,8 +286,8 @@ class _ViewProcedureAndProfessionalState
                           ),
                         ),
                       ),
-                (widget.procedureData.sittings == null ||
-                        widget.procedureData.sittings.isEmpty)
+                (widget.procedureData!.sittings == null ||
+                        widget.procedureData!.sittings!.isEmpty)
                     ? Container()
                     : Expanded(
                         child: Card(
@@ -322,8 +325,8 @@ class _ViewProcedureAndProfessionalState
               ],
             ),
           ),
-          (widget.procedureData.details == null ||
-                  widget.procedureData.details.isEmpty)
+          (widget.procedureData!.details == null ||
+                  widget.procedureData!.details!.isEmpty)
               ? Container()
               : Container(
                   alignment: Alignment.topLeft,
@@ -337,8 +340,8 @@ class _ViewProcedureAndProfessionalState
                         fontWeight: FontWeight.normal),
                   ),
                 ),
-          (widget.procedureData.details == null ||
-                  widget.procedureData.details.isEmpty)
+          (widget.procedureData!.details == null ||
+                  widget.procedureData!.details!.isEmpty)
               ? Container()
               : Row(
                   children: [
@@ -364,7 +367,7 @@ class _ViewProcedureAndProfessionalState
                     ),
                   ],
                 ),
-          (widget.procedureData.dnd == null || widget.procedureData.dnd.isEmpty)
+          (widget.procedureData!.dnd == null || widget.procedureData!.dnd!.isEmpty)
               ? Container()
               : Card(
                   color: Color(CommonMethods.getColorHexFromStr("#F5F5F5")),
@@ -377,7 +380,7 @@ class _ViewProcedureAndProfessionalState
                         margin: EdgeInsets.only(
                             top: AppConfig.verticalBlockSize * 1.2,
                             left: AppConfig.horizontalBlockSize * 5.2),
-                        child: Text(
+                        child: const Text(
                           "Do's and Don'ts",
                           style: TextStyle(
                               fontSize: 18, color: PlunesColors.BLACKCOLOR),
@@ -386,7 +389,7 @@ class _ViewProcedureAndProfessionalState
                       ListView.builder(
                         shrinkWrap: true,
                         padding: EdgeInsets.zero,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
                           return Container(
                             padding: EdgeInsets.symmetric(
@@ -398,7 +401,7 @@ class _ViewProcedureAndProfessionalState
                                 Container(
                                   height: 6,
                                   width: 6,
-                                  decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
                                     shape: BoxShape.circle,
                                     color: PlunesColors.BLACKCOLOR,
                                   ),
@@ -409,7 +412,7 @@ class _ViewProcedureAndProfessionalState
                                       left:
                                           AppConfig.horizontalBlockSize * 2.5),
                                   child: Text(
-                                    widget.procedureData.dnd[index] ?? "",
+                                    widget.procedureData!.dnd![index] ?? "",
                                     style: TextStyle(
                                         fontSize: 16,
                                         color: Color(
@@ -461,7 +464,7 @@ class _ViewProcedureAndProfessionalState
             top: AppConfig.verticalBlockSize * 2,
             bottom: AppConfig.verticalBlockSize * 2,
           ),
-          child: Text(
+          child: const Text(
             "Facility",
             style: TextStyle(
                 fontSize: 18,
@@ -470,9 +473,9 @@ class _ViewProcedureAndProfessionalState
           ),
         ),
         (UserManager().getUserDetails().latitude != null &&
-                UserManager().getUserDetails().latitude.isNotEmpty &&
+                UserManager().getUserDetails().latitude!.isNotEmpty &&
                 UserManager().getUserDetails().longitude != null &&
-                UserManager().getUserDetails().longitude.isNotEmpty &&
+                UserManager().getUserDetails().longitude!.isNotEmpty &&
                 UserManager().getIsUserInServiceLocation())
             ? Card(
                 margin:
@@ -491,15 +494,17 @@ class _ViewProcedureAndProfessionalState
                     controller: TabController(
                       length: 2,
                       vsync: this,
-                      initialIndex: _selectedIndex,
+                      initialIndex: _selectedIndex!,
                     ),
                     indicator: new BubbleTabIndicator(
+
                       indicatorHeight: 35.0,
                       indicatorColor: PlunesColors.PARROTGREEN,
                       tabBarIndicatorSize: TabBarIndicatorSize.tab,
                     ),
                     onTap: (i) {
                       _selectedIndex = i;
+                      print("tab_clicked_print:$i=$_selectedIndex");
                       _setState();
                       _getProfessionals();
                     },
@@ -508,18 +513,17 @@ class _ViewProcedureAndProfessionalState
                 ),
               )
             : Container(),
-        StreamBuilder<RequestState>(
-            stream: _homeScreenMainBloc.professionalForServiceStream,
+        StreamBuilder<RequestState?>(
+            stream: _homeScreenMainBloc!.professionalForServiceStream,
             initialData:
                 _professionDataModel == null ? RequestInProgress() : null,
             builder: (context, snapshot) {
               if (snapshot.data is RequestSuccess) {
-                RequestSuccess successObject = snapshot.data;
+                RequestSuccess successObject = snapshot.data as RequestSuccess;
                 _professionDataModel = successObject.response;
-                _homeScreenMainBloc
-                    ?.addIntoGetProfessionalForServiceDataStream(null);
+                _homeScreenMainBloc?.addIntoGetProfessionalForServiceDataStream(null);
               } else if (snapshot.data is RequestFailed) {
-                RequestFailed _failedObj = snapshot.data;
+                RequestFailed? _failedObj = snapshot.data as RequestFailed?;
                 _professionalFailedMessage = _failedObj?.failureCause;
                 _homeScreenMainBloc
                     ?.addIntoGetProfessionalForServiceDataStream(null);
@@ -529,9 +533,10 @@ class _ViewProcedureAndProfessionalState
                   height: AppConfig.verticalBlockSize * 28,
                 );
               }
+              print("error__message__-->$_professionalFailedMessage");
               return (_professionDataModel == null ||
-                      _professionDataModel.data == null ||
-                      _professionDataModel.data.isEmpty)
+                      _professionDataModel!.data == null ||
+                      _professionDataModel!.data!.isEmpty)
                   ? Container(
                       margin: EdgeInsets.all(AppConfig.horizontalBlockSize * 3),
                       child: CustomWidgets().errorWidget(
@@ -542,18 +547,22 @@ class _ViewProcedureAndProfessionalState
                   : Container(
                       child: ListView.builder(
                         padding: EdgeInsets.zero,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
+
+                          print(_professionDataModel!.data![index].professionalId);
+
                           return CommonWidgets()
                               .getProfessionalWidgetForSearchDesiredServiceScreen(
+                            context,
                                   index,
-                                  _professionDataModel.data[index],
+                                  _professionDataModel!.data![index],
                                   widget.procedureData?.speciality,
                                   onTap: () => _openProfileScreen(
-                                      _professionDataModel.data[index]));
+                                      _professionDataModel!.data![index]));
                         },
                         shrinkWrap: true,
-                        itemCount: _professionDataModel.data?.length ?? 0,
+                        itemCount: _professionDataModel!.data?.length ?? 0,
                       ),
                     );
             }),
@@ -583,17 +592,17 @@ class _ViewProcedureAndProfessionalState
           ),
           Container(
             margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
-            child: StreamBuilder<RequestState>(
-                stream: _homeScreenMainBloc.mediaStream,
+            child: StreamBuilder<RequestState?>(
+                stream: _homeScreenMainBloc!.mediaStream,
                 initialData:
                     _mediaContentPlunes == null ? RequestInProgress() : null,
                 builder: (context, snapshot) {
                   if (snapshot.data is RequestSuccess) {
-                    RequestSuccess successObject = snapshot.data;
+                    RequestSuccess successObject = snapshot.data as RequestSuccess;
                     _mediaContentPlunes = successObject.response;
                     _homeScreenMainBloc?.addIntoMediaStream(null);
                   } else if (snapshot.data is RequestFailed) {
-                    RequestFailed _failedObj = snapshot.data;
+                    RequestFailed? _failedObj = snapshot.data as RequestFailed?;
                     _mediaFailedMessage = _failedObj?.failureCause;
                     _homeScreenMainBloc?.addIntoMediaStream(null);
                   } else if (snapshot.data is RequestInProgress) {
@@ -603,8 +612,8 @@ class _ViewProcedureAndProfessionalState
                     );
                   }
                   return (_mediaContentPlunes == null ||
-                          _mediaContentPlunes.data == null ||
-                          _mediaContentPlunes.data.isEmpty)
+                          _mediaContentPlunes!.data == null ||
+                          _mediaContentPlunes!.data!.isEmpty)
                       ? Container(
                           margin:
                               EdgeInsets.all(AppConfig.horizontalBlockSize * 3),
@@ -679,7 +688,7 @@ class _ViewProcedureAndProfessionalState
                                 vertical: AppConfig.verticalBlockSize * 0.2),
                             child: Text(
                               CommonMethods.getStringInCamelCase(
-                                  "Rahul Shukla"),
+                                  "Rahul Shukla")!,
                               softWrap: true,
                               maxLines: 2,
                               style: TextStyle(
@@ -694,7 +703,7 @@ class _ViewProcedureAndProfessionalState
                           Flexible(
                             child: Container(
                               child: Text(
-                                "dsdsads asdasdsa sdas dsdsad sadasdasd ada a  asaasdasda dsdsads asdasdsa sdas dsdsad sadasdasd ada a  asaasdasda dsdsads asdasdsa sdas dsdsad sadasdasd ada a  asaasdasda",
+                                "",
                                 softWrap: true,
                                 maxLines: 4,
                                 textAlign: TextAlign.left,
@@ -730,13 +739,13 @@ class _ViewProcedureAndProfessionalState
           return Card(
             margin: EdgeInsets.only(
                 right: AppConfig.horizontalBlockSize * 3.5, bottom: 1.5),
-            shape: RoundedRectangleBorder(
+            shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
                     bottomRight: Radius.circular(10),
                     bottomLeft: Radius.circular(10))),
             child: InkWell(
               onTap: () {
-                String mediaUrl = _mediaContentPlunes?.data[index]?.mediaUrl;
+                String? mediaUrl = _mediaContentPlunes?.data![index]?.mediaUrl;
                 if (mediaUrl == null || mediaUrl.trim().isEmpty) {
                   return;
                 }
@@ -745,7 +754,7 @@ class _ViewProcedureAndProfessionalState
                     MaterialPageRoute(
                         builder: (context) => YoutubePlayerProvider(
                               mediaUrl,
-                              title: _mediaContentPlunes?.data[index]?.name,
+                              title: _mediaContentPlunes?.data![index]?.name,
                             )));
               },
               onDoubleTap: () {},
@@ -756,7 +765,7 @@ class _ViewProcedureAndProfessionalState
                       Container(
                         child: ClipRRect(
                           child: CustomWidgets().getImageFromUrl(
-                              "https://img.youtube.com/vi/${YoutubePlayer.convertUrlToId(_mediaContentPlunes.data[index]?.mediaUrl ?? "")}/0.jpg",
+                              "https://img.youtube.com/vi/${YoutubePlayer.convertUrlToId(_mediaContentPlunes!.data![index]?.mediaUrl ?? "")}/0.jpg",
                               boxFit: BoxFit.fill),
                           borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(10),
@@ -783,10 +792,10 @@ class _ViewProcedureAndProfessionalState
                           left: AppConfig.horizontalBlockSize * 3),
                       width: AppConfig.horizontalBlockSize * 80,
                       child: Text(
-                        _mediaContentPlunes.data[index]?.name ?? "Video",
+                        _mediaContentPlunes!.data![index]?.name ?? "Video",
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
+                        style: const TextStyle(
                             color: PlunesColors.BLACKCOLOR, fontSize: 18),
                       ),
                     ),
@@ -804,15 +813,15 @@ class _ViewProcedureAndProfessionalState
   _openProfileScreen(ProfData data) {
     if (data != null &&
         data.userType != null &&
-        data.userType.isNotEmpty &&
+        data.userType!.isNotEmpty &&
         data.sId != null &&
-        data.sId.isNotEmpty) {
+        data.sId!.isNotEmpty) {
       Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) => DoctorInfo(
                     data.sId,
-                    isDoc: (data.userType.toLowerCase() ==
+                    isDoc: (data.userType!.toLowerCase() ==
                         Constants.doctor.toString().toLowerCase()),
                   )));
     }

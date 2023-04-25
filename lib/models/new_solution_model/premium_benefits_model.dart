@@ -1,15 +1,15 @@
 class PremiumBenefitsModel {
-  bool success;
-  List<PremiumBenefitData> data;
+  bool? success;
+  List<PremiumBenefitData>? data;
 
   PremiumBenefitsModel({this.success, this.data});
 
   PremiumBenefitsModel.fromJson(Map<String, dynamic> json) {
     success = json['success'];
     if (json['data'] != null) {
-      data = new List<PremiumBenefitData>();
+      data = [];
       json['data'].forEach((v) {
-        data.add(new PremiumBenefitData.fromJson(v));
+        data!.add(new PremiumBenefitData.fromJson(v));
       });
     }
   }
@@ -18,23 +18,23 @@ class PremiumBenefitsModel {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['success'] = this.success;
     if (this.data != null) {
-      data['data'] = this.data.map((v) => v.toJson()).toList();
+      data['data'] = this.data!.map((v) => v.toJson()).toList();
     }
     return data;
   }
 }
 
 class PremiumBenefitData {
-  int createdAt;
-  int updateAt;
-  String sId;
+  int? createdAt;
+  int? updateAt;
+  String? sId;
 
   // List<Null> description;
-  String title;
-  String titleImage;
-  int indexing;
-  String sectionType;
-  int iV;
+  String? title;
+  String? titleImage;
+  int? indexing;
+  String? sectionType;
+  int? iV;
 
   PremiumBenefitData(
       {this.createdAt,

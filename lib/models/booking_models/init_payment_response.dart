@@ -1,15 +1,15 @@
 class InitPaymentResponse {
-  final bool success, couponUsed;
+  final bool? success, couponUsed;
 
   @override
   String toString() {
     return 'InitPaymentResponse{success: $success, message: $message, id: $id, status: $status, referenceId: $referenceId}';
   }
 
-  final String message;
-  final String id;
-  final String status;
-  final String referenceId;
+  final String? message;
+  final String? id;
+  final String? status;
+  final String? referenceId;
 
   InitPaymentResponse(
       {this.success,
