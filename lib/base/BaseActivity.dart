@@ -43,6 +43,12 @@ class BaseActivity extends StatefulWidget {
 
   void showInSnackBar(
       String? value, Color color, GlobalKey<ScaffoldState> _scaffoldKey) {
+
+    ScaffoldMessenger.of(_scaffoldKey.currentContext!).showSnackBar(SnackBar(
+      content: Text(value ?? plunesStrings.somethingWentWrong,),
+      backgroundColor: color,
+    ));
+
     // _scaffoldKey.currentState!.showSnackBar(new SnackBar(
     //   content: new Text(value ?? plunesStrings.somethingWentWrong),
     //   backgroundColor: color,

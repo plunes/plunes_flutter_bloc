@@ -253,7 +253,7 @@ class _EnterAdditionalUserDetailScrState extends State<EnterAdditionalUserDetail
                 )),
                 Expanded(
                   child: Container(
-                    margin: EdgeInsets.only(left: 28),
+                    margin: const EdgeInsets.only(left: 28),
                     child: Text(
                      widget.consultation ? "Book your Consultation" :
                       PlunesStrings.bookYourProcedure,
@@ -268,6 +268,8 @@ class _EnterAdditionalUserDetailScrState extends State<EnterAdditionalUserDetail
               ],
             ),
             Container(
+              padding: EdgeInsets.only(
+                  top: AppConfig.verticalBlockSize * 4,),
               margin: EdgeInsets.only(
                   top: AppConfig.verticalBlockSize * 0.8,
                   bottom: AppConfig.verticalBlockSize * 2.8),
@@ -280,7 +282,28 @@ class _EnterAdditionalUserDetailScrState extends State<EnterAdditionalUserDetail
                   Color.fromRGBO(255, 255, 255, 0),
                 ],
               )),
-              child: Card(
+              child: Column(children :[
+                (widget.catalogueData.service != null &&
+                    widget.catalogueData.family != null &&
+                    (widget.catalogueData.service!.trim().toLowerCase() !=
+                        widget.catalogueData.family!.trim().toLowerCase()))
+                    ? Container(
+                  margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2),
+                  width: double.infinity,
+                  child: Center(
+                    child: Text(
+                      "${widget.catalogueData.service!.trim()}",
+                      // textAlign: TextAlign.left,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                          fontSize: 20, color: PlunesColors.BLACKCOLOR),
+                    ),
+                  ),
+                )
+                    : Container(),
+
+                Card(
                 // decoration: const BoxDecoration(
                 //     gradient: LinearGradient(
                 //   begin: Alignment.topCenter,
@@ -293,7 +316,7 @@ class _EnterAdditionalUserDetailScrState extends State<EnterAdditionalUserDetail
                 elevation: 4.0,
                 color: Colors.white,
                 shadowColor: Color(CommonMethods.getColorHexFromStr("#E7E7E7")),
-                shape: RoundedRectangleBorder(
+                shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(8))),
                 margin: EdgeInsets.symmetric(
                     horizontal: AppConfig.horizontalBlockSize * 6),
@@ -348,6 +371,7 @@ class _EnterAdditionalUserDetailScrState extends State<EnterAdditionalUserDetail
                   ),
                 ),
               ),
+    ]),
             )
           ],
         ),

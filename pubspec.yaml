@@ -138,6 +138,8 @@ dependencies:
   google_nav_bar: ^5.0.6
   #whatsapp login
   otpless_flutter: ^1.0.8
+  #google fonts
+  google_fonts: ^2.3.0
 
 #  permission:
 #    git:

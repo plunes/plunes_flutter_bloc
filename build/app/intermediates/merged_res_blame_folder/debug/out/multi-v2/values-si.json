@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "/Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-si/values-si.xml",
+            "outputFile": "/Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-si/values-si.xml",
             "map": [
                 {
                     "source": "/Users/gautamsinghmaurya/.gradle/caches/transforms-3/df1ef28bbcf1d61ed33c6e37eec9bc90/transformed/jetified-play-services-basement-18.1.0/res/values-si/values.xml",

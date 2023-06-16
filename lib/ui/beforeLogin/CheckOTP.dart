@@ -96,6 +96,7 @@ class _CheckOTPState extends State<CheckOTP> {
 
   void sendOtp() async {
     String? signature = await AppConfig.getAppSignature();
+    print("signature--->$signature");
     var requestState = await _userBloc!.getGenerateOtp(widget.phone,
         iFromForgotPassword: widget.from == plunesStrings.forgotPasswordTitle,
         signature: signature);

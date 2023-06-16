@@ -1118,9 +1118,12 @@ class _SolutionBiddingScreenState extends State<SolutionBiddingScreen>
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          "Other services",
-          style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 20),
+        Padding(
+          padding: EdgeInsets.only(left: AppConfig.horizontalBlockSize * 3, top: 5),
+          child: const Text(
+            "Other services",
+            style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 19),
+          ),
         ),
         Flexible(
             child: Container(
@@ -1137,14 +1140,14 @@ class _SolutionBiddingScreenState extends State<SolutionBiddingScreen>
                 highlightColor: Colors.transparent,
                 splashColor: Colors.transparent,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  margin: EdgeInsets.only(bottom: 2, top: index == 0 ? 5 : 0),
+                  padding: EdgeInsets.symmetric(vertical: 14, horizontal: AppConfig.horizontalBlockSize * 3,),
+                  margin: EdgeInsets.only(bottom: 2, top: index == 0 ? 12 : 0),
                   child: Text(
                     _locationAndServiceModel!
                             .otherServices![index].familyName ??
                         '',
                     style: const TextStyle(
-                        color: PlunesColors.BLACKCOLOR, fontSize: 18),
+                        color: PlunesColors.BLACKCOLOR, fontSize: 15, fontWeight: FontWeight.bold),
                   ),
                 ),
               );
@@ -1465,14 +1468,14 @@ class _SolutionBiddingScreenState extends State<SolutionBiddingScreen>
                     width: 48),
                 Expanded(
                   child: Container(
-                    margin: const EdgeInsets.only(left: 20),
+                    margin: EdgeInsets.only(left: AppConfig.horizontalBlockSize * 9),
                     child: Text(
                       CommonMethods.getStringInCamelCase(facility.name)!,
                       textAlign: TextAlign.left,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.w600),
+                          fontSize: 14, fontWeight: FontWeight.w600),
                     ),
                   ),
                 )

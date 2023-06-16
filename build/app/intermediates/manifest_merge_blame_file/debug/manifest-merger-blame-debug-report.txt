@@ -13,79 +13,79 @@
 13         to allow setting breakpoints, to provide hot reload, etc.
 14    -->
 15    <uses-permission android:name="android.permission.INTERNET" />
-15-->/Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:9:5-67
-15-->/Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:9:22-64
+15-->/Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:9:5-67
+15-->/Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:9:22-64
 16    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-16-->/Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:7:5-81
-16-->/Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:7:22-78
+16-->/Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:7:5-81
+16-->/Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:7:22-78
 17    <uses-permission android:name="android.permission.CAMERA" />
-17-->/Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:8:5-65
-17-->/Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:8:22-62
+17-->/Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:8:5-65
+17-->/Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:8:22-62
 18    <uses-permission android:name="READ_EXTERNAL_STORAGE" />
-18-->/Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:10:5-61
-18-->/Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:10:22-58
+18-->/Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:10:5-61
+18-->/Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:10:22-58
 19    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-19-->/Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:11:5-79
-19-->/Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:11:22-76
+19-->/Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:11:5-79
+19-->/Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:11:22-76
 20    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-20-->/Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:12:5-81
-20-->/Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:12:22-78
+20-->/Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:12:5-81
+20-->/Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:12:22-78
 21    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
-21-->/Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:13:5-85
-21-->/Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:13:22-82
+21-->/Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:13:5-85
+21-->/Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:13:22-82
 22    <uses-permission android:name="android.permission.VIBRATE" />
-22-->/Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:14:5-66
-22-->/Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:14:22-63
+22-->/Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:14:5-66
+22-->/Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:14:22-63
 23    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-23-->/Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:15:5-81
-23-->/Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:15:22-78
+23-->/Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:15:5-81
+23-->/Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:15:22-78
 24    <uses-permission android:name="android.permission.WAKE_LOCK" />
-24-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:10:5-68
-24-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:10:22-65
+24-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:10:5-68
+24-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:10:22-65
 25    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- Permissions options for the `notification` group -->
-25-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:11:5-79
-25-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:11:22-76
+25-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:11:5-79
+25-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:11:22-76
 26    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-26-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:13:5-77
-26-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:13:22-74
+26-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:13:5-77
+26-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:13:22-74
 27    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-27-->[:geolocator_android] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-77
-27-->[:geolocator_android] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:9:22-74
+27-->[:geolocator_android] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-77
+27-->[:geolocator_android] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:9:22-74
 28    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
-28-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:11:5-81
-28-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:11:22-78
+28-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:11:5-81
+28-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:11:22-78
 29    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
-29-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:12:5-79
-29-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:12:22-76
+29-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:12:5-79
+29-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:12:22-76
 30    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-30-->[:file_picker] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-80
-30-->[:file_picker] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:9:22-77
+30-->[:file_picker] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-80
+30-->[:file_picker] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:9:22-77
 31
 32    <queries>
-32-->[:file_picker] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:11:5-17:15
+32-->[:file_picker] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:11:5-17:15
 33        <intent>
-33-->[:file_picker] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:12:9-16:18
+33-->[:file_picker] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:12:9-16:18
 34            <action android:name="android.intent.action.GET_CONTENT" />
-34-->[:file_picker] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:13:13-72
-34-->[:file_picker] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:13:21-69
+34-->[:file_picker] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:13:13-72
+34-->[:file_picker] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:13:21-69
 35
 36            <data android:mimeType="*/*" />
-36-->[:file_picker] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:15:13-44
-36-->[:file_picker] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:15:19-41
+36-->[:file_picker] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:15:13-44
+36-->[:file_picker] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:15:19-41
 37        </intent>
 38        <intent>
-38-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:10:9-12:18
+38-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:10:9-12:18
 39            <action android:name="android.support.customtabs.action.CustomTabsService" />
-39-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-90
-39-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:11:21-87
+39-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-90
+39-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:11:21-87
 40        </intent>
 41
 42        <package android:name="com.whatsapp.w4b" />
-42-->[:otpless_flutter] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/otpless_flutter/intermediates/merged_manifest/debug/AndroidManifest.xml:10:9-52
-42-->[:otpless_flutter] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/otpless_flutter/intermediates/merged_manifest/debug/AndroidManifest.xml:10:18-49
+42-->[:otpless_flutter] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/otpless_flutter/intermediates/merged_manifest/debug/AndroidManifest.xml:10:9-52
+42-->[:otpless_flutter] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/otpless_flutter/intermediates/merged_manifest/debug/AndroidManifest.xml:10:18-49
 43        <package android:name="com.whatsapp" />
-43-->[:otpless_flutter] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/otpless_flutter/intermediates/merged_manifest/debug/AndroidManifest.xml:11:9-48
-43-->[:otpless_flutter] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/otpless_flutter/intermediates/merged_manifest/debug/AndroidManifest.xml:11:18-45
+43-->[:otpless_flutter] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/otpless_flutter/intermediates/merged_manifest/debug/AndroidManifest.xml:11:9-48
+43-->[:otpless_flutter] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/otpless_flutter/intermediates/merged_manifest/debug/AndroidManifest.xml:11:18-45
 44        <package android:name="com.facebook.katana" /> <!-- Needs to be explicitly declared on Android R+ -->
 44-->[com.facebook.android:facebook-common:15.2.0] /Users/gautamsinghmaurya/.gradle/caches/transforms-3/7a629cb671c32cb55c1b6419f5d874ca/transformed/jetified-facebook-common-15.2.0/AndroidManifest.xml:18:9-55
 44-->[com.facebook.android:facebook-common:15.2.0] /Users/gautamsinghmaurya/.gradle/caches/transforms-3/7a629cb671c32cb55c1b6419f5d874ca/transformed/jetified-facebook-common-15.2.0/AndroidManifest.xml:18:18-52
@@ -169,7 +169,7 @@
 100-->[com.facebook.android:facebook-common:15.2.0] /Users/gautamsinghmaurya/.gradle/caches/transforms-3/7a629cb671c32cb55c1b6419f5d874ca/transformed/jetified-facebook-common-15.2.0/AndroidManifest.xml:35:27-75
 101
 102                <data
-102-->[:file_picker] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:15:13-44
+102-->[:file_picker] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:15:13-44
 103                    android:host="otpless"
 104                    android:scheme="plunesotpless" />
 105            </intent-filter>
@@ -203,81 +203,81 @@
 131            android:value="2" />
 132
 133        <service
-133-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:16:9-19:72
+133-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:16:9-19:72
 134            android:name="io.flutter.plugins.firebase.messaging.FlutterFirebaseMessagingBackgroundService"
-134-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:17:13-107
+134-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:17:13-107
 135            android:exported="false"
-135-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:18:13-37
+135-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:18:13-37
 136            android:permission="android.permission.BIND_JOB_SERVICE" />
-136-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:19:13-69
+136-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:19:13-69
 137        <service
-137-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:20:9-26:19
+137-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:20:9-26:19
 138            android:name="io.flutter.plugins.firebase.messaging.FlutterFirebaseMessagingService"
-138-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:21:13-97
+138-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:21:13-97
 139            android:exported="false" >
-139-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:22:13-37
+139-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:22:13-37
 140            <intent-filter>
-140-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:23:13-25:29
+140-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:23:13-25:29
 141                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-141-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:24:17-78
-141-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:24:25-75
+141-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:24:17-78
+141-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:24:25-75
 142            </intent-filter>
 143        </service>
 144
 145        <receiver
-145-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:28:9-35:20
+145-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:28:9-35:20
 146            android:name="io.flutter.plugins.firebase.messaging.FlutterFirebaseMessagingReceiver"
-146-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:29:13-98
+146-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:29:13-98
 147            android:exported="true"
-147-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:30:13-36
+147-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:30:13-36
 148            android:permission="com.google.android.c2dm.permission.SEND" >
-148-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:31:13-73
+148-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:31:13-73
 149            <intent-filter>
-149-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:32:13-34:29
+149-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:32:13-34:29
 150                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-150-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:33:17-81
-150-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:33:25-78
+150-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:33:17-81
+150-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:33:25-78
 151            </intent-filter>
 152        </receiver>
 153
 154        <service
-154-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:37:9-41:19
+154-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:37:9-41:19
 155            android:name="com.google.firebase.components.ComponentDiscoveryService"
-155-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:37:18-89
+155-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:37:18-89
 156            android:directBootAware="true"
 156-->[com.google.firebase:firebase-common:20.3.0] /Users/gautamsinghmaurya/.gradle/caches/transforms-3/cf96ef9460af4950e21acefc93fa8e94/transformed/jetified-firebase-common-20.3.0/AndroidManifest.xml:34:13-43
 157            android:exported="false" >
 157-->[com.google.firebase:firebase-messaging:23.1.1] /Users/gautamsinghmaurya/.gradle/caches/transforms-3/65402062dd810e6ef83172d852d85925/transformed/jetified-firebase-messaging-23.1.1/AndroidManifest.xml:54:13-37
 158            <meta-data
-158-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:38:13-40:85
+158-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:38:13-40:85
 159                android:name="com.google.firebase.components:io.flutter.plugins.firebase.messaging.FlutterFirebaseAppRegistrar"
-159-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:39:17-128
+159-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:39:17-128
 160                android:value="com.google.firebase.components.ComponentRegistrar" />
-160-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:40:17-82
+160-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:40:17-82
 161            <meta-data
-161-->[:firebase_crashlytics] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_crashlytics/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-13:85
+161-->[:firebase_crashlytics] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_crashlytics/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-13:85
 162                android:name="com.google.firebase.components:io.flutter.plugins.firebase.crashlytics.FlutterFirebaseAppRegistrar"
-162-->[:firebase_crashlytics] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_crashlytics/intermediates/merged_manifest/debug/AndroidManifest.xml:12:17-130
+162-->[:firebase_crashlytics] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_crashlytics/intermediates/merged_manifest/debug/AndroidManifest.xml:12:17-130
 163                android:value="com.google.firebase.components.ComponentRegistrar" />
-163-->[:firebase_crashlytics] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_crashlytics/intermediates/merged_manifest/debug/AndroidManifest.xml:13:17-82
+163-->[:firebase_crashlytics] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_crashlytics/intermediates/merged_manifest/debug/AndroidManifest.xml:13:17-82
 164            <meta-data
-164-->[:firebase_analytics] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_analytics/intermediates/merged_manifest/debug/AndroidManifest.xml:15:13-17:85
+164-->[:firebase_analytics] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_analytics/intermediates/merged_manifest/debug/AndroidManifest.xml:15:13-17:85
 165                android:name="com.google.firebase.components:io.flutter.plugins.firebase.analytics.FlutterFirebaseAppRegistrar"
-165-->[:firebase_analytics] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_analytics/intermediates/merged_manifest/debug/AndroidManifest.xml:16:17-128
+165-->[:firebase_analytics] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_analytics/intermediates/merged_manifest/debug/AndroidManifest.xml:16:17-128
 166                android:value="com.google.firebase.components.ComponentRegistrar" />
-166-->[:firebase_analytics] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_analytics/intermediates/merged_manifest/debug/AndroidManifest.xml:17:17-82
+166-->[:firebase_analytics] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_analytics/intermediates/merged_manifest/debug/AndroidManifest.xml:17:17-82
 167            <meta-data
-167-->[:firebase_remote_config] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_remote_config/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-13:85
+167-->[:firebase_remote_config] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_remote_config/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-13:85
 168                android:name="com.google.firebase.components:io.flutter.plugins.firebase.firebaseremoteconfig.FlutterFirebaseAppRegistrar"
-168-->[:firebase_remote_config] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_remote_config/intermediates/merged_manifest/debug/AndroidManifest.xml:12:17-139
+168-->[:firebase_remote_config] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_remote_config/intermediates/merged_manifest/debug/AndroidManifest.xml:12:17-139
 169                android:value="com.google.firebase.components.ComponentRegistrar" />
-169-->[:firebase_remote_config] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_remote_config/intermediates/merged_manifest/debug/AndroidManifest.xml:13:17-82
+169-->[:firebase_remote_config] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_remote_config/intermediates/merged_manifest/debug/AndroidManifest.xml:13:17-82
 170            <meta-data
-170-->[:firebase_core] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_core/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-13:85
+170-->[:firebase_core] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_core/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-13:85
 171                android:name="com.google.firebase.components:io.flutter.plugins.firebase.core.FlutterFirebaseCoreRegistrar"
-171-->[:firebase_core] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_core/intermediates/merged_manifest/debug/AndroidManifest.xml:12:17-124
+171-->[:firebase_core] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_core/intermediates/merged_manifest/debug/AndroidManifest.xml:12:17-124
 172                android:value="com.google.firebase.components.ComponentRegistrar" />
-172-->[:firebase_core] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_core/intermediates/merged_manifest/debug/AndroidManifest.xml:13:17-82
+172-->[:firebase_core] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_core/intermediates/merged_manifest/debug/AndroidManifest.xml:13:17-82
 173            <meta-data
 173-->[com.google.firebase:firebase-messaging:23.1.1] /Users/gautamsinghmaurya/.gradle/caches/transforms-3/65402062dd810e6ef83172d852d85925/transformed/jetified-firebase-messaging-23.1.1/AndroidManifest.xml:55:13-57:85
 174                android:name="com.google.firebase.components:com.google.firebase.messaging.FirebaseMessagingRegistrar"
@@ -329,202 +329,202 @@
 197        </service>
 198
 199        <provider
-199-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:43:9-47:38
+199-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:43:9-47:38
 200            android:name="io.flutter.plugins.firebase.messaging.FlutterFirebaseMessagingInitProvider"
-200-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:44:13-102
+200-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:44:13-102
 201            android:authorities="com.plunes.flutterfirebasemessaginginitprovider"
-201-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:45:13-88
+201-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:45:13-88
 202            android:exported="false"
-202-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:46:13-37
+202-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:46:13-37
 203            android:initOrder="99" />
-203-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:47:13-35
+203-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:47:13-35
 204
 205        <service
-205-->[:geolocator_android] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:12:9-16:56
+205-->[:geolocator_android] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:12:9-16:56
 206            android:name="com.baseflow.geolocator.GeolocatorLocationService"
-206-->[:geolocator_android] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:13:13-77
+206-->[:geolocator_android] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:13:13-77
 207            android:enabled="true"
-207-->[:geolocator_android] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:14:13-35
+207-->[:geolocator_android] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:14:13-35
 208            android:exported="false"
-208-->[:geolocator_android] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:15:13-37
+208-->[:geolocator_android] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:15:13-37
 209            android:foregroundServiceType="location" />
-209-->[:geolocator_android] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:16:13-53
+209-->[:geolocator_android] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:16:13-53
 210
 211        <receiver
-211-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:16:9-18:40
+211-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:16:9-18:40
 212            android:name="com.dexterous.flutterlocalnotifications.ActionBroadcastReceiver"
-212-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:17:13-91
+212-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:17:13-91
 213            android:exported="false" />
-213-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:18:13-37
+213-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:18:13-37
 214        <receiver
-214-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:19:9-21:40
+214-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:19:9-21:40
 215            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver"
-215-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:20:13-97
+215-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:20:13-97
 216            android:exported="false" />
-216-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:21:13-37
+216-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:21:13-37
 217        <receiver
-217-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:22:9-31:20
+217-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:22:9-31:20
 218            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver"
-218-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:23:13-101
+218-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:23:13-101
 219            android:exported="false" >
-219-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:24:13-37
+219-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:24:13-37
 220            <intent-filter>
-220-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:25:13-30:29
+220-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:25:13-30:29
 221                <action android:name="android.intent.action.BOOT_COMPLETED" />
-221-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:26:17-79
-221-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:26:25-76
+221-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:26:17-79
+221-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:26:25-76
 222                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
-222-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:27:17-84
-222-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:27:25-81
+222-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:27:17-84
+222-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:27:25-81
 223                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
-223-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:28:17-82
-223-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:28:25-79
+223-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:28:17-82
+223-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:28:25-79
 224                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
-224-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:29:17-82
-224-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:29:25-79
+224-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:29:17-82
+224-->[:flutter_local_notifications] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:29:25-79
 225            </intent-filter>
 226        </receiver>
 227
 228        <activity
-228-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:16:9-20:47
+228-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:16:9-20:47
 229            android:name="com.pichillilorenzo.flutter_inappwebview.in_app_browser.InAppBrowserActivity"
-229-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:17:13-104
+229-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:17:13-104
 230            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
-230-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:18:13-137
+230-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:18:13-137
 231            android:exported="false"
-231-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:19:13-37
+231-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:19:13-37
 232            android:theme="@style/AppTheme" />
-232-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:20:13-44
+232-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:20:13-44
 233        <activity
-233-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:21:9-24:55
+233-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:21:9-24:55
 234            android:name="com.pichillilorenzo.flutter_inappwebview.chrome_custom_tabs.ChromeCustomTabsActivity"
-234-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:22:13-112
+234-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:22:13-112
 235            android:exported="false"
-235-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:23:13-37
+235-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:23:13-37
 236            android:theme="@style/ThemeTransparent" />
-236-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:24:13-52
+236-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:24:13-52
 237        <activity
-237-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:25:9-28:55
+237-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:25:9-28:55
 238            android:name="com.pichillilorenzo.flutter_inappwebview.chrome_custom_tabs.TrustedWebActivity"
-238-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:26:13-106
+238-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:26:13-106
 239            android:exported="false"
-239-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:27:13-37
+239-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:27:13-37
 240            android:theme="@style/ThemeTransparent" />
-240-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:28:13-52
+240-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:28:13-52
 241        <activity
-241-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:29:9-33:55
+241-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:29:9-33:55
 242            android:name="com.pichillilorenzo.flutter_inappwebview.chrome_custom_tabs.ChromeCustomTabsActivitySingleInstance"
-242-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:30:13-126
+242-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:30:13-126
 243            android:exported="false"
-243-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:31:13-37
+243-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:31:13-37
 244            android:launchMode="singleInstance"
-244-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:32:13-48
+244-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:32:13-48
 245            android:theme="@style/ThemeTransparent" />
-245-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:33:13-52
+245-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:33:13-52
 246        <activity
-246-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:34:9-38:55
+246-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:34:9-38:55
 247            android:name="com.pichillilorenzo.flutter_inappwebview.chrome_custom_tabs.TrustedWebActivitySingleInstance"
-247-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:35:13-120
+247-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:35:13-120
 248            android:exported="false"
-248-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:36:13-37
+248-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:36:13-37
 249            android:launchMode="singleInstance"
-249-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:37:13-48
+249-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:37:13-48
 250            android:theme="@style/ThemeTransparent" />
-250-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:38:13-52
+250-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:38:13-52
 251
 252        <receiver
-252-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:40:9-43:40
+252-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:40:9-43:40
 253            android:name="com.pichillilorenzo.flutter_inappwebview.chrome_custom_tabs.ActionBroadcastReceiver"
-253-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:41:13-111
+253-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:41:13-111
 254            android:enabled="true"
-254-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:42:13-35
+254-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:42:13-35
 255            android:exported="false" />
-255-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:43:13-37
+255-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:43:13-37
 256
 257        <meta-data
-257-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:45:9-47:36
+257-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:45:9-47:36
 258            android:name="io.flutter.embedded_views_preview"
-258-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:46:13-61
+258-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:46:13-61
 259            android:value="true" />
-259-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:47:13-33
+259-->[:flutter_inappwebview] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/merged_manifest/debug/AndroidManifest.xml:47:13-33
 260
 261        <provider
-261-->[:share_plus] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/share_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:10:9-18:20
+261-->[:share_plus] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/share_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:10:9-18:20
 262            android:name="dev.fluttercommunity.plus.share.ShareFileProvider"
-262-->[:share_plus] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/share_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-77
+262-->[:share_plus] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/share_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-77
 263            android:authorities="com.plunes.flutter.share_provider"
-263-->[:share_plus] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/share_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:12:13-74
+263-->[:share_plus] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/share_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:12:13-74
 264            android:exported="false"
-264-->[:share_plus] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/share_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:13:13-37
+264-->[:share_plus] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/share_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:13:13-37
 265            android:grantUriPermissions="true" >
-265-->[:share_plus] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/share_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:14:13-47
+265-->[:share_plus] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/share_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:14:13-47
 266            <meta-data
-266-->[:share_plus] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/share_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:15:13-17:68
+266-->[:share_plus] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/share_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:15:13-17:68
 267                android:name="android.support.FILE_PROVIDER_PATHS"
-267-->[:share_plus] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/share_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:16:17-67
+267-->[:share_plus] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/share_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:16:17-67
 268                android:resource="@xml/flutter_share_file_paths" />
-268-->[:share_plus] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/share_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:17:17-65
+268-->[:share_plus] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/share_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:17:17-65
 269        </provider>
 270        <provider
-270-->[:image_picker_android] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:10:9-18:20
+270-->[:image_picker_android] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:10:9-18:20
 271            android:name="io.flutter.plugins.imagepicker.ImagePickerFileProvider"
-271-->[:image_picker_android] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-82
+271-->[:image_picker_android] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-82
 272            android:authorities="com.plunes.flutter.image_provider"
-272-->[:image_picker_android] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:12:13-74
+272-->[:image_picker_android] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:12:13-74
 273            android:exported="false"
-273-->[:image_picker_android] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:13:13-37
+273-->[:image_picker_android] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:13:13-37
 274            android:grantUriPermissions="true" >
-274-->[:image_picker_android] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:14:13-47
+274-->[:image_picker_android] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:14:13-47
 275            <meta-data
-275-->[:share_plus] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/share_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:15:13-17:68
+275-->[:share_plus] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/share_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:15:13-17:68
 276                android:name="android.support.FILE_PROVIDER_PATHS"
-276-->[:share_plus] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/share_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:16:17-67
+276-->[:share_plus] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/share_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:16:17-67
 277                android:resource="@xml/flutter_image_picker_file_paths" />
-277-->[:share_plus] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/share_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:17:17-65
+277-->[:share_plus] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/share_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:17:17-65
 278        </provider>
 279
 280        <activity
-280-->[:url_launcher_android] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:10:9-13:74
+280-->[:url_launcher_android] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:10:9-13:74
 281            android:name="io.flutter.plugins.urllauncher.WebViewActivity"
-281-->[:url_launcher_android] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-74
+281-->[:url_launcher_android] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-74
 282            android:exported="false"
-282-->[:url_launcher_android] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:12:13-37
+282-->[:url_launcher_android] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:12:13-37
 283            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
-283-->[:url_launcher_android] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:13:13-71
+283-->[:url_launcher_android] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:13:13-71
 284
 285        <receiver
-285-->[:sms_otp_auto_verify] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/sms_otp_auto_verify/intermediates/merged_manifest/debug/AndroidManifest.xml:10:9-17:20
+285-->[:sms_otp_auto_verify] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/sms_otp_auto_verify/intermediates/merged_manifest/debug/AndroidManifest.xml:10:9-17:20
 286            android:name="com.oohyugi.sms_otp_auto_verify.SmsBroadcastReceiver"
-286-->[:sms_otp_auto_verify] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/sms_otp_auto_verify/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-80
+286-->[:sms_otp_auto_verify] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/sms_otp_auto_verify/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-80
 287            android:exported="true"
-287-->[:sms_otp_auto_verify] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/sms_otp_auto_verify/intermediates/merged_manifest/debug/AndroidManifest.xml:12:13-36
+287-->[:sms_otp_auto_verify] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/sms_otp_auto_verify/intermediates/merged_manifest/debug/AndroidManifest.xml:12:13-36
 288            android:permission="com.google.android.gms.auth.api.phone.permission.SEND" >
-288-->[:sms_otp_auto_verify] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/sms_otp_auto_verify/intermediates/merged_manifest/debug/AndroidManifest.xml:13:13-87
+288-->[:sms_otp_auto_verify] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/sms_otp_auto_verify/intermediates/merged_manifest/debug/AndroidManifest.xml:13:13-87
 289            <intent-filter>
-289-->[:sms_otp_auto_verify] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/sms_otp_auto_verify/intermediates/merged_manifest/debug/AndroidManifest.xml:14:13-16:29
+289-->[:sms_otp_auto_verify] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/sms_otp_auto_verify/intermediates/merged_manifest/debug/AndroidManifest.xml:14:13-16:29
 290                <action android:name="com.google.android.gms.auth.api.phone.SMS_RETRIEVED" />
-290-->[:sms_otp_auto_verify] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/sms_otp_auto_verify/intermediates/merged_manifest/debug/AndroidManifest.xml:15:17-94
-290-->[:sms_otp_auto_verify] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/sms_otp_auto_verify/intermediates/merged_manifest/debug/AndroidManifest.xml:15:25-91
+290-->[:sms_otp_auto_verify] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/sms_otp_auto_verify/intermediates/merged_manifest/debug/AndroidManifest.xml:15:17-94
+290-->[:sms_otp_auto_verify] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/sms_otp_auto_verify/intermediates/merged_manifest/debug/AndroidManifest.xml:15:25-91
 291            </intent-filter>
 292        </receiver>
 293
 294        <meta-data
-294-->[:facebook_app_events] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/facebook_app_events/intermediates/merged_manifest/debug/AndroidManifest.xml:12:9-14:36
+294-->[:facebook_app_events] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/facebook_app_events/intermediates/merged_manifest/debug/AndroidManifest.xml:12:9-14:36
 295            android:name="com.facebook.sdk.CodelessDebugLogEnabled"
-295-->[:facebook_app_events] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/facebook_app_events/intermediates/merged_manifest/debug/AndroidManifest.xml:13:13-68
+295-->[:facebook_app_events] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/facebook_app_events/intermediates/merged_manifest/debug/AndroidManifest.xml:13:13-68
 296            android:value="true" />
-296-->[:facebook_app_events] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/facebook_app_events/intermediates/merged_manifest/debug/AndroidManifest.xml:14:13-33
+296-->[:facebook_app_events] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/facebook_app_events/intermediates/merged_manifest/debug/AndroidManifest.xml:14:13-33
 297
 298        <service
-298-->[:location] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/location/intermediates/merged_manifest/debug/AndroidManifest.xml:13:9-17:56
+298-->[:location] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/location/intermediates/merged_manifest/debug/AndroidManifest.xml:13:9-17:56
 299            android:name="com.lyokone.location.FlutterLocationService"
-299-->[:location] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/location/intermediates/merged_manifest/debug/AndroidManifest.xml:14:13-71
+299-->[:location] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/location/intermediates/merged_manifest/debug/AndroidManifest.xml:14:13-71
 300            android:enabled="true"
-300-->[:location] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/location/intermediates/merged_manifest/debug/AndroidManifest.xml:15:13-35
+300-->[:location] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/location/intermediates/merged_manifest/debug/AndroidManifest.xml:15:13-35
 301            android:exported="false"
-301-->[:location] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/location/intermediates/merged_manifest/debug/AndroidManifest.xml:16:13-37
+301-->[:location] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/location/intermediates/merged_manifest/debug/AndroidManifest.xml:16:13-37
 302            android:foregroundServiceType="location" />
-302-->[:location] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/location/intermediates/merged_manifest/debug/AndroidManifest.xml:17:13-53
+302-->[:location] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/location/intermediates/merged_manifest/debug/AndroidManifest.xml:17:13-53
 303
 304        <uses-library
 304-->[androidx.window:window:1.0.0-beta04] /Users/gautamsinghmaurya/.gradle/caches/transforms-3/992c409fa2324ef5eeb324c08fe7ed56/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:25:9-27:40
@@ -595,7 +595,7 @@
 338-->[com.facebook.android:facebook-common:15.2.0] /Users/gautamsinghmaurya/.gradle/caches/transforms-3/7a629cb671c32cb55c1b6419f5d874ca/transformed/jetified-facebook-common-15.2.0/AndroidManifest.xml:35:27-75
 339
 340                <data
-340-->[:file_picker] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:15:13-44
+340-->[:file_picker] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:15:13-44
 341                    android:host="cct.com.plunes"
 342                    android:scheme="fbconnect" />
 343            </intent-filter>
@@ -616,10 +616,10 @@
 352            android:permission="com.google.android.c2dm.permission.SEND" >
 352-->[com.google.firebase:firebase-messaging:23.1.1] /Users/gautamsinghmaurya/.gradle/caches/transforms-3/65402062dd810e6ef83172d852d85925/transformed/jetified-firebase-messaging-23.1.1/AndroidManifest.xml:34:13-73
 353            <intent-filter>
-353-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:32:13-34:29
+353-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:32:13-34:29
 354                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-354-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:33:17-81
-354-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:33:25-78
+354-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:33:17-81
+354-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:33:25-78
 355            </intent-filter>
 356        </receiver>
 357        <!--
@@ -635,10 +635,10 @@
 364            android:exported="false" >
 364-->[com.google.firebase:firebase-messaging:23.1.1] /Users/gautamsinghmaurya/.gradle/caches/transforms-3/65402062dd810e6ef83172d852d85925/transformed/jetified-firebase-messaging-23.1.1/AndroidManifest.xml:47:13-37
 365            <intent-filter android:priority="-500" >
-365-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:23:13-25:29
+365-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:23:13-25:29
 366                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-366-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:24:17-78
-366-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:24:25-75
+366-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:24:17-78
+366-->[:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:24:25-75
 367            </intent-filter>
 368        </service>
 369

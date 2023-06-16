@@ -127,9 +127,15 @@ class _RegistrationState extends State<Registration>
     super.dispose();
   }
 
-  void initialize() {
+  void initialize() async {
+    // commented on 5-jun-23
+    _dropDownMenuItems = await widget.getDropDownMenuItems();
+    _userType = _dropDownMenuItems![0].value;
+
     _dropDownMenuItems = widget.getDropDownMenuItems();
-    _userType = Constants.generalUser.toString();
+    // print("_dropDownMenuItems--->$_dropDownMenuItems");
+    // print("_dropDownMenuItems--->${_dropDownMenuItems![0].value}");
+    // _userType = Constants.generalUser.toString();
     doc_availability_from.text = "00:00 AM";
     doc_availability_to.text = "00:00 PM";
     if (CommonMethods.catalogueLists == null ||

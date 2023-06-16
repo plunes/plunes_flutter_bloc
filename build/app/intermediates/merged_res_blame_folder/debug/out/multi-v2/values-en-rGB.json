@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "/Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-en-rGB/values-en-rGB.xml",
+            "outputFile": "/Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-en-rGB/values-en-rGB.xml",
             "map": [
                 {
                     "source": "/Users/gautamsinghmaurya/.gradle/caches/transforms-3/0fdace566e9f0d8751b86b2a2c2c8b22/transformed/core-1.9.0/res/values-en-rGB/values-en-rGB.xml",

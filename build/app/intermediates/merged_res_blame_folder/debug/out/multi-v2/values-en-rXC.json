@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "/Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-en-rXC/values-en-rXC.xml",
+            "outputFile": "/Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-en-rXC/values-en-rXC.xml",
             "map": [
                 {
                     "source": "/Users/gautamsinghmaurya/.gradle/caches/transforms-3/2cdd8a1eb647e090797f8d83390a1037/transformed/appcompat-1.5.1/res/values-en-rXC/values-en-rXC.xml",

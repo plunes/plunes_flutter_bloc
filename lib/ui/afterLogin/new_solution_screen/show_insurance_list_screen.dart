@@ -56,7 +56,7 @@ class _ShowInsuranceListScreenState extends State<ShowInsuranceListScreen> {
           child: Scaffold(
             key: scaffoldKey,
             appBar: widget.shouldShowAppBar ?? true
-                ? widget.getAppBar(context, "Check Insurance", true) as PreferredSizeWidget?
+                ? widget.getAppBar(context, "Check your insurance provider", true) as PreferredSizeWidget?
                 : null,
             body: StreamBuilder<RequestState?>(
                 stream: _userBloc!.insuranceStream,
@@ -121,19 +121,23 @@ class _ShowInsuranceListScreenState extends State<ShowInsuranceListScreen> {
     return Container(
       margin: EdgeInsets.symmetric(
           horizontal: AppConfig.horizontalBlockSize * 3,
-          vertical: AppConfig.verticalBlockSize * 1.5),
+          vertical: widget.shouldShowAppBar??true ? AppConfig.verticalBlockSize * 1.5
+              : AppConfig.verticalBlockSize *  .01),
       child: Column(
         children: [
+          // Container(
+          //   padding: EdgeInsets.symmetric(horizontal: 3.5),
+          //   child: Text(
+          //     "Check your insurance provider",
+          //     style: TextStyle(fontSize: 20, color: PlunesColors.BLACKCOLOR),
+          //   ),
+          //   alignment: Alignment.topLeft,
+          // ),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 3.5),
-            child: Text(
-              "Check your insurance provider",
-              style: TextStyle(fontSize: 20, color: PlunesColors.BLACKCOLOR),
+            margin: EdgeInsets.only(top: widget.shouldShowAppBar??true ?
+            AppConfig.verticalBlockSize * 1.4 :
+            AppConfig.verticalBlockSize * .6
             ),
-            alignment: Alignment.topLeft,
-          ),
-          Container(
-            margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.4),
           ),
           (widget.shouldShowAppBar != null && !widget.shouldShowAppBar!)
               ? Container()
@@ -186,8 +190,8 @@ class _ShowInsuranceListScreenState extends State<ShowInsuranceListScreen> {
                   },
                   decoration: InputDecoration(
                     prefixIcon: Container(
-                      margin: EdgeInsets.only(right: 8),
-                      child: Icon(
+                      margin: const EdgeInsets.only(right: 8, left: 6),
+                      child: const Icon(
                         Icons.search,
                         color: PlunesColors.BLACKCOLOR,
                       ),
@@ -195,8 +199,9 @@ class _ShowInsuranceListScreenState extends State<ShowInsuranceListScreen> {
                     prefixIconConstraints: BoxConstraints(),
                     hintText: "Search your insurance provider",
                     isDense: false,
+
                     hintStyle: TextStyle(
-                        fontSize: 12,
+                        // fontSize: 12,
                         color:
                             Color(CommonMethods.getColorHexFromStr("#333333"))),
                     border: InputBorder.none,
@@ -228,8 +233,8 @@ class _ShowInsuranceListScreenState extends State<ShowInsuranceListScreen> {
       children: [
         Expanded(
           child: Container(
-            margin: EdgeInsets.symmetric(vertical: 2),
-            padding: EdgeInsets.symmetric(horizontal: 3.5),
+            margin: const EdgeInsets.symmetric(vertical: 5),
+            padding: const EdgeInsets.symmetric(horizontal: 3.5),
             constraints: BoxConstraints(
               maxHeight: AppConfig.verticalBlockSize * 35,
               minHeight: AppConfig.verticalBlockSize * 0.5,
@@ -241,7 +246,7 @@ class _ShowInsuranceListScreenState extends State<ShowInsuranceListScreen> {
                 _getListItems(_list) != null &&
                 _getListItems(_list)!.length > 10)
             ? Container(
-                margin: EdgeInsets.only(bottom: 12),
+                margin: const EdgeInsets.only(bottom: 12),
                 child: InkWell(
                   onDoubleTap: () {},
                   onTap: () {
@@ -265,7 +270,7 @@ class _ShowInsuranceListScreenState extends State<ShowInsuranceListScreen> {
                                   CommonMethods.getColorHexFromStr("#25B281"))),
                         ),
                         Container(
-                          margin: EdgeInsets.only(left: 3),
+                          margin: const EdgeInsets.only(left: 3),
                           child: Icon(Icons.keyboard_arrow_down,
                               size: 18,
                               color: Color(
@@ -303,7 +308,7 @@ class _ShowInsuranceListScreenState extends State<ShowInsuranceListScreen> {
                     color: Color(CommonMethods.getColorHexFromStr("#25B281"))),
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
+                    padding: const EdgeInsets.only(left: 8.0, right: 8, top: 4, bottom: 4),
                     child: Text(
                       "${list![index]?.insurancePartner ?? ""}",
                       style: TextStyle(

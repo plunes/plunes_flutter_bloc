@@ -119,12 +119,17 @@ class _TestAndProcedureScreenState extends State<TestAndProcedureScreen> {
 
   Widget _showItems() {
     if (_testAndProcedures!.isNotEmpty && _failureCause!.isEmpty) {
-      return ListView.builder(
+      return ListView.separated(
         itemBuilder: (context, index) {
           return CustomWidgets().getTestAndProcedureWidget(_testAndProcedures!,
               index, () => onTap(_testAndProcedures![index]));
         },
         itemCount: _testAndProcedures!.length,
+        separatorBuilder: (BuildContext context, int index) {
+          return const SizedBox(
+            height: 6,
+          );
+        },
       );
     } else if (_testAndProcedures!.isEmpty && _failureCause!.isNotEmpty) {
       return Center(

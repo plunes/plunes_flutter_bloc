@@ -3627,17 +3627,20 @@ class CommonWidgets {
                         child: Text(
                           CommonMethods.getStringInCamelCase(docData?.name)!,
                           maxLines: 2,
-                          style: TextStyle(
-                              fontSize: 18, color: PlunesColors.BLACKCOLOR),
+                          style: const TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                              color: PlunesColors.BLACKCOLOR),
                         ),
                       ),
                       Container(
-                        margin: EdgeInsets.only(top: 5),
+                        margin: EdgeInsets.only(top: 4),
                         child: Text(
                           docData?.department ?? "",
                           maxLines: 2,
                           style: TextStyle(
-                              fontSize: 14,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
                               color: Color(
                                   CommonMethods.getColorHexFromStr("#434343"))),
                         ),
@@ -3695,7 +3698,7 @@ class CommonWidgets {
                                 "${docData.experience} years of experience",
                                 maxLines: 2,
                                 style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     color: Color(
                                         CommonMethods.getColorHexFromStr(
                                             "#000000"))),
@@ -3713,7 +3716,7 @@ class CommonWidgets {
                                       "Consultation Fees ",
                                       maxLines: 1,
                                       style: TextStyle(
-                                          fontSize: 16,
+                                          fontSize: 14,
                                           color: Color(
                                               CommonMethods.getColorHexFromStr(
                                                   "#000000"))),
@@ -3725,8 +3728,8 @@ class CommonWidgets {
                                     ": \u20B9 $price",
                                     maxLines: 2,
                                     style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
                                         color: Color(
                                             CommonMethods.getColorHexFromStr(
                                                 "#000000"))),
@@ -3741,7 +3744,6 @@ class CommonWidgets {
               ],
             ),
             Container(
-              margin: EdgeInsets.only(top: 22),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -3770,7 +3772,7 @@ class CommonWidgets {
                                   "$nextAvlText",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                      fontSize: 14,
+                                      fontSize: 12,
                                       color: PlunesColors.BLACKCOLOR),
                                 ),
                               )
@@ -3796,9 +3798,12 @@ class CommonWidgets {
                             hoverColor: Colors.transparent,
                             child: Container(
                               width: double.infinity,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: AppConfig.horizontalBlockSize * 5,
-                                  vertical: AppConfig.verticalBlockSize * 1.2),
+                              margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.4),
+                              padding: EdgeInsets.only(
+                                left: AppConfig.horizontalBlockSize * 5,
+                                  right : AppConfig.horizontalBlockSize * 5,
+                                  top : AppConfig.verticalBlockSize * 1,
+                                  bottom : AppConfig.verticalBlockSize * .8),
                               decoration: BoxDecoration(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(6)),

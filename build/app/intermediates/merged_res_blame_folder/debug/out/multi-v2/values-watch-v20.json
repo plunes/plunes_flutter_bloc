@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "/Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-watch-v20/values-watch-v20.xml",
+            "outputFile": "/Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-watch-v20/values-watch-v20.xml",
             "map": [
                 {
                     "source": "/Users/gautamsinghmaurya/.gradle/caches/transforms-3/0ccffd8068e8dfe068c684824be69231/transformed/jetified-play-services-auth-20.4.0/res/values-watch-v20/values.xml",

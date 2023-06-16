@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "/Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-es-rES/values-es-rES.xml",
+            "outputFile": "/Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-es-rES/values-es-rES.xml",
             "map": [
                 {
                     "source": "/Users/gautamsinghmaurya/.gradle/caches/transforms-3/aa205254f70e4b21c5b1213115b33f73/transformed/jetified-facebook-login-15.2.0/res/values-es-rES/values-es-rES.xml",

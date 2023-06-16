@@ -429,15 +429,16 @@ final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
                   children: [
                     // background image container
                     Container(
-                        height: AppConfig.verticalBlockSize * 35,
+                        // height: AppConfig.verticalBlockSize * 35,
+                        height: AppConfig.verticalBlockSize * 28,
                         width: AppConfig.horizontalBlockSize * 100,
                         child: Image.asset("assets/new_home_banner.jpg",
                             // _solutionHomeScreenModel?.backgroundImage ?? "",
                             // boxFit: BoxFit.cover
                         )),
                     Container(
-                      margin:
-                          EdgeInsets.only(top: AppConfig.verticalBlockSize * 13.55),
+                      margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 10.5),
+                      // margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 13.55),
                       child: Column(
                         children: [
                           Container(
@@ -454,7 +455,7 @@ final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
                                       style: const TextStyle(
                                           color: PlunesColors.BLACKCOLOR,
                                           fontWeight: FontWeight.bold,
-                                          fontSize: 23))
+                                          fontSize: 22.5))
                                 ])),
                           ),
                           // search box container
@@ -908,8 +909,9 @@ final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
                       trimLines: 2,
                       trimCollapsedText: " ..Learn more",
                       trimMode: TrimMode.Line,
-                      style: TextStyle(
-                        fontSize: 18,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
                         color: Color(0xff444444),
                       )),
                 ),
@@ -1089,51 +1091,57 @@ final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
               ClipRRect(
                 child: Container(
                   child: _imageFittedBox(url),
-                  height: AppConfig.verticalBlockSize * 15,
+                  height: AppConfig.verticalBlockSize * 18,
                   width: double.infinity,
                 ),
                 borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(10),
                     topRight: Radius.circular(10)),
               ),
-              Flexible(
-                child: Container(
+              // Flexible(
+              //   child:
+                Container(
                   alignment: Alignment.centerLeft,
                   margin: EdgeInsets.only(
                       left: AppConfig.horizontalBlockSize * 2,
                       right: AppConfig.horizontalBlockSize * 2,
-                      top: AppConfig.verticalBlockSize * 0.1),
+                      top: AppConfig.verticalBlockSize * 1
+                  ),
                   child: Text(
                     label ?? "",
                     textAlign: TextAlign.left,
                     maxLines: 1,
-                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: PlunesColors.BLACKCOLOR),
+                    style: const TextStyle(fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: .5,
+                        color: PlunesColors.BLACKCOLOR),
                   ),
                 ),
-              ),
-              Flexible(
-                child: Container(
+              // ),
+              // Flexible(
+              //   child:
+                Container(
                   alignment: Alignment.topLeft,
                   margin: EdgeInsets.only(
                       left: AppConfig.horizontalBlockSize * 2,
-                      top: AppConfig.verticalBlockSize * 0.2,
+                      top: AppConfig.verticalBlockSize * 1,
                       right: AppConfig.horizontalBlockSize * 2),
                   child: IgnorePointer(
                     ignoring: true,
                     child: ReadMoreText(text ?? "",
                         textAlign: TextAlign.left,
-                        trimLines: 2,
+                        trimLines: 3,
                         trimCollapsedText: " ..Read More",
                         colorClickableText: Color(0xff107C6F),
                         trimMode: TrimMode.Line,
                         style: const TextStyle(
-                          fontSize: 11.5,
+                          fontSize: 12,
                           wordSpacing: 1.8,
                           color: Color(0xff444444),
                         )),
                   ),
                 ),
-              )
+              // )
             ],
           ),
         ),
@@ -1206,7 +1214,7 @@ final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
                               isSizeLess: true),
                         )
                       : Container(
-                          height: AppConfig.verticalBlockSize * 45,
+                          height: AppConfig.verticalBlockSize * 40,
                           child: GridView.builder(
                             controller: _specialityScrollController,
                             padding: const EdgeInsets.only(bottom: 15),
@@ -1521,7 +1529,7 @@ final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
               ),
               child: Container(
                 width: 102,
-                height: AppConfig.verticalBlockSize * 14,
+                height: AppConfig.verticalBlockSize * 12,
                 padding: const EdgeInsets.all(14),
                 child: ClipRRect(
                   child: Image.network(imageUrl),

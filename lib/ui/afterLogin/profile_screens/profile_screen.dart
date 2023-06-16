@@ -196,7 +196,8 @@ class _DoctorInfoState extends State<DoctorInfo> with TickerProviderStateMixin {
           key: scaffoldKey,
           appBar: widget.getAppBar(context, plunesStrings.profile, true)
               as PreferredSizeWidget?,
-          body: _getBodyWidget()),
+          body: _getBodyWidget(),
+      ),
     );
   }
 
@@ -432,9 +433,9 @@ class _DoctorInfoState extends State<DoctorInfo> with TickerProviderStateMixin {
                         children: [
                           _getRatingAndPatientServedWidget(),
                           _getCentresWidgetList(),
-                          const SizedBox(height: 13),
-                          _getHeadingWidget(plunesStrings.introduction),
-                          const SizedBox(height: 13),
+                          const SizedBox(height: 20),
+                          _getHeadingWidget(plunesStrings.introduction, isBold: true),
+                          const SizedBox(height: 12),
                           ReadMoreText(
                             _profileResponse!.user?.biography ?? _getEmptyString(),
                             colorClickableText: PlunesColors.SPARKLINGGREEN,
@@ -443,9 +444,9 @@ class _DoctorInfoState extends State<DoctorInfo> with TickerProviderStateMixin {
                             trimCollapsedText: '  ...read more',
                             trimExpandedText: '  read less',
                             style: const TextStyle(color: PlunesColors.GREYCOLOR, fontSize: 14),),
-                          const SizedBox(height: 20),
-                          _getHeadingWidget('This Facility Has'),
-                          const SizedBox(height: 13),
+                          const SizedBox(height: 24),
+                          _getHeadingWidget('This Facility Has', isBold: true),
+                          const SizedBox(height: 12),
                           _getFacilityHaveWidget(),
                           // _getTabBar(),
                           (_profileResponse!.user!.hasMedia != null &&
@@ -463,6 +464,10 @@ class _DoctorInfoState extends State<DoctorInfo> with TickerProviderStateMixin {
                       ),
                     ),
                     _getTestConsProcedureWidgets(),
+                    const SizedBox(height: 24),
+                    Padding(
+                        padding: const EdgeInsets.only(left: 12),
+                        child: _getHeadingWidget('Check your insurance provider', isBold: true)),
                     Container(
                         child: ShowInsuranceListScreen(
                       profId: widget.userID,
@@ -554,13 +559,13 @@ class _DoctorInfoState extends State<DoctorInfo> with TickerProviderStateMixin {
               itemCount: _slotArray!.length,
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) => Container(
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 margin:
                     EdgeInsets.only(left: AppConfig.horizontalBlockSize * 4),
                 decoration: BoxDecoration(
                     color: PlunesColors.WHITECOLOR,
                     shape: BoxShape.rectangle,
-                    borderRadius: BorderRadius.all(Radius.circular(30)),
+                    borderRadius: const BorderRadius.all(Radius.circular(30)),
                     border:
                         Border.all(color: PlunesColors.BLACKCOLOR, width: .8)),
                 alignment: Alignment.center,
@@ -605,10 +610,10 @@ class _DoctorInfoState extends State<DoctorInfo> with TickerProviderStateMixin {
                   _mediaContent!.success == null ||
                   !_mediaContent!.success!)
               ? Container(
-                  child: CustomWidgets().errorWidget(
-                      _failureCauseForMediaContent ?? "No media found"),
                   margin: EdgeInsets.symmetric(
                       vertical: AppConfig.verticalBlockSize * 2),
+                  child: CustomWidgets().errorWidget(
+                      _failureCauseForMediaContent ?? "No media found"),
                 )
               : PhotosWidget(_mediaContent);
         });
@@ -659,7 +664,13 @@ class _DoctorInfoState extends State<DoctorInfo> with TickerProviderStateMixin {
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) {
                 return Card(
-                    margin: EdgeInsets.only(right: 15, bottom: 10, top: 10),
+                    margin: const EdgeInsets.only(right: 15, bottom: 10, top: 10),
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(16),
+                            bottomRight: Radius.circular(16),
+                            topLeft: Radius.circular(16),
+                            topRight: Radius.circular(16))),
                     child: InkWell(
                       splashColor: PlunesColors.GREENCOLOR.withOpacity(0.5),
                       onTap: () => _openDocDetails(
@@ -672,7 +683,7 @@ class _DoctorInfoState extends State<DoctorInfo> with TickerProviderStateMixin {
                               child: Container(
                                 width: double.infinity,
                                 child: ClipRRect(
-                                  borderRadius: BorderRadius.only(
+                                  borderRadius: const BorderRadius.only(
                                       topLeft: Radius.circular(16),
                                       topRight: Radius.circular(16)),
                                   child: CustomWidgets().getImageFromUrl(
@@ -741,13 +752,7 @@ class _DoctorInfoState extends State<DoctorInfo> with TickerProviderStateMixin {
                           ],
                         ),
                       ),
-                    ),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(16),
-                            bottomRight: Radius.circular(16),
-                            topLeft: Radius.circular(16),
-                            topRight: Radius.circular(16))));
+                    ));
               },
             ),
           );
@@ -806,7 +811,7 @@ class _DoctorInfoState extends State<DoctorInfo> with TickerProviderStateMixin {
                     itemBuilder: (context, index) {
                       return Card(
                           elevation: 0,
-                          margin: EdgeInsets.only(right: 20, bottom: 2),
+                          margin: const EdgeInsets.only(right: 20, bottom: 2),
                           child: InkWell(
                             hoverColor: Colors.transparent,
                             highlightColor: Colors.transparent,
@@ -985,6 +990,7 @@ class _DoctorInfoState extends State<DoctorInfo> with TickerProviderStateMixin {
       left: 0,
       right: 0,
       child: Card(
+        elevation: 2,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9)),
         margin:
             EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 3),
@@ -1003,10 +1009,13 @@ class _DoctorInfoState extends State<DoctorInfo> with TickerProviderStateMixin {
                         _profileResponse!.user?.name)!,
                     maxLines: 2,
                     textAlign: TextAlign.left,
-                    style: TextStyle(color: Colors.black, fontSize: 18.0),
+                    style: const TextStyle(color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.8,
+                        fontSize: 18.0),
                   )),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
                     child: Icon(Icons.info_outline, size: 24),
                   )
                 ],
@@ -1014,7 +1023,8 @@ class _DoctorInfoState extends State<DoctorInfo> with TickerProviderStateMixin {
               (_profileResponse!.user!.address != null &&
                       _profileResponse!.user!.address!.trim().isNotEmpty)
                   ? Container(
-                      margin: EdgeInsets.only(top: 8),
+                      margin: const EdgeInsets.only(top: 1),
+                      padding: const EdgeInsets.only(bottom: 6),
                       child: InkWell(
                         onTap: () {
                           if (_profileResponse != null &&
@@ -1038,19 +1048,22 @@ class _DoctorInfoState extends State<DoctorInfo> with TickerProviderStateMixin {
                                   Text(" Location",
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
-                                          fontSize: 14,
+                                          fontSize: 14.5,
                                           color: Color(
                                               CommonMethods.getColorHexFromStr(
                                                   "#747474")))),
                                   Container(
-                                    margin: EdgeInsets.only(top: 5),
+                                    margin:const  EdgeInsets.only(top: 8),
                                     child: Row(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
                                       children: [
-                                        Icon(
+                                        const Icon(
                                           Icons.location_on,
                                           size: 20,
+                                        ),
+                                        const SizedBox(
+                                          width: 4,
                                         ),
                                         Expanded(
                                             child: Text(
@@ -1060,7 +1073,7 @@ class _DoctorInfoState extends State<DoctorInfo> with TickerProviderStateMixin {
                                           maxLines: 2,
                                           textAlign: TextAlign.left,
                                           style: TextStyle(
-                                              fontSize: 12,
+                                              fontSize: 13,
                                               color: Color(CommonMethods
                                                   .getColorHexFromStr(
                                                       "#797979"))),
@@ -1074,12 +1087,15 @@ class _DoctorInfoState extends State<DoctorInfo> with TickerProviderStateMixin {
                             Container(
                               height: 40,
                               width: 40,
-                              margin: EdgeInsets.only(left: 5),
+                              margin: const EdgeInsets.only(left: 5),
                               child: Image.asset(
                                 PlunesImages.setLocationMap,
                                 fit: BoxFit.fill,
                               ),
-                            )
+                            ),
+                            const SizedBox(
+                              width: 4,
+                            ),
                           ],
                         ),
                       ),
@@ -1333,9 +1349,9 @@ class _DoctorInfoState extends State<DoctorInfo> with TickerProviderStateMixin {
     );
   }
 
-  Widget _getHeadingWidget(String text) {
+  Widget _getHeadingWidget(String text, {var isBold = false}) {
     return Text(text,
-      style: const TextStyle(color: Colors.black, fontSize: 20.0),
+      style: TextStyle(color: Colors.black, fontWeight: isBold ? FontWeight.bold : null, fontSize: 20.0),
     );
   }
 
@@ -1662,30 +1678,34 @@ class _DoctorInfoState extends State<DoctorInfo> with TickerProviderStateMixin {
 
   Widget _getBookAppointmentButton() {
     if (widget.docId != null && widget.openEnterDetailScreen != null) {
-      return Container(
-        padding: EdgeInsets.symmetric(vertical: 7),
-        margin: EdgeInsets.symmetric(
-            horizontal: AppConfig.horizontalBlockSize * 26),
-        child: InkWell(
-          onTap: () {
-            print("------- open book oyour treatemnet");
-            widget.openEnterDetailScreen!();
-          },
-          onDoubleTap: () {},
-          hoverColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          splashColor: Colors.transparent,
-          focusColor: Colors.transparent,
-          child: CustomWidgets().getRoundedButton(
-              PlunesStrings.bookAppointmentText,
-              4,
-              CommonMethods.getColorForSpecifiedCode("#25B281"),
-              20,
-              8,
-              PlunesColors.WHITECOLOR,
-              hasBorder: true,
-              borderColor: CommonMethods.getColorForSpecifiedCode("#25B281"),
-              borderWidth: 1.2),
+      return Material(
+        elevation: 20,
+        child: Container(
+          height: 60,
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          margin: EdgeInsets.symmetric(
+              horizontal: AppConfig.horizontalBlockSize * 20),
+          child: InkWell(
+            onTap: () {
+              print("------- open book oyour treatemnet");
+              widget.openEnterDetailScreen!();
+            },
+            onDoubleTap: () {},
+            hoverColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            splashColor: Colors.transparent,
+            focusColor: Colors.transparent,
+            child: CustomWidgets().getRoundedButton(
+                PlunesStrings.bookAppointmentText,
+                4,
+                CommonMethods.getColorForSpecifiedCode("#25B281"),
+                20,
+                8,
+                PlunesColors.WHITECOLOR,
+                hasBorder: true,
+                borderColor: CommonMethods.getColorForSpecifiedCode("#25B281"),
+                borderWidth: 1.2),
+          ),
         ),
       );
     }
@@ -1715,8 +1735,8 @@ class _PhotosWidgetState extends State<PhotosWidget> {
                 widget.mediaContent!.data!.hosPictures == null ||
                 widget.mediaContent!.data!.hosPictures!.isEmpty))
         ? Container(
-            child: CustomWidgets().errorWidget("No media found"),
-            margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 2),)
+            margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 2),
+            child: CustomWidgets().errorWidget("No media found"),)
         : Container(
             child: Column(
               children: [
@@ -1730,7 +1750,7 @@ class _PhotosWidgetState extends State<PhotosWidget> {
                         children: [
                           const Text('Photos',
                             style: TextStyle(
-                                fontSize: 20, color: PlunesColors.BLACKCOLOR),),
+                                fontSize: 20, fontWeight: FontWeight.bold, color: PlunesColors.BLACKCOLOR),),
                           const SizedBox(
                             height: 13,
                           ),
@@ -1757,7 +1777,13 @@ class _PhotosWidgetState extends State<PhotosWidget> {
                                 return Container(
                                   width: AppConfig.horizontalBlockSize * 62,
                                   child: Card(
-                                      margin: EdgeInsets.only(right: 20),
+                                      margin: const EdgeInsets.only(right: 20),
+                                      shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.only(
+                                              bottomLeft: Radius.circular(6),
+                                              bottomRight: Radius.circular(6),
+                                              topLeft: Radius.circular(13),
+                                              topRight: Radius.circular(13))),
                                       child: InkWell(
                                         onTap: () {
                                           List<Photo> photos = [];
@@ -1798,13 +1824,7 @@ class _PhotosWidgetState extends State<PhotosWidget> {
                                                       "",
                                                   boxFit: BoxFit.fill),
                                         ),
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.only(
-                                              bottomLeft: Radius.circular(6),
-                                              bottomRight: Radius.circular(6),
-                                              topLeft: Radius.circular(13),
-                                              topRight: Radius.circular(13)))),
+                                      )),
                                 );
                               },
                             ),
@@ -1829,7 +1849,7 @@ class _PhotosWidgetState extends State<PhotosWidget> {
                           const Text(
                             'Videos',
                             style: TextStyle(
-                                fontSize: 20, color: PlunesColors.BLACKCOLOR),
+                                fontSize: 20, fontWeight: FontWeight.bold, color: PlunesColors.BLACKCOLOR),
                           ),
                           const SizedBox(height: 13),
                           Container(

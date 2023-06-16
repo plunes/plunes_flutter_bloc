@@ -75,7 +75,7 @@
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/9a43523f9a25ade25b54584b205716fd/transformed/jetified-kotlin-stdlib-1.5.31.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/35663f5094e1da8713e491f23a2bb9a6/transformed/jetified-annotations-13.0.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/cf88a8f74fa9073ec5b40fab2b8c9036/transformed/jetified-kotlin-stdlib-common-1.5.31.jar</arg>
-                <arg>$USER_HOME$/.gradle/caches/transforms-3/08678d85ff528473ab880a7ac6d16c28/transformed/jetified-installreferrer-1.0-api.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/transforms-3/796c9b22c1c943abe7f45f3457cbe279/transformed/jetified-installreferrer-1.0-api.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/4e433cb9e38a94c4c2e4709324f54814/transformed/jetified-core-3.3.3.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/e56aa4c0be37d682be393a8e007001b5/transformed/jetified-gson-2.8.8.jar</arg>
                 <arg>$USER_HOME$/Library/Android/sdk/platforms/android-28/android.jar</arg>

@@ -812,48 +812,55 @@ class CustomWidgets {
       Function onButtonTap) {
     return InkWell(
       onTap: onButtonTap as void Function()?,
-      child: Container(
-        width: double.infinity,
-        child: Column(
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  color: PlunesColors.WHITECOLOR,
-                  height: AppConfig.horizontalBlockSize * 14,
-                  width: AppConfig.horizontalBlockSize * 14,
-                  child: getImageFromUrl(
-                      "https://specialities.s3.ap-south-1.amazonaws.com/new-specialization_icons/${testAndProcedures[index].sId}.png",
-                      boxFit: BoxFit.contain),
-                ),
-                Padding(
-                    padding: EdgeInsets.only(
-                        left: AppConfig.horizontalBlockSize * 2)),
-                Expanded(
-                  child: Text(
-                    testAndProcedures[index].sId ?? PlunesStrings.NA,
-                    style: TextStyle(
-                        color: PlunesColors.BLACKCOLOR,
-                        fontWeight: FontWeight.w500),
+      child: Card(
+        elevation: 2,
+        child: Container(
+          margin: const EdgeInsets.only(left: 12, right: 12, top: 4, bottom: 4),
+          width: double.infinity,
+          child: Column(
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    color: PlunesColors.WHITECOLOR,
+                    height: AppConfig.horizontalBlockSize * 14,
+                    width: AppConfig.horizontalBlockSize * 14,
+                    child: getImageFromUrl(
+                        "https://specialities.s3.ap-south-1.amazonaws.com/new-specialization_icons/${testAndProcedures[index].sId}.png",
+                        boxFit: BoxFit.contain),
                   ),
-                  flex: 3,
-                ),
-                getRightFacingWidget()
-              ],
-            ),
-            index == testAndProcedures.length - 1
-                ? Container()
-                : Container(
-                    margin: EdgeInsets.only(
-                        top: AppConfig.verticalBlockSize * 1.5,
-                        bottom: AppConfig.verticalBlockSize * 1.5),
-                    width: double.infinity,
-                    height: 0.5,
-                    color: PlunesColors.GREYCOLOR,
-                  )
-          ],
+                  Padding(
+                      padding: EdgeInsets.only(
+                          left: AppConfig.horizontalBlockSize * 5)),
+                  Expanded(
+                    child: Text(
+                      testAndProcedures[index].sId ?? PlunesStrings.NA,
+                      style: TextStyle(
+                        fontSize: 15,
+                          color: PlunesColors.BLACKCOLOR,
+                          fontWeight: FontWeight.w500),
+                    ),
+                    flex: 3,
+                  ),
+                  Text("Book    ", style: TextStyle(fontWeight: FontWeight.bold, color: PlunesColors.PARROTGREEN),)
+
+                  // getRightFacingWidget()
+                ],
+              ),
+              // index == testAndProcedures.length - 1
+              //     ? Container()
+              //     : Container(
+              //         margin: EdgeInsets.only(
+              //             top: AppConfig.verticalBlockSize * 1.5,
+              //             bottom: AppConfig.verticalBlockSize * 1.5),
+              //         width: double.infinity,
+              //         height: 0.5,
+              //         color: PlunesColors.GREYCOLOR,
+              //       )
+            ],
+          ),
         ),
       ),
     );

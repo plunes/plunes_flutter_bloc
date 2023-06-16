@@ -434,6 +434,7 @@ class _BookingMainScreenState extends State<BookingMainScreen>
             child: Padding(
           padding: EdgeInsets.only(left: AppConfig.horizontalBlockSize * 3),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Row(
@@ -450,7 +451,7 @@ class _BookingMainScreenState extends State<BookingMainScreen>
                             PlunesStrings.NA,
                         style: TextStyle(
                             fontSize: AppConfig.mediumFont,
-                            fontWeight: FontWeight.w600,
+                            // fontWeight: FontWeight.w600,
                             color: PlunesColors.BLACKCOLOR),
                       ),
                     ),
@@ -467,14 +468,13 @@ class _BookingMainScreenState extends State<BookingMainScreen>
                           children: <Widget>[
                             Icon(Icons.star,
                                 color: PlunesColors.GREENCOLOR,
-                                size: AppConfig.largeFont),
-                            Text(
-                              _docProfileInfo!.user?.rating
-                                      ?.toStringAsFixed(1) ??
-                                  PlunesStrings.NA,
-                              style: TextStyle(
-                                  color: PlunesColors.GREYCOLOR,
-                                  fontSize: AppConfig.mediumFont),
+                                size: AppConfig.mediumFont),
+                            Text(" ${_docProfileInfo!.user?.rating
+                                ?.toStringAsFixed(1) ??
+                                PlunesStrings.NA}",
+                              style: const TextStyle(
+                                  color: PlunesColors.BLACKCOLOR,
+                                  fontSize: 15),
                             ),
                           ],
                         ),
@@ -799,19 +799,22 @@ class _BookingMainScreenState extends State<BookingMainScreen>
 
   _getPayNowWidget() {
     return Padding(
-      padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
+      padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * .5),
       child: Container(
         width: double.infinity,
         padding: EdgeInsets.only(
-            bottom: AppConfig.verticalBlockSize * 1.5,
-            top: AppConfig.verticalBlockSize * 0.5),
+            // bottom: AppConfig.verticalBlockSize * 1.5,
+            left: 10, right: 10,
+            // top: AppConfig.verticalBlockSize * 0.5
+        ),
         child: widget.appointmentModel == null
             ? Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Expanded(
-                    child: Container(
+                  // Expanded(
+                  //   child:
+                    Container(
                       child: Column(
                         children: [
                           Text("\u20B9 ${_calcPriceToShow()}",
@@ -828,9 +831,9 @@ class _BookingMainScreenState extends State<BookingMainScreen>
                         ],
                       ),
                     ),
-                  ),
-                  Expanded(
-                      child:
+                  // ),
+                  // Expanded(
+                  //     child:
                           // StreamBuilder<RequestState>(
                           //     stream: _cartMainBloc!.baseStream,
                           //     builder: (context, snapshot) {
@@ -870,8 +873,8 @@ class _BookingMainScreenState extends State<BookingMainScreen>
                           //       }
                           //       return
                           Container(
-                    margin: EdgeInsets.only(
-                        right: AppConfig.horizontalBlockSize * 2.5),
+                    // margin: EdgeInsets.only(
+                        // right: AppConfig.horizontalBlockSize * 2.5),
                     child: InkWell(
                       splashColor: Colors.transparent,
                       highlightColor: Colors.transparent,
@@ -922,7 +925,8 @@ class _BookingMainScreenState extends State<BookingMainScreen>
                           borderColor: PlunesColors.SPARKLINGGREEN,
                           hasBorder: true),
                     ),
-                  )),
+                  // )
+    ),
                   //   )
                 ],
               )
@@ -2193,7 +2197,7 @@ class _BookingMainScreenState extends State<BookingMainScreen>
                               border: InputBorder.none,
                               labelText: PlunesStrings.enterName,
                               labelStyle: TextStyle(
-                                  color: PlunesColors.GREYCOLOR, fontSize: 13),
+                                  color: PlunesColors.BLACKCOLOR, fontSize: 13),
                               hintStyle: TextStyle(
                                   color: PlunesColors.GREYCOLOR, fontSize: 15)),
                         )),
@@ -2223,7 +2227,7 @@ class _BookingMainScreenState extends State<BookingMainScreen>
                                     border: InputBorder.none,
                                     labelText: "Enter procedure",
                                     labelStyle: TextStyle(
-                                        color: PlunesColors.GREYCOLOR,
+                                        color: PlunesColors.BLACKCOLOR,
                                         fontSize: 13)))),
                       ],
                     ),
@@ -2257,7 +2261,7 @@ class _BookingMainScreenState extends State<BookingMainScreen>
                                         counterText: "",
                                         labelText: "Enter age",
                                         labelStyle: TextStyle(
-                                            color: PlunesColors.GREYCOLOR,
+                                            color: PlunesColors.BLACKCOLOR,
                                             fontSize: 13))),
                               ),
                             ],

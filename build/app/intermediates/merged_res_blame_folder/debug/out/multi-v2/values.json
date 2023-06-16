@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "/Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values/values.xml",
+            "outputFile": "/Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values/values.xml",
             "map": [
                 {
                     "source": "/Users/gautamsinghmaurya/.gradle/caches/transforms-3/dee6d8c8b6dc19e3e57710a9da8960af/transformed/jetified-exoplayer-core-2.18.1/res/values/values.xml",
@@ -21,20 +21,20 @@
                     }
                 },
                 {
-                    "source": "/Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/android/app/src/main/res/values/string.xml",
+                    "source": "/Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/app/generated/res/google-services/debug/values/values.xml",
                     "from": {
-                        "startLines": "1",
-                        "startColumns": "4",
-                        "startOffsets": "16",
-                        "endColumns": "59",
-                        "endOffsets": "71"
+                        "startLines": "2,3,4,5,6,7,8,9",
+                        "startColumns": "4,4,4,4,4,4,4,4",
+                        "startOffsets": "55,199,308,390,494,597,717,815",
+                        "endColumns": "143,108,81,103,102,119,97,74",
+                        "endOffsets": "194,303,385,489,592,712,810,885"
                     },
                     "to": {
-                        "startLines": "492",
-                        "startColumns": "4",
-                        "startOffsets": "34513",
-                        "endColumns": "59",
-                        "endOffsets": "34568"
+                        "startLines": "470,484,485,486,487,488,489,493",
+                        "startColumns": "4,4,4,4,4,4,4,4",
+                        "startOffsets": "32703,33790,33899,33981,34085,34188,34308,34573",
+                        "endColumns": "143,108,81,103,102,119,97,74",
+                        "endOffsets": "32842,33894,33976,34080,34183,34303,34401,34643"
                     }
                 },
                 {
@@ -52,6 +52,23 @@
                         "startOffsets": "25247",
                         "endColumns": "49",
                         "endOffsets": "25292"
+                    }
+                },
+                {
+                    "source": "/Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/android/app/src/main/res/values/string.xml",
+                    "from": {
+                        "startLines": "1",
+                        "startColumns": "4",
+                        "startOffsets": "16",
+                        "endColumns": "59",
+                        "endOffsets": "71"
+                    },
+                    "to": {
+                        "startLines": "492",
+                        "startColumns": "4",
+                        "startOffsets": "34513",
+                        "endColumns": "59",
+                        "endOffsets": "34568"
                     }
                 },
                 {
@@ -129,6 +146,23 @@
                     }
                 },
                 {
+                    "source": "/Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_crashlytics/intermediates/packaged_res/debug/values/values.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "60",
+                        "endOffsets": "111"
+                    },
+                    "to": {
+                        "startLines": "19",
+                        "startColumns": "4",
+                        "startOffsets": "966",
+                        "endColumns": "60",
+                        "endOffsets": "1022"
+                    }
+                },
+                {
                     "source": "/Users/gautamsinghmaurya/.gradle/caches/transforms-3/00ca8128597179fb2594589349c9973f/transformed/jetified-startup-runtime-1.1.1/res/values/values.xml",
                     "from": {
                         "startLines": "2",
@@ -199,25 +233,6 @@
                     }
                 },
                 {
-                    "source": "/Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/packaged_res/debug/values/values.xml",
-                    "from": {
-                        "startLines": "2,3,4,5,6,7,8,11,14",
-                        "startColumns": "4,4,4,4,4,4,4,4,4",
-                        "startOffsets": "55,102,153,210,259,306,353,426,502",
-                        "endLines": "2,3,4,5,6,7,10,13,21",
-                        "endColumns": "46,50,56,48,46,46,12,12,12",
-                        "endOffsets": "97,148,205,254,301,348,421,497,949"
-                    },
-                    "to": {
-                        "startLines": "422,423,424,425,426,490,509,1610,2014",
-                        "startColumns": "4,4,4,4,4,4,4,4,4",
-                        "startOffsets": "27676,27723,27774,27831,27880,34406,35833,105636,134380",
-                        "endLines": "422,423,424,425,426,490,511,1612,2021",
-                        "endColumns": "46,50,56,48,46,46,12,12,12",
-                        "endOffsets": "27718,27769,27826,27875,27922,34448,35901,105707,134827"
-                    }
-                },
-                {
                     "source": "/Users/gautamsinghmaurya/.gradle/caches/transforms-3/992c409fa2324ef5eeb324c08fe7ed56/transformed/jetified-window-1.0.0-beta04/res/values/values.xml",
                     "from": {
                         "startLines": "2,7,8,9,10,11,19,23,34,51",
@@ -254,41 +269,7 @@
                     }
                 },
                 {
-                    "source": "/Users/gautamsinghmaurya/.gradle/caches/transforms-3/65402062dd810e6ef83172d852d85925/transformed/jetified-firebase-messaging-23.1.1/res/values/values.xml",
-                    "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "55",
-                        "endColumns": "81",
-                        "endOffsets": "132"
-                    },
-                    "to": {
-                        "startLines": "483",
-                        "startColumns": "4",
-                        "startOffsets": "33708",
-                        "endColumns": "81",
-                        "endOffsets": "33785"
-                    }
-                },
-                {
-                    "source": "/Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/firebase_crashlytics/intermediates/packaged_res/debug/values/values.xml",
-                    "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "55",
-                        "endColumns": "60",
-                        "endOffsets": "111"
-                    },
-                    "to": {
-                        "startLines": "19",
-                        "startColumns": "4",
-                        "startOffsets": "966",
-                        "endColumns": "60",
-                        "endOffsets": "1022"
-                    }
-                },
-                {
-                    "source": "/Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/android/app/src/main/res/values/styles.xml",
+                    "source": "/Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/android/app/src/main/res/values/styles.xml",
                     "from": {
                         "startLines": "3,14",
                         "startColumns": "4,4",
@@ -304,6 +285,23 @@
                         "endLines": "1617,1678",
                         "endColumns": "12,12",
                         "endOffsets": "106015,108710"
+                    }
+                },
+                {
+                    "source": "/Users/gautamsinghmaurya/.gradle/caches/transforms-3/65402062dd810e6ef83172d852d85925/transformed/jetified-firebase-messaging-23.1.1/res/values/values.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "81",
+                        "endOffsets": "132"
+                    },
+                    "to": {
+                        "startLines": "483",
+                        "startColumns": "4",
+                        "startOffsets": "33708",
+                        "endColumns": "81",
+                        "endOffsets": "33785"
                     }
                 },
                 {
@@ -323,23 +321,6 @@
                         "endLines": "117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,286,287,288,289,290,291,292,293,294,295,296,297,298,299,300,301,302,303,304,305,306,307,394,496,497,498,499,500,501,502,503,2182,2189,2198,2207,2216,2222,3861,3883",
                         "endColumns": "89,91,48,58,78,64,65,62,60,56,53,89,88,87,55,70,77,48,69,76,85,87,92,81,66,65,60,84,77,64,66,57,74,60,58,74,60,59,55,50,60,63,60,58,72,68,67,43,125,61,57,48,185,47,45,12,12,12,12,12,12,24,24",
                         "endOffsets": "8004,8096,8145,8204,8283,8348,8414,8477,8538,8595,8649,8739,8828,8916,8972,9043,9121,9170,9240,9317,9403,9491,9584,9666,19575,19641,19702,19787,19865,19930,19997,20055,20130,20191,20250,20325,20386,20446,20502,20553,20614,20678,20739,20798,20871,20940,25805,34811,34937,34999,35057,35106,35292,35340,35386,146268,146689,147235,147779,148231,148599,209453,210377"
-                    }
-                },
-                {
-                    "source": "/Users/gautamsinghmaurya/Freelance/plunes/Code/manage_branch/latest_code/plunes_flutter_bloc/build/app/generated/res/google-services/debug/values/values.xml",
-                    "from": {
-                        "startLines": "2,3,4,5,6,7,8,9",
-                        "startColumns": "4,4,4,4,4,4,4,4",
-                        "startOffsets": "55,199,308,390,494,597,717,815",
-                        "endColumns": "143,108,81,103,102,119,97,74",
-                        "endOffsets": "194,303,385,489,592,712,810,885"
-                    },
-                    "to": {
-                        "startLines": "470,484,485,486,487,488,489,493",
-                        "startColumns": "4,4,4,4,4,4,4,4",
-                        "startOffsets": "32703,33790,33899,33981,34085,34188,34308,34573",
-                        "endColumns": "143,108,81,103,102,119,97,74",
-                        "endOffsets": "32842,33894,33976,34080,34183,34303,34401,34643"
                     }
                 },
                 {
@@ -395,6 +376,25 @@
                         "endLines": "3310",
                         "endColumns": "20",
                         "endOffsets": "188403"
+                    }
+                },
+                {
+                    "source": "/Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/flutter_inappwebview/intermediates/packaged_res/debug/values/values.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,11,14",
+                        "startColumns": "4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "55,102,153,210,259,306,353,426,502",
+                        "endLines": "2,3,4,5,6,7,10,13,21",
+                        "endColumns": "46,50,56,48,46,46,12,12,12",
+                        "endOffsets": "97,148,205,254,301,348,421,497,949"
+                    },
+                    "to": {
+                        "startLines": "422,423,424,425,426,490,509,1610,2014",
+                        "startColumns": "4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "27676,27723,27774,27831,27880,34406,35833,105636,134380",
+                        "endLines": "422,423,424,425,426,490,511,1612,2021",
+                        "endColumns": "46,50,56,48,46,46,12,12,12",
+                        "endOffsets": "27718,27769,27826,27875,27922,34448,35901,105707,134827"
                     }
                 },
                 {
