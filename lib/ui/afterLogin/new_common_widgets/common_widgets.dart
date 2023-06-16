@@ -3595,10 +3595,10 @@ class CommonWidgets {
     }
     return Card(
       margin: EdgeInsets.only(left: 20, right: 20, bottom: index == 4 ? 20 : 8),
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(8))),
       child: Container(
-        margin: EdgeInsets.only(top: 8, bottom: 10, right: 8, left: 5),
+        margin: const EdgeInsets.only(top: 8, bottom: 10, right: 8, left: 5),
         child: Column(
           children: [
             Row(
@@ -3609,7 +3609,7 @@ class CommonWidgets {
                   width: 130,
                   color: Colors.transparent,
                   child: ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                    borderRadius: const BorderRadius.all(Radius.circular(5)),
                     child: CustomWidgets().getImageFromUrl(
                         docData?.imageUrl ?? "",
                         placeHolderPath: PlunesImages.doc_placeholder,
@@ -3618,7 +3618,7 @@ class CommonWidgets {
                 ),
                 Flexible(
                     child: Container(
-                  margin: EdgeInsets.only(left: 15, top: 5),
+                  margin: const EdgeInsets.only(left: 15, top: 5),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -3634,7 +3634,7 @@ class CommonWidgets {
                         ),
                       ),
                       Container(
-                        margin: EdgeInsets.only(top: 4),
+                        margin: const EdgeInsets.only(top: 4),
                         child: Text(
                           docData?.department ?? "",
                           maxLines: 2,
@@ -3646,13 +3646,12 @@ class CommonWidgets {
                         ),
                       ),
                       Container(
-                        margin: EdgeInsets.only(top: 10),
+                        margin: const EdgeInsets.only(top: 10),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(15)),
                             color: Color(
                                 CommonMethods.getColorHexFromStr("#F3F4F9"))),
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 12, vertical: 3),
+                        padding:const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -3679,7 +3678,7 @@ class CommonWidgets {
                               ),
                             ),
                             Container(
-                              child: Text("5",
+                              child: Text("${docData?.rating as double? ?? 4.6}",
                                   style: TextStyle(
                                       fontSize: 12,
                                       color: Color(

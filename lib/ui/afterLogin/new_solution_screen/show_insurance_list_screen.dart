@@ -227,10 +227,28 @@ class _ShowInsuranceListScreenState extends State<ShowInsuranceListScreen> {
     if (mounted) setState(() {});
   }
 
+  Widget _getHeadingWidget(String text,) {
+    return Text(text,
+      textAlign: TextAlign.left,
+      style: TextStyle(color: Colors.black,
+          fontWeight:FontWeight.bold, fontSize: 20.0),
+    );
+  }
+
   Widget _getInsuranceListWidget() {
     List<InsuranceProvider> _list = [];
     return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+
+        _getListItems(_list) != null &&
+            _getListItems(_list)!.isNotEmpty ? const SizedBox(height: 24) : const SizedBox.shrink(),
+        _getListItems(_list) != null &&
+            _getListItems(_list)!.isNotEmpty ? Padding(
+            padding: const EdgeInsets.only(left: 12),
+            child: _getHeadingWidget('Check your insurance provider')) : const SizedBox.shrink(),
+
         Expanded(
           child: Container(
             margin: const EdgeInsets.symmetric(vertical: 5),

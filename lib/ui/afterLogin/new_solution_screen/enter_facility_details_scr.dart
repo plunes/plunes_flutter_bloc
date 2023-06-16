@@ -777,23 +777,23 @@ class _EnterAdditionalUserDetailScrState extends State<EnterAdditionalUserDetail
       child: SingleChildScrollView(
         child: Column(
           children: [
-            (widget.catalogueData.service != null &&
-                    widget.catalogueData.family != null &&
-                    (widget.catalogueData.service!.trim().toLowerCase() !=
-                        widget.catalogueData.family!.trim().toLowerCase()))
-                ? Container(
-                    margin: EdgeInsets.only(bottom: 7),
-                    width: double.infinity,
-                    child: Text(
-                      "${widget.catalogueData.service!.trim()}",
-                      textAlign: TextAlign.left,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                          fontSize: 20, color: PlunesColors.BLACKCOLOR),
-                    ),
-                  )
-                : Container(),
+            // (widget.catalogueData.service != null &&
+            //         widget.catalogueData.family != null &&
+            //         (widget.catalogueData.service!.trim().toLowerCase() !=
+            //             widget.catalogueData.family!.trim().toLowerCase()))
+            //     ? Container(
+            //         margin: EdgeInsets.only(bottom: 7),
+            //         width: double.infinity,
+            //         child: Text(
+            //           "${widget.catalogueData.service!.trim()}",
+            //           textAlign: TextAlign.left,
+            //           maxLines: 2,
+            //           overflow: TextOverflow.ellipsis,
+            //           style: const TextStyle(
+            //               fontSize: 20, color: PlunesColors.BLACKCOLOR),
+            //         ),
+            //       )
+            //     : Container(),
             Container(
               width: double.infinity,
               child: Text(

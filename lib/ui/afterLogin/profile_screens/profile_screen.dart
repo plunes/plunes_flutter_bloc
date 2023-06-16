@@ -464,10 +464,6 @@ class _DoctorInfoState extends State<DoctorInfo> with TickerProviderStateMixin {
                       ),
                     ),
                     _getTestConsProcedureWidgets(),
-                    const SizedBox(height: 24),
-                    Padding(
-                        padding: const EdgeInsets.only(left: 12),
-                        child: _getHeadingWidget('Check your insurance provider', isBold: true)),
                     Container(
                         child: ShowInsuranceListScreen(
                       profId: widget.userID,
@@ -492,7 +488,7 @@ class _DoctorInfoState extends State<DoctorInfo> with TickerProviderStateMixin {
                               Container(
                                 alignment: Alignment.topLeft,
                                 margin: EdgeInsets.symmetric(horizontal: 13),
-                                child: _getHeadingWidget('Specialization'),
+                                child: _getHeadingWidget('Specialization', isBold: true),
                               ),
                               const SizedBox(height: 13),
                               Container(
@@ -1292,7 +1288,7 @@ class _DoctorInfoState extends State<DoctorInfo> with TickerProviderStateMixin {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(height: 20),
-        _getHeadingWidget("Centers"),
+        _getHeadingWidget("Centers", isBold: true),
         Container(
           height: AppConfig.verticalBlockSize * 4.5,
           margin: EdgeInsets.only(top: 13),
@@ -1392,7 +1388,7 @@ class _DoctorInfoState extends State<DoctorInfo> with TickerProviderStateMixin {
                 const SizedBox(height: 20),
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 20),
-                  child: _getHeadingWidget("Book Consultation"),
+                  child: _getHeadingWidget("Book Consultation", isBold: true),
                   alignment: Alignment.topLeft,
                 ),
                 const SizedBox(height: 13),
@@ -1512,7 +1508,7 @@ class _DoctorInfoState extends State<DoctorInfo> with TickerProviderStateMixin {
           const SizedBox(height: 20),
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 20),
-            child: _getHeadingWidget("Book Test"),
+            child: _getHeadingWidget("Book Test", isBold: true),
             alignment: Alignment.topLeft,
           ),
           const SizedBox(height: 13),
@@ -1559,7 +1555,7 @@ class _DoctorInfoState extends State<DoctorInfo> with TickerProviderStateMixin {
           const SizedBox(height: 20),
           Container(
               margin: const EdgeInsets.symmetric(horizontal: 20),
-              child: _getHeadingWidget("Book Procedure"),
+              child: _getHeadingWidget("Book Procedure", isBold: true),
               alignment: Alignment.topLeft),
           const SizedBox(height: 13),
           ListView.builder(
