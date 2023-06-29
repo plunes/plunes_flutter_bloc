@@ -2066,7 +2066,7 @@ class _AchievementWidgetState extends State<AchievementWidget> {
         children: [
           SizedBox(height: 20),
           Text('Achievements',
-              style: TextStyle(fontSize: 20, color: PlunesColors.BLACKCOLOR)),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: PlunesColors.BLACKCOLOR)),
           SizedBox(
             height: 13,
           ),

@@ -156,6 +156,11 @@ public final class GeneratedPluginRegistrant {
       Log.e(TAG, "Error registering plugin smart_auth, fman.ge.smart_auth.SmartAuthPlugin", e);
     }
     try {
+      flutterEngine.getPlugins().add(new com.jaumard.smsautofill.SmsAutoFillPlugin());
+    } catch(Exception e) {
+      Log.e(TAG, "Error registering plugin sms_autofill, com.jaumard.smsautofill.SmsAutoFillPlugin", e);
+    }
+    try {
       flutterEngine.getPlugins().add(new com.oohyugi.sms_otp_auto_verify.SmsOtpAutoVerifyPlugin());
     } catch(Exception e) {
       Log.e(TAG, "Error registering plugin sms_otp_auto_verify, com.oohyugi.sms_otp_auto_verify.SmsOtpAutoVerifyPlugin", e);

@@ -156,6 +156,12 @@
 @import smart_auth;
 #endif
 
+#if __has_include(<sms_autofill/SmsAutoFillPlugin.h>)
+#import <sms_autofill/SmsAutoFillPlugin.h>
+#else
+@import sms_autofill;
+#endif
+
 #if __has_include(<sqflite/SqflitePlugin.h>)
 #import <sqflite/SqflitePlugin.h>
 #else
@@ -214,6 +220,7 @@
   [FLTSharePlusPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTSharePlusPlugin"]];
   [SharedPreferencesPlugin registerWithRegistrar:[registry registrarForPlugin:@"SharedPreferencesPlugin"]];
   [SmartAuthPlugin registerWithRegistrar:[registry registrarForPlugin:@"SmartAuthPlugin"]];
+  [SmsAutoFillPlugin registerWithRegistrar:[registry registrarForPlugin:@"SmsAutoFillPlugin"]];
   [SqflitePlugin registerWithRegistrar:[registry registrarForPlugin:@"SqflitePlugin"]];
   [UniLinksPlugin registerWithRegistrar:[registry registrarForPlugin:@"UniLinksPlugin"]];
   [FLTURLLauncherPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTURLLauncherPlugin"]];

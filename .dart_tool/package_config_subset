@@ -630,6 +630,10 @@ petitparser
 2.16
 file:///Users/gautamsinghmaurya/Freelance/flutter_3.3.10/.pub-cache/hosted/pub.dartlang.org/petitparser-5.0.0/
 file:///Users/gautamsinghmaurya/Freelance/flutter_3.3.10/.pub-cache/hosted/pub.dartlang.org/petitparser-5.0.0/lib/
+pin_input_text_field
+2.13
+file:///Users/gautamsinghmaurya/Freelance/flutter_3.3.10/.pub-cache/hosted/pub.dartlang.org/pin_input_text_field-4.4.1/
+file:///Users/gautamsinghmaurya/Freelance/flutter_3.3.10/.pub-cache/hosted/pub.dartlang.org/pin_input_text_field-4.4.1/lib/
 pinput
 2.12
 file:///Users/gautamsinghmaurya/Freelance/flutter_3.3.10/.pub-cache/hosted/pub.dartlang.org/pinput-2.2.21/
@@ -746,6 +750,10 @@ smart_auth
 2.16
 file:///Users/gautamsinghmaurya/Freelance/flutter_3.3.10/.pub-cache/hosted/pub.dartlang.org/smart_auth-1.0.8/
 file:///Users/gautamsinghmaurya/Freelance/flutter_3.3.10/.pub-cache/hosted/pub.dartlang.org/smart_auth-1.0.8/lib/
+sms_autofill
+2.12
+file:///Users/gautamsinghmaurya/Freelance/flutter_3.3.10/.pub-cache/hosted/pub.dartlang.org/sms_autofill-2.3.0/
+file:///Users/gautamsinghmaurya/Freelance/flutter_3.3.10/.pub-cache/hosted/pub.dartlang.org/sms_autofill-2.3.0/lib/
 sms_otp_auto_verify
 2.12
 file:///Users/gautamsinghmaurya/Freelance/flutter_3.3.10/.pub-cache/hosted/pub.dartlang.org/sms_otp_auto_verify-2.1.0/

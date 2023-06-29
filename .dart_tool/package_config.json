@@ -968,6 +968,12 @@
       "languageVersion": "2.16"
     },
     {
+      "name": "pin_input_text_field",
+      "rootUri": "file:///Users/gautamsinghmaurya/Freelance/flutter_3.3.10/.pub-cache/hosted/pub.dartlang.org/pin_input_text_field-4.4.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.13"
+    },
+    {
       "name": "pinput",
       "rootUri": "file:///Users/gautamsinghmaurya/Freelance/flutter_3.3.10/.pub-cache/hosted/pub.dartlang.org/pinput-2.2.21",
       "packageUri": "lib/",
@@ -1146,6 +1152,12 @@
       "rootUri": "file:///Users/gautamsinghmaurya/Freelance/flutter_3.3.10/.pub-cache/hosted/pub.dartlang.org/smart_auth-1.0.8",
       "packageUri": "lib/",
       "languageVersion": "2.16"
+    },
+    {
+      "name": "sms_autofill",
+      "rootUri": "file:///Users/gautamsinghmaurya/Freelance/flutter_3.3.10/.pub-cache/hosted/pub.dartlang.org/sms_autofill-2.3.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
     },
     {
       "name": "sms_otp_auto_verify",
@@ -1466,7 +1478,7 @@
       "languageVersion": "2.17"
     }
   ],
-  "generated": "2023-06-16T19:19:37.370374Z",
+  "generated": "2023-06-29T19:31:34.752219Z",
   "generator": "pub",
   "generatorVersion": "2.18.6"
 }

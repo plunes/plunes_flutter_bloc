@@ -13,6 +13,7 @@ import 'package:plunes/models/Models.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
+import 'package:sms_autofill/sms_autofill.dart';
 
 // import 'package:quiver/async.dart';
 import 'package:sms_otp_auto_verify/sms_otp_auto_verify.dart';
@@ -39,7 +40,7 @@ class CheckOTP extends BaseActivity {
   _CheckOTPState createState() => _CheckOTPState();
 }
 
-class _CheckOTPState extends State<CheckOTP> {
+class _CheckOTPState extends State<CheckOTP> with CodeAutoFill {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   bool progress = false, time = true, resend = false, errorMsg = false;
   int _start = 60, _current = 60;
@@ -53,6 +54,11 @@ class _CheckOTPState extends State<CheckOTP> {
   }
 
   UserBloc? _userBloc;
+
+  _listenSmsCode() async {
+    await SmsAutoFill().listenForCode();
+  }
+
 
   void _checkOTP(String pin, BuildContext context) async {
     print("------entering____otp=$pin");
@@ -139,6 +145,8 @@ class _CheckOTPState extends State<CheckOTP> {
   void initState() {
     _userBloc = UserBloc();
     controller = CountdownTimerController(endTime: endTime, onEnd: onEnd);
+    listenForCode();
+    _listenSmsCode();
     super.initState();
   }
 
@@ -323,5 +331,13 @@ class _CheckOTPState extends State<CheckOTP> {
     if (otpCode != null && otpCode.length == 4) {
       _checkOTP(otpCode, context);
     }
+  }
+
+  @override
+  void codeUpdated() {
+    setState(() {
+      textEditingController.text = code.toString();
+    });
+    _onOtpCallBack(code.toString(), false);
   }
 }
