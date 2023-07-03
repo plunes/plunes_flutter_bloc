@@ -14,7 +14,8 @@
             <stringArg name="classpath">
               <args>
                 <arg>$MODULE_DIR$/../../../../build/app/intermediates/compile_and_runtime_not_namespaced_r_class_jar/debug/R.jar</arg>
-                <arg>$USER_HOME$/.gradle/caches/transforms-3/ba4acd56bed2850acebead53501bc4aa/transformed/jetified-libs.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/transforms-3/82f5d37792b93f11a31754c1e74167ca/transformed/jetified-libs.jar</arg>
+                <arg>$MODULE_DIR$/../../../../build/sms_autofill/intermediates/compile_library_classes_jar/debug/classes.jar</arg>
                 <arg>$MODULE_DIR$/../../../../build/firebase_messaging/intermediates/compile_library_classes_jar/debug/classes.jar</arg>
                 <arg>$MODULE_DIR$/../../../../build/firebase_analytics/intermediates/compile_library_classes_jar/debug/classes.jar</arg>
                 <arg>$MODULE_DIR$/../../../../build/firebase_remote_config/intermediates/compile_library_classes_jar/debug/classes.jar</arg>
@@ -137,40 +138,41 @@
     <content url="file://$MODULE_DIR$/../../../../build/app/generated/ap_generated_sources/debugUnitTest/out" />
     <orderEntry type="jdk" jdkName="Android API 33, extension level 3 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="io.flutter.plugins.firebasemessaging.android.firebase_messaging.main" scope="TEST" />
-    <orderEntry type="module" module-name="io.flutter.plugins.firebase.analytics.android.firebase_analytics.main" scope="TEST" />
-    <orderEntry type="module" module-name="io.flutter.plugins.firebase.firebaseremoteconfig.android.firebase_remote_config.main" scope="TEST" />
-    <orderEntry type="module" module-name="io.flutter.plugins.firebase.core.android.firebase_core.main" scope="TEST" />
-    <orderEntry type="module" module-name="com.baseflow.geolocator.android.geolocator_android.main" scope="TEST" />
-    <orderEntry type="module" module-name="com.dexterous.flutterlocalnotifications.android.flutter_local_notifications.main" scope="TEST" />
-    <orderEntry type="module" module-name="com.mr.flutter.plugin.filepicker.android.file_picker.main" scope="TEST" />
-    <orderEntry type="module" module-name="io.flutter.plugins.pathprovider.android.path_provider_android.main" scope="TEST" />
-    <orderEntry type="module" module-name="fman.ge.smart_auth.android.smart_auth.main" scope="TEST" />
-    <orderEntry type="module" module-name="io.adaptant.labs.flutter_windowmanager.android.flutter_windowmanager.main" scope="TEST" />
-    <orderEntry type="module" module-name="io.flutter.plugins.sharedpreferences.android.shared_preferences_android.main" scope="TEST" />
-    <orderEntry type="module" module-name="com.pichillilorenzo.flutter_inappwebview.android.flutter_inappwebview.main" scope="TEST" />
-    <orderEntry type="module" module-name="com.baseflow.geocoding.android.geocoding.main" scope="TEST" />
-    <orderEntry type="module" module-name="dev.fluttercommunity.plus.share.android.share_plus.main" scope="TEST" />
-    <orderEntry type="module" module-name="com.jrai.flutter_keyboard_visibility.android.flutter_keyboard_visibility.main" scope="TEST" />
-    <orderEntry type="module" module-name="io.flutter.plugins.imagepicker.android.image_picker_android.main" scope="TEST" />
+    <orderEntry type="module" module-name="android.sms_autofill.main" scope="TEST" />
+    <orderEntry type="module" module-name="io.flutter.plugins.firebasemessaging.android.firebase_messaging.main~1" scope="TEST" />
+    <orderEntry type="module" module-name="io.flutter.plugins.firebase.analytics.android.firebase_analytics.main~1" scope="TEST" />
+    <orderEntry type="module" module-name="io.flutter.plugins.firebase.firebaseremoteconfig.android.firebase_remote_config.main~1" scope="TEST" />
+    <orderEntry type="module" module-name="io.flutter.plugins.firebase.core.android.firebase_core.main~1" scope="TEST" />
+    <orderEntry type="module" module-name="com.baseflow.geolocator.android.geolocator_android.main~1" scope="TEST" />
+    <orderEntry type="module" module-name="com.dexterous.flutterlocalnotifications.android.flutter_local_notifications.main~1" scope="TEST" />
+    <orderEntry type="module" module-name="com.mr.flutter.plugin.filepicker.android.file_picker.main~1" scope="TEST" />
+    <orderEntry type="module" module-name="io.flutter.plugins.pathprovider.android.path_provider_android.main~1" scope="TEST" />
+    <orderEntry type="module" module-name="fman.ge.smart_auth.android.smart_auth.main~1" scope="TEST" />
+    <orderEntry type="module" module-name="io.adaptant.labs.flutter_windowmanager.android.flutter_windowmanager.main~1" scope="TEST" />
+    <orderEntry type="module" module-name="io.flutter.plugins.sharedpreferences.android.shared_preferences_android.main~1" scope="TEST" />
+    <orderEntry type="module" module-name="com.pichillilorenzo.flutter_inappwebview.android.flutter_inappwebview.main~1" scope="TEST" />
+    <orderEntry type="module" module-name="com.baseflow.geocoding.android.geocoding.main~1" scope="TEST" />
+    <orderEntry type="module" module-name="dev.fluttercommunity.plus.share.android.share_plus.main~1" scope="TEST" />
+    <orderEntry type="module" module-name="com.jrai.flutter_keyboard_visibility.android.flutter_keyboard_visibility.main~1" scope="TEST" />
+    <orderEntry type="module" module-name="io.flutter.plugins.imagepicker.android.image_picker_android.main~1" scope="TEST" />
     <orderEntry type="module" module-name="android.uni_links.main" scope="TEST" />
-    <orderEntry type="module" module-name="io.flutter.plugins.videoplayer.android.video_player_android.main" scope="TEST" />
-    <orderEntry type="module" module-name="io.flutter.plugins.firebase.crashlytics.android.firebase_crashlytics.main" scope="TEST" />
-    <orderEntry type="module" module-name="io.flutter.plugins.flutter_plugin_android_lifecycle.android.flutter_plugin_android_lifecycle.main" scope="TEST" />
-    <orderEntry type="module" module-name="com.tekartik.sqflite.android.sqflite.main" scope="TEST" />
-    <orderEntry type="module" module-name="io.flutter.plugins.urllauncher.android.url_launcher_android.main" scope="TEST" />
-    <orderEntry type="module" module-name="com.oohyugi.sms_otp_auto_verify.android.sms_otp_auto_verify.main" scope="TEST" />
-    <orderEntry type="module" module-name="io.flutter.plugins.googlemaps.android.google_maps_flutter_android.main" scope="TEST" />
-    <orderEntry type="module" module-name="id.oddbit.flutter.facebook_app_events.android.facebook_app_events.main" scope="TEST" />
-    <orderEntry type="module" module-name="io.flutter.plugins.connectivity.android.connectivity_plus.main" scope="TEST" />
-    <orderEntry type="module" module-name="vn.hunghd.flutter.plugins.imagecropper.android.image_cropper.main" scope="TEST" />
-    <orderEntry type="module" module-name="io.flutter.plugins.webviewflutter.android.webview_flutter_android.main" scope="TEST" />
-    <orderEntry type="module" module-name="com.baseflow.permissionhandler.android.permission_handler_android.main" scope="TEST" />
-    <orderEntry type="module" module-name="io.flutter.plugins.packageinfo.android.package_info_plus.main" scope="TEST" />
-    <orderEntry type="module" module-name="dev.fluttercommunity.plus.device_info.android.device_info_plus.main" scope="TEST" />
-    <orderEntry type="module" module-name="io.github.zeshuaro.google_api_headers.android.google_api_headers.main" scope="TEST" />
+    <orderEntry type="module" module-name="io.flutter.plugins.videoplayer.android.video_player_android.main~1" scope="TEST" />
+    <orderEntry type="module" module-name="io.flutter.plugins.firebase.crashlytics.android.firebase_crashlytics.main~1" scope="TEST" />
+    <orderEntry type="module" module-name="io.flutter.plugins.flutter_plugin_android_lifecycle.android.flutter_plugin_android_lifecycle.main~1" scope="TEST" />
+    <orderEntry type="module" module-name="com.tekartik.sqflite.android.sqflite.main~1" scope="TEST" />
+    <orderEntry type="module" module-name="io.flutter.plugins.urllauncher.android.url_launcher_android.main~1" scope="TEST" />
+    <orderEntry type="module" module-name="com.oohyugi.sms_otp_auto_verify.android.sms_otp_auto_verify.main~1" scope="TEST" />
+    <orderEntry type="module" module-name="io.flutter.plugins.googlemaps.android.google_maps_flutter_android.main~1" scope="TEST" />
+    <orderEntry type="module" module-name="id.oddbit.flutter.facebook_app_events.android.facebook_app_events.main~1" scope="TEST" />
+    <orderEntry type="module" module-name="io.flutter.plugins.connectivity.android.connectivity_plus.main~1" scope="TEST" />
+    <orderEntry type="module" module-name="vn.hunghd.flutter.plugins.imagecropper.android.image_cropper.main~1" scope="TEST" />
+    <orderEntry type="module" module-name="io.flutter.plugins.webviewflutter.android.webview_flutter_android.main~1" scope="TEST" />
+    <orderEntry type="module" module-name="com.baseflow.permissionhandler.android.permission_handler_android.main~1" scope="TEST" />
+    <orderEntry type="module" module-name="io.flutter.plugins.packageinfo.android.package_info_plus.main~1" scope="TEST" />
+    <orderEntry type="module" module-name="dev.fluttercommunity.plus.device_info.android.device_info_plus.main~1" scope="TEST" />
+    <orderEntry type="module" module-name="io.github.zeshuaro.google_api_headers.android.google_api_headers.main~1" scope="TEST" />
     <orderEntry type="module" module-name="android.otpless_flutter.main" scope="TEST" />
-    <orderEntry type="module" module-name="com.lyokone.location.android.location.main" scope="TEST" />
+    <orderEntry type="module" module-name="com.lyokone.location.android.location.main~1" scope="TEST" />
     <orderEntry type="module" module-name="android.app.main" scope="TEST" />
     <orderEntry type="library" scope="TEST" name="Gradle: ./../build/app/intermediates/flutter/debug/libs.jar" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: io.flutter:armeabi_v7a_debug:1.0.0-3316dd8728419ad3534e3f6112aa6291f587078a" level="project" />

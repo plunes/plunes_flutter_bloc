@@ -4,6 +4,7 @@
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/af88cbce402603724a49e774ca35901a/transformed/jetified-installreferrer-1.0/annotations.zip!/" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/805527c84d5b8c8dbea4569f92b1261a/transformed/jetified-installreferrer-1.0/annotations.zip!/" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/576c1172ad5a4a6df71669b7601f15e7/transformed/jetified-installreferrer-1.0/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/966a44a62191417f683af1e0158a7363/transformed/jetified-installreferrer-1.0/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/af88cbce402603724a49e774ca35901a/transformed/jetified-installreferrer-1.0/jars/classes.jar!/" />
@@ -15,6 +16,9 @@
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/576c1172ad5a4a6df71669b7601f15e7/transformed/jetified-installreferrer-1.0/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/576c1172ad5a4a6df71669b7601f15e7/transformed/jetified-installreferrer-1.0/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/576c1172ad5a4a6df71669b7601f15e7/transformed/jetified-installreferrer-1.0/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/966a44a62191417f683af1e0158a7363/transformed/jetified-installreferrer-1.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/966a44a62191417f683af1e0158a7363/transformed/jetified-installreferrer-1.0/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/966a44a62191417f683af1e0158a7363/transformed/jetified-installreferrer-1.0/res" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.installreferrer/installreferrer/1.0/a572d7b98f4738eb9677ff7bce82608f28c5b0e/installreferrer-1.0-javadoc.jar!/" />

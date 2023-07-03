@@ -347,46 +347,45 @@ class _MoreFacilityScreenState extends State<MoreFacilityScreen> {
                                           AppConfig.horizontalBlockSize * 3.8,
                                       vertical:
                                           AppConfig.verticalBlockSize * 2.8),
-                                  child:
-                                      NotificationListener<ScrollNotification>(
-                                    onNotification: (scrollState) {
-                                      if (scrollState
-                                              is ScrollEndNotification &&
-                                          scrollState.metrics.extentAfter ==
-                                              0 &&
-                                          !_endReached) {
-                                        _failureCause = null;
-                                        _searchSolutionBloc!
-                                            .addIntoMoreFacilitiesStream(
-                                                RequestInProgress());
-                                        _searchSolutionBloc!.getMoreFacilities(
-                                            widget.docHosSolution!,
-                                            searchQuery: _searchController!.text
-                                                .trim()
-                                                .toString(),
-                                            pageIndex: pageIndex,
-                                            allLocationKey: _allKey,
-                                            facilityLocationFilter:
-                                                _locationFilter,
-                                            userTypeFilter: _userTypeFilter);
-                                      } else if (scrollState
-                                          is OverscrollNotification) {
-                                        _scrollParent = true;
-                                        _setState();
-                                        Future.delayed(Duration(seconds: 1))
-                                            .then((value) {
-                                          _scrollParent = false;
-                                          _setState();
-                                        });
-                                      }
-                                      return;
-                                    } as bool Function(ScrollNotification)?,
+                                  // child: NotificationListener<ScrollNotification>(
+                                  //   onNotification: (scrollState) {
+                                  //     if (scrollState
+                                  //             is ScrollEndNotification &&
+                                  //         scrollState.metrics.extentAfter ==
+                                  //             0 &&
+                                  //         !_endReached) {
+                                  //       _failureCause = null;
+                                  //       _searchSolutionBloc!
+                                  //           .addIntoMoreFacilitiesStream(
+                                  //               RequestInProgress());
+                                  //       _searchSolutionBloc!.getMoreFacilities(
+                                  //           widget.docHosSolution!,
+                                  //           searchQuery: _searchController!.text
+                                  //               .trim()
+                                  //               .toString(),
+                                  //           pageIndex: pageIndex,
+                                  //           allLocationKey: _allKey,
+                                  //           facilityLocationFilter:
+                                  //               _locationFilter,
+                                  //           userTypeFilter: _userTypeFilter);
+                                  //     } else if (scrollState
+                                  //         is OverscrollNotification) {
+                                  //       _scrollParent = true;
+                                  //       _setState();
+                                  //       Future.delayed(Duration(seconds: 1))
+                                  //           .then((value) {
+                                  //         _scrollParent = false;
+                                  //         _setState();
+                                  //       });
+                                  //     }
+                                  //     return;
+                                  //   } as bool Function(ScrollNotification)?,
                                     child: SingleChildScrollView(
                                       controller: controller,
                                       child: _showResultsFromBackend(snapShot),
                                     ),
                                   ),
-                                ),
+                                // ),
                               );
                             },
                           ),

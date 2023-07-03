@@ -131,6 +131,7 @@ ADDED from /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/an
 INJECTED from /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:1:1-83:12
 INJECTED from /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:1:1-83:12
 INJECTED from /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:1:1-83:12
+MERGED from [:sms_autofill] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/sms_autofill/intermediates/merged_manifest/release/AndroidManifest.xml:2:1-9:12
 MERGED from [:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/release/AndroidManifest.xml:2:1-50:12
 MERGED from [:firebase_crashlytics] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_crashlytics/intermediates/merged_manifest/release/AndroidManifest.xml:2:1-17:12
 MERGED from [:firebase_analytics] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_analytics/intermediates/merged_manifest/release/AndroidManifest.xml:2:1-21:12
@@ -372,6 +373,8 @@ uses-sdk
 INJECTED from /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml
 INJECTED from /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml
+MERGED from [:sms_autofill] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/sms_autofill/intermediates/merged_manifest/release/AndroidManifest.xml:5:5-7:41
+MERGED from [:sms_autofill] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/sms_autofill/intermediates/merged_manifest/release/AndroidManifest.xml:5:5-7:41
 MERGED from [:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/release/AndroidManifest.xml:5:5-7:41
 MERGED from [:firebase_messaging] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_messaging/intermediates/merged_manifest/release/AndroidManifest.xml:5:5-7:41
 MERGED from [:firebase_crashlytics] /Users/gautamsinghmaurya/Freelance/plunes/code/plunes_flutter_bloc/build/firebase_crashlytics/intermediates/merged_manifest/release/AndroidManifest.xml:5:5-7:41

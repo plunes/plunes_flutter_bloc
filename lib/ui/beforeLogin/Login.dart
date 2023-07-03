@@ -64,18 +64,18 @@ class _LoginState extends State<Login> implements DialogCallBack {
   final _otplessFlutterPlugin = Otpless();
 
   // Continue With WhatsApp function
-  void initiateWhatsappLogin(String intentUrl) async {
-    var result = await _otplessFlutterPlugin.loginUsingWhatsapp(intentUrl: intentUrl);
-    print("resultresult-->${result}");
-
-    switch (result['code']) {
-      case "91":
-        print("data_____${result['message']}");
-//TODO: handle whatsapp not found
-        break;
-      default:
-    }
-  }
+//   void initiateWhatsappLogin(String intentUrl) async {
+//     var result = await _otplessFlutterPlugin.loginUsingWhatsapp(intentUrl: intentUrl);
+//     print("resultresult-->${result}");
+//
+//     switch (result['code']) {
+//       case "91":
+//         print("data_____${result['message']}");
+// //TODO: handle whatsapp not found
+//         break;
+//       default:
+//     }
+//   }
 
   //this function
   Future<void> initPlatformState() async {
@@ -204,24 +204,25 @@ class _LoginState extends State<Login> implements DialogCallBack {
                               PlunesColors.WHITECOLOR),
                         ),
                       ),
-                widget.getSpacer(0.0, 15.0),
-                Container(
-                  margin: EdgeInsets.only(left: 10, right: 10),
-                  child: InkWell(
-                    borderRadius: BorderRadius.all(Radius.circular(5)),
-                    onTap: () {
-                      initiateWhatsappLogin(
-                          "https://plunes.authlink.me?redirectUri=plunesotpless://otpless");
-                    },
-                    child: CustomWidgets().getRoundedButton(
-                        plunesStrings.whatsapplogin.toString().toUpperCase(),
-                        5,
-                        CommonMethods.getColorForSpecifiedCode("#107C6F"),
-                        0,
-                        AppConfig.verticalBlockSize * 1.5,
-                        PlunesColors.WHITECOLOR),
-                  ),
-                ),
+                // widget.getSpacer(0.0, 15.0),
+                // Container(
+                //   margin: EdgeInsets.only(left: 10, right: 10),
+                //   child: InkWell(
+                //     borderRadius: BorderRadius.all(Radius.circular(5)),
+                //     onTap: () {
+                // line 67
+                //       initiateWhatsappLogin(
+                //           "https://plunes.authlink.me?redirectUri=plunesotpless://otpless");
+                //     },
+                //     child: CustomWidgets().getRoundedButton(
+                //         plunesStrings.whatsapplogin.toString().toUpperCase(),
+                //         5,
+                //         CommonMethods.getColorForSpecifiedCode("#107C6F"),
+                //         0,
+                //         AppConfig.verticalBlockSize * 1.5,
+                //         PlunesColors.WHITECOLOR),
+                //   ),
+                // ),
                 widget.getSpacer(0.0, 15.0),
                 getSignUpViewButton()
               ]))
