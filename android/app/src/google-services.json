@@ -1,35 +1,41 @@
 {
   "project_info": {
-    "project_number": "966445733996",
-    "firebase_url": "https://plunesfirebase.firebaseio.com",
-    "project_id": "plunesfirebase",
-    "storage_bucket": "plunesfirebase.appspot.com"
+    "project_number": "811251437274",
+    "project_id": "plunescom-new",
+    "storage_bucket": "plunescom-new.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:966445733996:android:981c1083924c6caf",
+        "mobilesdk_app_id": "1:811251437274:android:877b963dd48215acb89fe3",
         "android_client_info": {
           "package_name": "com.plunes"
         }
       },
       "oauth_client": [
         {
-          "client_id": "966445733996-85u0cbkm48dotkbl1s09he91hv6jkjf8.apps.googleusercontent.com",
+          "client_id": "811251437274-nkjdj1oa19ab001lm2vjfcoqnigo5a4h.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDyYZw2NoD2oTmJp0U3hLmHOnvVMlbgtPs"
+          "current_key": "AIzaSyDSNk6qh-nv15UtpME4-3gU-rM3yoFQjtw"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "966445733996-85u0cbkm48dotkbl1s09he91hv6jkjf8.apps.googleusercontent.com",
+              "client_id": "811251437274-nkjdj1oa19ab001lm2vjfcoqnigo5a4h.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "811251437274-2o43ko44aq65bljl3vqoli5baq9ckb6n.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.plunes.plunes"
+              }
             }
           ]
         }

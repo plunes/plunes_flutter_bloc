@@ -48,8 +48,10 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final GlobalKey<NavigatorState> _navKey = new GlobalKey<NavigatorState>();
-  static final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   static final facebookAppEvents = FacebookAppEvents();
+
+
+  static final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   final FirebaseAnalyticsObserver observer =
       FirebaseAnalyticsObserver(analytics: analytics);
 
